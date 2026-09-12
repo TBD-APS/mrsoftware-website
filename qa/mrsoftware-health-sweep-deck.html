@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA · mrsoftware.dk health sweep, launch &amp; roadmap</title>
+<style>
+  :root {
+    --ink:#10141a; --muted:#5b6472; --line:#dfe4e9; --bg-soft:#f5f7f8;
+    --accent:#d2542a; --accent-soft:#fbeae3;
+    --ok:#1e7f4f; --ok-bg:#e6f4ec; --bad:#b3261e; --bad-bg:#fbe9e7;
+    --warn:#a3650b; --warn-bg:#fdf0db; --blue:#1f5f8b; --blue-bg:#e7f0f7;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); background:#e7ebef; }
+  .deck { max-width:1060px; margin:36px auto; background:#fff; border-radius:18px; box-shadow:0 8px 40px rgba(16,20,26,.14); overflow:hidden; }
+  .progress { height:7px; background:var(--bg-soft); }
+  .progress > div { height:7px; background:linear-gradient(90deg,var(--accent),#e8895f); transition:width .25s; }
+  .slide { display:none; padding:52px 60px 34px; min-height:600px; }
+  .slide.active { display:block; }
+  .kicker { color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:.72rem; margin:0 0 12px; }
+  h1 { font-size:2.25rem; line-height:1.12; margin:0 0 16px; }
+  h2 { font-size:1.45rem; margin:0 0 14px; }
+  h3 { font-size:1.02rem; margin:24px 0 8px; }
+  .lead { font-size:1.08rem; color:var(--muted); max-width:74ch; line-height:1.6; }
+  .facts { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:24px 0; }
+  .fact { border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--bg-soft); }
+  .fact b { display:block; font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; }
+  .fact span { font-size:.95rem; line-height:1.45; }
+  .chips { display:flex; gap:14px; flex-wrap:wrap; margin:14px 0 20px; }
+  .chip { flex:1 1 280px; border:1px solid var(--line); border-left-width:4px; border-radius:10px; padding:13px 16px; font-size:.92rem; }
+  .chip.expected { border-left-color:var(--blue); background:var(--blue-bg); }
+  .chip.actual { border-left-color:var(--accent); background:var(--accent-soft); }
+  .chip b { display:block; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; opacity:.75; margin-bottom:5px; }
+  .badge { display:inline-block; padding:2px 10px; border-radius:999px; font-size:.75rem; font-weight:700; margin-left:8px; vertical-align:middle; }
+  .badge.pass { background:var(--ok-bg); color:var(--ok); }
+  .badge.fail { background:var(--bad-bg); color:var(--bad); }
+  .badge.obs { background:var(--warn-bg); color:var(--warn); }
+  table { border-collapse:collapse; width:100%; margin:16px 0; font-size:.92rem; }
+  th,td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; }
+  pre { background:#0c1117; color:#d7e2ea; border-radius:10px; padding:13px 16px; font-size:.8rem; overflow:auto; margin:10px 0; }
+  code { background:var(--bg-soft); border:1px solid var(--line); padding:1px 6px; border-radius:6px; font-size:.86rem; }
+  .note { border-left:4px solid var(--accent); background:var(--bg-soft); padding:13px 16px; border-radius:0 8px 8px 0; margin:18px 0; font-size:.93rem; line-height:1.5; }
+  .note.ok { border-color:var(--ok); }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:760px){ .grid2 { grid-template-columns:1fr; } }
+  .nav { display:flex; justify-content:space-between; align-items:center; padding:18px 60px 26px; border-top:1px solid var(--line); }
+  button { background:var(--accent); color:#fff; border:0; border-radius:9px; padding:9px 18px; font-size:.9rem; cursor:pointer; }
+  button:disabled { opacity:.35; cursor:default; }
+  .counter { color:var(--muted); font-size:.85rem; }
+  svg { width:100%; height:auto; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="progress"><div id="bar"></div></div>
+  <div id="slides"></div>
+  <div class="nav">
+    <button id="prev">← Prev</button>
+    <span class="counter" id="counter">1 / ?</span>
+    <button id="next">Next →</button>
+  </div>
+</div>
+<script>
+const TOPOLOGY = `
+<svg viewBox="0 0 860 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,Roboto,Arial,sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect x="330" y="20" width="200" height="56" rx="10" fill="#10141a"/>
+  <text x="430" y="46" fill="#fff" text-anchor="middle" font-size="14" font-weight="700">mrsoftware.dk</text>
+  <text x="430" y="64" fill="#9aa4b0" text-anchor="middle" font-size="10">site · /status + /ping.json</text>
+
+  <rect x="30" y="150" width="190" height="64" rx="10" fill="#e7f0f7" stroke="#1f5f8b"/>
+  <text x="125" y="177" fill="#1f5f8b" text-anchor="middle" font-size="13" font-weight="700">saassy.mrsoftware.dk</text>
+  <text x="125" y="194" fill="#1f5f8b" text-anchor="middle" font-size="9.5">Worker mr-saassy-app</text>
+  <text x="125" y="206" fill="#1f5f8b" text-anchor="middle" font-size="9">/ping · /api/saassy/health</text>
+
+  <rect x="340" y="150" width="190" height="64" rx="10" fill="#e6f4ec" stroke="#1e7f4f"/>
+  <text x="435" y="177" fill="#1e7f4f" text-anchor="middle" font-size="13" font-weight="700">dev.mrsoftware.dk</text>
+  <text x="435" y="194" fill="#1e7f4f" text-anchor="middle" font-size="9.5">Pages · Control Center</text>
+  <text x="435" y="206" fill="#1e7f4f" text-anchor="middle" font-size="9">/ping (function)</text>
+
+  <rect x="650" y="150" width="180" height="64" rx="10" fill="#f5f7f8" stroke="#5b6472"/>
+  <text x="740" y="177" fill="#5b6472" text-anchor="middle" font-size="13" font-weight="700">www.mrsoftware.dk</text>
+  <text x="740" y="194" fill="#5b6472" text-anchor="middle" font-size="9.5">GitHub Pages · static</text>
+  <text x="740" y="206" fill="#5b6472" text-anchor="middle" font-size="9">no dynamic health (ok)</text>
+
+  <rect x="160" y="270" width="540" height="52" rx="10" fill="#fbeae3" stroke="#d2542a"/>
+  <text x="430" y="293" fill="#d2542a" text-anchor="middle" font-size="13" font-weight="700">Browser pings every service every 60 s</text>
+  <text x="430" y="309" fill="#d2542a" text-anchor="middle" font-size="10">/status page on apex · JSON probes with CORS *</text>
+
+  <line x1="430" y1="78" x2="125" y2="148" marker-end="url(#ar)" stroke="#5b6472" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <line x1="430" y1="78" x2="435" y2="148" marker-end="url(#ar)" stroke="#5b6472" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <line x1="430" y1="78" x2="740" y2="148" marker-end="url(#ar)" stroke="#5b6472" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <line x1="340" y1="270" x2="340" y2="322" stroke="#5b6472" stroke-width="1.6" stroke-dasharray="4 3"/>
+</svg>`;
+
+const ROADMAP = [
+  { phase: "Now", period: "Q4 2026", tone: "ok", items: [
+    "Go live on mrsoftware.dk apex (pending dashboard binding)",
+    "Public /status page on the live domain",
+    "Document the /ping contract publicly (spec + example)",
+    "Publish verified self-validation numbers as timestamped snapshots"
+  ]},
+  { phase: "Next", period: "2027 H1", tone: "blue", items: [
+    "Scheduled uptime checks with alerting (server-side, not browser-only)",
+    "Publish SLOs and track them on /status",
+    "Open-source decision: repo-by-repo (docs → website → health tooling)",
+    "Standardize /ping contract for every future service"
+  ]},
+  { phase: "Later", period: "2027 H2", tone: "accent", items: [
+    "Open-source core tooling + docs under a permissive license",
+    "Public roadmap + issue tracker; community PRs through the same gates we use internally",
+    "Recurring transparency report: metrics, incidents, mitigations"
+  ]}
+];
+
+const DECK = {
+  title: "QA review · mrsoftware.dk health sweep, launch & roadmap",
+  date: "2026-09-12",
+  slides: [
+    {
+      kind: "intro",
+      kicker: "QA Review",
+      title: "mrsoftware.dk go-live, ping-health sweep &amp; roadmap",
+      lead: "MR Software's public self-validation site, plus a first-ever public ping/health contract for dev, saassy, www and the apex. Missing health endpoints were built and deployed; the site and status page are live on the Workers preview. We prefer publishing plans openly over keeping them secret — including how we might open the code over time.",
+      facts: [
+        { k: "Branch", v: "main · mrsoftware-website <code>a9eaceb</code> · mr-saassy <code>dd8a948</code>" },
+        { k: "Test environment", v: "https://mrsoftware.rasmusvm6.workers.dev + live subdomains" },
+        { k: "Basis / date", v: "Live HTTP probes, worker tests, wrangler &amp; Cloudflare API · 2026-09-12" },
+        { k: "CI status", v: "Worker tests 21/21 green · PR #307 merged" }
+      ]
+    },
+    {
+      kind: "topology",
+      title: "Service topology &amp; what was built",
+      body: "One public contract (<code>/ping</code>, JSON + HTTP 200, CORS-reachable), present on every app service, and one new status page that reads it all from the browser.",
+      svg: TOPOLOGY
+    },
+    {
+      kind: "matrix",
+      title: "Sweep matrix — content-sniffed, not just HTTP codes",
+      rows: [
+        { svc: "saassy.mrsoftware.dk", probe: "<code>/ping</code>", expected: "JSON, no SPA shell", actual: "<code>{status:ok, service:mr-saassy-app}</code>", status: "pass" },
+        { svc: "saassy.mrsoftware.dk", probe: "<code>/api/saassy/health</code>", expected: "JSON healthcare incl. OAuth", actual: "<code>{status:ready, cloudflareOAuth:ready}</code> + CORS", status: "pass" },
+        { svc: "dev.mrsoftware.dk", probe: "<code>/ping</code>", expected: "JSON via Pages function", actual: "<code>{status:ok, service:mr-saasy-control-center}</code>", status: "pass" },
+        { svc: "www.mrsoftware.dk", probe: "<code>/</code>", expected: "Static host, health N/A", actual: "GitHub Pages 200 · documented out-of-scope", status: "pass" },
+        { svc: "mrsoftware.dk (apex)", probe: "<code>/</code>, <code>/status/</code>", expected: "Site on apex", actual: "404 — custom-domain binding pending", status: "obs" }
+      ]
+    },
+    {
+      kind: "step",
+      title: "Apex site — the 3 requested URLs",
+      chips: { expected: "HTTP 200 on /, /sikkerhed-og-dataprivatliv/, …/saadan-validerer-vi-os-selv/", actual: "HTTP 404 (Cloudflare default) — binding not applied yet" },
+      badge: "obs",
+      body: "The site serves correctly at the preview URL (title <i>MR Software — vi bygger systemer der validerer sig selv</i>, 4239 B). The apex still resolves to the old zone A-records — awaiting <b>Workers → mrsoftware → Domains &amp; Routes → Add custom domain</b>."
+    },
+    {
+      kind: "step",
+      title: "saassy.mrsoftware.dk — worker health",
+      chips: { expected: "Real JSON health, not SPA shell", actual: "<code>/ping</code> → 200 JSON + CORS; <code>/api/saassy/health</code> → 200 JSON {status:ready} (pre-existing, CORS added)" },
+      badge: "pass",
+      body: "Deployed worker version <code>b8b4c5db</code>. Live probing caught <code>/ping</code> being swallowed by the SPA fallback first — fixed by adding <code>/ping</code> to <code>run_worker_first</code> in <code>wrangler.jsonc</code>."
+    },
+    {
+      kind: "step",
+      title: "dev.mrsoftware.dk &amp; www.mrsoftware.dk",
+      chips: { expected: "dev: real /ping · www: static, documented", actual: "dev /ping → 200 JSON (Pages function, live after #307 merg). www → GitHub Pages 200, no health (out of scope)" },
+      badge: "pass",
+      body: "Dev deploys automatically from main via Pages git integration; the function reached production when #307 merged. www stays documented as a static host but is still pinged for reachability by the status page."
+    },
+    {
+      kind: "step",
+      title: "New public /status page + /ping.json",
+      chips: { expected: "Status page pinging every service; site probe file", actual: "<code>/status/</code> → 200 (title “Driftsstatus — MR Software”), <code>/ping.json</code> → 200 JSON" },
+      badge: "pass",
+      body: "Danish <code>/status/</code> page live-pings saassy, dev, www and itself every 60 s, green/red per service. Committed to TBD-APS/mrsoftware-website (<code>a9eaceb</code>) and deployed."
+    },
+    {
+      kind: "principles",
+      title: "Transparency principles",
+      items: [
+        { h: "Public by default", t: "Numbers, status and plans are published; nothing is hidden unless a genuine reason exists." },
+        { h: "Evidence over promises", t: "Every claim points to a check — a probe, a test, a ruleset — so readers can re-verify." },
+        { h: "Known limitations disclosed", t: "Coverage gaps (e.g. 8 thin render surfaces, Cosmos module unused) are listed, not hidden." },
+        { h: "Open-source over time", t: "Docs → website → health tooling → core, repo by repo, once consent and governance are settled." }
+      ]
+    },
+    {
+      kind: "roadmap",
+      title: "Roadmap — public, transparent",
+      body: "Released today as part of the deck. Will be maintained openly on the site as plans change.",
+      phases: ROADMAP
+    },
+    {
+      kind: "verdict",
+      title: "Verdict",
+      checklist: [
+        { ok: true, text: "saassy real health now public (/ping + /api/saassy/health, CORS enabled)" },
+        { ok: true, text: "dev /ping live via Pages function (merged, auto-deployed)" },
+        { ok: true, text: "www documents as static/out-of-scope" },
+        { ok: true, text: "Status page + ping.json built and deployed" },
+        { ok: true, text: "Worker test suite 21/21 green; PR #307 merged" },
+        { ok: false, text: "apex …/sikkerhed-og-dataprivatliv/* reachable — pending dashboard binding" },
+        { ok: false, text: "Cleanup: stray .git assets removed from mrsoftware deployment (project recreate, after binding)" }
+      ],
+      recommendation: "Approve with two follow-ups: (1) finish the apex custom-domain binding, then I verify the three site URLs and clean up stray .git assets by recreating the project; (2) adopt the roadmap: publish /ping spec, then scheduled uptime checks with alerting, then open-source repo-by-repo."
+    }
+  ]
+};
+
+const state = { i: 0 };
+function badgeClass(code){ return code === 'pass' ? 'pass' : (code === 'fail' ? 'fail' : 'obs'); }
+function badgeText(code){ return code === 'pass' ? 'PASS' : (code === 'fail' ? 'FAIL' : 'OBS'); }
+function phaseTone(tone){ return { ok:['#1e7f4f','#e6f4ec'], blue:['#1f5f8b','#e7f0f7'], accent:['#d2542a','#fbeae3'] }[tone]; }
+function render() {
+  const host = document.getElementById('slides');
+  host.innerHTML = DECK.slides.map((s, i) => slideHtml(s, i)).join('');
+  document.getElementById('bar').style.width = ((state.i + 1) / DECK.slides.length * 100) + '%';
+  document.getElementById('counter').textContent = (state.i + 1) + ' / ' + DECK.slides.length;
+  document.getElementById('prev').disabled = state.i === 0;
+  document.getElementById('next').disabled = state.i === DECK.slides.length - 1;
+  host.querySelectorAll('.slide')[state.i].classList.add('active');
+  window.scrollTo({ top: 0 });
+}
+function slideHtml(s, i) {
+  if (s.kind === 'intro') {
+    return `<section class="slide"><p class="kicker">${s.kicker}</p><h1>${s.title}</h1>` +
+      `<p class="lead">${s.lead}</p><div class="facts">` +
+      s.facts.map(f => `<div class="fact"><b>${f.k}</b><span>${f.v}</span></div>`).join('') +
+      `</div></section>`;
+  }
+  if (s.kind === 'topology') {
+    return `<section class="slide"><p class="kicker">What was built</p><h2>${s.title}</h2><p class="lead">${s.body}</p>${s.svg}</section>`;
+  }
+  if (s.kind === 'matrix') {
+    return `<section class="slide"><p class="kicker">Sweep</p><h2>${s.title}</h2><table><thead><tr>` +
+      `<th>Service</th><th>Probe</th><th>Expected</th><th style="width:34%">Actual</th><th style="width:70px">Status</th></tr></thead><tbody>` +
+      s.rows.map(r => `<tr><td>${r.svc}</td><td>${r.probe}</td><td>${r.expected}</td><td>${r.actual}</td>` +
+      `<td><span class="badge ${badgeClass(r.status)}">${badgeText(r.status)}</span></td></tr>`).join('') +
+      `</tbody></table><p class="note ok">Every “actual” was content-sniffed (real JSON body), not just a 200 status.</p></section>`;
+  }
+  if (s.kind === 'step') {
+    return `<section class="slide"><p class="kicker">Checkpoint ${i}</p><h2>${s.title} <span class="badge ${badgeClass(s.badge)}">${badgeText(s.badge)}</span></h2>` +
+      `<div class="chips"><div class="chip expected"><b>Expected</b>${s.chips.expected}</div><div class="chip actual"><b>Actual</b>${s.chips.actual}</div></div>` +
+      `<p class="lead" style="font-size:1rem">${s.body}</p></section>`;
+  }
+  if (s.kind === 'principles') {
+    return `<section class="slide"><p class="kicker">Why we publish</p><h2>${s.title}</h2><div class="grid2">` +
+      s.items.map(it => `<div class="fact"><b>${it.h}</b><span>${it.t}</span></div>`).join('') +
+      `</div><p class="note">Better transparent than secretive. This deck, the roadmap and the numbers are deliberately public artifacts.</p></section>`;
+  }
+  if (s.kind === 'roadmap') {
+    return `<section class="slide"><p class="kicker">Forward plan</p><h2>${s.title}</h2><p class="lead">${s.body}</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:18px">` +
+      s.phases.map(p => { const tone = phaseTone(p.tone); const fg = tone[0]; const bg = tone[1];
+        return `<div style="border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:${bg}"><b style="color:${fg};font-size:1.05rem">${p.phase}</b> · <span style="color:var(--muted);font-size:.8rem">${p.period}</span><ul style="margin-top:10px;padding-left:18px">${p.items.map(t => `<li style="font-size:.9rem;margin-bottom:7px">${t}</li>`).join('')}</ul></div>`; }).join('') +
+      `</div></section>`;
+  }
+  if (s.kind === 'verdict') {
+    return `<section class="slide"><p class="kicker">Verdict</p><h1>${s.title}</h1><table>` +
+      `<thead><tr><th style="width:84px">Status</th><th>Checklist item</th></tr></thead><tbody>` +
+      s.checklist.map(c => `<tr><td><span class="badge ${badgeClass(c.ok ? 'pass' : 'obs')}">${badgeText(c.ok ? 'pass' : 'obs')}</span></td><td>${c.text}</td></tr>`).join('') +
+      `</tbody></table><div class="note"><b>Recommendation.</b> ${s.recommendation}</div></section>`;
+  }
+  return '';
+}
+document.getElementById('prev').addEventListener('click', () => { if (state.i > 0) { state.i--; render(); } });
+document.getElementById('next').addEventListener('click', () => { if (state.i < DECK.slides.length - 1) { state.i++; render(); } });
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { if (state.i < DECK.slides.length - 1) { state.i++; render(); } }
+  if (e.key === 'ArrowLeft') { if (state.i > 0) { state.i--; render(); } }
+});
+render();
+</script>
+</body>
+</html>
