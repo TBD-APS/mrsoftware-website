@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roadmap — MR Software</title>
+  <meta name="description" content="MR Softwares offentlige roadmap: hvad vi bygger, hvad vi offentliggør, og hvordan vi over tid åbner kildekoden.">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23d2542a'/></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="brand"><a href="/">MR Software <small>· mrsoftware.dk</small></a></div>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <nav class="nav">
+      <a href="/">Forside</a>
+      <span class="nav-group">
+        <a href="/sikkerhed-og-dataprivatliv/" class="nav-drop-link">Sikkerhed &amp; dataprivatliv</a>
+      </span>
+      <a href="/status/">Driftsstatus</a>
+      <a href="/roadmap/" class="active">Roadmap</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <p class="breadcrumbs"><a href="/">Forside</a> · Roadmap</p>
+  <p class="eyebrow">ÅBENHED &amp; PLANER</p>
+  <h1>Roadmap — hvad vi bygger og offentliggør</h1>
+  <p class="lead">
+    Vi foretrækker åbenhed frem for hemmelighedskræmmeri. Derfor ligger planerne her offentligt,
+    præcis som tallene, driftsstatus og valideringsartefakten gør. Roadmap'et justeres løbende,
+    når planerne ændrer sig — og det fremgår altid, hvornår noget er planlagt modsat gjort.
+  </p>
+
+  <section>
+    <h2>Nu — Q4 2026</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Go-live på mrsoftware.dk</h3>
+        <p>Custom domain-binding af apex-domænet, så hele sitet og driftsstatus-siden kører på mrsoftware.dk direkte.</p>
+      </div>
+      <div class="card">
+        <h3>Driftsstatus på det rigtige domæne</h3>
+        <p>Den offentlige <a href="/status/">/status</a>-side flytter fra preview-URL'en til apex-domænet og pinger alle tjenester.</p>
+      </div>
+      <div class="card">
+        <h3>Offentlig /ping-spec</h3>
+        <p>Beskrivelse af det fælles <code>/ping</code>-kontraktpunkt (JSON, HTTP 200, CORS) så andre kan verificere os og vi hinanden.</p>
+      </div>
+      <div class="card">
+        <h3>Verificerede tal som øjebliksbilleder</h3>
+        <p>Valideringsartefaktens tal (test, dækning, gates) udgives som tidsstemplede snapshots, der kan krydstjekkes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Næste — 2027, første halvår</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Planlagte op-timer-check med alarmering</h3>
+        <p>Skift fra browser-baseret ping til server-side scheduled checks, der aktivt alarmerer ved nedbrud i stedet for kun at vise status.</p>
+      </div>
+      <div class="card">
+        <h3>Offentlige SLO'er</h3>
+        <p>Service-level-objektiver defineres og følges op på <a href="/status/">driftsstatus</a>-siden — vi måler os selv mod dem.</p>
+      </div>
+      <div class="card">
+        <h3>Open-source-beslutning, repo for repo</h3>
+        <p>Vurdering af hvilke repos der kan åbnes: dokumentation først, derefter hjemmeside og health-værktøj — efterhånden som samtykke og governance er på plads.</p>
+      </div>
+      <div class="card">
+        <h3>Standard /ping på alle nye tjenester</h3>
+        <p>Hver ny service implementerer det samme kontraktpunkt fra dag ét — ingen undtagelser.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Senere — 2027, andet halvår</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Open-source kerneværktøj og dokumentation</h3>
+        <p>Udvalgte dele udgives under en permissiv licens. Kernen vurderes komponent for komponent — hvad der står uden hemmeligheder, åbnes.</p>
+      </div>
+      <div class="card">
+        <h3>Offentlig roadmap &amp; issue-tracker</h3>
+        <p>Planer og sporing bliver offentlige, og community-bidrag går gennem de samme gates, vi bruger internt.</p>
+      </div>
+      <div class="card">
+        <h3>Løbende transparensrapport</h3>
+        <p>Periodisk rapport: metrikker, hændelser, afværger og hvad vi har lært — publiseret, ikke lovet.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Principper for åbenhed</h2>
+    <div class="grid">
+      <div class="card emphasis">
+        <h3>Offentligt som standard</h3>
+        <p>Tal, status og planer er offentlige, medmindre der er en reel grund til det modsatte.</p>
+      </div>
+      <div class="card emphasis">
+        <h3>Evidens frem for løfter</h3>
+        <p>Hver påstand peger på et tjek — en probe, en test, en gate — så læseren kan efterprøve den.</p>
+      </div>
+      <div class="card emphasis">
+        <h3>Kendte begrænsninger deles</h3>
+        <p>Dækningshuller og uudnyttede moduler står i artefakten — de skjules ikke.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    Roadmap'et er et levende dokument. Følg med i driften på <a href="/status/">driftsstatus</a> og i
+    tallene under <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">sådan validerer vi os selv</a>.
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="col">
+      <h4>MR Software</h4>
+      <p>Vi bygger MR SAAS'y og validerer åbent, hvad vi leverer.</p>
+    </div>
+    <div class="col">
+      <h4>Områder</h4>
+      <p>
+        <a href="/">Forside</a><br>
+        <a href="/sikkerhed-og-dataprivatliv/">Sikkerhed &amp; dataprivatliv</a><br>
+        <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi os selv</a><br>
+        <a href="/status/">Driftsstatus</a><br>
+        <a href="/roadmap/">Roadmap</a>
+      </p>
+    </div>
+    <div class="col">
+      <h4>Kontakt</h4>
+      <p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk</div>
+</footer>
+
+<script src="/js/site.js"></script>
+</body>
+</html>
