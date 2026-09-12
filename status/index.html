@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Driftsstatus — MR Software</title>
+  <meta name="description" content="Live driftsstatus for mrsoftware.dk og de tjenester, vi driver — pinget direkte fra denne side.">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23d2542a'/></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="brand"><a href="/">MR Software <small>· mrsoftware.dk</small></a></div>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <nav class="nav">
+      <a href="/">Forside</a>
+      <span class="nav-group">
+        <a href="/sikkerhed-og-dataprivatliv/" class="nav-drop-link">Sikkerhed &amp; dataprivatliv</a>
+      </span>
+      <a href="/status/" class="active">Driftsstatus</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <p class="eyebrow">MR Software</p>
+  <h1>Driftsstatus</h1>
+  <p class="lead">
+    Siden nedenfor pinger vores tjenester direkte fra din browser og viser, om de svarer.
+    Hver tjeneste skal svare med HTTP 200 og en JSON-meddelelse, der bekræfter tjenesten — ikke blot en
+    generisk side. Data opdateres hvert 60. sekund.
+  </p>
+
+  <div class="note" id="last-check">Venter på første check…</div>
+
+  <div class="stat-grid" id="services"></div>
+
+  <section>
+    <h2>Tjenester der overvåges</h2>
+    <table>
+      <thead>
+        <tr><th>Tjeneste</th><th>Kontrolpunkt</th><th>Hvad den beviser</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>mrsoftware.dk</td><td><code>/ping.json</code></td><td>Hjemmesiden svarer med komprimeret hosting-status.</td></tr>
+        <tr><td>saassy.mrsoftware.dk</td><td><code>/ping</code> og <code>/api/saassy/health</code></td><td>MR SAAS'y-produktionsfrontet er oppe; health rapporterer <em>ready</em> for model, rate-limit og Cloudflare OAuth.</td></tr>
+        <tr><td>dev.mrsoftware.dk</td><td><code>/ping</code></td><td>Dev-instansen af Control Center svarer.</td></tr>
+        <tr><td>www.mrsoftware.dk</td><td><code>/</code></td><td>Statisk GitHub Pages-sitet (Workslip) svarer. Vært uden dynamisk health-check.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="note warn">
+    Driftsstatus her er en øjeblikstilstand fra din browser. For formelle metrikker henvises til
+    valideringsartefakten under <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi os selv</a>.
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="col">
+      <h4>MR Software</h4>
+      <p>Vi bygger MR SAAS'y og validerer åbent, hvad vi leverer.</p>
+    </div>
+    <div class="col">
+      <h4>Områder</h4>
+      <p>
+        <a href="/">Forside</a><br>
+        <a href="/sikkerhed-og-dataprivatliv/">Sikkerhed &amp; dataprivatliv</a><br>
+        <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi os selv</a><br>
+        <a href="/status/">Driftsstatus</a>
+      </p>
+    </div>
+    <div class="col">
+      <h4>Kontakt</h4>
+      <p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk</div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var toggle = document.querySelector('.nav-toggle');
+  var nav = document.querySelector('.nav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', function () { nav.classList.toggle('open'); });
+  }
+  document.querySelectorAll('.year').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
+
+  var SERVICES = [
+    { id: 'mrsoftware', name: 'mrsoftware.dk', probe: '/ping.json', self: true },
+    { id: 'saassy', name: 'saassy.mrsoftware.dk', probe: 'https://saassy.mrsoftware.dk/ping', health: 'https://saassy.mrsoftware.dk/api/saassy/health' },
+    { id: 'dev', name: 'dev.mrsoftware.dk', probe: 'https://dev.mrsoftware.dk/ping' },
+    { id: 'www', name: 'www.mrsoftware.dk', probe: 'https://www.mrsoftware.dk/', static: true }
+  ];
+  var container = document.getElementById('services');
+  var lastCheck = document.getElementById('last-check');
+
+  function render(id, label, status, detail) {
+    var el = document.getElementById('svc-' + id);
+    el.querySelector('.value').textContent = status === 'ok' ? 'OK' : (status === 'warn' ? 'Advarsel' : 'Fejl');
+    el.querySelector('.value').parentElement.className = 'value ' + status;
+    el.querySelector('.label').textContent = label + ' — ' + detail;
+  }
+
+  function check() {
+    container.innerHTML = '';
+    var okServices = 0;
+    var total = SERVICES.length;
+    var settled = 0;
+
+    SERVICES.forEach(function (svc) {
+      var tile = document.createElement('div');
+      tile.className = 'stat';
+      tile.id = 'svc-' + svc.id;
+      tile.innerHTML = '<div class="value warn">…</div><div class="label">' + svc.name + '</div>';
+      container.appendChild(tile);
+
+      var checks = [];
+      if (svc.probe) checks.push({ name: 'probe', url: svc.probe, self: svc.probe.charAt(0) === '/' });
+      if (svc.health) checks.push({ name: 'health', url: svc.health, self: false });
+      if (!checks.length) {
+        render(svc.id, svc.name, 'ok', 'statisk host — ikke pinget');
+        okServices += 1;
+        settled += 1;
+        return;
+      }
+
+      Promise.all(checks.map(function (c) {
+        return fetch(c.url, c.self ? { cache: 'no-store' } : { mode: 'cors', cache: 'no-store' })
+          .then(function (r) { return r.status === 200 ? { ok: true, text: c.name + ' HTTP 200' } : { ok: false, text: c.name + ' HTTP ' + r.status }; })
+          .catch(function () { return { ok: false, text: c.name + ' ikke opnåelig' }; });
+      })).then(function (results) {
+        var ok = results.every(function (r) { return r.ok; });
+        render(svc.id, svc.name, ok ? 'ok' : 'bad', results.map(function (r) { return r.text; }).join(' · '));
+        if (ok) okServices += 1;
+        settled += 1;
+        if (settled === total) {
+          lastCheck.textContent = 'Sidste check: ' + new Date().toLocaleTimeString('da-DK') + ' — ' + okServices + '/' + total + ' tjenester svarede korrekt.';
+          lastCheck.className = 'note ' + (okServices === total ? 'ok' : 'bad');
+        }
+      });
+    });
+  }
+
+  check();
+  setInterval(check, 60000);
+});
+</script>
+</body>
+</html>
