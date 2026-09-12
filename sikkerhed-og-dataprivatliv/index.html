@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sikkerhed &amp; dataprivatliv — MR Software</title>
+  <meta name="description" content="Sådan håndterer MR Software sikkerhed og data: fail-closed standarder, menneskelige godkendelser, Key Vault-henvisninger, lejerisolering og vores åbne selvvalidering.">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23d2542a'/></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="brand"><a href="/">MR Software <small>· mrsoftware.dk</small></a></div>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <nav class="nav">
+      <a href="/">Forside</a>
+      <a href="/sikkerhed-og-dataprivatliv/" class="active">Sikkerhed &amp; dataprivatliv</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <p class="breadcrumbs"><a href="/">Forside</a> · Sikkerhed &amp; dataprivatliv</p>
+  <p class="eyebrow">TRUST &amp; TRANSPARENS</p>
+  <h1>Sikkerhed og dataprivatliv</h1>
+  <p class="lead">
+    MR Software bygger systemer med fail-closed standarder: adgang starter på nul, hver ændring skal
+    kunne bevises, og hemmeligheder rører aldrig forretningskode. Her beskriver vi, hvad det betyder i
+    praksis — og hvordan vi validerer vores eget arbejde.
+  </p>
+
+  <section>
+    <h2>Sikkerhed som standard</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Adgang starter på nul</h3>
+        <p>Ingen agent, værktøj eller bruger har adgang, før det er eksplicit tildelt. Manglende
+        godkendelse eller evidens blokerer handlingen — aldrig den modsatte vej.</p>
+      </div>
+      <div class="card">
+        <h3>Menneskelig godkendelse</h3>
+        <p>Ændringer med konsekvens kræver menneskelig godkendelse bundet til en konkret handling.
+        Produktionsændringer går gennem beskyttede miljøer med ejer-godkendelse.</p>
+      </div>
+      <div class="card">
+        <h3>Hemmeligheder bliver i hvælvet</h3>
+        <p>Konfiguration henviser til Key Vault-navne, aldrig værdier. Hemmeligheder indgår ikke i
+        agent-kontekst, hændelser eller browser-lagring.</p>
+      </div>
+      <div class="card">
+        <h3>Lejere er isoleret</h3>
+        <p>Tilstands- og audit-hændelser er partitioneret pr. lejer. Kun et minimalt indeks af
+        tilladelses-id + lejer-id er globalt.</p>
+      </div>
+      <div class="card">
+        <h3>Uforgængeligt audit-spor</h3>
+        <p>Godkendelser og sideeffekt-beslutninger indgår i en SHA-256 hash-kæde. Læsning verificerer
+        kæden på hvert eneste kald.</p>
+      </div>
+      <div class="card">
+        <h3>Beskyttede miljøer</h3>
+        <p>Produktionsarbejde kører i miljøer med ventetid og beskyttet branch-politik
+        (live: 30 min. ejer-godkendelse).</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dataprivatliv</h2>
+    <p>MR SAAS'y behandler kun den data, der er nødvendig for at drive systemet: workflow-hændelser,
+    tilladelser, godkendelser, audit-hændelser og agent-præstationssignaler.</p>
+    <table>
+      <thead><tr><th>Data</th><th>Formål</th><th>Bemærkning</th></tr></thead>
+      <tbody>
+        <tr><td>Workflow-hændelser</td><td>Sporbar eksekvering og genopretning</td><td>Append-only, event-stream</td></tr>
+        <tr><td>Tilladelser &amp; godkendelser</td><td>Adgangsstyring</td><td>Leje-opdelt, audit-logget</td></tr>
+        <tr><td>Audit-hændelser</td><td>Dokumentation af beslutninger</td><td>SHA-256-kædet, ikke slettelig</td></tr>
+        <tr><td>Agent-præstationsdata</td><td>Routing og læring</td><td>Aggregeret; aldrig rå prompt-logning</td></tr>
+      </tbody>
+    </table>
+    <div class="note ok">MOTOR gemmer ikke prompts, hemmeligheder eller kunde-payloads. Hvis en hændelse
+    ikke kan sanitere indholdet, bliver den ikke skrevet med rå data.</div>
+    <p>Som virksomhed forpligter vi os til Databeskyttelsesforordningen (GDPR). Behandling sker
+    begrænset, formålsbundet og med de nødvendige tekniske og organisatoriske foranstaltninger.
+    Kontakt os på <a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a> ved spørgsmål om
+    databeskyttelse.</p>
+  </section>
+
+  <section>
+    <h2>Sådan validerer vi os selv</h2>
+    <p>Vi mener, at en sikkerhedsholder også skal kunne vises. Derfor offentliggør vi en levende
+    artefakt, der viser vores testlandskab, CI-gates, kode-dækning, repo-beskyttelse,
+    dokumentationsintegritet og kendte huller — med verificerede tal.</p>
+    <p><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Åbn valideringsartefakten →</a></p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="col">
+      <h4>MR Software</h4>
+      <p>Vi bygger MR SAAS'y og validerer åbent, hvad vi leverer.</p>
+    </div>
+    <div class="col">
+      <h4>Områder</h4>
+      <p>
+        <a href="/">Forside</a><br>
+        <a href="/sikkerhed-og-dataprivatliv/">Sikkerhed &amp; dataprivatliv</a><br>
+        <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi os selv</a>
+      </p>
+    </div>
+    <div class="col">
+      <h4>Kontakt</h4>
+      <p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk</div>
+</footer>
+
+<script src="/js/site.js"></script>
+</body>
+</html>
