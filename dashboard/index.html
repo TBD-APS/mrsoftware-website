@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Task burndown and development progress across MR Software projects.">
+  <meta name="color-scheme" content="light">
+  <title>Development overview · MR Software</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data.js" defer></script>
+  <script src="graphs.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="code-graph.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="?" aria-label="MR Software overview"><span class="brand-mark">MR</span><span>SOFTWARE<span class="brand-sub">Development</span></span></a>
+    <div class="snapshot"><span class="snapshot-dot" aria-hidden="true"></span><span id="snapshot-label">Snapshot</span></div>
+    <button id="sources-button" class="button button-quiet" type="button">Sources &amp; definitions <span aria-hidden="true">↗</span></button>
+  </header>
+  <main>
+    <section class="page-heading" aria-labelledby="page-title">
+      <div><p class="eyebrow">MR SOFTWARE / DELIVERY</p><h1 id="page-title">Development overview</h1><p class="intro" id="page-description">Task completion across your software projects.</p></div>
+      <div class="filters">
+        <label>Project<select id="project-select"><option value="all">All projects</option></select></label>
+        <label>Period<select id="period-select"><option value="30">Last 30 days</option><option value="14">Last 14 days</option><option value="7">Last 7 days</option></select></label>
+      </div>
+    </section>
+    <nav id="section-nav" class="section-nav" aria-label="Dashboard sections"><a id="progress-nav" href="?">Task progress</a><a id="graph-nav" href="?view=code">Code graph</a></nav>
+    <section id="summary" class="summary" aria-label="Task summary" aria-live="polite">
+      <div class="metric"><span class="metric-label">Completed tasks</span><strong id="completed-value">—</strong><span id="completed-context" class="metric-context">Linear status: Done</span></div>
+      <div class="metric"><span class="metric-label">Remaining tasks</span><strong id="remaining-value">—</strong><span id="remaining-context" class="metric-context">Backlog, ready &amp; in progress</span></div>
+      <div class="metric"><span class="metric-label">Completion</span><strong id="completion-value">—</strong><span id="completion-context" class="metric-context">Completed / current scope</span></div>
+    </section>
+    <div class="main-grid">
+      <section class="panel trend-panel" aria-labelledby="trend-heading">
+        <div class="panel-header"><div><h2 id="trend-heading">Burndown &amp; completions</h2><p id="trend-subtitle">Remaining and completed tasks over time</p></div><span id="period-label" class="small-label"></span></div>
+        <div class="legend" aria-label="Chart legend"><span><i class="legend-line remaining"></i>Remaining</span><span><i class="legend-line completed"></i>Completed</span></div>
+        <div id="trend-chart" class="chart"></div>
+        <div id="chart-detail" class="chart-detail" aria-live="polite"></div>
+        <p class="chart-note">History follows the tasks in these projects today. Project moves and deleted tasks are not reconstructed.</p>
+      </section>
+      <section id="projects-panel" class="panel projects-panel" aria-labelledby="projects-heading">
+        <div class="panel-header"><div><h2 id="projects-heading">Project progress</h2><p>Completed / current scope</p></div><span class="small-label">6 projects</span></div>
+        <div id="project-list" class="project-list"></div>
+        <p class="chart-note">Select a project to inspect its history.</p>
+      </section>
+    </div>
+    <section class="panel status-panel" aria-labelledby="status-heading">
+      <div class="panel-header"><div><h2 id="status-heading">Current work</h2><p id="scope-label">Task status breakdown</p></div><a id="linear-link" class="source-link" href="https://linear.app/workslip" target="_blank" rel="noopener noreferrer">Open in Linear <span aria-hidden="true">↗</span></a></div>
+      <div id="status-track" class="status-track" aria-hidden="true"></div>
+      <div id="status-list" class="status-list"></div>
+      <p id="exclusion-note" class="exclusion-note"></p>
+    </section>
+    <section id="code-panel" class="panel code-panel" aria-labelledby="code-heading">
+      <div class="panel-header"><div><p class="eyebrow">GRAPHIFY / CODE MAP</p><h2 id="code-heading">Code connections</h2><p>Explore how source files connect in the same dashboard.</p></div><a id="graph-back" class="source-link" href="?">Task progress <span aria-hidden="true">↑</span></a></div>
+      <div class="code-toolbar"><label>Codebase<select id="codebase-select"><option value="mr-saasy">MR SAASy</option><option value="tradey">Tradey</option></select></label><label class="code-search">Find a file or function<input id="code-search" type="search" placeholder="Search code" autocomplete="off"></label></div>
+      <div id="search-slot" class="search-slot"></div>
+      <div class="graph-summary"><p id="graph-provenance"></p><p id="graph-totals"></p></div>
+      <div id="file-detail" class="file-detail"><div><span class="file-caption">Source file</span><h3 id="selected-file-heading"><a id="selected-file-name"></a></h3><p id="selected-file-path"></p></div><a id="file-source-link" class="source-link" target="_blank" rel="noopener noreferrer">Open source <span aria-hidden="true">↗</span></a></div>
+      <div id="code-grid" class="code-grid"><div><div id="code-network" class="code-network"></div><p id="network-caption" class="chart-note"></p><p class="chart-note">Lines group recorded relationships between files. Dashed lines include inferred relationships. Select a file to follow its connections.</p></div><aside id="file-browser" class="code-browser" aria-label="Source files"><div class="file-list-heading"><h3>Browse files</h3><span id="file-match-count"></span></div><div id="file-list" class="file-list"></div><button id="more-files" class="button" type="button">Show more files</button></aside></div>
+      <div class="graph-bottom"><div><h3>Connected files</h3><div id="connected-files" class="connected-files"></div></div><div><h3>Definitions in this file</h3><div id="file-symbols" class="file-symbols"></div></div></div>
+      <p id="graph-scope" class="chart-note graph-scope"></p>
+    </section>
+    <footer><p>Sources: Linear · Graphify · Mr Software</p><p>Task counts measure workflow status, not effort or production releases.</p></footer>
+  </main>
+  <dialog id="source-dialog" aria-labelledby="sources-title">
+    <div class="dialog-heading"><h2 id="sources-title">Sources &amp; definitions</h2><button id="close-sources" class="button" type="button">Close</button></div>
+    <p id="source-timestamp" class="dialog-caption"></p>
+    <dl>
+      <dt>Completed</dt><dd>Tasks whose Linear state type is completed. A Done task does not establish production deployment.</dd>
+      <dt>Remaining</dt><dd>Tasks in Backlog, Todo, In Progress or In Review. Archived tasks keep their recorded state.</dd>
+      <dt>Completion rate</dt><dd>Completed ÷ (completed + remaining). Canceled and duplicate issues are excluded from both numerator and denominator. Each parent task and subtask counts as one task. No effort estimates are available.</dd>
+      <dt>Time series</dt><dd>Recorded daily state intervals for the tasks in the current projects. Reopened tasks are included. Earlier project membership and tasks since deleted or moved out are not reconstructed. Today ends at the snapshot time.</dd>
+      <dt>Coverage</dt><dd id="coverage-detail"></dd>
+      <dt>Code connections</dt><dd>Graphify relationships are grouped by source file. The map shows connections without direction. Dashed connections include inferred edges. MR SAASy uses a bounded Planning and <a id="definitions-workslip" href="?">Workslip</a> view from Graphify Cloud; Tradey uses a local Graphify code and SQL snapshot. Code graphs do not establish runtime behavior, test coverage or task completion.</dd>
+    </dl>
+    <h3>Project sources</h3><div id="source-links" class="source-links"></div>
+    <p class="dialog-caption">This dashboard contains a dated snapshot. Automatic refresh is not configured.</p>
+  </dialog>
+</body>
+</html>

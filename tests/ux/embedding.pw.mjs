@@ -1,11 +1,24 @@
 import { test, expect } from '@playwright/test';
 import { startSite } from '../../tools/ux-site.mjs';
-import { overviewOrigin, prepareContext } from './fixtures.mjs';
+import { prepareContext } from './fixtures.mjs';
+
+test('Embedded charts use the dashboard origin without ChatGPT requests', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    const external = [];
+    page.on('request', request => { if (new URL(request.url()).hostname.endsWith('chatgpt.site')) external.push(request.url()); });
+    await page.goto(app.base + '?development=tradey');
+    await expect(page.locator('#development-frame')).toHaveAttribute('src', new URL('/_development/?view=code&repo=tradey', app.base).href);
+    expect(external).toEqual([]);
+  } finally { await app.close(); }
+});
 
 test('Each dashboard address opens the matching private view', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
+    const overviewOrigin = new URL('/_development', app.base).href;
     for (const [key, label, source] of [
       ['tasks', 'Task progress', overviewOrigin + '/'],
       ['mr-saasy', 'MR SAASy', overviewOrigin + '/?view=code'],
@@ -22,12 +35,36 @@ test('Each dashboard address opens the matching private view', async ({ page, co
   } finally { await app.close(); }
 });
 
+test('Task totals and both graph maps render through the embedded dashboard', async ({ page, context }, testInfo) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    const failures = [];
+    page.on('pageerror', error => failures.push(error.message));
+    await page.goto(app.base);
+    const frame = page.frameLocator('#development-frame');
+    await expect(frame.locator('#completed-value')).toHaveText(String(app.expected.data.portfolio.completed));
+    await expect(frame.locator('#remaining-value')).toHaveText(String(app.expected.data.portfolio.remaining));
+    await expect(frame.locator('#trend-chart svg')).toBeVisible();
+    await testInfo.attach('embedded-task-progress', { body: await page.screenshot(), contentType: 'image/png' });
+    for (const [key, label] of [['mr-saasy', 'MR SAASy'], ['tradey', 'Tradey']]) {
+      await page.locator('#development-views').getByRole('link', { name: label }).click();
+      await expect(frame.locator('#codebase-select')).toHaveValue(key);
+      await expect(frame.locator('#code-network svg')).toBeVisible();
+      const repo = app.expected.graphs.repositories.find(item => item.id === key);
+      await expect(frame.locator('#graph-totals')).toContainText(new Intl.NumberFormat('en-GB').format(repo.totalNodes) + ' nodes');
+      await testInfo.attach('embedded-' + key, { body: await page.screenshot(), contentType: 'image/png' });
+    }
+    expect(failures).toEqual([]);
+  } finally { await app.close(); }
+});
+
 test('The public company homepage never requests the private overview', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
     const requests = [];
-    page.on('request', request => { if (request.url().startsWith(overviewOrigin)) requests.push(request.url()); });
+    page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/_development/')) requests.push(request.url()); });
     await page.goto(app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk'));
     await expect(page).toHaveTitle('MR Software | Software der skaber målbar forretningsværdi');
     await expect(page.locator('main h1')).toHaveText('Vi bygger software, der skaber målbar værdi.');
@@ -36,16 +73,16 @@ test('The public company homepage never requests the private overview', async ({
   } finally { await app.close(); }
 });
 
-test('Sign-in leaves a working standalone link for the selected graph', async ({ page, context }, testInfo) => {
+test('The full view uses the same dashboard sign-in', async ({ page, context }, testInfo) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base, { signedIn: false });
     await page.goto(app.base + '?development=tradey');
-    await expect(page.frameLocator('#development-frame').getByRole('heading', { name: 'Sign in required' })).toBeVisible();
+    await expect(page.frameLocator('#development-frame').locator('body')).toContainText('Dashboard sign-in required');
     const popupPromise = page.waitForEvent('popup');
-    await page.getByRole('link', { name: /Open separately/ }).click();
+    await page.getByRole('link', { name: /Open full view/ }).click();
     const popup = await popupPromise;
-    await expect(popup).toHaveURL(overviewOrigin + '/?view=code&repo=tradey');
+    await expect(popup).toHaveURL(new URL('/_development/?view=code&repo=tradey', app.base).href);
     await popup.close();
     await expect(page).toHaveURL(app.base + '?development=tradey');
     await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);

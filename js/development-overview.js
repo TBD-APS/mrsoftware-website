@@ -7,7 +7,7 @@
   function mount() {
     var main = document.querySelector('main');
     if (!main || document.getElementById('development-overview')) return;
-    var origin = 'https://mr-software-development-overview-20261024.donornetwork-9279.chatgpt.site';
+    var origin = window.location.origin + '/_development';
     var views = {
       tasks: { label: 'Task progress', source: origin + '/' },
       'mr-saasy': { label: 'MR SAASy', source: origin + '/?view=code' },
@@ -31,7 +31,7 @@
     var section = element('section', '', { id: 'development-overview', class: 'development-overview', lang: 'en', 'aria-labelledby': 'development-title' });
     var header = element('header', '', { class: 'development-heading' });
     header.append(element('h1', 'Development overview', { id: 'development-title' }));
-    header.append(element('a', 'Open separately ↗', { id: 'development-open', class: 'development-open', href: view.source, target: '_blank', rel: 'noopener noreferrer' }));
+    header.append(element('a', 'Open full view ↗', { id: 'development-open', class: 'development-open', href: view.source, target: '_blank', rel: 'noopener noreferrer' }));
     section.append(header);
     var nav = element('nav', '', { id: 'development-views', 'aria-label': 'Development views' });
     Object.entries(views).forEach(function (entry) {
@@ -40,11 +40,11 @@
       nav.append(link);
     });
     section.append(nav);
-    section.append(element('p', 'Private overview. If sign-in is needed, use Open separately, then reload this page.', { id: 'development-sign-in', class: 'development-help' }));
+    section.append(element('p', 'Tasks and code connections across MR Software.', { id: 'development-description', class: 'development-help' }));
     var heading = element('h2', '', { id: 'development-view-title' });
     heading.append(element('a', view.label, { href: address(selected) }));
     section.append(heading);
-    section.append(element('iframe', '', { id: 'development-frame', src: view.source, title: view.label + ' — MR Software private overview', 'aria-describedby': 'development-sign-in', referrerpolicy: 'strict-origin-when-cross-origin' }));
+    section.append(element('iframe', '', { id: 'development-frame', src: view.source, title: view.label + ' — MR Software overview', 'aria-describedby': 'development-description', referrerpolicy: 'same-origin' }));
 
     // Keep the existing company information below the overview, with one main heading.
     var companyHeading = main.querySelector('h1');

@@ -32,17 +32,27 @@ in place. Keep the previous version ID for rollback.
 ## Development overview on dashboard.mrsoftware.dk
 
 The existing dashboard hostname serves this site's homepage behind Cloudflare
-Access. On that hostname only, the homepage places the existing private
-development Site in an iframe above the company information. The three view
+Access. On that hostname only, the homepage places a first-party development
+overview in an iframe above the company information. The three view
 addresses are `?development=tasks`, `?development=mr-saasy` and
 `?development=tradey`. Browser Back and reload preserve the selected view.
 
-The source Site retains its own ChatGPT sign-in and owner-private access. The
-Open separately link opens the selected view for sign-in or standalone viewing.
-No task data or graph snapshot is copied into this public website repository.
+The frame and its scripts use `/_development/` on the dashboard hostname. The
+Worker verifies the existing Access application's JWT signature, issuer,
+audience and expiry. No ChatGPT sign-in is required. Other hostnames, including
+Workers preview URLs, cannot serve these views. Private responses use no-store.
 
-Run `npm ci` and `npm run ux-gate` before pushing. The gate covers desktop and
+Task data and graph snapshots must stay outside this public repository. Before
+uploading, set `DASHBOARD_SNAPSHOT_DIR` to the reviewed private snapshot directory
+containing `data.json` and `graphs.json`. Wrangler's build command prepares an
+ignored `.local/private-dashboard.json`; it is bundled into the Worker, never
+uploaded as a static asset. Upload fails if the source is absent or incomplete.
+`dashboard/` contains rendering code and is also excluded from static assets.
+
+Run `npm ci` and `npm test` before pushing. The gate covers desktop and
 phone navigation, deep links, tap sizes, layout, the public homepage and the
-sign-in fallback. Tests use local iframe fixtures and do not establish production
-ChatGPT sign-in or cross-site-cookie behavior; verify those in the user's browser.
+sign-in behavior. Tests render the real child application with synthetic Access
+credentials on loopback. CI uses synthetic task/graph data; setting
+`DASHBOARD_SNAPSHOT_DIR` runs browser tests against the reviewed private snapshot.
+Worker tests reject forged, expired and incorrectly scoped JWTs and public hosts.
 The report is `.ux-gate/report/index.html` and is also retained in CI.
