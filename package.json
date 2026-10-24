@@ -1,0 +1,7 @@
+{
+  "name": "mrsoftware-website",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "npm run ux-gate", "ux-gate": "playwright test" },
+  "devDependencies": { "@playwright/test": "1.63.0" }
+}
