@@ -2,6 +2,16 @@
   "name": "mrsoftware-website",
   "private": true,
   "type": "module",
-  "scripts": { "test": "npm run ux-gate", "ux-gate": "playwright test" },
-  "devDependencies": { "@playwright/test": "1.63.0" }
+  "scripts": {
+    "test": "node --test tests/worker.test.mjs && npm run ux-gate",
+    "prepare-dashboard": "node tools/prepare-dashboard.mjs",
+    "ux-gate": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "wrangler": "4.147.0"
+  },
+  "dependencies": {
+    "jose": "6.2.13"
+  }
 }

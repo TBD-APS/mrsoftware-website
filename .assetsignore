@@ -17,3 +17,5 @@ package-lock.json
 playwright.config.mjs
 ux.config.mjs
 AGENTS.md
+worker.mjs
+dashboard/**
