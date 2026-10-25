@@ -30,7 +30,7 @@ test('Each dashboard address opens the matching private view', async ({ page, co
       await expect(page.locator('#development-open')).toHaveAttribute('href', source);
       await expect(page.locator('#development-views [aria-current="page"]')).toHaveText(label);
       await expect(page.locator('main h1')).toHaveCount(1);
-      await expect(page.locator('main #hero-heading')).toHaveText('Vi bygger software, der skaber målbar værdi.');
+      await expect(page.locator('main #hero-heading')).toHaveText('Software, der flytter arbejdet fremad.');
     }
   } finally { await app.close(); }
 });
