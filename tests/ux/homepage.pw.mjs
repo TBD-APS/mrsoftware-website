@@ -84,3 +84,89 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
     await app.close();
   }
 });
+
+test('Mobile navigation opens, closes, and returns focus', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'phone behavior');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base));
+
+    const toggle = page.locator('.nav-toggle');
+    await expect(toggle).toHaveAccessibleName('Åbn menu');
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(toggle).toHaveAccessibleName('Luk menu');
+    await page.keyboard.press('Escape');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(toggle).toHaveAccessibleName('Åbn menu');
+    await expect(toggle).toBeFocused();
+
+    await toggle.click();
+    await page.getByRole('link', { name: 'Løsninger', exact: true }).click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(page).toHaveURL(/#loesninger$/);
+  } finally {
+    await app.close();
+  }
+});
+
+test('Homepage stays usable across the required viewport matrix', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'matrix runs once');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    for (const width of [320, 375, 390, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
+      await page.goto(publicBase(app.base));
+      const layout = await page.evaluate(() => {
+        const h1 = document.querySelector('h1').getBoundingClientRect();
+        const primary = document.querySelector('.button-primary').getBoundingClientRect();
+        return {
+          overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          h1Width: h1.width,
+          primaryHeight: primary.height,
+        };
+      });
+      expect(layout.overflow, `${width}px has no horizontal overflow`).toBeLessThanOrEqual(1);
+      expect(layout.h1Width, `${width}px shows the page title`).toBeGreaterThan(0);
+      expect(layout.primaryHeight, `${width}px keeps the primary target usable`).toBeGreaterThanOrEqual(44);
+    }
+  } finally {
+    await app.close();
+  }
+});
+
+test('Images load and reduced motion disables smooth scrolling', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(publicBase(app.base));
+
+    const images = page.locator('#main img');
+    for (let index = 0; index < await images.count(); index += 1) {
+      const image = images.nth(index);
+      await image.scrollIntoViewIfNeeded();
+      await expect.poll(() => image.evaluate(node => node.complete && node.naturalWidth > 0)).toBe(true);
+    }
+
+    const scrollBehavior = await page.locator('html').evaluate(node => getComputedStyle(node).scrollBehavior);
+    expect(scrollBehavior).toBe('auto');
+  } finally {
+    await app.close();
+  }
+});
+
+test('Keyboard navigation exposes the skip link first', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base));
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'Spring til indhold' })).toBeFocused();
+    await expect(page.getByRole('link', { name: 'Spring til indhold' })).toBeVisible();
+  } finally {
+    await app.close();
+  }
+});
