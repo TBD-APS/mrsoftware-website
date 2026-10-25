@@ -66,8 +66,8 @@ test('The public company homepage never requests the private overview', async ({
     const requests = [];
     page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/_development/')) requests.push(request.url()); });
     await page.goto(app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk'));
-    await expect(page).toHaveTitle('MR Software | Software der skaber målbar forretningsværdi');
-    await expect(page.locator('main h1')).toHaveText('Vi bygger software, der skaber målbar værdi.');
+    await expect(page).toHaveTitle('MR Software | Software der flytter arbejdet fremad');
+    await expect(page.locator('main h1')).toHaveText('Software, der flytter arbejdet fremad.');
     await expect(page.locator('iframe')).toHaveCount(0);
     expect(requests).toEqual([]);
   } finally { await app.close(); }

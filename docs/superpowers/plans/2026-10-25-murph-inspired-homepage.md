@@ -101,7 +101,7 @@ await expect(page.locator('main h1')).toHaveText('Software, der flytter arbejdet
 
 - [ ] **Step 4: Run the contract and verify RED**
 
-Run `npm run ux-gate -- --project desktop tests/ux/homepage.pw.mjs tests/ux/embedding.pw.mjs`.
+Run `npm run ux-gate -- tests/ux/homepage.pw.mjs tests/ux/embedding.pw.mjs --project=desktop`.
 
 Expected: FAIL because the approved hero and section headings do not exist.
 
@@ -215,7 +215,7 @@ Do not add generated readable UI. If verified product screenshots are unavailabl
 
 - [ ] **Step 3: Run the homepage contract and verify GREEN for structure**
 
-Run `npm run ux-gate -- --project desktop tests/ux/homepage.pw.mjs tests/ux/embedding.pw.mjs`.
+Run `npm run ux-gate -- tests/ux/homepage.pw.mjs tests/ux/embedding.pw.mjs --project=desktop`.
 
 Expected: headline, headings, product destinations, metrics, disclaimer, and hostname isolation pass.
 
