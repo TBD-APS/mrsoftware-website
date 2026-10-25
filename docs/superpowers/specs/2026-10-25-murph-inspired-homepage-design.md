@@ -1,7 +1,7 @@
 # MR Software corporate homepage redesign
 
 **Date:** 25 October 2026  
-**Status:** Awaiting written-spec review  
+**Status:** Approved for implementation
 **Target:** The corporate homepage on `origin/main`
 
 ## Purpose
