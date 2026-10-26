@@ -75,9 +75,9 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
       };
     });
 
-    expect(tokens.ink).toBe('#11110f');
-    expect(tokens.paper).toBe('#f2efe8');
-    expect(tokens.accent).toBe('#d2542a');
+    expect(tokens.ink).toBe('#111111');
+    expect(tokens.paper).toBe('#ffffff');
+    expect(tokens.accent).toBe('#c0392b');
     expect(tokens.heroMinHeight).toBeGreaterThanOrEqual(testInfo.project.name === 'phone' ? 620 : 700);
     expect(tokens.overflow).toBeLessThanOrEqual(1);
   } finally {

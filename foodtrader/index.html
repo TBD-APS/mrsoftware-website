@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>foodtrader — MR Software</title>
-  <meta name="description" content="foodtrader er MR software I/S' skrivebord til at læse og besvare WhatsApp-beskeder til virksomhedens eget nummer.">
+  <meta name="description" content="foodtrader is MR software I/S' desk for reading and answering WhatsApp messages sent to the company's own number.">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
@@ -12,60 +12,43 @@
 
 <header class="site-header">
   <div class="site-header-inner">
-    <div class="brand"><a href="/"><img class="brand-mark" src="/assets/images/brand/mr-mark-light.svg" alt="" width="54" height="27"><span>MR Software</span> <small>· mrsoftware.dk</small></a></div>
-    <button class="nav-toggle" aria-label="Menu">☰</button>
-    <nav class="nav">
-      <a href="/">Forside</a>
-      <a href="/foodtrader/" class="active">foodtrader</a>
-      <a href="/privacy-policy/">Privatlivspolitik</a>
-      <a href="/status/">Driftsstatus</a>
+    <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-mark" src="/assets/images/brand/mr-mark.svg" alt="" width="54" height="27"><span>MR Software</span></a></div>
+    <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">☰</button>
+    <nav class="nav" id="main-nav" aria-label="Main navigation">
+      <a href="/">Home</a>
+      <a href="/sikkerhed-og-dataprivatliv/">Security</a>
+      <a href="/status/">System status</a>
+      <a href="/roadmap/">Roadmap</a>
+      <a class="nav-contact" href="/#contact">Contact us</a>
     </nav>
   </div>
 </header>
 
 <main>
-  <p class="breadcrumbs"><a href="/">Forside</a> · foodtrader</p>
-  <p class="eyebrow">WHATSAPP</p>
+  <p class="breadcrumbs"><a href="/">Home</a> · foodtrader</p>
+  <p class="eyebrow">WhatsApp</p>
   <h1>foodtrader</h1>
-  <p class="lead">foodtrader er skrivebordet, hvor MR software I/S læser og besvarer WhatsApp-beskeder til virksomhedens eget nummer.</p>
+  <p class="lead">foodtrader is the desk where MR software I/S, Ceresbyen 66, st. 1., 8000 Aarhus C, Denmark, reads and answers WhatsApp messages sent to the company's own number.</p>
 
   <section>
-    <h2>English</h2>
-    <p>foodtrader is the WhatsApp desk of MR software I/S, Ceresbyen 66, st. 1., 8000 Aarhus C, Denmark. A person writes to the company's WhatsApp business number. A person at the company reads that message and replies in the same chat. The reply can include up to three buttons or a short list while WhatsApp's 24-hour window is open. The working desk is private and is not a public shop. It does not take payment. Read the <a href="/privacy-policy/">privacy policy</a>, the <a href="/terms-of-service/">terms</a>, and <a href="/data-deletion/">how to ask for deletion</a>.</p>
-  </section>
-
-  <section>
-    <h2>Sådan bruges det</h2>
-    <p>En person skriver til virksomhedens WhatsApp-nummer. En person hos MR software læser beskeden og svarer i samme samtale. Svaret kan indeholde op til tre knapper eller en kort liste, mens WhatsApps 24-timers vindue er åbent. Skrivebordet er ikke en offentlig butik og tager ikke imod betaling.</p>
+    <h2>How it is used</h2>
+    <p>A person writes to the company's WhatsApp number. A person at MR software reads the message and replies in the same conversation. The reply can include up to three buttons or a short list while WhatsApp's 24-hour window is open. The desk is private, is not a public shop and does not take payment.</p>
     <p>
-      <a href="/privacy-policy/">Privatlivspolitik</a><br>
-      <a href="/terms-of-service/">Vilkår</a><br>
-      <a href="/data-deletion/">Sletning af data</a>
+      <a href="/privacy-policy/">Privacy policy</a><br>
+      <a href="/terms-of-service/">Terms</a><br>
+      <a href="/data-deletion/">Data deletion</a>
     </p>
   </section>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="col">
-      <h4>MR Software</h4>
-      <p>foodtrader er virksomhedens WhatsApp-skrivebord.</p>
-    </div>
-    <div class="col">
-      <h4>foodtrader</h4>
-      <p>
-        <a href="/foodtrader/">Om foodtrader</a><br>
-        <a href="/privacy-policy/">Privatlivspolitik</a><br>
-        <a href="/terms-of-service/">Vilkår</a><br>
-        <a href="/data-deletion/">Sletning af data</a>
-      </p>
-    </div>
-    <div class="col">
-      <h4>Kontakt</h4>
-      <p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></p>
-    </div>
+    <div class="footer-brand"><a href="/" aria-label="MR Software home"><img class="brand-mark" src="/assets/images/brand/mr-mark-light.svg" alt="" width="56" height="28"><span>MR Software</span></a><p>Software built around real workflows.</p></div>
+    <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
+    <div class="footer-column"><h2>Information</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></div>
+    <div class="footer-column"><h2>Contact</h2><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
   </div>
-  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk · <a href="/foodtrader/">foodtrader</a> · <a href="/privacy-policy/">Privatlivspolitik</a> · <a href="/terms-of-service/">Vilkår</a> · <a href="/data-deletion/">Sletning af data</a></div>
+  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk</div>
 </footer>
 
 <script src="/js/site.js"></script>
