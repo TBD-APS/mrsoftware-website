@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setOpen(open) {
       nav.classList.toggle('open', open);
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Luk menu' : 'Åbn menu');
+      toggle.setAttribute('aria-label', open ? (toggle.dataset.labelClose || 'Luk menu') : (toggle.dataset.labelOpen || 'Åbn menu'));
     }
     toggle.addEventListener('click', function () {
       setOpen(!nav.classList.contains('open'));
