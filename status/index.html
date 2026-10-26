@@ -1,99 +1,77 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Driftsstatus — MR Software</title>
-  <meta name="description" content="Live driftsstatus for mrsoftware.dk og de tjenester, vi driver — pinget direkte fra denne side.">
+  <title>System status — MR Software</title>
+  <meta name="description" content="Live status for mrsoftware.dk and the services we run, pinged directly from this page.">
   <link rel="stylesheet" href="/css/site.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23d2542a'/></svg>">
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
 <body>
 
 <header class="site-header">
   <div class="site-header-inner">
-    <div class="brand"><a href="/">MR Software <small>· mrsoftware.dk</small></a></div>
-    <button class="nav-toggle" aria-label="Menu">☰</button>
-    <nav class="nav">
-      <a href="/">Forside</a>
-      <span class="nav-group">
-        <a href="/sikkerhed-og-dataprivatliv/" class="nav-drop-link">Sikkerhed &amp; dataprivatliv</a>
-      </span>
-      <a href="/status/" class="active">Driftsstatus</a>
+    <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-mark" src="/assets/images/brand/mr-mark.svg" alt="" width="54" height="27"><span>MR Software</span></a></div>
+    <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">☰</button>
+    <nav class="nav" id="main-nav" aria-label="Main navigation">
+      <a href="/">Home</a>
+      <a href="/sikkerhed-og-dataprivatliv/">Security</a>
+      <a href="/status/" aria-current="page">System status</a>
       <a href="/roadmap/">Roadmap</a>
+      <a class="nav-contact" href="/#contact">Contact us</a>
     </nav>
   </div>
 </header>
 
 <main>
   <p class="eyebrow">MR Software</p>
-  <h1>Driftsstatus</h1>
+  <h1>System status</h1>
   <p class="lead">
-    Siden nedenfor pinger vores tjenester direkte fra din browser og viser, om de svarer.
-    Hver tjeneste skal svare med HTTP 200 og en JSON-meddelelse, der bekræfter tjenesten — ikke blot en
-    generisk side. Data opdateres hvert 60. sekund.
+    This page pings our services directly from your browser and shows whether they respond.
+    Each service has to answer with HTTP 200 and a JSON message that identifies the service, not just a
+    generic page. Data refreshes every 60 seconds.
   </p>
 
-  <div class="note" id="last-check">Venter på første check…</div>
+  <div class="note" id="last-check">Waiting for the first check…</div>
 
-  <div class="note">Offentlige planer og beslutningen om open source over tid ligger på <a href="/roadmap/">roadmap-siden →</a></div>
+  <div class="note">Public plans and the decision on open source over time are on the <a href="/roadmap/">roadmap page →</a></div>
 
   <div class="stat-grid" id="services"></div>
 
   <section>
-    <h2>Tjenester der overvåges</h2>
+    <h2>Monitored services</h2>
     <table>
       <thead>
-        <tr><th>Tjeneste</th><th>Kontrolpunkt</th><th>Hvad den beviser</th></tr>
+        <tr><th>Service</th><th>Endpoint</th><th>What it proves</th></tr>
       </thead>
       <tbody>
-        <tr><td>mrsoftware.dk</td><td><code>/ping.json</code></td><td>Hjemmesiden svarer med komprimeret hosting-status.</td></tr>
-        <tr><td>saassy.mrsoftware.dk</td><td><code>/ping</code> og <code>/api/saassy/health</code></td><td>MR SAAS'y-produktionsfrontet er oppe; health rapporterer <em>ready</em> for model, rate-limit og Cloudflare OAuth.</td></tr>
-        <tr><td>dev.mrsoftware.dk</td><td><code>/ping</code></td><td>Dev-instansen af Control Center svarer.</td></tr>
-        <tr><td>www.mrsoftware.dk</td><td><code>/</code></td><td>Statisk GitHub Pages-sitet (Workslip) svarer. Vært uden dynamisk health-check.</td></tr>
+        <tr><td>mrsoftware.dk</td><td><code>/ping.json</code></td><td>The website responds with a compact hosting status.</td></tr>
+        <tr><td>saassy.mrsoftware.dk</td><td><code>/ping</code> and <code>/api/saassy/health</code></td><td>The MR SAAS'y production front end is up; health reports <em>ready</em> for model, rate limit and Cloudflare OAuth.</td></tr>
+        <tr><td>dev.mrsoftware.dk</td><td><code>/ping</code></td><td>The dev instance of Control Center responds.</td></tr>
+        <tr><td>www.mrsoftware.dk</td><td><code>/</code></td><td>The static GitHub Pages site (Workslip) responds. A host without a dynamic health check.</td></tr>
       </tbody>
     </table>
   </section>
 
   <div class="note warn">
-    Driftsstatus her er en øjeblikstilstand fra din browser. For formelle metrikker henvises til
-    valideringsartefakten under <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi os selv</a>.
+    The status here is a point-in-time view from your browser. For formal metrics, see the
+    validation artefact in <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate ourselves</a>.
   </div>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="col">
-      <h4>MR Software</h4>
-      <p>Vi bygger MR SAAS'y og validerer åbent, hvad vi leverer.</p>
-    </div>
-    <div class="col">
-      <h4>Områder</h4>
-      <p>
-        <a href="/">Forside</a><br>
-        <a href="/sikkerhed-og-dataprivatliv/">Sikkerhed &amp; dataprivatliv</a><br>
-        <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi os selv</a><br>
-        <a href="/status/">Driftsstatus</a><br>
-        <a href="/roadmap/">Roadmap</a>
-      </p>
-    </div>
-    <div class="col">
-      <h4>Kontakt</h4>
-      <p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></p>
-    </div>
+    <div class="footer-brand"><a href="/" aria-label="MR Software home"><img class="brand-mark" src="/assets/images/brand/mr-mark-light.svg" alt="" width="56" height="28"><span>MR Software</span></a><p>Software built around real workflows.</p></div>
+    <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
+    <div class="footer-column"><h2>Information</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></div>
+    <div class="footer-column"><h2>Contact</h2><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
   </div>
-  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk · <a href="/foodtrader/">foodtrader</a> · <a href="/privacy-policy/">Privatlivspolitik</a> · <a href="/terms-of-service/">Vilkår</a> · <a href="/data-deletion/">Sletning af data</a></div>
+  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk</div>
 </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var toggle = document.querySelector('.nav-toggle');
-  var nav = document.querySelector('.nav');
-  if (toggle && nav) {
-    toggle.addEventListener('click', function () { nav.classList.toggle('open'); });
-  }
-  document.querySelectorAll('.year').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
-
   var SERVICES = [
     { id: 'mrsoftware', name: 'mrsoftware.dk', probe: '/ping.json', self: true },
     { id: 'saassy', name: 'saassy.mrsoftware.dk', probe: 'https://saassy.mrsoftware.dk/ping', health: 'https://saassy.mrsoftware.dk/api/saassy/health' },
@@ -105,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function render(id, label, status, detail) {
     var el = document.getElementById('svc-' + id);
-    el.querySelector('.value').textContent = status === 'ok' ? 'OK' : (status === 'warn' ? 'Advarsel' : 'Fejl');
+    el.querySelector('.value').textContent = status === 'ok' ? 'OK' : (status === 'warn' ? 'Warning' : 'Down');
     el.querySelector('.value').parentElement.className = 'value ' + status;
     el.querySelector('.label').textContent = label + ' — ' + detail;
   }
@@ -127,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (svc.probe) checks.push({ name: 'probe', url: svc.probe, self: svc.probe.charAt(0) === '/' });
       if (svc.health) checks.push({ name: 'health', url: svc.health, self: false });
       if (!checks.length) {
-        render(svc.id, svc.name, 'ok', 'statisk host — ikke pinget');
+        render(svc.id, svc.name, 'ok', 'static host — not pinged');
         okServices += 1;
         settled += 1;
         return;
@@ -136,14 +114,14 @@ document.addEventListener('DOMContentLoaded', function () {
       Promise.all(checks.map(function (c) {
         return fetch(c.url, c.self ? { cache: 'no-store' } : { mode: 'cors', cache: 'no-store' })
           .then(function (r) { return r.status === 200 ? { ok: true, text: c.name + ' HTTP 200' } : { ok: false, text: c.name + ' HTTP ' + r.status }; })
-          .catch(function () { return { ok: false, text: c.name + ' ikke opnåelig' }; });
+          .catch(function () { return { ok: false, text: c.name + ' unreachable' }; });
       })).then(function (results) {
         var ok = results.every(function (r) { return r.ok; });
         render(svc.id, svc.name, ok ? 'ok' : 'bad', results.map(function (r) { return r.text; }).join(' · '));
         if (ok) okServices += 1;
         settled += 1;
         if (settled === total) {
-          lastCheck.textContent = 'Sidste check: ' + new Date().toLocaleTimeString('da-DK') + ' — ' + okServices + '/' + total + ' tjenester svarede korrekt.';
+          lastCheck.textContent = 'Last check: ' + new Date().toLocaleTimeString('en-GB') + ' — ' + okServices + '/' + total + ' services responded correctly.';
           lastCheck.className = 'note ' + (okServices === total ? 'ok' : 'bad');
         }
       });
@@ -154,5 +132,6 @@ document.addEventListener('DOMContentLoaded', function () {
   setInterval(check, 60000);
 });
 </script>
+<script src="/js/site.js"></script>
 </body>
 </html>

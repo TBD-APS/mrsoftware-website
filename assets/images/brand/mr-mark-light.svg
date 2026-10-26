@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 32 1110 548" role="img" aria-label="MR Software">
+  <defs>
+    <mask id="mr-ring"><rect x="0" y="0" width="1250" height="600" fill="#fff"/><circle cx="668" cy="110" r="100" fill="#000"/></mask>
+  </defs>
+  <g fill="#f7f5ef" mask="url(#mr-ring)">
+    <path d="M70 45H210L410 290L545 135L740 400V580H598V285L410 500L210 255V580H70Z"/>
+    <path d="M745 45H975A177 177 0 0 1 1010 396L1180 580H1000L725 285H975A55 55 0 0 0 975 175H745Z"/>
+  </g>
+  <circle cx="668" cy="110" r="78" fill="#c0392b"/>
+</svg>

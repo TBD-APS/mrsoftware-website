@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setOpen(open) {
       nav.classList.toggle('open', open);
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Luk menu' : 'Åbn menu');
+      toggle.setAttribute('aria-label', open ? (toggle.dataset.labelClose || 'Luk menu') : (toggle.dataset.labelOpen || 'Åbn menu'));
     }
     toggle.addEventListener('click', function () {
       setOpen(!nav.classList.contains('open'));
@@ -22,6 +22,22 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('resize', function () {
       if (window.innerWidth > 720) setOpen(false);
     });
+  }
+  // Mark the section in view in the main navigation.
+  var sectionLinks = Array.prototype.filter.call(document.querySelectorAll('.nav a[href^="#"]'), function (link) {
+    return document.querySelector(link.getAttribute('href'));
+  });
+  if (sectionLinks.length && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        sectionLinks.forEach(function (link) {
+          if (link.getAttribute('href') === '#' + entry.target.id) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    sectionLinks.forEach(function (link) { observer.observe(document.querySelector(link.getAttribute('href'))); });
   }
   document.querySelectorAll('.year').forEach(function (el) {
     el.textContent = String(new Date().getFullYear());

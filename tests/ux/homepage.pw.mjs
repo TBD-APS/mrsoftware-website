@@ -46,12 +46,12 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
 
-    const solutions = page.locator('#loesninger');
+    const solutions = page.locator('#solutions');
     await expect(solutions.getByRole('link', { name: /Workslip/ })).toHaveAttribute('href', 'https://app.mrsoftware.dk/');
     await expect(solutions.getByRole('link', { name: /FoodTrading/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
-    await expect(page.locator('#resultater')).toContainText('3 min.');
-    await expect(page.locator('#resultater')).toContainText('4,6 dage');
-    await expect(page.locator('#resultater')).toContainText(/ikke dokumenteret tidsbesparelse, ROI eller kundens økonomiske gevinst/i);
+    await expect(page.locator('#results')).toContainText('3 min');
+    await expect(page.locator('#results')).toContainText('4.6 days');
+    await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
   } finally {
     await app.close();
   }
@@ -75,9 +75,9 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
       };
     });
 
-    expect(tokens.ink).toBe('#11110f');
-    expect(tokens.paper).toBe('#f2efe8');
-    expect(tokens.accent).toBe('#d2542a');
+    expect(tokens.ink).toBe('#111111');
+    expect(tokens.paper).toBe('#ffffff');
+    expect(tokens.accent).toBe('#c0392b');
     expect(tokens.heroMinHeight).toBeGreaterThanOrEqual(testInfo.project.name === 'phone' ? 620 : 700);
     expect(tokens.overflow).toBeLessThanOrEqual(1);
   } finally {
@@ -93,19 +93,19 @@ test('Mobile navigation opens, closes, and returns focus', async ({ page, contex
     await page.goto(publicBase(app.base));
 
     const toggle = page.locator('.nav-toggle');
-    await expect(toggle).toHaveAccessibleName('Åbn menu');
+    await expect(toggle).toHaveAccessibleName('Open menu');
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    await expect(toggle).toHaveAccessibleName('Luk menu');
+    await expect(toggle).toHaveAccessibleName('Close menu');
     await page.keyboard.press('Escape');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    await expect(toggle).toHaveAccessibleName('Åbn menu');
+    await expect(toggle).toHaveAccessibleName('Open menu');
     await expect(toggle).toBeFocused();
 
     await toggle.click();
-    await page.getByRole('link', { name: 'Løsninger', exact: true }).click();
+    await page.getByRole('link', { name: 'Solutions', exact: true }).click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    await expect(page).toHaveURL(/#loesninger$/);
+    await expect(page).toHaveURL(/#solutions$/);
   } finally {
     await app.close();
   }
@@ -164,8 +164,8 @@ test('Keyboard navigation exposes the skip link first', async ({ page, context }
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
     await page.keyboard.press('Tab');
-    await expect(page.getByRole('link', { name: 'Spring til indhold' })).toBeFocused();
-    await expect(page.getByRole('link', { name: 'Spring til indhold' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
+    await expect(page.getByRole('link', { name: 'Skip to content' })).toBeVisible();
   } finally {
     await app.close();
   }

@@ -1,126 +1,113 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sikkerhed &amp; dataprivatliv — MR Software</title>
-  <meta name="description" content="Sådan håndterer MR Software sikkerhed og data: fail-closed standarder, menneskelige godkendelser, Key Vault-henvisninger, lejerisolering og vores åbne selvvalidering.">
+  <title>Security &amp; data privacy — MR Software</title>
+  <meta name="description" content="How MR Software handles security and data: fail-closed defaults, human approvals, Key Vault references, tenant isolation and our open self-validation.">
   <link rel="stylesheet" href="/css/site.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23d2542a'/></svg>">
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
 <body>
 
 <header class="site-header">
   <div class="site-header-inner">
-    <div class="brand"><a href="/">MR Software <small>· mrsoftware.dk</small></a></div>
-    <button class="nav-toggle" aria-label="Menu">☰</button>
-    <nav class="nav">
-      <a href="/">Forside</a>
-      <a href="/sikkerhed-og-dataprivatliv/" class="active">Sikkerhed &amp; dataprivatliv</a>
-      <a href="/status/">Driftsstatus</a>
+    <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-mark" src="/assets/images/brand/mr-mark.svg" alt="" width="54" height="27"><span>MR Software</span></a></div>
+    <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">☰</button>
+    <nav class="nav" id="main-nav" aria-label="Main navigation">
+      <a href="/">Home</a>
+      <a href="/sikkerhed-og-dataprivatliv/" aria-current="page">Security</a>
+      <a href="/status/">System status</a>
       <a href="/roadmap/">Roadmap</a>
+      <a class="nav-contact" href="/#contact">Contact us</a>
     </nav>
   </div>
 </header>
 
 <main>
-  <p class="breadcrumbs"><a href="/">Forside</a> · Sikkerhed &amp; dataprivatliv</p>
-  <p class="eyebrow">TRUST &amp; TRANSPARENS</p>
-  <h1>Sikkerhed og dataprivatliv</h1>
+  <p class="breadcrumbs"><a href="/">Home</a> · Security &amp; data privacy</p>
+  <p class="eyebrow">Trust &amp; transparency</p>
+  <h1>Security and data privacy</h1>
   <p class="lead">
-    MR Software bygger systemer med fail-closed standarder: adgang starter på nul, hver ændring skal
-    kunne bevises, og hemmeligheder rører aldrig forretningskode. Her beskriver vi, hvad det betyder i
-    praksis — og hvordan vi validerer vores eget arbejde.
+    MR Software builds systems with fail-closed defaults: access starts at zero, every change has to
+    be provable, and secrets never touch business code. Here we describe what that means in
+    practice, and how we validate our own work.
   </p>
 
   <section>
-    <h2>Sikkerhed som standard</h2>
+    <h2>Secure by default</h2>
     <div class="grid">
       <div class="card">
-        <h3>Adgang starter på nul</h3>
-        <p>Ingen agent, værktøj eller bruger har adgang, før det er eksplicit tildelt. Manglende
-        godkendelse eller evidens blokerer handlingen — aldrig den modsatte vej.</p>
+        <h3>Access starts at zero</h3>
+        <p>No agent, tool or user has access until it is explicitly granted. A missing approval or
+        missing evidence blocks the action, never the other way round.</p>
       </div>
       <div class="card">
-        <h3>Menneskelig godkendelse</h3>
-        <p>Ændringer med konsekvens kræver menneskelig godkendelse bundet til en konkret handling.
-        Produktionsændringer går gennem beskyttede miljøer med ejer-godkendelse.</p>
+        <h3>Human approval</h3>
+        <p>Changes with consequences need human approval tied to a specific action. Production
+        changes go through protected environments with owner approval.</p>
       </div>
       <div class="card">
-        <h3>Hemmeligheder bliver i hvælvet</h3>
-        <p>Konfiguration henviser til Key Vault-navne, aldrig værdier. Hemmeligheder indgår ikke i
-        agent-kontekst, hændelser eller browser-lagring.</p>
+        <h3>Secrets stay in the vault</h3>
+        <p>Configuration refers to Key Vault names, never values. Secrets are never part of agent
+        context, events or browser storage.</p>
       </div>
       <div class="card">
-        <h3>Lejere er isoleret</h3>
-        <p>Tilstands- og audit-hændelser er partitioneret pr. lejer. Kun et minimalt indeks af
-        tilladelses-id + lejer-id er globalt.</p>
+        <h3>Tenants are isolated</h3>
+        <p>State and audit events are partitioned per tenant. Only a minimal index of permission id
+        + tenant id is global.</p>
       </div>
       <div class="card">
-        <h3>Uforgængeligt audit-spor</h3>
-        <p>Godkendelser og sideeffekt-beslutninger indgår i en SHA-256 hash-kæde. Læsning verificerer
-        kæden på hvert eneste kald.</p>
+        <h3>Tamper-evident audit trail</h3>
+        <p>Approvals and side-effect decisions go into a SHA-256 hash chain. Every read verifies the
+        chain.</p>
       </div>
       <div class="card">
-        <h3>Beskyttede miljøer</h3>
-        <p>Produktionsarbejde kører i miljøer med ventetid og beskyttet branch-politik
-        (live: 30 min. ejer-godkendelse).</p>
+        <h3>Protected environments</h3>
+        <p>Production work runs in environments with a wait timer and a protected branch policy
+        (live: 30 min. owner approval).</p>
       </div>
     </div>
   </section>
 
   <section>
-    <h2>Dataprivatliv</h2>
-    <p>MR SAAS'y behandler kun den data, der er nødvendig for at drive systemet: workflow-hændelser,
-    tilladelser, godkendelser, audit-hændelser og agent-præstationssignaler.</p>
+    <h2>Data privacy</h2>
+    <p>MR SAAS'y only processes the data needed to run the system: workflow events, permissions,
+    approvals, audit events and agent performance signals.</p>
     <table>
-      <thead><tr><th>Data</th><th>Formål</th><th>Bemærkning</th></tr></thead>
+      <thead><tr><th>Data</th><th>Purpose</th><th>Note</th></tr></thead>
       <tbody>
-        <tr><td>Workflow-hændelser</td><td>Sporbar eksekvering og genopretning</td><td>Append-only, event-stream</td></tr>
-        <tr><td>Tilladelser &amp; godkendelser</td><td>Adgangsstyring</td><td>Leje-opdelt, audit-logget</td></tr>
-        <tr><td>Audit-hændelser</td><td>Dokumentation af beslutninger</td><td>SHA-256-kædet, ikke slettelig</td></tr>
-        <tr><td>Agent-præstationsdata</td><td>Routing og læring</td><td>Aggregeret; aldrig rå prompt-logning</td></tr>
+        <tr><td>Workflow events</td><td>Traceable execution and recovery</td><td>Append-only event stream</td></tr>
+        <tr><td>Permissions &amp; approvals</td><td>Access control</td><td>Split by tenant, audit-logged</td></tr>
+        <tr><td>Audit events</td><td>Record of decisions</td><td>SHA-256 chained, cannot be deleted</td></tr>
+        <tr><td>Agent performance data</td><td>Routing and learning</td><td>Aggregated; raw prompts are never logged</td></tr>
       </tbody>
     </table>
-    <div class="note ok">MOTOR gemmer ikke prompts, hemmeligheder eller kunde-payloads. Hvis en hændelse
-    ikke kan sanitere indholdet, bliver den ikke skrevet med rå data.</div>
-    <p>Som virksomhed forpligter vi os til Databeskyttelsesforordningen (GDPR). Behandling sker
-    begrænset, formålsbundet og med de nødvendige tekniske og organisatoriske foranstaltninger.
-    Kontakt os på <a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a> ved spørgsmål om
-    databeskyttelse.</p>
+    <div class="note ok">MOTOR does not store prompts, secrets or customer payloads. If an event
+    cannot sanitise its content, it is not written with raw data.</div>
+    <p>As a company we are bound by the General Data Protection Regulation (GDPR). Processing is
+    limited, tied to a purpose and backed by the necessary technical and organisational measures.
+    Contact us at <a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a> with any
+    questions about data protection.</p>
   </section>
 
   <section>
-    <h2>Sådan validerer vi os selv</h2>
-    <p>Vi mener, at en sikkerhedsholder også skal kunne vises. Derfor offentliggør vi en levende
-    artefakt, der viser vores testlandskab, CI-gates, kode-dækning, repo-beskyttelse,
-    dokumentationsintegritet og kendte huller — med verificerede tal.</p>
-    <p><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Åbn valideringsartefakten →</a></p>
+    <h2>How we validate ourselves</h2>
+    <p>We believe a security claim should be something you can see. That is why we publish a living
+    artefact showing our test landscape, CI gates, code coverage, repository protection,
+    documentation integrity and known gaps, with verified numbers.</p>
+    <p><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Open the validation artefact →</a></p>
   </section>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="col">
-      <h4>MR Software</h4>
-      <p>Vi bygger MR SAAS'y og validerer åbent, hvad vi leverer.</p>
-    </div>
-    <div class="col">
-      <h4>Områder</h4>
-      <p>
-        <a href="/">Forside</a><br>
-        <a href="/sikkerhed-og-dataprivatliv/">Sikkerhed &amp; dataprivatliv</a><br>
-        <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi os selv</a><br>
-        <a href="/status/">Driftsstatus</a>
-      <a href="/roadmap/">Roadmap</a>
-      </p>
-    </div>
-    <div class="col">
-      <h4>Kontakt</h4>
-      <p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></p>
-    </div>
+    <div class="footer-brand"><a href="/" aria-label="MR Software home"><img class="brand-mark" src="/assets/images/brand/mr-mark-light.svg" alt="" width="56" height="28"><span>MR Software</span></a><p>Software built around real workflows.</p></div>
+    <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
+    <div class="footer-column"><h2>Information</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></div>
+    <div class="footer-column"><h2>Contact</h2><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
   </div>
-  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk · <a href="/foodtrader/">foodtrader</a> · <a href="/privacy-policy/">Privatlivspolitik</a> · <a href="/terms-of-service/">Vilkår</a> · <a href="/data-deletion/">Sletning af data</a></div>
+  <div class="footer-bottom">© <span class="year">2026</span> MR Software · mrsoftware.dk</div>
 </footer>
 
 <script src="/js/site.js"></script>
