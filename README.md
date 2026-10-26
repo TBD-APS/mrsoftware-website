@@ -24,10 +24,46 @@ npx serve .
 
 ## Deployment
 
-The site runs on the existing Cloudflare Worker `mrsoftware`. Upload a version
-with `wrangler versions upload --keep-vars`, then deploy that exact version with
-`wrangler versions deploy`. This leaves the existing routes and custom domains
-in place. Keep the previous version ID for rollback.
+The site runs on the existing Cloudflare Worker `mrsoftware`. Production releases
+follow **pull request → Rasmus merges → Deploy owner-merged website Action**.
+Do not deploy from local Wrangler. The Action checks GitHub's merged-PR evidence
+against the exact current `main` SHA and Rasmus's immutable account ID; direct
+pushes, another merger, missing evidence and stale revisions are refused.
+
+Before merging the first release PR, configure the `mrsoftware-production`
+environment to allow only the `main` branch, and apply the reviewed main-branch
+protections. Put `CLOUDFLARE_API_TOKEN` and the numbered private snapshot parts
+`MR_SOFTWARE_DASHBOARD_SNAPSHOT_1` through `_4` in that environment's secrets
+(unused trailing parts stay absent); put `CLOUDFLARE_ACCOUNT_ID` and
+`MR_SOFTWARE_DASHBOARD_SHA256` in its variables. Use a minimum-permission
+account-owned Cloudflare token. Remove same-name repository/organization
+production secrets: GitHub otherwise permits inheritance when an environment
+secret is missing. Restrict personal Cloudflare deployment rights separately;
+repository code cannot prevent an independently authorized API deployment.
+
+The snapshot is gzip-compressed base64 of `{data, graphs}`, split into up to four
+45,000-character secrets, with an 8 MiB decompressed limit. Prepare the already-reviewed
+private source outside this repository:
+
+```sh
+node tools/dashboard-snapshot.mjs pack /private/reviewed-snapshot /private/new-snapshot-archive
+```
+
+The command creates a new private directory and prints only its SHA-256 and part
+count. Store each `part-N` file as the corresponding snapshot environment secret
+and the `sha256` file's digest as the snapshot variable.
+Never commit the archive or attach it to a PR. The Action checks the digest,
+builds the snapshot in private runner storage and deletes private inputs/build
+output afterwards. Missing or invalid private inputs stop the release.
+
+Synthetic tests run before production credentials are introduced. The release
+records the prior deployment/version before uploading with `--keep-vars`, then
+deploys only the exact uploaded version. Routes, custom domains and existing
+variables remain in place. The artifact contains only a safe release receipt
+(commit, PR, Action URL, deployment/version IDs and smoke statuses), never the
+private dashboard or bundle. Inspect provider state after an uncertain result;
+there is no automatic retry or rollback. A rollback to the recorded prior
+version requires Rasmus's separate approval.
 
 ## Development overview on dashboard.mrsoftware.dk
 
