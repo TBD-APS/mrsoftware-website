@@ -401,7 +401,7 @@ main#main { width: 100%; }
 .contact-email { font-size: 1.1rem; border-bottom: 1px solid var(--line); }
 .contact-email:hover { text-decoration: none; border-color: var(--accent); }
 
-.site-footer { padding: 80px 24px 32px; color: #a8a8a8; background: var(--ink); }
+.site-footer { padding: 80px 24px 0; overflow: hidden; color: #a8a8a8; background: var(--ink); }
 .problem-section { background: var(--bg-soft); }
 .footer-inner { width: min(100%, 1296px); margin: 0 auto; display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 48px; }
 .footer-brand > a { color: #fff; }
@@ -410,6 +410,10 @@ main#main { width: 100%; }
 .footer-column h2 { margin: 0 0 10px; color: #fff; font-family: "Inter", sans-serif; font-size: .9rem; font-weight: 500; }
 .footer-column a { color: #a8a8a8; }
 .footer-column a:hover { color: #fff; }
+.footer-wordmark { display: block; width: min(100%, 1296px); height: auto; margin: 72px auto 0; overflow: visible; }
+.footer-wordmark text { font-family: var(--font-display); font-size: 200px; font-weight: 400; }
+.footer-wordmark-ink { fill: #2b2b2b; }
+.footer-wordmark-dot { fill: var(--accent); }
 .footer-bottom { width: min(100%, 1296px); margin: 64px auto 0; padding-top: 20px; color: #7a7a7a; font-size: .8rem; border-top: 1px solid var(--dark-line); }
 
 /* Shared subpage utilities */
