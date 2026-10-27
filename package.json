@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/worker.test.mjs && npm run ux-gate",
+    "test": "node --test tests/*.test.mjs && npm run ux-gate",
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",
     "ux-gate": "playwright test"
   },
