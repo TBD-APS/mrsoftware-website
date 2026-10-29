@@ -68,7 +68,9 @@ test('The public company homepage never requests the private overview', async ({
     await page.goto(app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk'));
     await expect(page).toHaveTitle('MR Software | Software that moves work forward');
     await expect(page.locator('main h1')).toHaveText('Software that moves work forward.');
-    await expect(page.locator('iframe')).toHaveCount(0);
+    await expect(page.locator('#development-overview, #development-frame')).toHaveCount(0);
+    await expect(page.locator('iframe')).toHaveCount(1);
+    await expect(page.locator('#contact iframe')).toHaveAttribute('src', 'https://storage.googleapis.com/maps-solutions-pztn9ofean/locator-plus/rz1v/locator-plus.html');
     expect(requests).toEqual([]);
   } finally { await app.close(); }
 });
