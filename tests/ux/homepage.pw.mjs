@@ -131,7 +131,36 @@ test('Homepage stays usable across the required viewport matrix', async ({ page,
       expect(layout.overflow, `${width}px has no horizontal overflow`).toBeLessThanOrEqual(1);
       expect(layout.h1Width, `${width}px shows the page title`).toBeGreaterThan(0);
       expect(layout.primaryHeight, `${width}px keeps the primary target usable`).toBeGreaterThanOrEqual(44);
+      const map = await page.locator('#contact iframe').boundingBox();
+      expect(map.width, `${width}px gives the location finder usable width`).toBeGreaterThanOrEqual(272);
+      expect(map.height, `${width}px reserves space for the location finder`).toBeGreaterThanOrEqual(560);
+      expect(map.x + map.width, `${width}px keeps the location finder inside the page`).toBeLessThanOrEqual(width);
     }
+  } finally {
+    await app.close();
+  }
+});
+
+test('Contact keeps email and a direct location link when the external map is unavailable', async ({ page, context }, testInfo) => {
+  const app = await startSite();
+  try {
+    // The isolated context blocks external services; verify the fallback without Google availability.
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base) + '#contact');
+    const contact = page.locator('#contact');
+    const map = contact.locator('iframe');
+    await expect(map).toBeVisible();
+    await expect(map).toHaveAccessibleName('MR Software locations and directions');
+    await expect(map).toHaveAttribute('loading', 'lazy');
+    await expect(contact.getByRole('link', { name: 'kontakt@mrsoftware.dk', exact: true })).toHaveAttribute('href', 'mailto:kontakt@mrsoftware.dk');
+    const locationLink = contact.getByRole('link', { name: 'Open location finder' });
+    await expect(locationLink).toHaveAttribute('href', await map.getAttribute('src'));
+    await expect(locationLink).toHaveAttribute('target', '_blank');
+    await locationLink.scrollIntoViewIfNeeded();
+    await expect(locationLink).toBeVisible();
+    const target = await locationLink.boundingBox();
+    expect(target.height).toBeGreaterThanOrEqual(44);
+    await testInfo.attach('contact-locations-fallback-' + testInfo.project.name, { body: await contact.screenshot(), contentType: 'image/png' });
   } finally {
     await app.close();
   }

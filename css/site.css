@@ -400,6 +400,10 @@ main#main { width: 100%; }
 .contact-actions .button { margin: 0; }
 .contact-email { font-size: 1.1rem; border-bottom: 1px solid var(--line); }
 .contact-email:hover { text-decoration: none; border-color: var(--accent); }
+.contact-locations { margin-top: 64px; }
+.contact-locations h3 { margin: 0 0 20px; font-size: 1.4rem; font-weight: 400; }
+.contact-map { display: block; width: 100%; height: 560px; border: 0; background: var(--surface); }
+.contact-map-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 12px; }
 
 .site-footer { padding: 80px 24px 0; overflow: hidden; color: #a8a8a8; background: var(--ink); }
 .problem-section { background: var(--bg-soft); }
@@ -493,6 +497,8 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   .editorial-section,
   .responsibility-section,
   .contact-section { padding: 80px 0; scroll-margin-top: 64px; }
+  .contact-locations { margin-top: 48px; }
+  .contact-map { height: 640px; }
   .section-grid { grid-template-columns: 1fr; gap: 20px; }
   .section-marker { padding-top: 0; }
   .section-copy h2,
