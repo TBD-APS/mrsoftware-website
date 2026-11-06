@@ -10,6 +10,27 @@ const MAX_ARCHIVE = CHUNK_SIZE * 4;
 const MAX_JSON = 8 * 1024 * 1024;
 const sha256 = value => createHash('sha256').update(value).digest('hex');
 
+// Only these fixed configuration errors may be printed by the CLI.
+export class SnapshotConfigurationError extends Error {}
+
+export function snapshotInput(env = process.env) {
+  const parts = [1, 2, 3, 4].map(n => env[`MR_SOFTWARE_DASHBOARD_SNAPSHOT_${n}`] || '');
+  const digest = env.MR_SOFTWARE_DASHBOARD_SHA256;
+  const missing = [];
+  if (!parts[0]) missing.push('secret MR_SOFTWARE_DASHBOARD_SNAPSHOT_1');
+  if (!digest) missing.push('variable MR_SOFTWARE_DASHBOARD_SHA256');
+  if (missing.length) {
+    throw new SnapshotConfigurationError(`Missing mrsoftware-production ${missing.join(' and ')}. Configure the already-reviewed private snapshot using README.md; unused trailing parts may stay absent.`);
+  }
+  if (!/^[a-f0-9]{64}$/.test(digest)) {
+    throw new SnapshotConfigurationError('mrsoftware-production variable MR_SOFTWARE_DASHBOARD_SHA256 must contain the approved 64-character lowercase SHA-256 digest.');
+  }
+  if (parts.some((part, index) => typeof part !== 'string' || part.length > CHUNK_SIZE || (part && parts.slice(0, index).some(value => !value)))) {
+    throw new SnapshotConfigurationError('mrsoftware-production snapshot secrets must be contiguous from MR_SOFTWARE_DASHBOARD_SNAPSHOT_1 and contain at most 45,000 characters each. Restore the reviewed parts using README.md.');
+  }
+  return { archive: parts.join(''), digest };
+}
+
 export async function unpackSnapshot({ archive, digest, parent = tmpdir() } = {}) {
   let snapshot;
   try {
@@ -47,13 +68,11 @@ async function main() {
     await writeFile(join(output, 'sha256'), digest, { mode: 0o600, flag: 'wx' });
     console.log(`Private archive written in ${chunks} parts. Approved SHA-256: ${digest}`);
   } else if (operation === 'unpack' && process.env.GITHUB_ENV) {
-    const parts = [1, 2, 3, 4].map(n => process.env[`MR_SOFTWARE_DASHBOARD_SNAPSHOT_${n}`] || '');
-    if (!parts[0] || parts.some((part, index) => part.length > CHUNK_SIZE || (part && parts.slice(0, index).some(value => !value)))) throw Error('Invalid snapshot parts');
-    const directory = await unpackSnapshot({ archive: parts.join(''), digest: process.env.MR_SOFTWARE_DASHBOARD_SHA256, parent: process.env.RUNNER_TEMP });
+    const directory = await unpackSnapshot({ ...snapshotInput(), parent: process.env.RUNNER_TEMP });
     await appendFile(process.env.GITHUB_ENV, `DASHBOARD_SNAPSHOT_DIR=${directory}\n`);
     console.log('Prepared the approved private snapshot in runner temporary storage');
   } else { throw Error('Use pack SOURCE_DIRECTORY NEW_ARCHIVE_DIRECTORY, or unpack inside the release Action'); }
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch(() => { console.error('Private snapshot preparation failed; no snapshot content was logged'); process.exitCode = 1; });
+  main().catch(error => { console.error(error instanceof SnapshotConfigurationError ? error.message : 'Private snapshot preparation failed; no snapshot content was logged'); process.exitCode = 1; });
 }
