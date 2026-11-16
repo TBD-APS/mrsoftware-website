@@ -54,7 +54,15 @@ count. Store each `part-N` file as the corresponding snapshot environment secret
 and the `sha256` file's digest as the snapshot variable.
 Never commit the archive or attach it to a PR. The Action checks the digest,
 builds the snapshot in private runner storage and deletes private inputs/build
-output afterwards. Missing or invalid private inputs stop the release.
+output afterwards. Missing or invalid private inputs stop the release before any Cloudflare upload.
+
+A missing-input error names the required secret/variable in
+`mrsoftware-production`; it does not mean the source tests failed. Restore only
+the already-reviewed snapshot parts and their approved digest using the setup
+above. Unused trailing parts are optional. Noncontiguous/oversized parts or a
+malformed digest get a configuration error without logging their values; corrupt
+archive content still gets a generic private-input error. Do not substitute
+synthetic data or skip snapshot verification to unblock a production release.
 
 Synthetic tests run before production credentials are introduced. The release
 records the prior deployment/version before uploading with `--keep-vars`, then
