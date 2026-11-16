@@ -3,136 +3,158 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Roadmap — MR Software</title>
+  <title>Roadmap | MR Software</title>
   <meta name="description" content="MR Software's public roadmap: what we build, what we publish, and how we open the source code over time.">
+  <link rel="canonical" href="https://mrsoftware.dk/roadmap/">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Roadmap | MR Software">
+  <meta property="og:description" content="MR Software's public roadmap: what we build, what we publish, and how we open the source code over time.">
+  <meta property="og:url" content="https://mrsoftware.dk/roadmap/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. One place for every order, shipment and document.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Roadmap | MR Software">
+  <meta name="twitter:description" content="MR Software's public roadmap: what we build, what we publish, and how we open the source code over time.">
+  <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <link rel="preload" href="/assets/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<header class="site-header">
-  <div class="site-header-inner">
-    <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo.svg" alt="" width="222" height="26"></a></div>
-    <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">☰</button>
-    <nav class="nav" id="main-nav" aria-label="Main navigation">
-      <a href="/">Home</a>
-      <a href="/sikkerhed-og-dataprivatliv/">Security</a>
-      <a href="/status/">System status</a>
-      <a href="/roadmap/" aria-current="page">Roadmap</a>
-      <a class="nav-contact" href="/#contact">Contact us</a>
-    </nav>
-  </div>
-</header>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo.svg" alt="" width="222" height="26"></a></div>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/#solutions">Products</a>
+        <a href="/integrations/">Integrations</a>
+        <a href="/#results">Results</a>
+        <a href="/#method">Our method</a>
+        <a href="/sikkerhed-og-dataprivatliv/">Security</a>
+        <a class="button button-primary" href="/contact/">Talk to us</a>
+      </nav>
+    </div>
+  </header>
 
-<main>
-  <p class="breadcrumbs"><a href="/">Home</a> · Roadmap</p>
-  <p class="eyebrow">Openness &amp; plans</p>
-  <h1>Roadmap: what we build and publish</h1>
-  <p class="lead">
-    We prefer openness to secrecy. That is why our plans are public here, just like the numbers,
-    the system status and the validation artefact. The roadmap is adjusted as plans change, and it
-    always shows whether something is planned or done.
-  </p>
-
-  <section>
-    <h2>Now: Q4 2026</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Go-live on mrsoftware.dk</h3>
-        <p>Custom domain binding for the apex domain, so the whole site and the status page run directly on mrsoftware.dk.</p>
-      </div>
-      <div class="card">
-        <h3>System status on the real domain</h3>
-        <p>The public <a href="/status/">/status</a> page moves from the preview URL to the apex domain and pings every service.</p>
-      </div>
-      <div class="card">
-        <h3>Public /ping spec</h3>
-        <p>A description of the shared <code>/ping</code> contract endpoint (JSON, HTTP 200, CORS), so others can verify us and we can verify each other.</p>
-      </div>
-      <div class="card">
-        <h3>Verified numbers as snapshots</h3>
-        <p>The validation artefact's numbers (tests, coverage, gates) are published as timestamped snapshots that can be cross-checked.</p>
+  <main id="main">
+    <div class="page-hero on-dark">
+      <div class="page-width">
+      <p class="breadcrumbs"><a href="/">Home</a> · Roadmap</p>
+      <p class="label">Openness &amp; plans</p>
+      <h1>Roadmap: what we build and publish</h1>
+      <p class="lead">
+        We prefer openness to secrecy. That is why our plans are public here, just like the numbers,
+        the system status and the validation artefact. The roadmap is adjusted as plans change, and it
+        always shows whether something is planned or done.
+      </p>
       </div>
     </div>
-  </section>
+    <div class="page-body page-width">
+    <section>
+      <h2>Now: Q4 2026</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Go-live on mrsoftware.dk</h3>
+          <p>Custom domain binding for the apex domain, so the whole site and the status page run directly on mrsoftware.dk.</p>
+        </div>
+        <div class="card">
+          <h3>System status on the real domain</h3>
+          <p>The public <a href="/status/">/status</a> page moves from the preview URL to the apex domain and pings every service.</p>
+        </div>
+        <div class="card">
+          <h3>Public /ping spec</h3>
+          <p>A description of the shared <code>/ping</code> contract endpoint (JSON, HTTP 200, CORS), so others can verify us and we can verify each other.</p>
+        </div>
+        <div class="card">
+          <h3>Verified numbers as snapshots</h3>
+          <p>The validation artefact's numbers (tests, coverage, gates) are published as timestamped snapshots that can be cross-checked.</p>
+        </div>
+      </div>
+    </section>
 
-  <section>
-    <h2>Next: first half of 2027</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Scheduled uptime checks with alerting</h3>
-        <p>A move from browser-based pings to server-side scheduled checks that actively alert on outages instead of only showing status.</p>
+    <section>
+      <h2>Next: first half of 2027</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Scheduled uptime checks with alerting</h3>
+          <p>A move from browser-based pings to server-side scheduled checks that actively alert on outages instead of only showing status.</p>
+        </div>
+        <div class="card">
+          <h3>Public SLOs</h3>
+          <p>Service level objectives are defined and followed up on the <a href="/status/">system status</a> page. We measure ourselves against them.</p>
+        </div>
+        <div class="card">
+          <h3>Open source, decided repo by repo</h3>
+          <p>An assessment of which repos can be opened: documentation first, then the website and health tooling, as consent and governance are in place.</p>
+        </div>
+        <div class="card">
+          <h3>Standard /ping on every new service</h3>
+          <p>Every new service implements the same contract endpoint from day one. No exceptions.</p>
+        </div>
       </div>
-      <div class="card">
-        <h3>Public SLOs</h3>
-        <p>Service level objectives are defined and followed up on the <a href="/status/">system status</a> page. We measure ourselves against them.</p>
+    </section>
+
+    <section>
+      <h2>Later: second half of 2027</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Open-source core tooling and documentation</h3>
+          <p>Selected parts are released under a permissive licence. The core is assessed component by component: what stands without secrets is opened.</p>
+        </div>
+        <div class="card">
+          <h3>Public roadmap &amp; issue tracker</h3>
+          <p>Plans and tracking become public, and community contributions go through the same gates we use internally.</p>
+        </div>
+        <div class="card">
+          <h3>Ongoing transparency report</h3>
+          <p>A periodic report: metrics, incidents, what we prevented and what we learned. Published, not promised.</p>
+        </div>
       </div>
-      <div class="card">
-        <h3>Open source, decided repo by repo</h3>
-        <p>An assessment of which repos can be opened: documentation first, then the website and health tooling, as consent and governance are in place.</p>
+    </section>
+
+    <section>
+      <h2>Principles of openness</h2>
+      <div class="grid">
+        <div class="card emphasis">
+          <h3>Public by default</h3>
+          <p>Numbers, status and plans are public unless there is a real reason not to be.</p>
+        </div>
+        <div class="card emphasis">
+          <h3>Evidence over promises</h3>
+          <p>Every claim points to a check (a probe, a test, a gate) so the reader can verify it.</p>
+        </div>
+        <div class="card emphasis">
+          <h3>Known limitations are shared</h3>
+          <p>Coverage gaps and unused modules are listed in the artefact. They are not hidden.</p>
+        </div>
       </div>
-      <div class="card">
-        <h3>Standard /ping on every new service</h3>
-        <p>Every new service implements the same contract endpoint from day one. No exceptions.</p>
-      </div>
+    </section>
+
+    <div class="note">
+      The roadmap is a living document. Follow operations on the <a href="/status/">system status</a> page and
+      the numbers in <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">how we validate ourselves</a>.
     </div>
-  </section>
-
-  <section>
-    <h2>Later: second half of 2027</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Open-source core tooling and documentation</h3>
-        <p>Selected parts are released under a permissive licence. The core is assessed component by component: what stands without secrets is opened.</p>
-      </div>
-      <div class="card">
-        <h3>Public roadmap &amp; issue tracker</h3>
-        <p>Plans and tracking become public, and community contributions go through the same gates we use internally.</p>
-      </div>
-      <div class="card">
-        <h3>Ongoing transparency report</h3>
-        <p>A periodic report: metrics, incidents, what we prevented and what we learned. Published, not promised.</p>
-      </div>
     </div>
-  </section>
+  </main>
 
-  <section>
-    <h2>Principles of openness</h2>
-    <div class="grid">
-      <div class="card emphasis">
-        <h3>Public by default</h3>
-        <p>Numbers, status and plans are public unless there is a real reason not to be.</p>
-      </div>
-      <div class="card emphasis">
-        <h3>Evidence over promises</h3>
-        <p>Every claim points to a check (a probe, a test, a gate) so the reader can verify it.</p>
-      </div>
-      <div class="card emphasis">
-        <h3>Known limitations are shared</h3>
-        <p>Coverage gaps and unused modules are listed in the artefact. They are not hidden.</p>
-      </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-on-red.svg" alt="" width="222" height="26" loading="lazy"></a><p>Software built around real workflows.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/foodtrading/">FoodTrading</a><a href="/products/shippy/">Shippy</a><a href="/integrations/">Integrations</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/roadmap/">Roadmap</a><a href="/contact/">Contact us</a></div>
     </div>
-  </section>
-
-  <div class="note">
-    The roadmap is a living document. Follow operations on the <a href="/status/">system status</a> page and
-    the numbers in <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">how we validate ourselves</a>.
-  </div>
-</main>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-light.svg" alt="" width="222" height="26"></a><p>Software built around real workflows.</p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
-    <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
-    <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/#contact">Contact us</a></div>
-  </div>
-  <div class="footer-bottom">
-    <span>© <span class="year">2026</span> MR Software</span>
-    <nav class="footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
-  </div>
-  <img class="footer-wordmark" src="/assets/images/brand/mr-logo-footer.svg" alt="" width="4822" height="563" loading="lazy">
-</footer>
-
-<script src="/js/site.js"></script>
+    <div class="footer-bottom">
+      <span>© <span class="year">2026</span> MR Software</span>
+      <nav class="footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
+    </div>
+    <img class="footer-wordmark" src="/assets/images/brand/mr-logo-footer.svg" alt="" width="4822" height="563" loading="lazy">
+  </footer>
 </body>
 </html>

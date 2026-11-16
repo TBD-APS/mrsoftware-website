@@ -3,116 +3,138 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Security &amp; data privacy — MR Software</title>
+  <title>Security &amp; data privacy | MR Software</title>
   <meta name="description" content="How MR Software handles security and data: fail-closed defaults, human approvals, Key Vault references, tenant isolation and our open self-validation.">
+  <link rel="canonical" href="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Security &amp; data privacy | MR Software">
+  <meta property="og:description" content="How MR Software handles security and data: fail-closed defaults, human approvals, Key Vault references, tenant isolation and our open self-validation.">
+  <meta property="og:url" content="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. One place for every order, shipment and document.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Security &amp; data privacy | MR Software">
+  <meta name="twitter:description" content="How MR Software handles security and data: fail-closed defaults, human approvals, Key Vault references, tenant isolation and our open self-validation.">
+  <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <link rel="preload" href="/assets/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<header class="site-header">
-  <div class="site-header-inner">
-    <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo.svg" alt="" width="222" height="26"></a></div>
-    <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">☰</button>
-    <nav class="nav" id="main-nav" aria-label="Main navigation">
-      <a href="/">Home</a>
-      <a href="/sikkerhed-og-dataprivatliv/" aria-current="page">Security</a>
-      <a href="/status/">System status</a>
-      <a href="/roadmap/">Roadmap</a>
-      <a class="nav-contact" href="/#contact">Contact us</a>
-    </nav>
-  </div>
-</header>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo.svg" alt="" width="222" height="26"></a></div>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/#solutions">Products</a>
+        <a href="/integrations/">Integrations</a>
+        <a href="/#results">Results</a>
+        <a href="/#method">Our method</a>
+        <a href="/sikkerhed-og-dataprivatliv/" aria-current="page">Security</a>
+        <a class="button button-primary" href="/contact/">Talk to us</a>
+      </nav>
+    </div>
+  </header>
 
-<main>
-  <p class="breadcrumbs"><a href="/">Home</a> · Security &amp; data privacy</p>
-  <p class="eyebrow">Trust &amp; transparency</p>
-  <h1>Security and data privacy</h1>
-  <p class="lead">
-    MR Software builds systems with fail-closed defaults: access starts at zero, every change has to
-    be provable, and secrets never touch business code. Here we describe what that means in
-    practice, and how we validate our own work.
-  </p>
-
-  <section>
-    <h2>Secure by default</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Access starts at zero</h3>
-        <p>No agent, tool or user has access until it is explicitly granted. A missing approval or
-        missing evidence blocks the action, never the other way round.</p>
-      </div>
-      <div class="card">
-        <h3>Human approval</h3>
-        <p>Changes with consequences need human approval tied to a specific action. Production
-        changes go through protected environments with owner approval.</p>
-      </div>
-      <div class="card">
-        <h3>Secrets stay in the vault</h3>
-        <p>Configuration refers to Key Vault names, never values. Secrets are never part of agent
-        context, events or browser storage.</p>
-      </div>
-      <div class="card">
-        <h3>Tenants are isolated</h3>
-        <p>State and audit events are partitioned per tenant. Only a minimal index of permission id
-        + tenant id is global.</p>
-      </div>
-      <div class="card">
-        <h3>Tamper-evident audit trail</h3>
-        <p>Approvals and side-effect decisions go into a SHA-256 hash chain. Every read verifies the
-        chain.</p>
-      </div>
-      <div class="card">
-        <h3>Protected environments</h3>
-        <p>Production work runs in environments with a wait timer and a protected branch policy
-        (live: 30 min. owner approval).</p>
+  <main id="main">
+    <div class="page-hero on-dark">
+      <div class="page-width">
+      <p class="breadcrumbs"><a href="/">Home</a> · Security &amp; data privacy</p>
+      <p class="label">Trust &amp; transparency</p>
+      <h1>Security and data privacy</h1>
+      <p class="lead">
+        MR Software builds systems with fail-closed defaults: access starts at zero, every change has to
+        be provable, and secrets never touch business code. Here we describe what that means in
+        practice, and how we validate our own work.
+      </p>
       </div>
     </div>
-  </section>
+    <div class="page-body page-width">
+    <section>
+      <h2>Secure by default</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Access starts at zero</h3>
+          <p>No agent, tool or user has access until it is explicitly granted. A missing approval or
+          missing evidence blocks the action, never the other way round.</p>
+        </div>
+        <div class="card">
+          <h3>Human approval</h3>
+          <p>Changes with consequences need human approval tied to a specific action. Production
+          changes go through protected environments with owner approval.</p>
+        </div>
+        <div class="card">
+          <h3>Secrets stay in the vault</h3>
+          <p>Configuration refers to Key Vault names, never values. Secrets are never part of agent
+          context, events or browser storage.</p>
+        </div>
+        <div class="card">
+          <h3>Tenants are isolated</h3>
+          <p>State and audit events are partitioned per tenant. Only a minimal index of permission id
+          + tenant id is global.</p>
+        </div>
+        <div class="card">
+          <h3>Tamper-evident audit trail</h3>
+          <p>Approvals and side-effect decisions go into a SHA-256 hash chain. Every read verifies the
+          chain.</p>
+        </div>
+        <div class="card">
+          <h3>Protected environments</h3>
+          <p>Production work runs in environments with a wait timer and a protected branch policy
+          (live: 30 min. owner approval).</p>
+        </div>
+      </div>
+    </section>
 
-  <section>
-    <h2>Data privacy</h2>
-    <p>MR SAAS'y only processes the data needed to run the system: workflow events, permissions,
-    approvals, audit events and agent performance signals.</p>
-    <table>
-      <thead><tr><th>Data</th><th>Purpose</th><th>Note</th></tr></thead>
-      <tbody>
-        <tr><td>Workflow events</td><td>Traceable execution and recovery</td><td>Append-only event stream</td></tr>
-        <tr><td>Permissions &amp; approvals</td><td>Access control</td><td>Split by tenant, audit-logged</td></tr>
-        <tr><td>Audit events</td><td>Record of decisions</td><td>SHA-256 chained, cannot be deleted</td></tr>
-        <tr><td>Agent performance data</td><td>Routing and learning</td><td>Aggregated; raw prompts are never logged</td></tr>
-      </tbody>
-    </table>
-    <div class="note ok">MOTOR does not store prompts, secrets or customer payloads. If an event
-    cannot sanitise its content, it is not written with raw data.</div>
-    <p>As a company we are bound by the General Data Protection Regulation (GDPR). Processing is
-    limited, tied to a purpose and backed by the necessary technical and organisational measures.
-    Contact us at <a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a> with any
-    questions about data protection.</p>
-  </section>
+    <section>
+      <h2>Data privacy</h2>
+      <p>MR SAAS'y only processes the data needed to run the system: workflow events, permissions,
+      approvals, audit events and agent performance signals.</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+        <thead><tr><th>Data</th><th>Purpose</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td>Workflow events</td><td>Traceable execution and recovery</td><td>Append-only event stream</td></tr>
+          <tr><td>Permissions &amp; approvals</td><td>Access control</td><td>Split by tenant, audit-logged</td></tr>
+          <tr><td>Audit events</td><td>Record of decisions</td><td>SHA-256 chained, cannot be deleted</td></tr>
+          <tr><td>Agent performance data</td><td>Routing and learning</td><td>Aggregated; raw prompts are never logged</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note ok">MOTOR does not store prompts, secrets or customer payloads. If an event
+      cannot sanitise its content, it is not written with raw data.</div>
+      <p>As a company we are bound by the General Data Protection Regulation (GDPR). Processing is
+      limited, tied to a purpose and backed by the necessary technical and organisational measures.
+      Contact us at <a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a> with any
+      questions about data protection.</p>
+    </section>
 
-  <section>
-    <h2>How we validate ourselves</h2>
-    <p>We believe a security claim should be something you can see. That is why we publish a living
-    artefact showing our test landscape, CI gates, code coverage, repository protection,
-    documentation integrity and known gaps, with verified numbers.</p>
-    <p><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Open the validation artefact →</a></p>
-  </section>
-</main>
+    <section>
+      <h2>How we validate ourselves</h2>
+      <p>We believe a security claim should be something you can see. That is why we publish a living
+      artefact showing our test landscape, CI gates, code coverage, repository protection,
+      documentation integrity and known gaps, with verified numbers.</p>
+      <p><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Open the validation artefact →</a></p>
+    </section>
+    </div>
+  </main>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-light.svg" alt="" width="222" height="26"></a><p>Software built around real workflows.</p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
-    <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
-    <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/#contact">Contact us</a></div>
-  </div>
-  <div class="footer-bottom">
-    <span>© <span class="year">2026</span> MR Software</span>
-    <nav class="footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
-  </div>
-  <img class="footer-wordmark" src="/assets/images/brand/mr-logo-footer.svg" alt="" width="4822" height="563" loading="lazy">
-</footer>
-
-<script src="/js/site.js"></script>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-on-red.svg" alt="" width="222" height="26" loading="lazy"></a><p>Software built around real workflows.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/foodtrading/">FoodTrading</a><a href="/products/shippy/">Shippy</a><a href="/integrations/">Integrations</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/roadmap/">Roadmap</a><a href="/contact/">Contact us</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span class="year">2026</span> MR Software</span>
+      <nav class="footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
+    </div>
+    <img class="footer-wordmark" src="/assets/images/brand/mr-logo-footer.svg" alt="" width="4822" height="563" loading="lazy">
+  </footer>
 </body>
 </html>

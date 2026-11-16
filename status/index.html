@@ -3,75 +3,99 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>System status — MR Software</title>
+  <title>System status | MR Software</title>
   <meta name="description" content="Live status for mrsoftware.dk and the services we run, pinged directly from this page.">
+  <link rel="canonical" href="https://mrsoftware.dk/status/">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="System status | MR Software">
+  <meta property="og:description" content="Live status for mrsoftware.dk and the services we run, pinged directly from this page.">
+  <meta property="og:url" content="https://mrsoftware.dk/status/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. One place for every order, shipment and document.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="System status | MR Software">
+  <meta name="twitter:description" content="Live status for mrsoftware.dk and the services we run, pinged directly from this page.">
+  <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <link rel="preload" href="/assets/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<header class="site-header">
-  <div class="site-header-inner">
-    <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo.svg" alt="" width="222" height="26"></a></div>
-    <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">☰</button>
-    <nav class="nav" id="main-nav" aria-label="Main navigation">
-      <a href="/">Home</a>
-      <a href="/sikkerhed-og-dataprivatliv/">Security</a>
-      <a href="/status/" aria-current="page">System status</a>
-      <a href="/roadmap/">Roadmap</a>
-      <a class="nav-contact" href="/#contact">Contact us</a>
-    </nav>
-  </div>
-</header>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo.svg" alt="" width="222" height="26"></a></div>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/#solutions">Products</a>
+        <a href="/integrations/">Integrations</a>
+        <a href="/#results">Results</a>
+        <a href="/#method">Our method</a>
+        <a href="/sikkerhed-og-dataprivatliv/">Security</a>
+        <a class="button button-primary" href="/contact/">Talk to us</a>
+      </nav>
+    </div>
+  </header>
 
-<main>
-  <p class="eyebrow">MR Software</p>
-  <h1>System status</h1>
-  <p class="lead">
-    This page pings our services directly from your browser and shows whether they respond.
-    Each service has to answer with HTTP 200 and a JSON message that identifies the service, not just a
-    generic page. Data refreshes every 60 seconds.
-  </p>
+  <main id="main">
+    <div class="page-hero on-dark">
+      <div class="page-width">
+      <p class="label">MR Software</p>
+      <h1>System status</h1>
+      <p class="lead">
+        This page pings our services directly from your browser and shows whether they respond.
+        Each service has to answer with HTTP 200 and a JSON message that identifies the service, not just a
+        generic page. Data refreshes every 60 seconds.
+      </p>
+      </div>
+    </div>
+    <div class="page-body page-width">
+    <div class="note" id="last-check">Waiting for the first check…</div>
 
-  <div class="note" id="last-check">Waiting for the first check…</div>
+    <div class="note">Public plans and the decision on open source over time are on the <a href="/roadmap/">roadmap page →</a></div>
 
-  <div class="note">Public plans and the decision on open source over time are on the <a href="/roadmap/">roadmap page →</a></div>
+    <div class="stat-grid" id="services"></div>
 
-  <div class="stat-grid" id="services"></div>
+    <section>
+      <h2>Monitored services</h2>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+        <thead>
+          <tr><th>Service</th><th>Endpoint</th><th>What it proves</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>mrsoftware.dk</td><td><code>/ping.json</code></td><td>The website responds with a compact hosting status.</td></tr>
+          <tr><td>saassy.mrsoftware.dk</td><td><code>/ping</code> and <code>/api/saassy/health</code></td><td>The MR SAAS'y production front end is up; health reports <em>ready</em> for model, rate limit and Cloudflare OAuth.</td></tr>
+          <tr><td>dev.mrsoftware.dk</td><td><code>/ping</code></td><td>The dev instance of Control Center responds.</td></tr>
+          <tr><td>www.mrsoftware.dk</td><td><code>/</code></td><td>The static GitHub Pages site (Workslip) responds. A host without a dynamic health check.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
 
-  <section>
-    <h2>Monitored services</h2>
-    <table>
-      <thead>
-        <tr><th>Service</th><th>Endpoint</th><th>What it proves</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>mrsoftware.dk</td><td><code>/ping.json</code></td><td>The website responds with a compact hosting status.</td></tr>
-        <tr><td>saassy.mrsoftware.dk</td><td><code>/ping</code> and <code>/api/saassy/health</code></td><td>The MR SAAS'y production front end is up; health reports <em>ready</em> for model, rate limit and Cloudflare OAuth.</td></tr>
-        <tr><td>dev.mrsoftware.dk</td><td><code>/ping</code></td><td>The dev instance of Control Center responds.</td></tr>
-        <tr><td>www.mrsoftware.dk</td><td><code>/</code></td><td>The static GitHub Pages site (Workslip) responds. A host without a dynamic health check.</td></tr>
-      </tbody>
-    </table>
-  </section>
+    <div class="note warn">
+      The status here is a point-in-time view from your browser. For formal metrics, see the
+      validation artefact in <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate ourselves</a>.
+    </div>
+    </div>
+  </main>
 
-  <div class="note warn">
-    The status here is a point-in-time view from your browser. For formal metrics, see the
-    validation artefact in <a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate ourselves</a>.
-  </div>
-</main>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-light.svg" alt="" width="222" height="26"></a><p>Software built around real workflows.</p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
-    <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
-    <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/#contact">Contact us</a></div>
-  </div>
-  <div class="footer-bottom">
-    <span>© <span class="year">2026</span> MR Software</span>
-    <nav class="footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
-  </div>
-  <img class="footer-wordmark" src="/assets/images/brand/mr-logo-footer.svg" alt="" width="4822" height="563" loading="lazy">
-</footer>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-on-red.svg" alt="" width="222" height="26" loading="lazy"></a><p>Software built around real workflows.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/foodtrading/">FoodTrading</a><a href="/products/shippy/">Shippy</a><a href="/integrations/">Integrations</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/roadmap/">Roadmap</a><a href="/contact/">Contact us</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span class="year">2026</span> MR Software</span>
+      <nav class="footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
+    </div>
+    <img class="footer-wordmark" src="/assets/images/brand/mr-logo-footer.svg" alt="" width="4822" height="563" loading="lazy">
+  </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -87,8 +111,8 @@ document.addEventListener('DOMContentLoaded', function () {
   function render(id, label, status, detail) {
     var el = document.getElementById('svc-' + id);
     el.querySelector('.value').textContent = status === 'ok' ? 'OK' : (status === 'warn' ? 'Warning' : 'Down');
-    el.querySelector('.value').parentElement.className = 'value ' + status;
-    el.querySelector('.label').textContent = label + ' — ' + detail;
+    el.querySelector('.value').className = 'value ' + status;
+    el.querySelector('.label').textContent = label + ': ' + detail;
   }
 
   function check() {
@@ -108,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (svc.probe) checks.push({ name: 'probe', url: svc.probe, self: svc.probe.charAt(0) === '/' });
       if (svc.health) checks.push({ name: 'health', url: svc.health, self: false });
       if (!checks.length) {
-        render(svc.id, svc.name, 'ok', 'static host — not pinged');
+        render(svc.id, svc.name, 'ok', 'static host, not pinged');
         okServices += 1;
         settled += 1;
         return;
@@ -124,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (ok) okServices += 1;
         settled += 1;
         if (settled === total) {
-          lastCheck.textContent = 'Last check: ' + new Date().toLocaleTimeString('en-GB') + ' — ' + okServices + '/' + total + ' services responded correctly.';
+          lastCheck.textContent = 'Last check: ' + new Date().toLocaleTimeString('en-GB') + '. ' + okServices + '/' + total + ' services responded correctly.';
           lastCheck.className = 'note ' + (okServices === total ? 'ok' : 'bad');
         }
       });
@@ -135,6 +159,5 @@ document.addEventListener('DOMContentLoaded', function () {
   setInterval(check, 60000);
 });
 </script>
-<script src="/js/site.js"></script>
 </body>
 </html>

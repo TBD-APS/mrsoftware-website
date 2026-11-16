@@ -30,7 +30,7 @@ test('Each dashboard address opens the matching private view', async ({ page, co
       await expect(page.locator('#development-open')).toHaveAttribute('href', source);
       await expect(page.locator('#development-views [aria-current="page"]')).toHaveText(label);
       await expect(page.locator('main h1')).toHaveCount(1);
-      await expect(page.locator('main #hero-heading')).toHaveText('Software that moves work forward.');
+      await expect(page.locator('main #hero-heading')).toHaveAccessibleName('One place for every order, shipment, document and approval.');
     }
   } finally { await app.close(); }
 });
@@ -66,11 +66,11 @@ test('The public company homepage never requests the private overview', async ({
     const requests = [];
     page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/_development/')) requests.push(request.url()); });
     await page.goto(app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk'));
-    await expect(page).toHaveTitle('MR Software | Software that moves work forward');
-    await expect(page.locator('main h1')).toHaveText('Software that moves work forward.');
+    await expect(page).toHaveTitle('MR Software | One place for every order, shipment and document');
+    await expect(page.locator('main h1')).toHaveAccessibleName('One place for every order, shipment, document and approval.');
     await expect(page.locator('#development-overview, #development-frame')).toHaveCount(0);
-    await expect(page.locator('iframe')).toHaveCount(1);
-    await expect(page.locator('#contact iframe')).toHaveAttribute('src', 'https://storage.googleapis.com/maps-solutions-pztn9ofean/locator-plus/rz1v/locator-plus.html');
+    // The location finder lives on the contact page, so the homepage embeds nothing.
+    await expect(page.locator('iframe')).toHaveCount(0);
     expect(requests).toEqual([]);
   } finally { await app.close(); }
 });
