@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { unpackSnapshot } from '../tools/dashboard-snapshot.mjs';
+import { SnapshotConfigurationError, snapshotInput, unpackSnapshot } from '../tools/dashboard-snapshot.mjs';
 
 const value = { data: { snapshotAt: 'synthetic', projects: [{ completed: 1, remaining: 2 }], portfolio: { completed: 1, remaining: 2 } }, graphs: { repositories: [{ id: 'synthetic' }] } };
 const json = JSON.stringify(value);
@@ -60,5 +60,59 @@ test('CLI packs and reassembles multiple secret parts without logging their cont
     assert.notEqual(spawnSync(process.execPath, ['tools/dashboard-snapshot.mjs', 'unpack'], { env }).status, 0);
     const unsafe = spawnSync(process.execPath, ['tools/dashboard-snapshot.mjs', 'pack', source, '.local/unsafe-archive'], { encoding: 'utf8' });
     assert.notEqual(unsafe.status, 0);
+  } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test('environment inputs accept one or several contiguous reviewed parts', () => {
+  assert.deepEqual(snapshotInput({ MR_SOFTWARE_DASHBOARD_SNAPSHOT_1: archive, MR_SOFTWARE_DASHBOARD_SHA256: digest }), { archive, digest });
+  assert.deepEqual(snapshotInput({
+    MR_SOFTWARE_DASHBOARD_SNAPSHOT_1: 'first', MR_SOFTWARE_DASHBOARD_SNAPSHOT_2: 'second',
+    MR_SOFTWARE_DASHBOARD_SNAPSHOT_3: 'third', MR_SOFTWARE_DASHBOARD_SNAPSHOT_4: 'fourth',
+    MR_SOFTWARE_DASHBOARD_SHA256: digest,
+  }), { archive: 'firstsecondthirdfourth', digest });
+});
+
+test('missing environment inputs identify the required setup without requiring trailing parts', () => {
+  assert.throws(() => snapshotInput({}), error => error instanceof SnapshotConfigurationError
+    && /mrsoftware-production/.test(error.message)
+    && /secret MR_SOFTWARE_DASHBOARD_SNAPSHOT_1/.test(error.message)
+    && /variable MR_SOFTWARE_DASHBOARD_SHA256/.test(error.message)
+    && /README.md/.test(error.message));
+});
+
+test('malformed digest, oversized parts and gaps fail without exposing their values', () => {
+  const privateMarker = 'SYNTHETIC_PRIVATE_VALUE_NEVER_LOG';
+  const valid = { MR_SOFTWARE_DASHBOARD_SNAPSHOT_1: archive, MR_SOFTWARE_DASHBOARD_SHA256: digest };
+  for (const patch of [
+    { MR_SOFTWARE_DASHBOARD_SHA256: privateMarker },
+    { MR_SOFTWARE_DASHBOARD_SNAPSHOT_1: privateMarker.repeat(2000) },
+    { MR_SOFTWARE_DASHBOARD_SNAPSHOT_3: privateMarker },
+    { MR_SOFTWARE_DASHBOARD_SNAPSHOT_2: 'second', MR_SOFTWARE_DASHBOARD_SNAPSHOT_4: privateMarker },
+  ]) {
+    assert.throws(() => snapshotInput({ ...valid, ...patch }), error =>
+      error instanceof SnapshotConfigurationError && !error.message.includes(privateMarker));
+  }
+});
+
+test('CLI distinguishes missing setup from corrupt private content and publishes no build input on failure', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'snapshot-errors-'));
+  try {
+    const githubEnv = join(root, 'github-env');
+    const env = { RUNNER_TEMP: root, GITHUB_ENV: githubEnv };
+    const missing = spawnSync(process.execPath, ['tools/dashboard-snapshot.mjs', 'unpack'], { env, encoding: 'utf8' });
+    assert.notEqual(missing.status, 0);
+    assert.match(missing.stderr, /Missing mrsoftware-production/);
+    assert.match(missing.stderr, /MR_SOFTWARE_DASHBOARD_SNAPSHOT_1/);
+    assert.match(missing.stderr, /MR_SOFTWARE_DASHBOARD_SHA256/);
+    const privateMarker = 'SYNTHETIC_PRIVATE_VALUE_NEVER_LOG';
+    const corrupt = spawnSync(process.execPath, ['tools/dashboard-snapshot.mjs', 'unpack'], {
+      env: { ...env, MR_SOFTWARE_DASHBOARD_SNAPSHOT_1: privateMarker, MR_SOFTWARE_DASHBOARD_SHA256: digest },
+      encoding: 'utf8',
+    });
+    assert.notEqual(corrupt.status, 0);
+    assert.match(corrupt.stderr, /Private snapshot preparation failed; no snapshot content was logged/);
+    assert.ok(!corrupt.stderr.includes(privateMarker));
+    assert.ok(!corrupt.stdout.includes(privateMarker));
+    await assert.rejects(readFile(githubEnv), { code: 'ENOENT' });
   } finally { await rm(root, { recursive: true, force: true }); }
 });
