@@ -3,234 +3,256 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>How we validate ourselves — MR Software</title>
+  <title>How we validate ourselves | MR Software</title>
   <meta name="description" content="MR Software shows openly how it validates itself: test landscape, CI gates, code coverage, repository protection, documentation integrity and known gaps. All numbers verified on 12-09-2026.">
+  <link rel="canonical" href="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <meta name="theme-color" content="#0b0b0c">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="How we validate ourselves | MR Software">
+  <meta property="og:description" content="MR Software shows openly how it validates itself: test landscape, CI gates, code coverage, repository protection, documentation integrity and known gaps. All numbers verified on 12-09-2026.">
+  <meta property="og:url" content="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. Work, documents and approvals in one place.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How we validate ourselves | MR Software">
+  <meta name="twitter:description" content="MR Software shows openly how it validates itself: test landscape, CI gates, code coverage, repository protection, documentation integrity and known gaps. All numbers verified on 12-09-2026.">
+  <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <link rel="preload" href="/assets/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<header class="site-header">
-  <div class="site-header-inner">
-    <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo.svg" alt="" width="222" height="26"></a></div>
-    <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">☰</button>
-    <nav class="nav" id="main-nav" aria-label="Main navigation">
-      <a href="/">Home</a>
-      <a href="/sikkerhed-og-dataprivatliv/" aria-current="page">Security</a>
-      <a href="/status/">System status</a>
-      <a href="/roadmap/">Roadmap</a>
-      <a class="nav-contact" href="/#contact">Contact us</a>
-    </nav>
-  </div>
-</header>
-
-<main>
-  <p class="breadcrumbs"><a href="/">Home</a> · <a href="/sikkerhed-og-dataprivatliv/">Security &amp; data privacy</a> · How we validate ourselves</p>
-  <p class="eyebrow">Self-validation · artefact</p>
-  <h1>How we validate ourselves</h1>
-  <p class="lead">
-    We show how we keep our own code honest. This artefact is an extract of our self-assessment:
-    which tests we run, which gates every change has to pass, how good the coverage is, and which
-    gaps we know about.
-  </p>
-  <div class="note">All numbers on this page were verified directly against the code and running pipelines on
-  <strong>12-09-2026</strong>. The source code is in a private repository; the artefact is updated when
-  the numbers move significantly.</div>
-
-  <nav class="toc">
-    <ol>
-      <li><a href="#princippet">The principle: evidence over trust</a></li>
-      <li><a href="#testlandskab">The test landscape</a></li>
-      <li><a href="#ci-gates">Gate checks on every single change</a></li>
-      <li><a href="#repo-beskyttelse">Repository protection &amp; environments</a></li>
-      <li><a href="#daekning">Code coverage</a></li>
-      <li><a href="#dokumentation">Documentation integrity</a></li>
-      <li><a href="#webstatus">Web surfaces: what is tested, and why</a></li>
-      <li><a href="#huller">Known gaps, stated openly</a></li>
-    </ol>
-  </nav>
-
-  <section id="princippet">
-    <h2>The principle: evidence over trust</h2>
-    <p>MR SAAS'y is built on the idea that a system should be able to prove that it works, not just run.
-    That applies to our own development too:</p>
-    <ul>
-      <li><strong>No change lands without evidence.</strong> A pull request is not done until its
-      tests, analysis and deploy risk check are green.</li>
-      <li><strong>Recovery is conservative.</strong> If the history cannot prove that an action is
-      safe to repeat, the system refuses to repeat it automatically.</li>
-      <li><strong>Failure states are visible.</strong> The status system separates "not configured"
-      (yellow) from active failures (red), so operators don't mistake an opt-out for a broken service.</li>
-      <li><strong>The numbers are real.</strong> Everything on this page is measured, not a target.</li>
-    </ul>
-  </section>
-
-  <section id="testlandskab">
-    <h2>The test landscape</h2>
-    <p>The tests live in three layers. <strong>804</strong> non-skippable automated tests run every time
-    the gate runs; a further <strong>23</strong> integration tests are environment-gated (they need an
-    actual database or external service and only run where that configuration is present).</p>
-
-    <div class="stat-grid">
-      <div class="stat ok"><div class="value">1005</div><div class="label">automated tests in total</div></div>
-      <div class="stat ok"><div class="value">804</div><div class="label">run on every gate</div></div>
-      <div class="stat warn"><div class="value">23</div><div class="label">environment-gated (opt-in)</div></div>
-      <div class="stat ok"><div class="value">176</div><div class="label">web tests, all green</div></div>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-light.svg" alt="" width="222" height="26"></a></div>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/#solutions">Solutions</a>
+        <a href="/#results">Results</a>
+        <a href="/#method">Our method</a>
+        <a href="/sikkerhed-og-dataprivatliv/" aria-current="page">Security</a>
+        <a href="/roadmap/">Roadmap</a>
+        <a class="button button-primary" href="/#contact">Talk to us</a>
+      </nav>
     </div>
+  </header>
 
-    <h3>.NET (xUnit)</h3>
-    <table>
-      <thead><tr><th>Project</th><th>Tests</th><th>Skippable</th><th>Covers</th></tr></thead>
-      <tbody>
-        <tr><td>Contracts</td><td class="num">37</td><td class="num">0</td><td>Contracts and capabilities</td></tr>
-        <tr><td>ControlCenter</td><td class="num">356</td><td class="num">1</td><td>Web/API behaviour</td></tr>
-        <tr><td>Core</td><td class="num">344</td><td class="num">0</td><td>MOTOR domain</td></tr>
-        <tr><td>Integration</td><td class="num">87</td><td class="num">22</td><td>Event store + outbox against real engines</td></tr>
-        <tr><td>PostHog</td><td class="num">3</td><td class="num">0</td><td>Telemetry adapter</td></tr>
-      </tbody>
-    </table>
-    <p class="note ok">Integration tests run against real engines: PostgreSQL (Marten) by default
-    and KurrentDB as an opt-in legacy store (ADR-013). They run in CI and can be run locally on demand.</p>
+  <main id="main">
+    <div class="page-hero on-dark">
+      <div class="page-width">
+      <p class="breadcrumbs"><a href="/">Home</a> · <a href="/sikkerhed-og-dataprivatliv/">Security &amp; data privacy</a> · How we validate ourselves</p>
+      <p class="label">Self-validation · artefact</p>
+      <h1>How we validate ourselves</h1>
+      <p class="lead">
+        We show how we keep our own code honest. This artefact is an extract of our self-assessment:
+        which tests we run, which gates every change has to pass, how good the coverage is, and which
+        gaps we know about.
+      </p>
+      </div>
+    </div>
+    <div class="page-body page-width">
+    <div class="note">All numbers on this page were verified directly against the code and running pipelines on
+    <strong>12-09-2026</strong>. The source code is in a private repository; the artefact is updated when
+    the numbers move significantly.</div>
 
-    <h3>Web (Vitest)</h3>
-    <p><strong>42</strong> test files with <strong>176</strong> tests: page behaviour (React Testing Library),
-    projections and pure functions/validation models. Type checking (TypeScript) passes with no errors.</p>
+    <nav class="toc">
+      <ol>
+        <li><a href="#princippet">The principle: evidence over trust</a></li>
+        <li><a href="#testlandskab">The test landscape</a></li>
+        <li><a href="#ci-gates">Gate checks on every single change</a></li>
+        <li><a href="#repo-beskyttelse">Repository protection &amp; environments</a></li>
+        <li><a href="#daekning">Code coverage</a></li>
+        <li><a href="#dokumentation">Documentation integrity</a></li>
+        <li><a href="#webstatus">Web surfaces: what is tested, and why</a></li>
+        <li><a href="#huller">Known gaps, stated openly</a></li>
+      </ol>
+    </nav>
 
-    <h3>Release tooling (Node)</h3>
-    <p><strong>25</strong> test cases cover deploy configuration and deploy risk classification,
-    the code that judges whether a change is safe to deploy.</p>
-  </section>
+    <section id="princippet">
+      <h2>The principle: evidence over trust</h2>
+      <p>MR SAAS'y is built on the idea that a system should be able to prove that it works, not just run.
+      That applies to our own development too:</p>
+      <ul>
+        <li><strong>No change lands without evidence.</strong> A pull request is not done until its
+        tests, analysis and deploy risk check are green.</li>
+        <li><strong>Recovery is conservative.</strong> If the history cannot prove that an action is
+        safe to repeat, the system refuses to repeat it automatically.</li>
+        <li><strong>Failure states are visible.</strong> The status system separates "not configured"
+        (yellow) from active failures (red), so operators don't mistake an opt-out for a broken service.</li>
+        <li><strong>The numbers are real.</strong> Everything on this page is measured, not a target.</li>
+      </ul>
+    </section>
 
-  <section id="ci-gates">
-    <h2>Gate checks on every single change</h2>
-    <p>Every pull request has to pass the following checks before it can be merged (enforced by repository protection):</p>
-    <table>
-      <thead><tr><th>Check</th><th>What it catches</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td>Analyze (C#)</td><td>Static analysis of .NET code</td><td><span class="badge ok">GREEN</span></td></tr>
-        <tr><td>Analyze (TypeScript/JS, Python)</td><td>Static analysis of web and script code</td><td><span class="badge ok">GREEN</span></td></tr>
-        <tr><td>.NET test suites</td><td>804+ tests, from contracts to integration</td><td><span class="badge ok">GREEN</span></td></tr>
-        <tr><td>Control Center web</td><td>176 web tests + type checking</td><td><span class="badge ok">GREEN</span></td></tr>
-        <tr><td>Workers Builds</td><td>Cloudflare Worker builds</td><td><span class="badge ok">GREEN</span></td></tr>
-        <tr><td>Cloudflare Pages</td><td>Web build + deploy</td><td><span class="badge warn">RED ON MAIN</span> (see #gaps)</td></tr>
-        <tr><td>request-copilot-review</td><td>An extra reviewer perspective</td><td><span class="badge ok">GREEN</span></td></tr>
-      </tbody>
-    </table>
-    <p>Locally (and in CI) the gate can run at three levels: <strong>fast</strong> (contracts + type and
-    script checks), <strong>ci</strong> (the .NET and web suites that don't need locked ports) and
-    <strong>full</strong> (everything, including the environment-gated integration tests with throwaway databases).
-    The suite also has sandbox and security checks.</p>
-  </section>
+    <section id="testlandskab">
+      <h2>The test landscape</h2>
+      <p>The tests live in three layers. <strong>804</strong> non-skippable automated tests run every time
+      the gate runs; a further <strong>23</strong> integration tests are environment-gated (they need an
+      actual database or external service and only run where that configuration is present).</p>
 
-  <section id="repo-beskyttelse">
-    <h2>Repository protection &amp; environments</h2>
-    <p>The main branch is protected by a ruleset ("MR SAAS'y main protection", id
-    <code>21150004</code>), which is continuously reconciled by an idempotent reconciler:</p>
-    <table>
-      <thead><tr><th>Rule</th><th>Value</th></tr></thead>
-      <tbody>
-        <tr><td>Merge method</td><td>Squash only</td></tr>
-        <tr><td>Required checks</td><td>All of the above green on the latest head</td></tr>
-        <tr><td>Code coverage</td><td>≥ 35 % (max. drop 80 pp.)</td></tr>
-        <tr><td>Bypass</td><td>Only the organisation admin + one named role level</td></tr>
-      </tbody>
-    </table>
-    <p>Deploy work goes through protected environments with stepped wait approval:</p>
-    <table>
-      <thead><tr><th>Environment</th><th>Wait approval</th><th>Branch policy</th><th>Risk</th></tr></thead>
-      <tbody>
-        <tr><td><code>live-low</code></td><td>0 min.</td><td>Protected</td><td>Low risk</td></tr>
-        <tr><td><code>live-medium</code></td><td>10 min.</td><td>Protected</td><td>Medium risk</td></tr>
-        <tr><td><code>live-high</code></td><td>30 min.</td><td>Protected</td><td>High risk</td></tr>
-        <tr><td><code>live</code></td><td>30 min. + owner approval</td><td>Protected (main only)</td><td>Production</td></tr>
-      </tbody>
-    </table>
-    <p class="note ok">The reconciler's <code>--verify</code> mode is green: the ruleset and environments match
-    the desired state exactly, so the configuration does not drift unnoticed.</p>
-  </section>
+      <div class="stat-grid">
+        <div class="stat ok"><div class="value">1005</div><div class="label">automated tests in total</div></div>
+        <div class="stat ok"><div class="value">804</div><div class="label">run on every gate</div></div>
+        <div class="stat warn"><div class="value">23</div><div class="label">environment-gated (opt-in)</div></div>
+        <div class="stat ok"><div class="value">176</div><div class="label">web tests, all green</div></div>
+      </div>
 
-  <section id="daekning">
-    <h2>Code coverage</h2>
-    <p>Coverage is measured in CI (latest full report) and gives an honest picture: the core is well covered,
-    while new or thin layers are lower. The minimum is enforced by the ruleset (35 %).</p>
-    <table>
-      <thead><tr><th>Area</th><th>Lines</th><th>Branches</th></tr></thead>
-      <tbody>
-        <tr><td>ControlCenter + Core + Contracts</td><td class="num">54.2 %</td><td class="num">37.0 %</td></tr>
-        <tr><td>Core + Contracts (the core)</td><td class="num">76.6 %</td><td class="num">59.7 %</td></tr>
-        <tr><td>Contracts</td><td class="num">24.9 %</td><td class="num">34.5 %</td></tr>
-        <tr><td>PostHog adapter</td><td class="num">6.4 %</td><td class="num">6.0 %</td></tr>
-      </tbody>
-    </table>
-    <p class="note warn">The low numbers for Contracts and PostHog are perhaps the most exposed
-    places; being low does not mean they are down, it means they need more tests.
-    It is on our open improvement plan.</p>
-  </section>
+      <h3>.NET (xUnit)</h3>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+        <thead><tr><th>Project</th><th>Tests</th><th>Skippable</th><th>Covers</th></tr></thead>
+        <tbody>
+          <tr><td>Contracts</td><td class="num">37</td><td class="num">0</td><td>Contracts and capabilities</td></tr>
+          <tr><td>ControlCenter</td><td class="num">356</td><td class="num">1</td><td>Web/API behaviour</td></tr>
+          <tr><td>Core</td><td class="num">344</td><td class="num">0</td><td>MOTOR domain</td></tr>
+          <tr><td>Integration</td><td class="num">87</td><td class="num">22</td><td>Event store + outbox against real engines</td></tr>
+          <tr><td>PostHog</td><td class="num">3</td><td class="num">0</td><td>Telemetry adapter</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note ok">Integration tests run against real engines: PostgreSQL (Marten) by default
+      and KurrentDB as an opt-in legacy store (ADR-013). They run in CI and can be run locally on demand.</p>
 
-  <section id="dokumentation">
-    <h2>Documentation integrity</h2>
-    <p>We treat documentation as code: an internal link check validates every relative reference,
-    and decisions are recorded in two ADR series (platform + architecture).</p>
-    <ul>
-      <li><strong>0</strong> broken internal documentation links (117 checked across the repo).</li>
-      <li><strong>26</strong> decision records (ADRs); new changes have to cite the right series.</li>
-      <li><strong>99</strong> documentation files in <code>docs/</code>, including a solid onboarding guide (CONTRIBUTING.md).</li>
-      <li>A documentation clean-up in 2026 moved the wording from a legacy event store to the
-      current PostgreSQL/Marten default (ADR-013): 142 → 109 mentions, and the rest are deliberate
-      (history, opt-in mechanics, configuration).</li>
-      <li>No loose TODO/TBD markers in the documentation (only the repo name <code>TBD-APS</code> is a false
-      positive).</li>
-    </ul>
-  </section>
+      <h3>Web (Vitest)</h3>
+      <p><strong>42</strong> test files with <strong>176</strong> tests: page behaviour (React Testing Library),
+      projections and pure functions/validation models. Type checking (TypeScript) passes with no errors.</p>
 
-  <section id="webstatus">
-    <h2>Web surfaces: what is tested, and why</h2>
-    <p>We commit to measuring every web surface. Status as of 12-09-2026:</p>
-    <table>
-      <thead><tr><th>Surface</th><th>Test coverage</th></tr></thead>
-      <tbody>
-        <tr><td>Missions, actions, error returns, pull requests, billing</td><td><span class="badge ok">Page tests</span></td></tr>
-        <tr><td>Feature flags (new in 2026)</td><td><span class="badge ok">6 tests</span>: scope, toggle permissions, payload</td></tr>
-        <tr><td>Overview, agents, approvals, agent health, settings, temporal replay, harness history, AI nurse</td><td><span class="badge warn">No page-specific tests</span></td></tr>
-      </tbody>
-    </table>
-    <p class="note">The untested surfaces are thin views: their real logic lives in shared,
-    tested modules (status taxonomy, projections, API contracts). Page-specific render tests would
-    be brittle with little benefit, so they are deliberately not written. We reassess when a surface
-    gets real logic.</p>
-  </section>
+      <h3>Release tooling (Node)</h3>
+      <p><strong>25</strong> test cases cover deploy configuration and deploy risk classification,
+      the code that judges whether a change is safe to deploy.</p>
+    </section>
 
-  <section id="huller">
-    <h2>Known gaps, stated openly</h2>
-    <p>Self-validation is only worth something if it shows what went wrong. Right now these items are open:</p>
-    <ul>
-      <li><strong>The Cloudflare Pages deploy is red on main</strong> (as of 12-09-2026). The deployment of
-      that web surface fails in CI while the fix is worked on in a separate branch
-      (<code>fix/cloudflare-factory-isolation</code>). We have chosen to show it, not hide it.</li>
-      <li><strong>Coverage gaps</strong> in Contracts (24.9 %) and the PostHog adapter (6.4 %).</li>
-      <li><strong>8 thin web surfaces</strong> without page-specific tests (see above).</li>
-      <li><strong>Unused projects</strong>: a Cosmos project has no references or tests and
-      is a candidate for removal.</li>
-    </ul>
-    <p>Our approach is to close gaps in order of priority, not to claim there are none.
-    This artefact is updated when the numbers change.</p>
-  </section>
+    <section id="ci-gates">
+      <h2>Gate checks on every single change</h2>
+      <p>Every pull request has to pass the following checks before it can be merged (enforced by repository protection):</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+        <thead><tr><th>Check</th><th>What it catches</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Analyze (C#)</td><td>Static analysis of .NET code</td><td><span class="badge ok">GREEN</span></td></tr>
+          <tr><td>Analyze (TypeScript/JS, Python)</td><td>Static analysis of web and script code</td><td><span class="badge ok">GREEN</span></td></tr>
+          <tr><td>.NET test suites</td><td>804+ tests, from contracts to integration</td><td><span class="badge ok">GREEN</span></td></tr>
+          <tr><td>Control Center web</td><td>176 web tests + type checking</td><td><span class="badge ok">GREEN</span></td></tr>
+          <tr><td>Workers Builds</td><td>Cloudflare Worker builds</td><td><span class="badge ok">GREEN</span></td></tr>
+          <tr><td>Cloudflare Pages</td><td>Web build + deploy</td><td><span class="badge warn">RED ON MAIN</span> (see #gaps)</td></tr>
+          <tr><td>request-copilot-review</td><td>An extra reviewer perspective</td><td><span class="badge ok">GREEN</span></td></tr>
+        </tbody>
+      </table></div>
+      <p>Locally (and in CI) the gate can run at three levels: <strong>fast</strong> (contracts + type and
+      script checks), <strong>ci</strong> (the .NET and web suites that don't need locked ports) and
+      <strong>full</strong> (everything, including the environment-gated integration tests with throwaway databases).
+      The suite also has sandbox and security checks.</p>
+    </section>
 
-</main>
+    <section id="repo-beskyttelse">
+      <h2>Repository protection &amp; environments</h2>
+      <p>The main branch is protected by a ruleset ("MR SAAS'y main protection", id
+      <code>21150004</code>), which is continuously reconciled by an idempotent reconciler:</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+        <thead><tr><th>Rule</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Merge method</td><td>Squash only</td></tr>
+          <tr><td>Required checks</td><td>All of the above green on the latest head</td></tr>
+          <tr><td>Code coverage</td><td>≥ 35 % (max. drop 80 pp.)</td></tr>
+          <tr><td>Bypass</td><td>Only the organisation admin + one named role level</td></tr>
+        </tbody>
+      </table></div>
+      <p>Deploy work goes through protected environments with stepped wait approval:</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+        <thead><tr><th>Environment</th><th>Wait approval</th><th>Branch policy</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td><code>live-low</code></td><td>0 min.</td><td>Protected</td><td>Low risk</td></tr>
+          <tr><td><code>live-medium</code></td><td>10 min.</td><td>Protected</td><td>Medium risk</td></tr>
+          <tr><td><code>live-high</code></td><td>30 min.</td><td>Protected</td><td>High risk</td></tr>
+          <tr><td><code>live</code></td><td>30 min. + owner approval</td><td>Protected (main only)</td><td>Production</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note ok">The reconciler's <code>--verify</code> mode is green: the ruleset and environments match
+      the desired state exactly, so the configuration does not drift unnoticed.</p>
+    </section>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-light.svg" alt="" width="222" height="26"></a><p>Software built around real workflows.</p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
-    <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
-    <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/#contact">Contact us</a></div>
-  </div>
-  <div class="footer-bottom">
-    <span>© <span class="year">2026</span> MR Software</span>
-    <nav class="footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
-  </div>
-  <img class="footer-wordmark" src="/assets/images/brand/mr-logo-footer.svg" alt="" width="4822" height="563" loading="lazy">
-</footer>
+    <section id="daekning">
+      <h2>Code coverage</h2>
+      <p>Coverage is measured in CI (latest full report) and gives an honest picture: the core is well covered,
+      while new or thin layers are lower. The minimum is enforced by the ruleset (35 %).</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+        <thead><tr><th>Area</th><th>Lines</th><th>Branches</th></tr></thead>
+        <tbody>
+          <tr><td>ControlCenter + Core + Contracts</td><td class="num">54.2 %</td><td class="num">37.0 %</td></tr>
+          <tr><td>Core + Contracts (the core)</td><td class="num">76.6 %</td><td class="num">59.7 %</td></tr>
+          <tr><td>Contracts</td><td class="num">24.9 %</td><td class="num">34.5 %</td></tr>
+          <tr><td>PostHog adapter</td><td class="num">6.4 %</td><td class="num">6.0 %</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note warn">The low numbers for Contracts and PostHog are perhaps the most exposed
+      places; being low does not mean they are down, it means they need more tests.
+      It is on our open improvement plan.</p>
+    </section>
 
-<script src="/js/site.js"></script>
+    <section id="dokumentation">
+      <h2>Documentation integrity</h2>
+      <p>We treat documentation as code: an internal link check validates every relative reference,
+      and decisions are recorded in two ADR series (platform + architecture).</p>
+      <ul>
+        <li><strong>0</strong> broken internal documentation links (117 checked across the repo).</li>
+        <li><strong>26</strong> decision records (ADRs); new changes have to cite the right series.</li>
+        <li><strong>99</strong> documentation files in <code>docs/</code>, including a solid onboarding guide (CONTRIBUTING.md).</li>
+        <li>A documentation clean-up in 2026 moved the wording from a legacy event store to the
+        current PostgreSQL/Marten default (ADR-013): 142 → 109 mentions, and the rest are deliberate
+        (history, opt-in mechanics, configuration).</li>
+        <li>No loose TODO/TBD markers in the documentation (only the repo name <code>TBD-APS</code> is a false
+        positive).</li>
+      </ul>
+    </section>
+
+    <section id="webstatus">
+      <h2>Web surfaces: what is tested, and why</h2>
+      <p>We commit to measuring every web surface. Status as of 12-09-2026:</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+        <thead><tr><th>Surface</th><th>Test coverage</th></tr></thead>
+        <tbody>
+          <tr><td>Missions, actions, error returns, pull requests, billing</td><td><span class="badge ok">Page tests</span></td></tr>
+          <tr><td>Feature flags (new in 2026)</td><td><span class="badge ok">6 tests</span>: scope, toggle permissions, payload</td></tr>
+          <tr><td>Overview, agents, approvals, agent health, settings, temporal replay, harness history, AI nurse</td><td><span class="badge warn">No page-specific tests</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">The untested surfaces are thin views: their real logic lives in shared,
+      tested modules (status taxonomy, projections, API contracts). Page-specific render tests would
+      be brittle with little benefit, so they are deliberately not written. We reassess when a surface
+      gets real logic.</p>
+    </section>
+
+    <section id="huller">
+      <h2>Known gaps, stated openly</h2>
+      <p>Self-validation is only worth something if it shows what went wrong. Right now these items are open:</p>
+      <ul>
+        <li><strong>The Cloudflare Pages deploy is red on main</strong> (as of 12-09-2026). The deployment of
+        that web surface fails in CI while the fix is worked on in a separate branch
+        (<code>fix/cloudflare-factory-isolation</code>). We have chosen to show it, not hide it.</li>
+        <li><strong>Coverage gaps</strong> in Contracts (24.9 %) and the PostHog adapter (6.4 %).</li>
+        <li><strong>8 thin web surfaces</strong> without page-specific tests (see above).</li>
+        <li><strong>Unused projects</strong>: a Cosmos project has no references or tests and
+        is a candidate for removal.</li>
+      </ul>
+      <p>Our approach is to close gaps in order of priority, not to claim there are none.
+      This artefact is updated when the numbers change.</p>
+    </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-light.svg" alt="" width="222" height="26" loading="lazy"></a><p>Software built around real workflows.</p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
+      <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/#contact">Contact us</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span class="year">2026</span> MR Software</span>
+      <nav class="footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
+    </div>
+    <img class="footer-wordmark" src="/assets/images/brand/mr-logo-footer.svg" alt="" width="4822" height="563" loading="lazy">
+  </footer>
 </body>
 </html>
