@@ -221,7 +221,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .section-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--s3); row-gap: var(--s3); }
 .section-head > .label { grid-column: span 3; padding-top: 14px; }
 .section-head > .section-copy { grid-column: span 9; min-width: 0; }
-.section-body { margin-top: var(--s6); }
+.section .section-body { margin-top: var(--s6); }
 
 /* Product frames: illustrations built in HTML and CSS, always with synthetic data. */
 .frame {
