@@ -130,6 +130,25 @@
       });
     });
 
+    // Rotating word: one word at a time, paused while the tab is hidden and off under reduced motion.
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.rotate').forEach(function (box) {
+      var words = box.querySelectorAll('.rotate-word');
+      if (still || words.length < 2) return;
+      var at = 0;
+      setInterval(function () {
+        if (document.hidden) return;
+        var out = words[at];
+        at = (at + 1) % words.length;
+        var next = words[at];
+        out.classList.remove('is-in');
+        out.classList.add('is-out');
+        next.classList.remove('is-out');
+        next.classList.add('is-in');
+        setTimeout(function () { out.classList.remove('is-out'); }, 700);
+      }, 2400);
+    });
+
     if (window.matchMedia('(hover: hover)').matches) {
       document.querySelectorAll('.spot').forEach(function (card) {
         card.addEventListener('pointermove', function (event) {

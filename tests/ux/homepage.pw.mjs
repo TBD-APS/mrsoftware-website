@@ -105,6 +105,7 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
         accent: root.getPropertyValue('--accent').trim(),
         radius: root.getPropertyValue('--radius').trim(),
         heroBackground: getComputedStyle(document.querySelector('.hero')).backgroundColor,
+        footerBackground: getComputedStyle(document.querySelector('.site-footer')).backgroundColor,
         bodyBackground: getComputedStyle(document.body).backgroundColor,
         primaryBackground: getComputedStyle(document.querySelector('.button-primary')).backgroundColor,
         fontLoaded: document.fonts.check('500 16px Geist'),
@@ -112,13 +113,14 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
       };
     });
 
-    expect(tokens.ink).toBe('#0b0b0c');
-    expect(tokens.paper).toBe('#f6f4ef');
-    expect(tokens.accent).toBe('#c4361f');
+    expect(tokens.ink).toBe('#111113');
+    expect(tokens.paper).toBe('#ffffff');
+    expect(tokens.accent).toBe('#d42a1e');
     expect(tokens.radius).toBe('12px');
-    expect(tokens.heroBackground).toBe('rgb(11, 11, 12)');
-    expect(tokens.bodyBackground).toBe('rgb(246, 244, 239)');
-    expect(tokens.primaryBackground).toBe('rgb(196, 54, 31)');
+    expect(tokens.heroBackground).toBe('rgb(255, 255, 255)');
+    expect(tokens.footerBackground).toBe('rgb(212, 42, 30)');
+    expect(tokens.bodyBackground).toBe('rgb(255, 255, 255)');
+    expect(tokens.primaryBackground).toBe('rgb(212, 42, 30)');
     expect(tokens.fontLoaded).toBe(true);
     expect(tokens.overflow).toBeLessThanOrEqual(1);
   } finally {
@@ -280,6 +282,25 @@ test('The hero product switcher changes the example and works from the keyboard'
     await expect(page.getByRole('tab', { name: /FoodTrading/ })).toBeFocused();
     await expect(page.locator('#panel-foodtrading')).toBeVisible();
     for (const tab of await tabs.all()) expect((await tab.boundingBox()).height).toBeGreaterThanOrEqual(44);
+  } finally {
+    await app.close();
+  }
+});
+
+test('The headline word rotates, and stays still when motion is reduced', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base));
+    const shown = page.locator('.rotate-word.is-in');
+    await expect(shown).toHaveText('order.');
+    await expect(shown).toHaveText('shipment.', { timeout: 4_000 });
+    await expect(page.locator('h1')).toHaveAccessibleName('One place for every order, shipment, document and approval.');
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.reload();
+    await page.waitForTimeout(3_000);
+    await expect(page.locator('.rotate-word.is-in')).toHaveText('order.');
   } finally {
     await app.close();
   }
