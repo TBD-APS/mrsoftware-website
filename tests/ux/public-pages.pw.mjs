@@ -116,7 +116,7 @@ test('The social image and the organization data are in place', async ({ page, c
     const data = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
     expect(data['@type']).toBe('Organization');
     expect(data.name).toBe('MR Software');
-    expect(data.email).toBe('kontakt@mrsoftware.dk');
+    expect(data.email).toBe('wp@mrsoftware.dk');
     const image = await request.get(`http://127.0.0.1:${new URL(app.base).port}/assets/images/brand/og-image.png`);
     expect(image.status()).toBe(200);
   } finally {

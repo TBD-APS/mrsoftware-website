@@ -115,12 +115,12 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
 
     expect(tokens.ink).toBe('#111113');
     expect(tokens.paper).toBe('#ffffff');
-    expect(tokens.accent).toBe('#d42a1e');
+    expect(tokens.accent).toBe('#8a1c2c');
     expect(tokens.radius).toBe('12px');
     expect(tokens.heroBackground).toBe('rgb(255, 255, 255)');
-    expect(tokens.footerBackground).toBe('rgb(212, 42, 30)');
+    expect(tokens.footerBackground).toBe('rgb(138, 28, 44)');
     expect(tokens.bodyBackground).toBe('rgb(255, 255, 255)');
-    expect(tokens.primaryBackground).toBe('rgb(212, 42, 30)');
+    expect(tokens.primaryBackground).toBe('rgb(138, 28, 44)');
     expect(tokens.fontLoaded).toBe(true);
     expect(tokens.overflow).toBeLessThanOrEqual(1);
   } finally {
@@ -196,7 +196,7 @@ test('Contact keeps email and a direct location link when the external map is un
     await expect(map).toBeVisible();
     await expect(map).toHaveAccessibleName('MR Software locations and directions');
     await expect(map).toHaveAttribute('loading', 'lazy');
-    await expect(contact.getByRole('link', { name: 'kontakt@mrsoftware.dk', exact: true })).toHaveAttribute('href', 'mailto:kontakt@mrsoftware.dk');
+    await expect(contact.getByRole('link', { name: 'wp@mrsoftware.dk', exact: true })).toHaveAttribute('href', 'mailto:wp@mrsoftware.dk');
     const locationLink = contact.getByRole('link', { name: 'Open location finder' });
     await expect(locationLink).toHaveAttribute('href', await map.getAttribute('src'));
     await expect(locationLink).toHaveAttribute('target', '_blank');
