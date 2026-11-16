@@ -13,8 +13,15 @@ for (const journey of homepageJourneys) {
       await page.goto(publicBase(app.base));
 
       let clicks = 0;
+      let menuTaps = 0;
       if (journey.target) {
-        await page.locator(`a[href="${journey.target}"]`).filter({ visible: true }).first().click({ timeout: 5_000 });
+        const link = page.locator(`a[href="${journey.target}"]`).filter({ visible: true }).first();
+        // On a phone the section links live in the menu, which costs one extra tap.
+        if (!await link.count()) {
+          await page.locator('.nav-toggle').click();
+          menuTaps += 1;
+        }
+        await link.click({ timeout: 5_000 });
         clicks += 1;
         await expect(page).toHaveURL(new RegExp(`${journey.target}$`));
       }
@@ -22,6 +29,7 @@ for (const journey of homepageJourneys) {
       const section = journey.target ? page.locator(journey.target) : page.locator('#main');
       await expect(section.getByRole('heading', { name: journey.expectedHeading }).first()).toBeVisible();
       expect(clicks).toBeLessThanOrEqual(journey.budget);
+      expect(menuTaps).toBeLessThanOrEqual(1);
       await page.waitForLoadState('networkidle');
 
       const widths = await page.locator('html').evaluate(node => ({
@@ -52,12 +60,22 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.locator('#results')).toContainText('3 min');
     await expect(page.locator('#results')).toContainText('4.6 days');
     await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
+    // Each product states its real status, and every illustration is marked as demo data.
+    await expect(page.locator('#solutions article').filter({ hasText: 'Workslip' }).locator('.status-state')).toHaveText('Live');
+    await expect(page.locator('#solutions article').filter({ hasText: 'FoodTrading' }).locator('.status-state')).toHaveText('In development · Demo');
+    for (const figure of await page.locator('#main figure.frame').all()) {
+      await expect(figure).toHaveAttribute('aria-label', /demo data/i);
+      await expect(figure.locator('.demo-tag')).toHaveText('Demo data');
+    }
+    // Internal process notes and prices stay out of the public page.
+    await expect(page.locator('body')).not.toContainText(/internal approval|TODO|kr\.|DKK|€/i);
+    await expect(page.locator('body')).not.toContainText('—');
   } finally {
     await app.close();
   }
 });
 
-test('Homepage uses the approved visual tokens and responsive layout', async ({ page, context }, testInfo) => {
+test('Homepage uses the approved visual tokens and responsive layout', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
@@ -65,20 +83,27 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
 
     const tokens = await page.locator('body').evaluate(() => {
       const root = getComputedStyle(document.documentElement);
-      const hero = getComputedStyle(document.querySelector('.hero'));
       return {
         ink: root.getPropertyValue('--ink').trim(),
         paper: root.getPropertyValue('--paper').trim(),
         accent: root.getPropertyValue('--accent').trim(),
-        heroMinHeight: Number.parseFloat(hero.minHeight),
+        radius: root.getPropertyValue('--radius').trim(),
+        heroBackground: getComputedStyle(document.querySelector('.hero')).backgroundColor,
+        bodyBackground: getComputedStyle(document.body).backgroundColor,
+        primaryBackground: getComputedStyle(document.querySelector('.button-primary')).backgroundColor,
+        fontLoaded: document.fonts.check('500 16px Geist'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       };
     });
 
-    expect(tokens.ink).toBe('#111111');
-    expect(tokens.paper).toBe('#ffffff');
-    expect(tokens.accent).toBe('#c0392b');
-    expect(tokens.heroMinHeight).toBeGreaterThanOrEqual(testInfo.project.name === 'phone' ? 620 : 700);
+    expect(tokens.ink).toBe('#0b0b0c');
+    expect(tokens.paper).toBe('#f6f4ef');
+    expect(tokens.accent).toBe('#c4361f');
+    expect(tokens.radius).toBe('12px');
+    expect(tokens.heroBackground).toBe('rgb(11, 11, 12)');
+    expect(tokens.bodyBackground).toBe('rgb(246, 244, 239)');
+    expect(tokens.primaryBackground).toBe('rgb(196, 54, 31)');
+    expect(tokens.fontLoaded).toBe(true);
     expect(tokens.overflow).toBeLessThanOrEqual(1);
   } finally {
     await app.close();
@@ -121,7 +146,7 @@ test('Homepage stays usable across the required viewport matrix', async ({ page,
       await page.goto(publicBase(app.base));
       const layout = await page.evaluate(() => {
         const h1 = document.querySelector('h1').getBoundingClientRect();
-        const primary = document.querySelector('.button-primary').getBoundingClientRect();
+        const primary = document.querySelector('.hero .button-primary').getBoundingClientRect();
         return {
           overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
           h1Width: h1.width,
