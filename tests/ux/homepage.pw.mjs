@@ -54,15 +54,18 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
 
+    // The homepage cards open the product pages; each product page carries the link to the product itself.
     const solutions = page.locator('#solutions');
-    await expect(solutions.getByRole('link', { name: /Workslip/ })).toHaveAttribute('href', 'https://app.mrsoftware.dk/');
-    await expect(solutions.getByRole('link', { name: /FoodTrading/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
+    await expect(solutions.getByRole('link', { name: 'Workslip', exact: true })).toHaveAttribute('href', '/products/workslip/');
+    await expect(solutions.getByRole('link', { name: 'FoodTrading', exact: true })).toHaveAttribute('href', '/products/foodtrading/');
+    await expect(solutions.getByRole('link', { name: 'Shippy', exact: true })).toHaveAttribute('href', '/products/shippy/');
     await expect(page.locator('#results')).toContainText('3 min');
     await expect(page.locator('#results')).toContainText('4.6 days');
     await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
     // Each product states its real status, and every illustration is marked as demo data.
     await expect(page.locator('#solutions article').filter({ hasText: 'Workslip' }).locator('.status-state')).toHaveText('Live');
     await expect(page.locator('#solutions article').filter({ hasText: 'FoodTrading' }).locator('.status-state')).toHaveText('In development · Demo');
+    await expect(page.locator('#solutions article').filter({ hasText: 'Shippy' }).locator('.status-state')).toHaveText('Demo');
     for (const figure of await page.locator('#main figure.frame').all()) {
       await expect(figure).toHaveAttribute('aria-label', /demo data/i);
       await expect(figure.locator('.demo-tag')).toHaveText('Demo data');
@@ -70,6 +73,19 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     // Internal process notes and prices stay out of the public page.
     await expect(page.locator('body')).not.toContainText(/internal approval|TODO|kr\.|DKK|€/i);
     await expect(page.locator('body')).not.toContainText('—');
+
+    await page.goto(publicBase(app.base) + 'products/workslip/');
+    await expect(page.getByRole('link', { name: /Open Workslip/ })).toHaveAttribute('href', 'https://app.mrsoftware.dk/');
+    await expect(page.locator('.product-hero .status-state')).toHaveText('Live');
+    await page.goto(publicBase(app.base) + 'products/foodtrading/');
+    await expect(page.getByRole('link', { name: /Open the FoodTrading demo/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
+    await expect(page.locator('.product-hero .status-state')).toHaveText('In development · Demo');
+    await page.goto(publicBase(app.base) + 'products/shippy/');
+    await expect(page.locator('.product-hero .status-state')).toHaveText('Demo');
+    // The integrations page names kinds of systems only, and says so.
+    await page.goto(publicBase(app.base) + 'integrations/');
+    await expect(page.locator('.cats li')).toHaveCount(8);
+    await expect(page.locator('#categories')).toContainText('kinds of systems, not brand names');
   } finally {
     await app.close();
   }
@@ -128,7 +144,7 @@ test('Mobile navigation opens, closes, and returns focus', async ({ page, contex
     await expect(toggle).toBeFocused();
 
     await toggle.click();
-    await page.getByRole('link', { name: 'Solutions', exact: true }).click();
+    await page.getByRole('link', { name: 'Products', exact: true }).click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(page).toHaveURL(/#solutions$/);
   } finally {
@@ -156,7 +172,8 @@ test('Homepage stays usable across the required viewport matrix', async ({ page,
       expect(layout.overflow, `${width}px has no horizontal overflow`).toBeLessThanOrEqual(1);
       expect(layout.h1Width, `${width}px shows the page title`).toBeGreaterThan(0);
       expect(layout.primaryHeight, `${width}px keeps the primary target usable`).toBeGreaterThanOrEqual(44);
-      const map = await page.locator('#contact iframe').boundingBox();
+      await page.goto(publicBase(app.base) + 'contact/');
+      const map = await page.locator('#locations iframe').boundingBox();
       expect(map.width, `${width}px gives the location finder usable width`).toBeGreaterThanOrEqual(272);
       expect(map.height, `${width}px reserves space for the location finder`).toBeGreaterThanOrEqual(560);
       expect(map.x + map.width, `${width}px keeps the location finder inside the page`).toBeLessThanOrEqual(width);
@@ -171,8 +188,8 @@ test('Contact keeps email and a direct location link when the external map is un
   try {
     // The isolated context blocks external services; verify the fallback without Google availability.
     await prepareContext(context, app.base);
-    await page.goto(publicBase(app.base) + '#contact');
-    const contact = page.locator('#contact');
+    await page.goto(publicBase(app.base) + 'contact/');
+    const contact = page.locator('#main');
     const map = contact.locator('iframe');
     await expect(map).toBeVisible();
     await expect(map).toHaveAccessibleName('MR Software locations and directions');
@@ -241,6 +258,28 @@ test('Header and footer carry the one-piece MR Software logo', async ({ page, co
     const footer = await page.locator('.site-footer').boundingBox();
     const wordmark = await page.locator('.footer-wordmark').boundingBox();
     expect(wordmark.width).toBeGreaterThan(footer.width * 0.7);
+  } finally {
+    await app.close();
+  }
+});
+
+test('The hero product switcher changes the example and works from the keyboard', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base));
+    const tabs = page.getByRole('tab');
+    await expect(tabs).toHaveCount(3);
+    await expect(page.locator('#panel-workslip')).toBeVisible();
+    await expect(page.locator('#panel-shippy')).toBeHidden();
+    await page.getByRole('tab', { name: /Shippy/ }).click();
+    await expect(page.getByRole('tab', { name: /Shippy/ })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#panel-shippy')).toBeVisible();
+    await expect(page.locator('#panel-workslip')).toBeHidden();
+    await page.keyboard.press('ArrowLeft');
+    await expect(page.getByRole('tab', { name: /FoodTrading/ })).toBeFocused();
+    await expect(page.locator('#panel-foodtrading')).toBeVisible();
+    for (const tab of await tabs.all()) expect((await tab.boundingBox()).height).toBeGreaterThanOrEqual(44);
   } finally {
     await app.close();
   }

@@ -11,7 +11,7 @@ export const homepageJourneys = [
     task: 'Find both solutions',
     budget: 1,
     target: '#solutions',
-    expectedHeading: /Two products\. Each one follows a real workflow/,
+    expectedHeading: /Three products\. Each one follows a real workflow/,
   },
   {
     id: 'see-results',

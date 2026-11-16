@@ -96,3 +96,48 @@
     });
   });
 })();
+
+// Product switcher (tabs) and spotlight cards.
+(function () {
+  'use strict';
+  function ready(run) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+    else run();
+  }
+  ready(function () {
+    document.querySelectorAll('[role="tablist"]').forEach(function (list) {
+      var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+      function select(tab, focus) {
+        tabs.forEach(function (other) {
+          var on = other === tab;
+          other.setAttribute('aria-selected', String(on));
+          other.tabIndex = on ? 0 : -1;
+          document.getElementById(other.getAttribute('aria-controls')).hidden = !on;
+        });
+        if (focus) tab.focus();
+      }
+      list.addEventListener('click', function (event) {
+        var tab = event.target.closest('[role="tab"]');
+        if (tab) select(tab, false);
+      });
+      list.addEventListener('keydown', function (event) {
+        var index = tabs.indexOf(document.activeElement);
+        if (index === -1) return;
+        var next = { ArrowRight: index + 1, ArrowLeft: index - 1, Home: 0, End: tabs.length - 1 }[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        select(tabs[(next + tabs.length) % tabs.length], true);
+      });
+    });
+
+    if (window.matchMedia('(hover: hover)').matches) {
+      document.querySelectorAll('.spot').forEach(function (card) {
+        card.addEventListener('pointermove', function (event) {
+          var box = card.getBoundingClientRect();
+          card.style.setProperty('--mx', (event.clientX - box.left) + 'px');
+          card.style.setProperty('--my', (event.clientY - box.top) + 'px');
+        });
+      });
+    }
+  });
+})();

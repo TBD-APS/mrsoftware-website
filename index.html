@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="facebook-domain-verification" content="4k5pvrevtjmdset6zicjofanac2tih">
   <title>MR Software | Work, documents and approvals in one place</title>
-  <meta name="description" content="MR Software builds Workslip for trades and field service and FoodTrading for international food trade. Software that follows the job, so information is recorded once.">
+  <meta name="description" content="MR Software builds Workslip for field service, FoodTrading for food trade and Shippy for shipping. Software that follows the job and connects to the systems you already use.">
   <link rel="canonical" href="https://mrsoftware.dk/">
   <meta name="theme-color" content="#0b0b0c">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MR Software">
   <meta property="og:title" content="MR Software | Work, documents and approvals in one place">
-  <meta property="og:description" content="Software that follows the job, so information is recorded once. Workslip for trades and field service. FoodTrading for international food trade.">
+  <meta property="og:description" content="MR Software builds Workslip for field service, FoodTrading for food trade and Shippy for shipping. Software that follows the job and connects to the systems you already use.">
   <meta property="og:url" content="https://mrsoftware.dk/">
   <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -19,14 +19,12 @@
   <meta property="og:image:alt" content="MR Software. Work, documents and approvals in one place.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MR Software | Work, documents and approvals in one place">
-  <meta name="twitter:description" content="Software that follows the job, so information is recorded once.">
+  <meta name="twitter:description" content="MR Software builds Workslip for field service, FoodTrading for food trade and Shippy for shipping. Software that follows the job and connects to the systems you already use.">
   <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <link rel="preload" href="/assets/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/development-overview.css">
   <script src="/js/development-overview.js" defer></script>
-  <script src="/js/site.js" defer></script>
-  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -46,6 +44,8 @@
     }
   }
   </script>
+  <script src="/js/site.js" defer></script>
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
 <body class="home">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -55,11 +55,11 @@
       <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-light.svg" alt="" width="222" height="26"></a></div>
       <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
-        <a href="#solutions">Solutions</a>
+        <a href="#solutions">Products</a>
+        <a href="/integrations/">Integrations</a>
         <a href="#results">Results</a>
         <a href="#method">Our method</a>
         <a href="/sikkerhed-og-dataprivatliv/">Security</a>
-        <a href="/roadmap/">Roadmap</a>
         <a class="button button-primary" href="#contact">Talk to us</a>
       </nav>
     </div>
@@ -68,38 +68,77 @@
   <main id="main">
     <section class="hero on-dark" aria-labelledby="hero-heading">
       <div class="page-width">
-        <h1 id="hero-heading">Work, documents and approvals in one place.</h1>
-        <p class="lead">MR Software builds software that follows the job from the first task to the final sign-off. Information is recorded once, and everyone can see what happens next.</p>
+        <p class="pill">Software for trading, shipping and field service</p>
+        <h1 class="blur-in" id="hero-heading"><span style="--i:0">Work,</span> <span style="--i:1">documents</span> <span style="--i:2">and</span> <span style="--i:3">approvals</span> <span style="--i:4">in</span> <span style="--i:5">one</span> <span style="--i:6">place.</span></h1>
+        <p class="lead">MR Software builds Workslip, FoodTrading and Shippy. Each one follows the job from the first task to the final sign-off, and connects to the systems you already use.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#contact">Talk to us</a>
           <a class="button button-secondary" href="#solutions">See how it works</a>
         </div>
 
-        <!-- Illustration, not a screenshot. Every name, number and time in it is synthetic. -->
-        <figure class="frame hero-frame" role="img" aria-label="Illustration with demo data: a work queue of five jobs with their status, and the timeline of one job from created to awaiting approval.">
-          <div aria-hidden="true">
-            <div class="frame-bar"><strong>Work queue</strong><span class="demo-tag">Demo data</span></div>
-            <div class="queue">
-              <ul class="queue-list">
-                <li><span class="id">J-1042</span><span class="job">Heat pump service</span><span class="chip chip-done">Approved</span></li>
-                <li class="is-selected"><span class="id">J-1043</span><span class="job">Bathroom renovation, stage 2</span><span class="chip chip-wait">Awaiting approval</span></li>
-                <li><span class="id">J-1044</span><span class="job">Electrical inspection</span><span class="chip">On site</span></li>
-                <li><span class="id">J-1045</span><span class="job">Window replacement</span><span class="chip chip-idle">Planned</span></li>
-                <li><span class="id">J-1046</span><span class="job">Roof inspection</span><span class="chip chip-idle">Planned</span></li>
-              </ul>
-              <div class="queue-detail">
-                <span class="chip chip-wait">Awaiting approval</span>
-                <p class="queue-title">Bathroom renovation, stage 2</p>
-                <ol class="timeline">
-                  <li><b>Job created</b>Office, 08:12</li>
-                  <li><b>Checklist completed</b>On site, 10:40</li>
-                  <li><b>6 photos attached</b>On site, 10:42</li>
-                  <li class="is-next"><b>Approval</b>Waiting for the office</li>
-                </ol>
-              </div>
-            </div>
+        <!-- Illustrations, not screenshots. Every name, number and time in them is synthetic. -->
+        <div class="switcher">
+          <div class="tabs" role="tablist" aria-label="Product examples">
+            <button class="tab" type="button" role="tab" id="tab-workslip" aria-controls="panel-workslip" aria-selected="true">Workslip <small>Field service</small></button>
+            <button class="tab" type="button" role="tab" id="tab-foodtrading" aria-controls="panel-foodtrading" aria-selected="false" tabindex="-1">FoodTrading <small>Trade</small></button>
+            <button class="tab" type="button" role="tab" id="tab-shippy" aria-controls="panel-shippy" aria-selected="false" tabindex="-1">Shippy <small>Shipping</small></button>
           </div>
-        </figure>
+          <div class="tabpanel" role="tabpanel" id="panel-workslip" aria-labelledby="tab-workslip">
+            <figure class="frame" role="img" aria-label="Illustration with demo data: a work queue of five jobs with their status, and the timeline of one job from created to awaiting approval.">
+              <div aria-hidden="true">
+                <div class="frame-bar"><strong>Workslip · Work queue</strong><span class="demo-tag">Demo data</span></div>
+                <div class="queue">
+                  <ul class="queue-list">
+                    <li><span class="id">J-1042</span><span class="job">Heat pump service</span><span class="chip chip-done">Approved</span></li>
+                    <li class="is-selected"><span class="id">J-1043</span><span class="job">Bathroom renovation, stage 2</span><span class="chip chip-wait">Awaiting approval</span></li>
+                    <li><span class="id">J-1044</span><span class="job">Electrical inspection</span><span class="chip">On site</span></li>
+                    <li><span class="id">J-1045</span><span class="job">Window replacement</span><span class="chip chip-idle">Planned</span></li>
+                    <li><span class="id">J-1046</span><span class="job">Roof inspection</span><span class="chip chip-idle">Planned</span></li>
+                  </ul>
+                  <div class="queue-detail">
+                    <span class="chip chip-wait">Awaiting approval</span>
+                    <p class="queue-title">Bathroom renovation, stage 2</p>
+                    <ol class="timeline">
+                      <li><b>Job created</b>Office, 08:12</li>
+                      <li><b>Checklist completed</b>On site, 10:40</li>
+                      <li><b>6 photos attached</b>On site, 10:42</li>
+                      <li class="is-next"><b>Approval</b>Waiting for the office</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </figure>
+          </div>
+          <div class="tabpanel" role="tabpanel" id="panel-foodtrading" aria-labelledby="tab-foodtrading" hidden>
+            <figure class="frame" role="img" aria-label="Illustration with demo data: a supplier, a product and a buyer are combined into one offer that shows its lines, its recipient and its status.">
+              <div aria-hidden="true">
+                <div class="frame-bar"><strong>FoodTrading</strong><span class="demo-tag">Demo data</span></div>
+                <div class="merge">
+                  <ul class="merge-in"><li>Supplier<small>Supplier A</small></li><li>Product<small>Olive oil, 1 L</small></li><li>Buyer<small>Buyer B</small></li></ul>
+                  <svg class="merge-arrow" viewBox="0 0 40 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h28M29 1.5 34 6l-5 4.5"/></svg>
+                  <div class="merge-out"><strong>Offer</strong><dl><div><dt>Lines</dt><dd>3 products</dd></div><div><dt>To</dt><dd>Buyer B</dd></div><div><dt>Status</dt><dd><span class="chip chip-idle">Draft</span></dd></div></dl></div>
+                </div>
+              </div>
+            </figure>
+          </div>
+          <div class="tabpanel" role="tabpanel" id="panel-shippy" aria-labelledby="tab-shippy" hidden>
+            <figure class="frame" role="img" aria-label="Illustration with demo data: one shipment shown as four steps, booked, documents ready, in transit and delivered, with its documents listed underneath.">
+              <div aria-hidden="true">
+                <div class="frame-bar"><strong>Shippy · Shipment</strong><span class="demo-tag">Demo data</span></div>
+                <div class="lane">
+                  <div class="lane-head"><div><b>Shipment S-2031</b><span>Port A to Port B · 2 containers</span></div><span class="chip chip-wait">In transit</span></div>
+                  <ol class="lane-steps">
+                    <li><b>Booked</b>Day 1</li>
+                    <li><b>Documents ready</b>Day 2</li>
+                    <li class="is-now"><b>In transit</b>Day 3 to now</li>
+                    <li class="is-next"><b>Delivered</b>Expected</li>
+                  </ol>
+                  <ul class="lane-docs"><li>Booking confirmation</li><li>Packing list</li><li>Transport document</li></ul>
+                </div>
+              </div>
+            </figure>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -112,92 +151,73 @@
           </div>
         </div>
         <ul class="points section-body" data-reveal>
-          <li><h3>Typed twice</h3><p>Details are written down on site and typed in again at the office.</p></li>
-          <li><h3>Spread out</h3><p>Messages, photos and files live in different places, so the full picture has to be pieced together.</p></li>
+          <li><h3>Typed twice</h3><p>Details are written down in one place and typed in again in another.</p></li>
+          <li><h3>Spread out</h3><p>Messages, documents and files live in different places, so the full picture has to be pieced together.</p></li>
           <li><h3>Left waiting</h3><p>When nobody can see who has the job now, it waits until someone asks.</p></li>
         </ul>
       </div>
     </section>
 
-    <section class="section on-light" id="solutions" aria-labelledby="solutions-heading">
+    <section class="section on-dark" id="solutions" aria-labelledby="solutions-heading">
       <div class="page-width">
         <div class="section-head" data-reveal>
-          <p class="label"><span class="num">02</span> Solutions</p>
+          <p class="label"><span class="num">02</span> Products</p>
           <div class="section-copy">
-            <h2 class="heading" id="solutions-heading">Two products. Each one follows a real workflow.</h2>
+            <h2 class="heading" id="solutions-heading">Three products. Each one follows a real workflow.</h2>
           </div>
         </div>
-
-        <div class="section-body">
-          <article class="product" aria-labelledby="workslip-title" data-reveal>
-            <div class="product-copy">
-              <p class="status"><span class="status-state">Live</span><span>Trades and field service</span></p>
-              <h3 id="workslip-title">Workslip</h3>
-              <p class="product-summary">Workslip keeps the job, its documentation and its approval in one digital workflow, from the field to the office.</p>
-              <ol class="steps">
-                <li><b>Field</b><span>The task, photos and checks are recorded on site.</span></li>
-                <li><b>Office</b><span>The status is visible without calling anyone.</span></li>
-                <li><b>Approved</b><span>The documentation is ready when the job is signed off.</span></li>
-              </ol>
-              <a class="text-link" href="https://app.mrsoftware.dk/">Open Workslip <span class="arrow" aria-hidden="true">↗</span></a>
-            </div>
-            <figure class="frame product-visual" role="img" aria-label="Illustration with demo data: a checklist, photos and a note recorded on site end up in one job overview that shows status, documentation and approver.">
+        <div class="bento section-body" data-reveal>
+          <article class="bento-card is-wide spot" aria-labelledby="workslip-title">
+            <p class="status"><span class="status-state">Live</span><span>Trades and field service</span></p>
+            <h3 id="workslip-title"><a href="/products/workslip/">Workslip</a></h3>
+            <p>Keeps the job, its documentation and its approval in one digital workflow, from the field to the office.</p>
+            <figure class="frame" role="img" aria-label="Illustration with demo data: a checklist, photos and a note recorded on site end up in one job overview that shows status, documentation and approver.">
               <div aria-hidden="true">
                 <div class="frame-bar"><strong>Workslip</strong><span class="demo-tag">Demo data</span></div>
                 <div class="merge">
-                  <ul class="merge-in">
-                    <li>Checklist<small>12 of 12 points</small></li>
-                    <li>Photos<small>6 attached</small></li>
-                    <li>Note<small>Written on site</small></li>
-                  </ul>
+                  <ul class="merge-in"><li>Checklist<small>12 of 12 points</small></li><li>Photos<small>6 attached</small></li><li>Note<small>Written on site</small></li></ul>
                   <svg class="merge-arrow" viewBox="0 0 40 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h28M29 1.5 34 6l-5 4.5"/></svg>
-                  <div class="merge-out">
-                    <strong>Job overview</strong>
-                    <dl>
-                      <div><dt>Status</dt><dd><span class="chip chip-wait">Awaiting approval</span></dd></div>
-                      <div><dt>Documentation</dt><dd><span class="chip chip-done">Complete</span></dd></div>
-                      <div><dt>Approver</dt><dd>Office</dd></div>
-                    </dl>
-                  </div>
+                  <div class="merge-out"><strong>Job overview</strong><dl><div><dt>Status</dt><dd><span class="chip chip-wait">Awaiting approval</span></dd></div><div><dt>Documentation</dt><dd><span class="chip chip-done">Complete</span></dd></div><div><dt>Approver</dt><dd>Office</dd></div></dl></div>
                 </div>
               </div>
             </figure>
+            <span class="bento-more" aria-hidden="true">See Workslip <span class="arrow">→</span></span>
           </article>
+          <article class="bento-card spot status-building" aria-labelledby="foodtrading-title">
+            <p class="status"><span class="status-state">In development · Demo</span><span>International food trade</span></p>
+            <h3 id="foodtrading-title"><a href="/products/foodtrading/">FoodTrading</a></h3>
+            <p>Connects suppliers, products, buyers and offers in one trading workflow.</p>
+            <span class="bento-more" aria-hidden="true">See FoodTrading <span class="arrow">→</span></span>
+          </article>
+          <article class="bento-card spot status-building" aria-labelledby="shippy-title">
+            <p class="status"><span class="status-state">Demo</span><span>Shipping</span></p>
+            <h3 id="shippy-title"><a href="/products/shippy/">Shippy</a></h3>
+            <p>Keeps a shipment, its documents and its status in one workflow, from booking to delivery.</p>
+            <span class="bento-more" aria-hidden="true">See Shippy <span class="arrow">→</span></span>
+          </article>
+        </div>
+      </div>
+    </section>
 
-          <article class="product product-flip status-building" aria-labelledby="foodtrading-title" data-reveal>
-            <div class="product-copy">
-              <p class="status"><span class="status-state">In development · Demo</span><span>International food trade</span></p>
-              <h3 id="foodtrading-title">FoodTrading</h3>
-              <p class="product-summary">FoodTrading connects suppliers, products, buyers and offers in one trading workflow.</p>
-              <ol class="steps">
-                <li><b>Supplier</b><span>Products are linked to where they come from.</span></li>
-                <li><b>Offer</b><span>Customer offers are prepared from one overview.</span></li>
-                <li><b>Dialogue</b><span>Send-outs and replies are kept together.</span></li>
-              </ol>
-              <a class="text-link" href="https://foodtrading.mrsoftware.dk/">Open the FoodTrading demo <span class="arrow" aria-hidden="true">↗</span></a>
-            </div>
-            <figure class="frame product-visual" role="img" aria-label="Illustration with demo data: a supplier, a product and a buyer are combined into one offer that shows its lines, its recipient and its status.">
-              <div aria-hidden="true">
-                <div class="frame-bar"><strong>FoodTrading</strong><span class="demo-tag">Demo data</span></div>
-                <div class="merge">
-                  <ul class="merge-in">
-                    <li>Supplier<small>Supplier A</small></li>
-                    <li>Product<small>Olive oil, 1 L</small></li>
-                    <li>Buyer<small>Buyer B</small></li>
-                  </ul>
-                  <svg class="merge-arrow" viewBox="0 0 40 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h28M29 1.5 34 6l-5 4.5"/></svg>
-                  <div class="merge-out">
-                    <strong>Offer</strong>
-                    <dl>
-                      <div><dt>Lines</dt><dd>3 products</dd></div>
-                      <div><dt>To</dt><dd>Buyer B</dd></div>
-                      <div><dt>Status</dt><dd><span class="chip chip-idle">Draft</span></dd></div>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </figure>
-          </article>
+    <section class="section on-light" id="integrations" aria-labelledby="integrations-heading">
+      <div class="page-width">
+        <div class="section-head" data-reveal>
+          <p class="label"><span class="num">03</span> Integrations</p>
+          <div class="section-copy">
+            <h2 class="heading" id="integrations-heading">Built to connect with what trading and shipping already run on.</h2>
+            <p class="lead">Data moves between our products and the systems around them, so it is entered once.</p>
+            <ul class="cat-chips">
+              <li>ERP and order management</li>
+              <li>Accounting and invoicing</li>
+              <li>Carriers and shipping lines</li>
+              <li>Freight forwarders</li>
+              <li>Customs and trade documents</li>
+              <li>Warehouse and inventory</li>
+              <li>Email and messaging</li>
+              <li>Files and spreadsheets</li>
+            </ul>
+            <a class="text-link" href="/integrations/">See all integrations <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
         </div>
       </div>
     </section>
@@ -209,7 +229,7 @@
     <section class="section on-dark" id="results" aria-labelledby="results-heading">
       <div class="page-width">
         <div class="section-head" data-reveal>
-          <p class="label"><span class="num">03</span> Results</p>
+          <p class="label"><span class="num">04</span> Results</p>
           <div class="section-copy">
             <h2 class="heading" id="results-heading">Two measurements from Workslip.</h2>
           </div>
@@ -233,7 +253,7 @@
     <section class="section on-light" id="method" aria-labelledby="method-heading">
       <div class="page-width">
         <div class="section-head" data-reveal>
-          <p class="label"><span class="num">04</span> Our method</p>
+          <p class="label"><span class="num">05</span> Our method</p>
           <div class="section-copy">
             <h2 class="heading" id="method-heading">Four steps, in this order.</h2>
           </div>
@@ -256,7 +276,7 @@
     <section class="section on-dark" id="responsibility" aria-labelledby="responsibility-heading">
       <div class="page-width">
         <div class="section-head" data-reveal>
-          <p class="label"><span class="num">05</span> Technical responsibility</p>
+          <p class="label"><span class="num">06</span> Technical responsibility</p>
           <div class="section-copy">
             <h2 class="heading" id="responsibility-heading">We publish how we work.</h2>
             <p class="lead">Our security practices, our test results and our known gaps are public. You can read them before you talk to us.</p>
@@ -271,42 +291,33 @@
       </div>
     </section>
 
-    <!-- TODO: this project has no form backend or form service, so contact is email only. Add a short form
-         (name, email, message) once a backend is chosen. -->
-    <section class="section on-light" id="contact" aria-labelledby="contact-heading">
+    <section class="section on-light" id="questions" aria-labelledby="questions-heading">
       <div class="page-width">
         <div class="section-head" data-reveal>
-          <p class="label"><span class="num">06</span> Contact</p>
+          <p class="label"><span class="num">07</span> Questions</p>
+          <div class="section-copy">
+            <h2 class="heading" id="questions-heading">Straight answers.</h2>
+            <div class="faq section-body">
+              <details><summary>Which products can I use today?</summary><p>Workslip is live. FoodTrading is in development and can be seen as a demo. Shippy can be seen as a demo.</p></details>
+              <details><summary>Does it work with the systems we already have?</summary><p>That is how the products are meant to be used. Tell us which systems you run and we confirm what is supported today. The <a href="/integrations/">integrations page</a> lists the kinds of systems we connect to.</p></details>
+              <details><summary>What does it cost?</summary><p>We do not publish prices yet. Write to us about your workflow and we will tell you what a solution involves.</p></details>
+              <details><summary>How do we get started?</summary><p>With one workflow. We map it together, build the smallest part that can be used for real, and measure before building more.</p></details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section on-dark" id="contact" aria-labelledby="contact-heading">
+      <div class="page-width">
+        <div class="section-head" data-reveal>
+          <p class="label"><span class="num">08</span> Contact</p>
           <div class="section-copy">
             <h2 class="heading" id="contact-heading">Tell us where the work gets stuck.</h2>
             <p class="lead">Write a few lines about the workflow. We reply by email and tell you whether software is the right fix.</p>
             <div class="contact-actions">
               <a class="button button-primary" href="mailto:kontakt@mrsoftware.dk?subject=Conversation%20about%20software%20and%20workflows">Email us <span class="arrow" aria-hidden="true">→</span></a>
-            </div>
-
-            <div class="contact-grid">
-              <div>
-                <h3>Helpful to include</h3>
-                <ul>
-                  <li>The workflow, in your own words.</li>
-                  <li>The systems you use for it today.</li>
-                  <li>Who is involved, and where it waits.</li>
-                </ul>
-              </div>
-              <div>
-                <h3>Details</h3>
-                <dl>
-                  <div><dt>Email</dt><dd><a class="contact-email" href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></dd></div>
-                  <div><dt>Address</dt><dd>MR software I/S<br>Ceresbyen 66, st. 1.<br>8000 Aarhus C, Denmark</dd></div>
-                  <div><dt>CVR</dt><dd>46743091</dd></div>
-                </dl>
-              </div>
-            </div>
-
-            <div class="contact-locations" aria-labelledby="locations-heading">
-              <h3 id="locations-heading">Our locations</h3>
-              <iframe class="contact-map" src="https://storage.googleapis.com/maps-solutions-pztn9ofean/locator-plus/rz1v/locator-plus.html" title="MR Software locations and directions" width="100%" height="560" loading="lazy"></iframe>
-              <a class="text-link contact-map-link" href="https://storage.googleapis.com/maps-solutions-pztn9ofean/locator-plus/rz1v/locator-plus.html" target="_blank" rel="noopener noreferrer">Open location finder <span class="arrow" aria-hidden="true">↗</span></a>
+              <a class="button button-secondary" href="/contact/">Contact details</a>
             </div>
           </div>
         </div>
@@ -317,8 +328,8 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-logo-light.svg" alt="" width="222" height="26" loading="lazy"></a><p>Software built around real workflows.</p><a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a></div>
-      <div class="footer-column"><h2>Products</h2><a href="https://app.mrsoftware.dk/">Workslip</a><a href="https://foodtrading.mrsoftware.dk/">FoodTrading</a><a href="/roadmap/">Roadmap</a></div>
-      <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/#contact">Contact us</a></div>
+      <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/foodtrading/">FoodTrading</a><a href="/products/shippy/">Shippy</a><a href="/integrations/">Integrations</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a><a href="/roadmap/">Roadmap</a><a href="/contact/">Contact us</a></div>
     </div>
     <div class="footer-bottom">
       <span>© <span class="year">2026</span> MR Software</span>
