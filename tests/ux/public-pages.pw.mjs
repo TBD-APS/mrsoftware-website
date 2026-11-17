@@ -6,7 +6,7 @@ import { prepareContext } from './fixtures.mjs';
 const pages = [
   '',
   'products/workslip/',
-  'products/foodtrading/',
+  'products/tradey/',
   'products/shippy/',
   'integrations/',
   'contact/',

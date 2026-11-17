@@ -57,14 +57,14 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     // The homepage cards open the product pages; each product page carries the link to the product itself.
     const solutions = page.locator('#solutions');
     await expect(solutions.getByRole('link', { name: 'Workslip', exact: true })).toHaveAttribute('href', '/products/workslip/');
-    await expect(solutions.getByRole('link', { name: 'FoodTrading', exact: true })).toHaveAttribute('href', '/products/foodtrading/');
+    await expect(solutions.getByRole('link', { name: 'Tradey', exact: true })).toHaveAttribute('href', '/products/tradey/');
     await expect(solutions.getByRole('link', { name: 'Shippy', exact: true })).toHaveAttribute('href', '/products/shippy/');
     await expect(page.locator('#results')).toContainText('3 min');
     await expect(page.locator('#results')).toContainText('4.6 days');
     await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
     // Each product states its real status, and every illustration is marked as demo data.
     await expect(page.locator('#solutions article').filter({ hasText: 'Workslip' }).locator('.status-state')).toHaveText('Live');
-    await expect(page.locator('#solutions article').filter({ hasText: 'FoodTrading' }).locator('.status-state')).toHaveText('In development · Demo');
+    await expect(page.locator('#solutions article').filter({ hasText: 'Tradey' }).locator('.status-state')).toHaveText('In development · Demo');
     await expect(page.locator('#solutions article').filter({ hasText: 'Shippy' }).locator('.status-state')).toHaveText('Demo');
     for (const figure of await page.locator('#main figure.frame').all()) {
       await expect(figure).toHaveAttribute('aria-label', /demo data/i);
@@ -77,8 +77,8 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await page.goto(publicBase(app.base) + 'products/workslip/');
     await expect(page.getByRole('link', { name: /Open Workslip/ })).toHaveAttribute('href', 'https://app.mrsoftware.dk/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Live');
-    await page.goto(publicBase(app.base) + 'products/foodtrading/');
-    await expect(page.getByRole('link', { name: /Open the FoodTrading demo/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
+    await page.goto(publicBase(app.base) + 'products/tradey/');
+    await expect(page.getByRole('link', { name: /Open the Tradey demo/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('In development · Demo');
     await page.goto(publicBase(app.base) + 'products/shippy/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Demo');
