@@ -253,16 +253,14 @@ test('Header and footer carry the one-piece MR Software logo', async ({ page, co
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
     await expect(page.locator('.brand a')).toHaveAttribute('aria-label', 'MR Software home');
-    const logos = page.locator('.brand-logo, .footer-wordmark');
-    await expect(logos).toHaveCount(3);
-    await page.locator('.footer-wordmark').scrollIntoViewIfNeeded();
+    const logos = page.locator('.brand-logo');
+    await expect(logos).toHaveCount(2);
+    await page.locator('.footer-logo').scrollIntoViewIfNeeded();
     for (const logo of await logos.all()) {
       await expect.poll(() => logo.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
+      await expect(logo).toHaveAttribute('src', '/assets/images/brand/mr-mark.svg');
     }
     await expect(page.locator('.footer-legal').getByRole('link', { name: 'Privacy policy' })).toHaveAttribute('href', '/privacy-policy/');
-    const footer = await page.locator('.site-footer').boundingBox();
-    const wordmark = await page.locator('.footer-wordmark').boundingBox();
-    expect(wordmark.width).toBeGreaterThan(footer.width * 0.7);
   } finally {
     await app.close();
   }

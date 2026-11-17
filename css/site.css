@@ -181,7 +181,7 @@ a:hover > .arrow { transform: translateX(4px); }
 }
 .site-header-inner { width: var(--page); min-height: var(--header-h); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
 .brand a { display: inline-flex; align-items: center; min-height: 44px; }
-.brand-logo { width: auto; height: 20px; }
+.brand-logo { width: auto; height: 26px; }
 .nav { flex: 1; display: flex; align-items: center; gap: 4px; }
 .nav > a:first-child { margin-left: auto; }
 .nav a:not(.button) {
@@ -497,7 +497,6 @@ a:hover > .arrow { transform: translateX(4px); }
 .footer-bottom { width: min(100%, 1376px); margin: var(--s6) auto 0; padding-top: var(--s2); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px var(--s3); color: var(--muted-on-light); border-top: 1px solid var(--hairline-light); }
 .footer-status { gap: 8px; }
 .footer-status::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(27, 116, 72, .15); }
-.footer-wordmark { width: min(100%, 1376px); height: auto; margin: var(--s5) auto 0; opacity: .9; }
 
 /* Subpages */
 .page-hero { padding-block: clamp(48px, 7vw, 96px) clamp(40px, 5vw, 72px); border-bottom: 1px solid var(--hairline-light); }
