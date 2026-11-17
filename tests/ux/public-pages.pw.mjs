@@ -6,7 +6,7 @@ import { prepareContext } from './fixtures.mjs';
 const pages = [
   '',
   'products/workslip/',
-  'products/foodtrading/',
+  'products/tradey/',
   'products/shippy/',
   'integrations/',
   'contact/',
@@ -30,12 +30,11 @@ for (const path of pages) {
       page.on('pageerror', error => errors.push(error.message));
       await page.goto(publicBase(app.base) + path);
 
-      // One logo in the header; one logo and the full-width wordmark in the footer.
+      // One logo in the header and one in the footer.
       await expect(page.locator('.site-header img')).toHaveCount(1);
       await expect(page.locator('.site-header .brand a')).toHaveAttribute('href', '/');
       await expect(page.locator('.site-footer .footer-logo img')).toHaveCount(1);
-      await expect(page.locator('.site-footer .footer-wordmark')).toHaveCount(1);
-      await page.locator('.footer-wordmark').scrollIntoViewIfNeeded();
+      await page.locator('.site-footer .footer-logo').scrollIntoViewIfNeeded();
       for (const logo of await page.locator('.site-header img, .site-footer img').all()) {
         await expect.poll(() => logo.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
       }

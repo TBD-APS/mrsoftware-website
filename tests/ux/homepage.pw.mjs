@@ -57,14 +57,14 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     // The homepage cards open the product pages; each product page carries the link to the product itself.
     const solutions = page.locator('#solutions');
     await expect(solutions.getByRole('link', { name: 'Workslip', exact: true })).toHaveAttribute('href', '/products/workslip/');
-    await expect(solutions.getByRole('link', { name: 'FoodTrading', exact: true })).toHaveAttribute('href', '/products/foodtrading/');
+    await expect(solutions.getByRole('link', { name: 'Tradey', exact: true })).toHaveAttribute('href', '/products/tradey/');
     await expect(solutions.getByRole('link', { name: 'Shippy', exact: true })).toHaveAttribute('href', '/products/shippy/');
     await expect(page.locator('#results')).toContainText('3 min');
     await expect(page.locator('#results')).toContainText('4.6 days');
     await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
     // Each product states its real status, and every illustration is marked as demo data.
     await expect(page.locator('#solutions article').filter({ hasText: 'Workslip' }).locator('.status-state')).toHaveText('Live');
-    await expect(page.locator('#solutions article').filter({ hasText: 'FoodTrading' }).locator('.status-state')).toHaveText('In development · Demo');
+    await expect(page.locator('#solutions article').filter({ hasText: 'Tradey' }).locator('.status-state')).toHaveText('In development · Demo');
     await expect(page.locator('#solutions article').filter({ hasText: 'Shippy' }).locator('.status-state')).toHaveText('Demo');
     for (const figure of await page.locator('#main figure.frame').all()) {
       await expect(figure).toHaveAttribute('aria-label', /demo data/i);
@@ -77,8 +77,8 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await page.goto(publicBase(app.base) + 'products/workslip/');
     await expect(page.getByRole('link', { name: /Open Workslip/ })).toHaveAttribute('href', 'https://app.mrsoftware.dk/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Live');
-    await page.goto(publicBase(app.base) + 'products/foodtrading/');
-    await expect(page.getByRole('link', { name: /Open the FoodTrading demo/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
+    await page.goto(publicBase(app.base) + 'products/tradey/');
+    await expect(page.getByRole('link', { name: /Open the Tradey demo/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('In development · Demo');
     await page.goto(publicBase(app.base) + 'products/shippy/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Demo');
@@ -97,6 +97,7 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
 
+    await page.evaluate(() => document.fonts.ready);
     const tokens = await page.locator('body').evaluate(() => {
       const root = getComputedStyle(document.documentElement);
       return {
@@ -108,19 +109,21 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
         footerBackground: getComputedStyle(document.querySelector('.site-footer')).backgroundColor,
         bodyBackground: getComputedStyle(document.body).backgroundColor,
         primaryBackground: getComputedStyle(document.querySelector('.button-primary')).backgroundColor,
-        fontLoaded: document.fonts.check('500 16px Geist'),
+        integrationsBackground: getComputedStyle(document.querySelector('#integrations')).backgroundColor,
+        fontLoaded: document.fonts.check('500 16px Geist') && document.fonts.check('400 42px Newsreader') && document.fonts.check('13px "Fragment Mono"'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       };
     });
 
-    expect(tokens.ink).toBe('#111113');
-    expect(tokens.paper).toBe('#ffffff');
+    expect(tokens.ink).toBe('#181513');
+    expect(tokens.paper).toBe('#fffcf7');
     expect(tokens.accent).toBe('#8a1c2c');
-    expect(tokens.radius).toBe('12px');
-    expect(tokens.heroBackground).toBe('rgb(255, 255, 255)');
-    expect(tokens.footerBackground).toBe('rgb(138, 28, 44)');
-    expect(tokens.bodyBackground).toBe('rgb(255, 255, 255)');
-    expect(tokens.primaryBackground).toBe('rgb(138, 28, 44)');
+    expect(tokens.radius).toBe('8px');
+    expect(tokens.heroBackground).toBe('rgba(0, 0, 0, 0)');
+    expect(tokens.footerBackground).toBe('rgb(255, 252, 247)');
+    expect(tokens.integrationsBackground).toBe('rgb(138, 28, 44)');
+    expect(tokens.bodyBackground).toBe('rgb(255, 252, 247)');
+    expect(tokens.primaryBackground).toBe('rgb(24, 21, 19)');
     expect(tokens.fontLoaded).toBe(true);
     expect(tokens.overflow).toBeLessThanOrEqual(1);
   } finally {
@@ -250,38 +253,14 @@ test('Header and footer carry the one-piece MR Software logo', async ({ page, co
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
     await expect(page.locator('.brand a')).toHaveAttribute('aria-label', 'MR Software home');
-    const logos = page.locator('.brand-logo, .footer-wordmark');
-    await expect(logos).toHaveCount(3);
-    await page.locator('.footer-wordmark').scrollIntoViewIfNeeded();
+    const logos = page.locator('.brand-logo');
+    await expect(logos).toHaveCount(2);
+    await page.locator('.footer-logo').scrollIntoViewIfNeeded();
     for (const logo of await logos.all()) {
       await expect.poll(() => logo.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
+      await expect(logo).toHaveAttribute('src', '/assets/images/brand/mr-mark.svg');
     }
     await expect(page.locator('.footer-legal').getByRole('link', { name: 'Privacy policy' })).toHaveAttribute('href', '/privacy-policy/');
-    const footer = await page.locator('.site-footer').boundingBox();
-    const wordmark = await page.locator('.footer-wordmark').boundingBox();
-    expect(wordmark.width).toBeGreaterThan(footer.width * 0.7);
-  } finally {
-    await app.close();
-  }
-});
-
-test('The hero product switcher changes the example and works from the keyboard', async ({ page, context }) => {
-  const app = await startSite();
-  try {
-    await prepareContext(context, app.base);
-    await page.goto(publicBase(app.base));
-    const tabs = page.getByRole('tab');
-    await expect(tabs).toHaveCount(3);
-    await expect(page.locator('#panel-workslip')).toBeVisible();
-    await expect(page.locator('#panel-shippy')).toBeHidden();
-    await page.getByRole('tab', { name: /Shippy/ }).click();
-    await expect(page.getByRole('tab', { name: /Shippy/ })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('#panel-shippy')).toBeVisible();
-    await expect(page.locator('#panel-workslip')).toBeHidden();
-    await page.keyboard.press('ArrowLeft');
-    await expect(page.getByRole('tab', { name: /FoodTrading/ })).toBeFocused();
-    await expect(page.locator('#panel-foodtrading')).toBeVisible();
-    for (const tab of await tabs.all()) expect((await tab.boundingBox()).height).toBeGreaterThanOrEqual(44);
   } finally {
     await app.close();
   }
