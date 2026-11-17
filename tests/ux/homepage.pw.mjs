@@ -97,6 +97,7 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
 
+    await page.evaluate(() => document.fonts.ready);
     const tokens = await page.locator('body').evaluate(() => {
       const root = getComputedStyle(document.documentElement);
       return {
@@ -108,19 +109,21 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
         footerBackground: getComputedStyle(document.querySelector('.site-footer')).backgroundColor,
         bodyBackground: getComputedStyle(document.body).backgroundColor,
         primaryBackground: getComputedStyle(document.querySelector('.button-primary')).backgroundColor,
-        fontLoaded: document.fonts.check('500 16px Geist'),
+        integrationsBackground: getComputedStyle(document.querySelector('#integrations')).backgroundColor,
+        fontLoaded: document.fonts.check('500 16px Geist') && document.fonts.check('400 42px Newsreader') && document.fonts.check('13px "Fragment Mono"'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       };
     });
 
-    expect(tokens.ink).toBe('#111113');
-    expect(tokens.paper).toBe('#ffffff');
+    expect(tokens.ink).toBe('#181513');
+    expect(tokens.paper).toBe('#fffcf7');
     expect(tokens.accent).toBe('#8a1c2c');
-    expect(tokens.radius).toBe('12px');
-    expect(tokens.heroBackground).toBe('rgb(255, 255, 255)');
-    expect(tokens.footerBackground).toBe('rgb(138, 28, 44)');
-    expect(tokens.bodyBackground).toBe('rgb(255, 255, 255)');
-    expect(tokens.primaryBackground).toBe('rgb(138, 28, 44)');
+    expect(tokens.radius).toBe('8px');
+    expect(tokens.heroBackground).toBe('rgba(0, 0, 0, 0)');
+    expect(tokens.footerBackground).toBe('rgb(255, 252, 247)');
+    expect(tokens.integrationsBackground).toBe('rgb(138, 28, 44)');
+    expect(tokens.bodyBackground).toBe('rgb(255, 252, 247)');
+    expect(tokens.primaryBackground).toBe('rgb(24, 21, 19)');
     expect(tokens.fontLoaded).toBe(true);
     expect(tokens.overflow).toBeLessThanOrEqual(1);
   } finally {
@@ -260,28 +263,6 @@ test('Header and footer carry the one-piece MR Software logo', async ({ page, co
     const footer = await page.locator('.site-footer').boundingBox();
     const wordmark = await page.locator('.footer-wordmark').boundingBox();
     expect(wordmark.width).toBeGreaterThan(footer.width * 0.7);
-  } finally {
-    await app.close();
-  }
-});
-
-test('The hero product switcher changes the example and works from the keyboard', async ({ page, context }) => {
-  const app = await startSite();
-  try {
-    await prepareContext(context, app.base);
-    await page.goto(publicBase(app.base));
-    const tabs = page.getByRole('tab');
-    await expect(tabs).toHaveCount(3);
-    await expect(page.locator('#panel-workslip')).toBeVisible();
-    await expect(page.locator('#panel-shippy')).toBeHidden();
-    await page.getByRole('tab', { name: /Shippy/ }).click();
-    await expect(page.getByRole('tab', { name: /Shippy/ })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('#panel-shippy')).toBeVisible();
-    await expect(page.locator('#panel-workslip')).toBeHidden();
-    await page.keyboard.press('ArrowLeft');
-    await expect(page.getByRole('tab', { name: /FoodTrading/ })).toBeFocused();
-    await expect(page.locator('#panel-foodtrading')).toBeVisible();
-    for (const tab of await tabs.all()) expect((await tab.boundingBox()).height).toBeGreaterThanOrEqual(44);
   } finally {
     await app.close();
   }

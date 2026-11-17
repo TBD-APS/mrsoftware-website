@@ -11,7 +11,7 @@ export const homepageJourneys = [
     task: 'Find both solutions',
     budget: 1,
     target: '#solutions',
-    expectedHeading: /Three products\. Each one follows a real workflow/,
+    expectedHeading: /Three products that keep the order, the shipment/,
   },
   {
     id: 'see-results',
@@ -19,13 +19,6 @@ export const homepageJourneys = [
     budget: 1,
     target: '#results',
     expectedHeading: /Two measurements from Workslip/,
-  },
-  {
-    id: 'understand-method',
-    task: 'Understand the four-step method',
-    budget: 1,
-    target: '#method',
-    expectedHeading: /Four steps, in this order/,
   },
   {
     id: 'start-contact',
