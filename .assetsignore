@@ -20,3 +20,4 @@ AGENTS.md
 worker.mjs
 dashboard/**
 backoffice/**
+qa/**
