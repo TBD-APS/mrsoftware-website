@@ -1,14 +1,32 @@
 import { test, expect } from '@playwright/test';
+import { createServer } from 'node:http';
 import { startSite } from '../../tools/ux-site.mjs';
 import { prepareContext } from './fixtures.mjs';
 
 test('company and product entrypoints use the managed catalogue and reach exact public demo/pricing addresses', async ({ page, context }) => {
   const app = await startSite();
+  const destinationServer = createServer((_request, response) => {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    response.end('<h1>Public demo destination</h1>');
+  });
+  await new Promise(resolve => destinationServer.listen(0, '127.0.0.1', resolve));
+  const destinationOrigin = `http://127.0.0.1:${destinationServer.address().port}`;
   try {
     await prepareContext(context, app.base);
     const base = app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
     const visits = [];
-    await page.route('https://demos.mrsoftware.dk/**', async route => { visits.push(route.request().url()); await route.fulfill({ contentType: 'text/html', body: '<h1>Public demo destination</h1>' }); });
+    // Playwright routes only the first request in a redirect chain. Check the
+    // real company redirect, then map its external destination to loopback so
+    // this journey cannot depend on or reach the production demo deployment.
+    await page.route(url => url.hostname === 'mrsoftware.dk' && /^\/(?:demos|pricing)(?:\/|$)/.test(url.pathname), async route => {
+      const url = new URL(route.request().url());
+      const response = await context.request.get(`http://127.0.0.1:${new URL(base).port}${url.pathname}${url.search}`, { maxRedirects: 0, headers: { 'x-test-host': 'mrsoftware.dk' } });
+      expect(response.status()).toBe(307);
+      const destination = new URL(response.headers().location);
+      expect(destination.origin).toBe('https://demos.mrsoftware.dk');
+      visits.push(destination.href);
+      await route.fulfill({ response, headers: { ...response.headers(), location: destinationOrigin + destination.pathname + destination.search } });
+    });
     for (const [pathname, label, destination] of [
       ['', 'Try the demos', 'https://demos.mrsoftware.dk/'],
       ['', 'Compare packages', 'https://demos.mrsoftware.dk/pricing/'],
@@ -28,9 +46,14 @@ test('company and product entrypoints use the managed catalogue and reach exact 
       expect(box.height).toBeGreaterThanOrEqual(44);
       // One click from the company/product page. Redirects carry no private data.
       await link.click();
-      await expect(page).toHaveURL(destination);
+      expect(visits.at(-1)).toBe(destination);
+      const target = new URL(destination);
+      await expect(page).toHaveURL(destinationOrigin + target.pathname + target.search);
       await expect(page.getByRole('heading', { name: 'Public demo destination' })).toBeVisible();
     }
     expect(visits).toHaveLength(8);
-  } finally { await app.close(); }
+  } finally {
+    await new Promise(resolve => { destinationServer.close(resolve); destinationServer.closeAllConnections(); });
+    await app.close();
+  }
 });
