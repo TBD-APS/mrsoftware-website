@@ -57,3 +57,24 @@ test('open and reload a shared link to a feature without navigation steps', asyn
     await expect(feature).toBeInViewport();
   } finally { await app.close(); }
 });
+
+test('find reusable Boney modules and the products that use them', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk') + 'roadmap/');
+    await page.getByRole('link', { name: 'Explore reusable Boney modules' }).click();
+    await expect(page).toHaveURL(/#boney-modules$/);
+    const showcase = page.getByRole('region', { name: 'Reusable Boney modules' });
+    await expect(showcase.getByRole('heading', { level: 2 })).toBeInViewport();
+    await expect(showcase.getByText('Boney.Comms.Outlook', { exact: true })).toBeAttached();
+    const productLinks = showcase.getByRole('link', { name: /^(Tradey|MR SAAS’y|Roady)$/ });
+    await expect(productLinks).toHaveText(['Tradey', 'MR SAAS’y', 'Roady']);
+    await productLinks.filter({ hasText: 'MR SAAS’y' }).click();
+    await expect(page).toHaveURL(/#package-mr-saassy$/);
+    await expect(page.getByRole('heading', { level: 2, name: 'MR SAAS’y' })).toBeInViewport();
+    await page.goBack();
+    await showcase.getByRole('link', { name: 'Try the Excel and Outlook examples' }).click();
+    await expect(page.getByRole('heading', { name: 'Try two everyday integrations.' })).toBeInViewport();
+  } finally { await app.close(); }
+});
