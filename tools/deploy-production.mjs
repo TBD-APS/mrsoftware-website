@@ -7,6 +7,13 @@ import { verifyRelease } from './release-eligibility.mjs';
 
 const WORKER = 'mrsoftware';
 const UUID = /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/;
+const VERSION_NOT_VISIBLE = /100146|could not be found/i;
+export const DEPLOY_VISIBILITY_ATTEMPTS = 5;
+export const DEPLOY_VISIBILITY_WAIT_MS = 2000;
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function deployments(env) {
   const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/workers/scripts/${WORKER}/deployments`, {
@@ -23,9 +30,15 @@ async function wrangler(args) {
   const output = join(directory, 'output.jsonl');
   try {
     const child = spawnSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', ...args], {
-      env: { ...process.env, WRANGLER_OUTPUT_FILE_PATH: output, WRANGLER_SEND_METRICS: 'false' }, stdio: 'inherit',
+      encoding: 'utf8', env: { ...process.env, WRANGLER_OUTPUT_FILE_PATH: output, WRANGLER_SEND_METRICS: 'false' }, stdio: ['inherit', 'pipe', 'pipe'],
     });
-    if (child.error || child.status !== 0) throw Error('Wrangler did not confirm completion; inspect the provider before retrying');
+    if (child.stdout) process.stdout.write(child.stdout);
+    if (child.stderr) process.stderr.write(child.stderr);
+    if (child.error || child.status !== 0) {
+      const error = Error('Wrangler did not confirm completion; inspect the provider before retrying');
+      error.detail = `${child.stdout ?? ''}\n${child.stderr ?? ''}`;
+      throw error;
+    }
     return (await readFile(output, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   } finally { await rm(directory, { recursive: true, force: true }); }
 }
@@ -47,9 +60,13 @@ export async function productionSmoke(request = fetch) {
   return results;
 }
 
+function versionNotVisible(error) {
+  return VERSION_NOT_VISIBLE.test(`${error?.detail ?? ''}\n${error?.message ?? ''}`);
+}
+
 export async function deployProduction(env = process.env, {
   authorize = verifyRelease, readDeployments = () => deployments(env), run = wrangler,
-  smoke = productionSmoke, receiptPath = '.local/release-receipt.json',
+  smoke = productionSmoke, sleep = delay, receiptPath = '.local/release-receipt.json',
 } = {}) {
   if (env.GITHUB_ACTIONS !== 'true' || !env.CLOUDFLARE_API_TOKEN?.trim() || !/^[a-f0-9]{32}$/.test(env.CLOUDFLARE_ACCOUNT_ID ?? '') || !env.DASHBOARD_SNAPSHOT_DIR) {
     throw Error('Production requires the release Action, environment credentials and an approved private snapshot');
@@ -71,7 +88,18 @@ export async function deployProduction(env = process.env, {
     receipt.versionId = uploads[0].version_id; receipt.state = 'uploaded'; await save();
     await authorize();
     receipt.state = 'deploying'; await save();
-    const deployed = await run(['versions', 'deploy', `${receipt.versionId}@100%`, '--yes', '--message', `GitHub main ${env.GITHUB_SHA}`]);
+    const deployArgs = ['versions', 'deploy', `${receipt.versionId}@100%`, '--yes', '--message', `GitHub main ${env.GITHUB_SHA}`];
+    let deployed;
+    for (let attempt = 1; attempt <= DEPLOY_VISIBILITY_ATTEMPTS; attempt++) {
+      receipt.deployAttempts = attempt; await save();
+      try {
+        deployed = await run(deployArgs);
+        break;
+      } catch (error) {
+        if (attempt === DEPLOY_VISIBILITY_ATTEMPTS || !versionNotVisible(error)) throw error;
+        await sleep(DEPLOY_VISIBILITY_WAIT_MS);
+      }
+    }
     const confirmation = deployed.filter(x => x.type === 'version-deploy' && x.worker_name === WORKER && x.deployment_id);
     if (confirmation.length !== 1) throw Error('Wrangler did not confirm the deployment');
     receipt.deploymentId = confirmation[0].deployment_id; await save();
@@ -81,7 +109,11 @@ export async function deployProduction(env = process.env, {
     return receipt;
   } catch (error) {
     receipt.state = 'uncertain'; await save();
-    throw Error(`${error.message}. No automatic retry or rollback was performed; inspect the receipt and provider state first`);
+    const waited = (receipt.deployAttempts ?? 0) > 1;
+    const note = waited
+      ? `${error.message}. Stopped after ${receipt.deployAttempts} attempts on the same uploaded version. No rollback was performed; inspect the receipt and provider state first`
+      : `${error.message}. No automatic retry or rollback was performed; inspect the receipt and provider state first`;
+    throw Error(note);
   }
 }
 
