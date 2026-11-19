@@ -220,27 +220,60 @@
 
     <!-- Internal rule (docs/homepage-business-value-requirements.md, KR-03 and KR-12): these two figures may only
          be published with their source and scope, never as savings, ROI or a before-and-after claim, and marketing
-         data must pass internal data approval before release. Do not add, round or re-word the numbers.
+         data must pass internal data approval before release. The charts draw those same two medians on separate
+         scales. Day ticks sit at 1/4.6, 2/4.6, 3/4.6 and 4/4.6 of the elapsed bar. Do not add, round or re-word the numbers.
          TODO: confirm with the Workslip owner what one measured unit is, then name it in the two descriptions. -->
     <section class="section band-rose" id="results" aria-labelledby="results-heading">
-      <div class="page-width results">
-        <div class="metrics" data-reveal>
-          <div class="metric">
-            <span class="metric-value">3 min</span>
-            <p class="metric-name">Median active completion time</p>
-            <p class="metric-context">The time a person actively spends filling in. Waiting time is not counted.</p>
-          </div>
-          <div class="metric">
-            <span class="metric-value">4.6 days</span>
-            <p class="metric-name">Median from creation to approval</p>
-            <p class="metric-context">The whole elapsed time, including the time spent waiting between steps.</p>
-          </div>
-        </div>
-        <div class="copy" data-reveal>
+      <div class="page-width">
+        <div data-reveal>
           <p class="eyebrow">Results</p>
-          <h2 class="heading" id="results-heading">Two measurements from Workslip.</h2>
-          <p class="footnote">Internal, aggregated measurements from Workslip over a 30-day period, compiled in October 2026. They describe how work flows through the product. There is no before-and-after comparison, so they are not documented time savings, ROI or financial gain for the customer. <a href="#contact">Ask us how they were measured.</a></p>
+          <h2 class="heading" id="results-heading">Minutes to fill in. Days until a person approves.</h2>
+          <p class="lead">Two measurements from Workslip. One clock is the time a person spends filling in. The other is the time until a person approves.</p>
         </div>
+        <div class="clock-board" data-reveal>
+          <article class="clock">
+            <p class="clock-kicker">The record</p>
+            <p class="metric-value">3 min</p>
+            <p class="metric-name">Median active completion time</p>
+            <div class="scale" role="img" aria-label="Active filling, on a scale from 0 to 3 minutes. The bar ends at the median, 3 minutes. Waiting is not on this scale.">
+              <span class="scale-bar"></span>
+              <span class="scale-tick is-start" style="--at: 0">0</span>
+              <span class="scale-tick" style="--at: 33.333">1</span>
+              <span class="scale-tick" style="--at: 66.667">2</span>
+              <span class="scale-tick is-end" style="--at: 100">3</span>
+            </div>
+            <p class="metric-context">The time a person actively spends filling in. Waiting time is not counted. The bar ends at 3 minutes.</p>
+          </article>
+          <article class="clock">
+            <p class="clock-kicker">The approval</p>
+            <p class="metric-value">4.6 days</p>
+            <p class="metric-name">Median from creation to approval</p>
+            <div class="scale" role="img" aria-label="Creation to approval, on a scale from 0 to 4.6 days. Whole-day marks sit at 1, 2, 3 and 4. The bar ends at the median, 4.6 days, and the coloured tip is the last part of a day. Waiting between steps is included.">
+              <span class="scale-bar"><span class="scale-tip" style="left: 86.957%"></span></span>
+              <span class="scale-tick is-start" style="--at: 0">0</span>
+              <span class="scale-tick" style="--at: 21.739">1</span>
+              <span class="scale-tick" style="--at: 43.478">2</span>
+              <span class="scale-tick" style="--at: 65.217">3</span>
+              <span class="scale-tick" style="--at: 86.957">4</span>
+            </div>
+            <p class="metric-context">The whole elapsed time, including the time spent waiting between steps. The ticks are whole days. The coloured tip runs from day 4 to 4.6.</p>
+          </article>
+        </div>
+        <ul class="effects" data-reveal>
+          <li>
+            <p class="clock-kicker">What the minutes show</p>
+            <p>The median person spends 3 min filling in. Waiting stays out of that count, so the number is the work on the record.</p>
+          </li>
+          <li>
+            <p class="clock-kicker">What the days show</p>
+            <p>A person still approves the job. The median from creation to that approval is 4.6 days, and the wait is part of the number.</p>
+          </li>
+          <li>
+            <p class="clock-kicker">What the charts refuse</p>
+            <p>Each bar has its own scale. There is no earlier measurement beside them, so they are not a saving.</p>
+          </li>
+        </ul>
+        <p class="footnote" data-reveal>Internal, aggregated measurements from Workslip over a 30-day period, compiled in October 2026. They describe how work flows through the product. There is no before-and-after comparison, so they are not documented time savings, ROI or financial gain for the customer. <a href="#contact">Ask us how they were measured.</a></p>
       </div>
     </section>
 
