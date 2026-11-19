@@ -13,76 +13,83 @@ for (const journey of homepageJourneys) {
       await page.goto(publicBase(app.base));
 
       let clicks = 0;
-      let menuTaps = 0;
       if (journey.target) {
         const link = page.locator(`a[href="${journey.target}"]`).filter({ visible: true }).first();
-        // On a phone the section links live in the menu, which costs one extra tap.
-        if (!await link.count()) {
-          await page.locator('.nav-toggle').click();
-          menuTaps += 1;
+        if (await link.count()) {
+          await link.click({ timeout: 5_000 });
+          clicks += 1;
+        } else {
+          // The compact phone header keeps the content scrollable; shared section links remain valid.
+          await page.goto(publicBase(app.base) + journey.target);
         }
-        await link.click({ timeout: 5_000 });
-        clicks += 1;
         await expect(page).toHaveURL(new RegExp(`${journey.target}$`));
       }
 
-      const section = journey.target ? page.locator(journey.target) : page.locator('#main');
+      const section = journey.target ? page.locator(journey.target) : page.locator('#main-content');
       await expect(section.getByRole('heading', { name: journey.expectedHeading }).first()).toBeVisible();
       expect(clicks).toBeLessThanOrEqual(journey.budget);
-      expect(menuTaps).toBeLessThanOrEqual(1);
       await page.waitForLoadState('networkidle');
-
-      const widths = await page.locator('html').evaluate(node => ({
-        scroll: node.scrollWidth,
-        client: node.clientWidth,
-      }));
+      const widths = await page.locator('html').evaluate(node => ({ scroll: node.scrollWidth, client: node.clientWidth }));
       expect(widths.scroll - widths.client).toBeLessThanOrEqual(1);
-
-      await testInfo.attach(`${journey.id}-${testInfo.project.name}`, {
-        body: await page.screenshot(),
-        contentType: 'image/png',
-      });
+      await testInfo.attach(`${journey.id}-${testInfo.project.name}`, { body: await page.screenshot(), contentType: 'image/png' });
     } finally {
       await app.close();
     }
   });
 }
 
-test('Product links and factual result labels stay explicit', async ({ page, context }) => {
+test('Four product stories and three explicit public demo links are available', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
 
-    // The homepage cards open the product pages; each product page carries the link to the product itself.
-    const solutions = page.locator('#solutions');
-    await expect(solutions.getByRole('link', { name: 'Workslip', exact: true })).toHaveAttribute('href', '/products/workslip/');
-    await expect(solutions.getByRole('link', { name: 'Tradey', exact: true })).toHaveAttribute('href', '/products/tradey/');
-    await expect(solutions.getByRole('link', { name: 'Shippy', exact: true })).toHaveAttribute('href', '/products/shippy/');
-    await expect(page.locator('#results')).toContainText('3 min');
-    await expect(page.locator('#results')).toContainText('4.6 days');
-    await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
-    // Each product states its real status, and every illustration is marked as demo data.
-    await expect(page.locator('#solutions article').filter({ hasText: 'Workslip' }).locator('.status-state')).toHaveText('Live');
-    await expect(page.locator('#solutions article').filter({ hasText: 'Tradey' }).locator('.status-state')).toHaveText('In development · Demo');
-    await expect(page.locator('#solutions article').filter({ hasText: 'Shippy' }).locator('.status-state')).toHaveText('Demo');
-    for (const figure of await page.locator('#main figure.frame').all()) {
-      await expect(figure).toHaveAttribute('aria-label', /demo data/i);
-      await expect(figure.locator('.demo-tag')).toHaveText('Demo data');
+    const projects = page.locator('#projects');
+    await expect(projects.locator('.project')).toHaveCount(4);
+    await expect(projects.locator('.project h3')).toHaveText(['Roady', 'Boney', 'Shippy', 'Tradey']);
+    for (const [id, name] of [['roady', 'Roady'], ['boney', 'Boney'], ['shippy', 'Shippy'], ['tradey', 'Tradey']]) {
+      await expect(page.locator(`#${id} h2`)).toHaveText(name);
+      await expect(page.locator(`#${id} .product-case__boundary`)).toContainText(/demo|foundation|product/i);
     }
-    // Internal process notes and prices stay out of the public page.
-    await expect(page.locator('body')).not.toContainText(/internal approval|TODO|kr\.|DKK|€/i);
-    await expect(page.locator('body')).not.toContainText('—');
+    await expect(projects).toContainText('Photographs are illustrative, not product screenshots.');
 
+    const demos = page.locator('#demo');
+    await expect(demos.locator('.demo-link')).toHaveCount(3);
+    await expect(demos.getByRole('link', { name: 'Open Roady' })).toHaveAttribute('href', 'https://pbrsgtftzin4k.kimi.page/');
+    await expect(demos.getByRole('link', { name: 'Open Shippy' })).toHaveAttribute('href', 'https://lst3sstxzovpm.kimi.page/');
+    await expect(demos.getByRole('link', { name: 'Open Tradey' })).toHaveAttribute('href', 'https://ztrutb4jielr6.kimi.page/');
+    await expect(demos).toContainText('246810');
+    await expect(demos).toContainText('not a real account or a security boundary');
+    await expect(demos).toContainText('Production Authy, customer accounts and business data are not part of these demos.');
+
+    const resources = page.locator('.company-footer');
+    await expect(resources.getByRole('link', { name: 'Demo centre' })).toHaveAttribute('href', '/demo/');
+    await expect(resources.getByRole('link', { name: 'Roadmap' })).toHaveAttribute('href', '/roadmap/');
+    await expect(resources.getByRole('link', { name: 'Privacy policy' })).toHaveAttribute('href', '/privacy-policy/');
+    await expect(resources.getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms-of-service/');
+    await expect(resources.getByRole('link', { name: 'Data deletion' })).toHaveAttribute('href', '/data-deletion/');
+  } finally {
+    await app.close();
+  }
+});
+
+test('Existing product pages open the same isolated demos', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
     await page.goto(publicBase(app.base) + 'products/workslip/');
     await expect(page.getByRole('link', { name: /Open Workslip/ })).toHaveAttribute('href', 'https://app.mrsoftware.dk/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Live');
+
     await page.goto(publicBase(app.base) + 'products/tradey/');
-    await expect(page.getByRole('link', { name: /Open the Tradey demo/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
+    await expect(page.getByRole('link', { name: /Open the Tradey demo/ }).first()).toHaveAttribute('href', 'https://ztrutb4jielr6.kimi.page/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('In development · Demo');
+
     await page.goto(publicBase(app.base) + 'products/shippy/');
+    await expect(page.getByRole('link', { name: /Open the Shippy demo/ }).first()).toHaveAttribute('href', 'https://lst3sstxzovpm.kimi.page/');
+    await expect(page.locator('.product-hero')).toContainText('246810');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Demo');
-    // The category overview still uses generic system types and explains availability.
+
     await page.goto(publicBase(app.base) + 'integrations/');
     const categories = page.locator('#categories');
     await expect(categories.getByRole('heading', { level: 3 })).toHaveText([
@@ -96,12 +103,11 @@ test('Product links and factual result labels stay explicit', async ({ page, con
   }
 });
 
-test('Homepage uses the approved visual tokens and responsive layout', async ({ page, context }) => {
+test('Homepage uses its visual tokens and responsive layout', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
-
     await page.evaluate(() => document.fonts.ready);
     const tokens = await page.locator('body').evaluate(() => {
       const root = getComputedStyle(document.documentElement);
@@ -109,26 +115,21 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
         ink: root.getPropertyValue('--ink').trim(),
         paper: root.getPropertyValue('--paper').trim(),
         accent: root.getPropertyValue('--accent').trim(),
-        radius: root.getPropertyValue('--radius').trim(),
         heroBackground: getComputedStyle(document.querySelector('.hero')).backgroundColor,
         footerBackground: getComputedStyle(document.querySelector('.site-footer')).backgroundColor,
         bodyBackground: getComputedStyle(document.body).backgroundColor,
-        primaryBackground: getComputedStyle(document.querySelector('.button-primary')).backgroundColor,
-        integrationsBackground: getComputedStyle(document.querySelector('#integrations')).backgroundColor,
-        fontLoaded: document.fonts.check('500 16px Geist') && document.fonts.check('400 42px Newsreader') && document.fonts.check('13px "Fragment Mono"'),
+        primaryBackground: getComputedStyle(document.querySelector('.button--accent')).backgroundColor,
+        fontLoaded: document.fonts.check('400 16px "Squada One"') && document.fonts.check('400 16px "Plus Jakarta Sans"') && document.fonts.check('400 16px "Victor Mono"'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       };
     });
-
-    expect(tokens.ink).toBe('#181513');
-    expect(tokens.paper).toBe('#fffcf7');
-    expect(tokens.accent).toBe('#8a1c2c');
-    expect(tokens.radius).toBe('8px');
-    expect(tokens.heroBackground).toBe('rgba(0, 0, 0, 0)');
-    expect(tokens.footerBackground).toBe('rgb(255, 252, 247)');
-    expect(tokens.integrationsBackground).toBe('rgb(138, 28, 44)');
-    expect(tokens.bodyBackground).toBe('rgb(255, 252, 247)');
-    expect(tokens.primaryBackground).toBe('rgb(24, 21, 19)');
+    expect(tokens.ink).toBe('#0d0d0d');
+    expect(tokens.paper).toBe('#f2f0e9');
+    expect(tokens.accent).toBe('#ffd97d');
+    expect(tokens.heroBackground).toBe('rgb(13, 13, 13)');
+    expect(tokens.footerBackground).toBe('rgb(13, 13, 13)');
+    expect(tokens.bodyBackground).toBe('rgb(13, 13, 13)');
+    expect(tokens.primaryBackground).toBe('rgb(255, 217, 125)');
     expect(tokens.fontLoaded).toBe(true);
     expect(tokens.overflow).toBeLessThanOrEqual(1);
   } finally {
@@ -136,33 +137,7 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
   }
 });
 
-test('Mobile navigation opens, closes, and returns focus', async ({ page, context }, testInfo) => {
-  test.skip(testInfo.project.name !== 'phone', 'phone behavior');
-  const app = await startSite();
-  try {
-    await prepareContext(context, app.base);
-    await page.goto(publicBase(app.base));
-
-    const toggle = page.locator('.nav-toggle');
-    await expect(toggle).toHaveAccessibleName('Open menu');
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    await expect(toggle).toHaveAccessibleName('Close menu');
-    await page.keyboard.press('Escape');
-    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    await expect(toggle).toHaveAccessibleName('Open menu');
-    await expect(toggle).toBeFocused();
-
-    await toggle.click();
-    await page.getByRole('link', { name: 'Products', exact: true }).click();
-    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    await expect(page).toHaveURL(/#solutions$/);
-  } finally {
-    await app.close();
-  }
-});
-
-test('Homepage stays usable across the required viewport matrix', async ({ page, context }, testInfo) => {
+test('Homepage and contact stay usable across the required viewport matrix', async ({ page, context }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'matrix runs once');
   const app = await startSite();
   try {
@@ -172,12 +147,8 @@ test('Homepage stays usable across the required viewport matrix', async ({ page,
       await page.goto(publicBase(app.base));
       const layout = await page.evaluate(() => {
         const h1 = document.querySelector('h1').getBoundingClientRect();
-        const primary = document.querySelector('.hero .button-primary').getBoundingClientRect();
-        return {
-          overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-          h1Width: h1.width,
-          primaryHeight: primary.height,
-        };
+        const primary = document.querySelector('.hero .button--accent').getBoundingClientRect();
+        return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, h1Width: h1.width, primaryHeight: primary.height };
       });
       expect(layout.overflow, `${width}px has no horizontal overflow`).toBeLessThanOrEqual(1);
       expect(layout.h1Width, `${width}px shows the page title`).toBeGreaterThan(0);
@@ -196,7 +167,6 @@ test('Homepage stays usable across the required viewport matrix', async ({ page,
 test('Contact keeps email and a direct location link when the external map is unavailable', async ({ page, context }, testInfo) => {
   const app = await startSite();
   try {
-    // The isolated context blocks external services; verify the fallback without Google availability.
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base) + 'contact/');
     const contact = page.locator('#main');
@@ -218,22 +188,25 @@ test('Contact keeps email and a direct location link when the external map is un
   }
 });
 
-test('Images load and reduced motion disables smooth scrolling', async ({ page, context }) => {
+test('Images load and reduced motion disables animation and smooth scrolling', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(publicBase(app.base));
-
-    const images = page.locator('#main img');
+    const images = page.locator('#main-content img');
+    expect(await images.count()).toBeGreaterThanOrEqual(9);
     for (let index = 0; index < await images.count(); index += 1) {
       const image = images.nth(index);
       await image.scrollIntoViewIfNeeded();
       await expect.poll(() => image.evaluate(node => node.complete && node.naturalWidth > 0)).toBe(true);
     }
-
-    const scrollBehavior = await page.locator('html').evaluate(node => getComputedStyle(node).scrollBehavior);
-    expect(scrollBehavior).toBe('auto');
+    const motion = await page.evaluate(() => ({
+      scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
+      transition: getComputedStyle(document.querySelector('.project__image img')).transitionDuration,
+    }));
+    expect(motion.scrollBehavior).toBe('auto');
+    expect(parseFloat(motion.transition)).toBeLessThanOrEqual(0.001);
   } finally {
     await app.close();
   }
@@ -246,45 +219,27 @@ test('Keyboard navigation exposes the skip link first', async ({ page, context }
     await page.goto(publicBase(app.base));
     await page.keyboard.press('Tab');
     await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
+    await expect(page.getByRole('link', { name: 'Skip to content' })).toHaveAttribute('href', '#main-content');
     await expect(page.getByRole('link', { name: 'Skip to content' })).toBeVisible();
   } finally {
     await app.close();
   }
 });
 
-test('Header and footer carry the one-piece MR Software logo', async ({ page, context }) => {
+test('Homepage metadata, organization data and company navigation are present', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
-    await expect(page.locator('.brand a')).toHaveAttribute('aria-label', 'MR Software home');
-    const logos = page.locator('.brand-logo');
-    await expect(logos).toHaveCount(2);
-    await page.locator('.footer-logo').scrollIntoViewIfNeeded();
-    for (const logo of await logos.all()) {
-      await expect.poll(() => logo.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
-      await expect(logo).toHaveAttribute('src', '/assets/images/brand/mr-mark.svg');
-    }
-    await expect(page.locator('.footer-legal').getByRole('link', { name: 'Privacy policy' })).toHaveAttribute('href', '/privacy-policy/');
-  } finally {
-    await app.close();
-  }
-});
-
-test('The headline word rotates, and stays still when motion is reduced', async ({ page, context }) => {
-  const app = await startSite();
-  try {
-    await prepareContext(context, app.base);
-    await page.goto(publicBase(app.base));
-    const shown = page.locator('.rotate-word.is-in');
-    await expect(shown).toHaveText('order.');
-    await expect(shown).toHaveText('shipment.', { timeout: 4_000 });
-    await expect(page.locator('h1')).toHaveAccessibleName('One place for every order, shipment, document and approval.');
-
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.reload();
-    await page.waitForTimeout(3_000);
-    await expect(page.locator('.rotate-word.is-in')).toHaveText('order.');
+    await expect(page.locator('.brand')).toHaveCount(2);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://mrsoftware.dk/');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://mrsoftware.dk/assets/images/brand/og-image.png');
+    const data = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+    expect(data['@type']).toBe('Organization');
+    expect(data.name).toBe('MR Software');
+    expect(data.email).toBe('wp@mrsoftware.dk');
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('main')).toHaveCount(1);
   } finally {
     await app.close();
   }

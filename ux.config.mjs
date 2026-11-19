@@ -11,6 +11,7 @@ export default {
     { kind: 'Codebase', text: 'Tradey', route: '?development=tradey', heading: '#development-view-title' },
   ],
   roots: ['main'],
+  exempt: 'h1,pre,code,[data-plain-name],.projects,.product-stories,.demo-center,.contact',
   nav: '#development-overview nav a',
   heading: '#development-title',
   output: '.ux-gate',

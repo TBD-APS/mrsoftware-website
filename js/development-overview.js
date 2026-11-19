@@ -6,7 +6,8 @@
 
   function mount() {
     var main = document.querySelector('main');
-    if (!main || document.getElementById('development-overview')) return;
+    if (!main) return false;
+    if (document.getElementById('development-overview')) return true;
     var origin = window.location.origin + '/_development';
     var views = {
       tasks: { label: 'Task progress', source: origin + '/' },
@@ -59,7 +60,16 @@
     main.prepend(section);
     document.body.classList.add('development-dashboard');
     document.title = 'MR Software — Development overview';
+    return true;
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
-  else mount();
+  function start() {
+    if (mount()) return;
+    // React can render after deferred scripts. Wait only until its main landmark exists.
+    var observer = new MutationObserver(function () {
+      if (mount()) observer.disconnect();
+    });
+    observer.observe(document.getElementById('root') || document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
 })();
