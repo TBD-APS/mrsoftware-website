@@ -361,6 +361,18 @@ a:hover > .arrow { transform: translateX(4px); }
 .effects p:last-child { margin: 0; max-width: 36ch; font-family: var(--mono); font-size: var(--fs-small); line-height: 1.7; }
 .footnote { max-width: 76ch; margin: var(--s5) 0 0; color: #4d4843; font-family: var(--mono); font-size: var(--fs-small); line-height: 1.7; }
 .footnote a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.potential { margin-top: var(--s7); padding-top: var(--s6); border-top: 1px solid var(--hairline-light); }
+.potential .lead a { text-decoration: underline; text-underline-offset: 3px; }
+.potential .heading { max-width: 18ch; }
+.pot-board { margin-top: var(--s5); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
+.pot { position: relative; min-width: 0; padding: var(--s4); background: var(--paper); border-radius: var(--radius); }
+.pot h4 { font-family: var(--mono); font-size: var(--fs-small); font-weight: 400; letter-spacing: 0; }
+.pot h4 a::after { content: ""; position: absolute; inset: 0; }
+.scale-track { position: absolute; left: 0; right: 0; top: 0; height: 18px; background: var(--paper-raised); border-radius: 2px; }
+.pot-fill { width: var(--fill); right: auto; }
+.pot-sum { margin-top: var(--s2); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); }
+.pot-sum p { min-width: 0; margin: 0; padding: var(--s4); display: flex; flex-direction: column; gap: var(--s2); background: var(--ink); color: var(--paper); border-radius: var(--radius); }
+.pot-sum .metric-context { color: rgba(255, 252, 247, .72); }
 
 /* Trust */
 .trust { margin: var(--s6) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s4); list-style: none; text-align: center; }
@@ -573,6 +585,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--s5); }
   .split-band > .copy, .split-band > .scene { grid-column: 1 / -1; }
   .effects { grid-template-columns: 1fr; gap: var(--s3); }
+  .pot-board, .pot-sum { grid-template-columns: 1fr; }
   .trust { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer-inner { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .footer-brand { grid-column: 1 / -1; }
