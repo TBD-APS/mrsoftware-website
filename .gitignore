@@ -7,3 +7,5 @@
 node_modules/
 .ux-gate/
 .local/
+.commercial-dist/
+.astro/

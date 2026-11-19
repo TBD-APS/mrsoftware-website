@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { products } from '../data/scenarios.mjs';
+import { moneyLabel } from '../data/pricing.mjs';
+import { initialCatalog } from '../../shared/catalog.mjs';
+---
+<Layout title="Packages and prices">
+  <section class="intro"><p class="eyebrow">A clear place to start</p><h1>The right tools.<br />A price that fits.</h1><p class="lead">Start with the work you need to do.<br />We will confirm setup and VAT in your quote.</p></section>
+  <section data-catalog-view="packages" aria-label="Packages"><div id="package-list" class="package-list">{initialCatalog.packages.filter(item => item.active).map(item => <article class="package-card"><p class="eyebrow">{products[item.product].name}</p><h2>{item.name}</h2><p class="price">{moneyLabel(item.monthlyMinor)}</p><p class="fine">{item.monthlyMinor === null ? 'Price and scope confirmed in your quote' : 'per month · VAT and setup confirmed in your quote'}</p><ul>{item.includes.map(line => <li>{line}</li>)}</ul><a class="button secondary" href={`/pricing/?product=${item.product}&package=${item.id}#enquiry`}>Choose {item.product === 'workslip' ? 'Workslip ' : ''}{item.name}</a></article>)}</div></section>
+  <div class="catalog-feedback"><p id="catalog-status" role="status" aria-busy="true">Checking current prices…</p><button type="button" class="button secondary" id="retry-catalog" hidden>Try again</button></div>
+  <section class="enquiry-section section-block" id="enquiry" aria-labelledby="enquiry-heading"><div><p class="eyebrow">Let’s talk about your work</p><h2 id="enquiry-heading">Ask for a quote.</h2><p>No payment, no obligation. We will get back to you to agree what fits.</p><p id="enquiry-result" class="result" role="status" tabindex="-1" hidden></p></div>
+    <form id="enquiry-form" class="enquiry-form">
+      <div class="field-pair"><label for="product">Product<select id="product" name="product">{Object.entries(products).map(([id, item]) => <option value={id}>{item.name}</option>)}</select></label><label for="package">Package<select id="package" name="packageId"><option value="">Help me choose</option>{initialCatalog.packages.filter(item => item.product === 'workslip' && item.active).map(item => <option value={item.id}>{item.name} · {moneyLabel(item.monthlyMinor)}</option>)}</select></label></div>
+      <label for="company">Company<input id="company" name="company" maxlength="200" required autocomplete="organization" /></label>
+      <div class="field-pair"><label for="name">Your name<input id="name" name="name" maxlength="100" required autocomplete="name" /></label><label for="email">Email<input id="email" name="email" type="email" maxlength="254" required autocomplete="email" /></label></div>
+      <label for="message">What would you like to do? <span class="fine">(optional)</span><textarea id="message" name="message" rows="3" maxlength="4000"></textarea></label>
+      <div class="honeypot" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off" /></label></div>
+      <button class="button primary" type="submit">Request a quote</button><p class="fine">Your details are used to answer this request. <a href="https://mrsoftware.dk/privacy-policy/">How we handle your data</a></p>
+    </form>
+  </section>
+</Layout>
+<script>import '../scripts/catalog.mjs';</script>

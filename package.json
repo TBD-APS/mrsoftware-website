@@ -5,7 +5,9 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs && npm run ux-gate",
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",
-    "ux-gate": "playwright test"
+    "ux-gate": "playwright test",
+    "build:commercial": "node tools/build-commercial.mjs",
+    "ux-gate:commercial": "npm run build:commercial && playwright test --config playwright.commercial.config.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
@@ -13,6 +15,9 @@
     "wrangler": "4.153.0"
   },
   "dependencies": {
-    "jose": "6.2.13"
+    "astro": "6.4.8",
+    "jose": "6.2.13",
+    "jsqr": "1.4.0",
+    "qrcode": "1.5.4"
   }
 }
