@@ -86,7 +86,7 @@ export async function publicDependencies(product) {
 export async function generateServiceWorkers() {
   for (const product of Object.keys(products)) {
     const precache = await publicDependencies(product);
-    const hash = createHash('sha256').update('public-assets-only-v1');
+    const hash = createHash('sha256').update('public-generation-v2');
     for (const entry of precache) { hash.update(entry); hash.update(await readFile(diskPath(entry))); }
     const version = hash.digest('hex').slice(0, 16);
     await save(path.join(outputDir, product, 'sw.js'), `// Generated only from ${product}'s public page dependency graph.
@@ -116,10 +116,15 @@ self.addEventListener('fetch', event => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const saved = await cache.match(url.pathname);
-    if (saved && request.mode !== 'navigate') return saved;
+    // Keep the shell and its hashed modules in their installed generation until
+    // the visitor activates the waiting worker. A network-first navigation can
+    // otherwise replace HTML with references this worker cannot save offline.
+    if (saved) return saved;
     try {
       const response = await fetch(request);
-      if (response.ok && !/(?:private|no-store)/i.test(response.headers.get('Cache-Control') || '')) await cache.put(url.pathname, response.clone());
+      // An evicted shell may be fetched online, but another deployment's HTML
+      // must never be promoted into this generation's fixed dependency list.
+      if (!url.pathname.endsWith('/') && response.ok && !/(?:private|no-store)/i.test(response.headers.get('Cache-Control') || '')) await cache.put(url.pathname, response.clone());
       return response;
     } catch (error) { if (saved) return saved; throw error; }
   })());

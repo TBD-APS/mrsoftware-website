@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { test, expect } from './fixtures.mjs';
-import { products } from '../../commercial/src/data/scenarios.mjs';
+import { products, productRoutes } from '../../commercial/src/data/scenarios.mjs';
 
 async function controlled(page) {
   await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
@@ -88,6 +88,89 @@ test('a waiting update is explicit and removes only this product’s older cache
     else expect(names).toContain(name);
   }
   await expect(page.locator('#pwa-status')).toContainText('ready to use offline');
+});
+
+test('a changed shell and module stay in one generation before and after explicit activation', async ({ page, context, app }) => {
+  const route = '/workslip/jobs/ws-1042/';
+  const originalHtml = await readFile(new URL('../../.commercial-dist/workslip/jobs/ws-1042/index.html', import.meta.url), 'utf8');
+  const originalModule = originalHtml.match(/<script\b[^>]*src="([^\"]*Scenario[^\"]+\.js)"/)?.[1];
+  expect(originalModule).toBeTruthy();
+  const nextModule = '/_astro/Scenario.generation-two.js';
+  const originalWorker = await readFile(new URL('../../.commercial-dist/workslip/sw.js', import.meta.url), 'utf8');
+  const originalList = JSON.parse(originalWorker.match(/const PRECACHE = (\[[^\n]+\]);/)[1]);
+  const nextList = originalList.map(path => path === originalModule ? nextModule : path);
+  expect(nextList).toContain(nextModule);
+  expect(nextList).not.toContain(originalModule);
+
+  await page.goto(new URL(route, app.base).href);
+  await controlled(page);
+  const oldCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('mrsoftware-workslip-')));
+  await page.getByLabel('Minutes worked').fill('21');
+  await page.getByRole('button', { name: 'Save time', exact: true }).click();
+  await expect(page.locator('#scenario-result')).toContainText('21 minutes saved');
+
+  // Simulate a real deployment: changed HTML imports a new content-addressed
+  // module, and the waiting worker precaches that complete new dependency set.
+  for (const path of productRoutes('workslip')) {
+    const html = await readFile(new URL(`../../.commercial-dist${path}index.html`, import.meta.url), 'utf8');
+    app.assetOverrides.set(path, html.replaceAll(originalModule, nextModule).replace(/<h1(?=[ >])/, '<h1 data-shell-generation="two"'));
+  }
+  const moduleBody = await readFile(new URL(`../../.commercial-dist${originalModule}`, import.meta.url), 'utf8');
+  app.assetOverrides.set(nextModule, moduleBody + '\ndocument.documentElement.dataset.demoModuleGeneration = "two";\n');
+  app.assetOverrides.set('/workslip/sw.js', originalWorker
+    .replace(/const CACHE = PREFIX \+ '[^']+';/, "const CACHE = PREFIX + 'coherent-generation-two';")
+    .replace(/const PRECACHE = \[[^\n]+\];/, `const PRECACHE = ${JSON.stringify(nextList)};`));
+  await page.evaluate(async () => { const registration = await navigator.serviceWorker.getRegistration('/workslip/'); await registration.update(); });
+  await expect(page.locator('#update-notice')).toBeVisible();
+  await page.reload();
+  // Continue after this soft assertion so RED also reproduces the broken
+  // offline action caused by the uncached new module, rather than just markup.
+  expect.soft(await page.locator('h1').getAttribute('data-shell-generation')).toBeNull();
+  await context.setOffline(true);
+  await page.reload();
+  await page.getByLabel('Minutes worked').fill('32');
+  await page.getByRole('button', { name: 'Save time', exact: true }).click();
+  await expect(page.locator('#scenario-result')).toContainText('32 minutes saved');
+  expect(await page.locator('h1').getAttribute('data-shell-generation')).toBeNull();
+  const oldHtml = await page.evaluate(async ({ name, path }) => (await (await caches.open(name)).match(path)).text(), { name: oldCache, path: route });
+  expect(oldHtml).toContain(originalModule);
+  expect(oldHtml).not.toContain(nextModule);
+  expect(await page.evaluate(async () => Boolean((await navigator.serviceWorker.getRegistration('/workslip/')).waiting))).toBe(true);
+
+  await context.setOffline(false);
+  // A missing HTML entry must not adopt the next deployment either, including
+  // an ordinary fetch whose mode is not "navigate". Activation restores the
+  // complete new generation after this simulated cache eviction.
+  const missingShell = await page.evaluate(async name => {
+    const cache = await caches.open(name);
+    await cache.delete('/workslip/');
+    const response = await fetch('/workslip/');
+    return { html: await response.text(), cached: Boolean(await cache.match('/workslip/')) };
+  }, oldCache);
+  expect(missingShell.html).toContain('data-shell-generation="two"');
+  expect(missingShell.cached).toBe(false);
+  await page.reload();
+  await expect(page.locator('#update-notice')).toBeVisible();
+  await Promise.all([page.waitForEvent('load'), page.getByRole('button', { name: 'Update demo', exact: true }).click()]);
+  await expect(page.locator('h1')).toHaveAttribute('data-shell-generation', 'two');
+  await expect(page.locator('html')).toHaveAttribute('data-demo-module-generation', 'two');
+  await expect.poll(() => page.evaluate(() => caches.keys())).not.toContain(oldCache);
+  const newEntries = await page.evaluate(async () => (await (await caches.open('mrsoftware-workslip-coherent-generation-two')).keys()).map(request => new URL(request.url).pathname));
+  expect(newEntries).toContain(nextModule);
+  expect(newEntries).not.toContain(originalModule);
+
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator('h1')).toHaveAttribute('data-shell-generation', 'two');
+  await expect(page.locator('html')).toHaveAttribute('data-demo-module-generation', 'two');
+  await page.getByLabel('Minutes worked').fill('47');
+  await page.getByRole('button', { name: 'Save time', exact: true }).click();
+  await expect(page.locator('#scenario-result')).toContainText('47 minutes saved');
+  await page.goto(new URL('/workslip/materials/mat-101/', app.base).href);
+  await expect(page.locator('html')).toHaveAttribute('data-demo-module-generation', 'two');
+  await page.getByRole('button', { name: 'Use material', exact: true }).click();
+  await expect(page.locator('#scenario-result')).toContainText('11 metres available');
+  await context.setOffline(false);
 });
 
 test('a failed offline download ends loading and a visible retry completes the saved example', async ({ page, app }) => {
