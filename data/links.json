@@ -73,6 +73,15 @@
       "summary": "What is live, in demo, and still being built."
     }
   ],
+  "sitemapPages": [
+    "/status/",
+    "/privacy-policy/",
+    "/terms-of-service/",
+    "/sikkerhed-og-dataprivatliv/",
+    "/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/",
+    "/data-deletion/",
+    "/foodtrader/"
+  ],
   "links": {
     "the-offer": [
       {
