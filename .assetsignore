@@ -19,3 +19,4 @@ ux.config.mjs
 AGENTS.md
 worker.mjs
 dashboard/**
+backoffice/**

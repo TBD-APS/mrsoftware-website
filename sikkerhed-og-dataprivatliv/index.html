@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Security &amp; data privacy | MR Software</title>
-  <meta name="description" content="How MR Software handles security and data: fail-closed defaults, human approvals, Key Vault references, tenant isolation and our open self-validation.">
+  <meta name="description" content="How SAASSY Prison limits delegated actions, how MR Software reduces attack risk, and how we adapt secure workflows to each customer's field.">
   <link rel="canonical" href="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/">
   <meta name="theme-color" content="#fffcf7">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MR Software">
   <meta property="og:title" content="Security &amp; data privacy | MR Software">
-  <meta property="og:description" content="How MR Software handles security and data: fail-closed defaults, human approvals, Key Vault references, tenant isolation and our open self-validation.">
+  <meta property="og:description" content="How SAASSY Prison limits delegated actions, how MR Software reduces attack risk, and how we adapt secure workflows to each customer's field.">
   <meta property="og:url" content="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/">
   <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -18,7 +18,7 @@
   <meta property="og:image:alt" content="MR Software. One place for every order, shipment and document.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Security &amp; data privacy | MR Software">
-  <meta name="twitter:description" content="How MR Software handles security and data: fail-closed defaults, human approvals, Key Vault references, tenant isolation and our open self-validation.">
+  <meta name="twitter:description" content="How SAASSY Prison limits delegated actions, how MR Software reduces attack risk, and how we adapt secure workflows to each customer's field.">
   <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
@@ -50,9 +50,10 @@
       <p class="label">Trust &amp; transparency</p>
       <h1>Security and data privacy</h1>
       <p class="lead">
-        MR Software builds systems with fail-closed defaults: access starts at zero, every change has to
-        be provable, and secrets never touch business code. Here we describe what that means in
-        practice, and how we validate our own work.
+        MR Software builds systems with fail-closed defaults: access starts at zero, consequential
+        changes need evidence and approval, and privileged secrets stay out of the model context.
+        Here is how SAASSY Prison limits delegated work, how we reduce attack risk, and how we shape
+        the system around your field and your customers.
       </p>
       </div>
     </div>
@@ -62,18 +63,19 @@
       <div class="grid">
         <div class="card">
           <h3>Access starts at zero</h3>
-          <p>No agent, tool or user has access until it is explicitly granted. A missing approval or
-          missing evidence blocks the action, never the other way round.</p>
+          <p>No agent, tool or user receives access until it is explicitly granted. Missing approval
+          or missing evidence blocks a governed action, never the other way round.</p>
         </div>
         <div class="card">
           <h3>Human approval</h3>
-          <p>Changes with consequences need human approval tied to a specific action. Production
-          changes go through protected environments with owner approval.</p>
+          <p>Changes with consequences need approval tied to a specific action, resource and
+          environment. An approval expires and cannot be reused for a different change.</p>
         </div>
         <div class="card">
           <h3>Secrets stay in the vault</h3>
-          <p>Configuration refers to Key Vault names, never values. Secrets are never part of agent
-          context, events or browser storage.</p>
+          <p>Configuration refers to Key Vault names rather than secret values. Privileged secrets
+          stay out of the model context, and governed dispatch grants scoped access only after
+          permission, policy and approval checks.</p>
         </div>
         <div class="card">
           <h3>Tenants are isolated</h3>
@@ -82,36 +84,110 @@
         </div>
         <div class="card">
           <h3>Tamper-evident audit trail</h3>
-          <p>Approvals and side-effect decisions go into a SHA-256 hash chain. Every read verifies the
-          chain.</p>
+          <p>Security decisions and approvals are appended to a separate audit service with a
+          SHA-256 hash chain and verification. If a security-critical audit record cannot be
+          written, the action is refused.</p>
         </div>
         <div class="card">
           <h3>Protected environments</h3>
-          <p>Production work runs in environments with a wait timer and a protected branch policy
-          (live: 30 min. owner approval).</p>
+          <p>High-risk production changes require explicit owner approval in a protected
+          environment. Merging code is not, by itself, approval to deploy it.</p>
         </div>
       </div>
     </section>
 
     <section>
+      <h2>SAASSY Prison: a boundary around delegated work</h2>
+      <p>SAASSY Prison separates what an agent may do, what it must ask about and what it can never
+      change. The model does not police itself: deterministic policy checks sit outside the model
+      and before side effects, so untrusted content cannot redefine the rules.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Inside the prison</h3>
+          <p>Delegated actions the agent may perform autonomously within its granted tenant, tool
+          and task scope. The boundary defines the work; it does not give blanket access.</p>
+        </div>
+        <div class="card">
+          <h3>At the gate</h3>
+          <p>Actions the agent may propose but not execute until a person approves the exact change.
+          Approval is bound to the actor, action, resource, environment, change reference, parameter
+          hash, policy revision and expiry.</p>
+        </div>
+        <div class="card">
+          <h3>Outside the prison</h3>
+          <p>Root policy, privilege escalation, secrets in model context, audit rewriting and
+          break-glass are not agent-writable. An agent cannot expand its own boundary.</p>
+        </div>
+      </div>
+      <div class="note">The Control Center distinguishes documented policy from enforcement that is
+      actually wired. A policy page alone is not treated as proof that a control is active.</div>
+    </section>
+
+    <section>
+      <h2>How we reduce attack risk</h2>
+      <p>We combine preventative controls, approval boundaries and evidence that supports detection
+      and investigation. Just as importantly, we record the limits instead of hiding them.</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Security risks and controls"><table>
+        <thead><tr><th>Risk</th><th>Control</th><th>Important limit</th></tr></thead>
+        <tbody>
+          <tr><td>Prompt injection and untrusted content</td><td>External content and model output are untrusted. Deterministic policy checks run outside the model and before side effects; the three Prison zones limit available actions.</td><td>This limits the potential blast radius. It does not guarantee that prompt injection itself can always be prevented.</td></tr>
+          <tr><td>Credential misuse</td><td>On the governed MCP dispatch path, scoped credential leases are issued only after permission, policy and approval checks. These leases have a five-minute lifetime.</td><td>Not every credential is short-lived. Existing static credentials still need their own protection and rotation.</td></tr>
+          <tr><td>Unauthorised production changes</td><td>Approvals bind a person to the exact proposed change, and high-risk production deployment requires explicit owner approval.</td><td>Signing in through Cloudflare Access alone proves neither operator authorisation nor backend health.</td></tr>
+          <tr><td>Audit tampering or audit outage</td><td>A separate append-only audit service uses internal ingress and a SHA-256 hash chain. Security-critical actions fail closed when their audit record cannot be written.</td><td>Tamper-evident records support verification and investigation; they do not make every operational failure impossible.</td></tr>
+          <tr><td>Emergency-path abuse</td><td>Break-glass requires human SSO, a requester and two other approvers, and a time-limited window. Agents and service tokens are refused.</td><td>The exceptional procedure does not replace normal access controls or the need to review what happened.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note ok">These controls are designed to reduce risk and limit impact. No system can
+      promise to prevent every attack or data breach. This page describes security design and
+      implemented controls; it is not a live health report.</div>
+    </section>
+
+    <section>
       <h2>Data privacy</h2>
-      <p>MR SAAS'y only processes the data needed to run the system: workflow events, permissions,
-      approvals, audit events and agent performance signals.</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+      <p>MR SAAS'y is designed to limit processing to the data needed to run the system: workflow
+      events, permissions, approvals, audit events and agent performance signals.</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Data processing overview"><table>
         <thead><tr><th>Data</th><th>Purpose</th><th>Note</th></tr></thead>
         <tbody>
           <tr><td>Workflow events</td><td>Traceable execution and recovery</td><td>Append-only event stream</td></tr>
           <tr><td>Permissions &amp; approvals</td><td>Access control</td><td>Split by tenant, audit-logged</td></tr>
-          <tr><td>Audit events</td><td>Record of decisions</td><td>SHA-256 chained, cannot be deleted</td></tr>
-          <tr><td>Agent performance data</td><td>Routing and learning</td><td>Aggregated; raw prompts are never logged</td></tr>
+          <tr><td>Audit events</td><td>Record of decisions</td><td>Append-only, SHA-256 chained and verified</td></tr>
+          <tr><td>Agent performance data</td><td>Routing and learning</td><td>Aggregated signals rather than raw provider arguments in security records</td></tr>
         </tbody>
       </table></div>
-      <div class="note ok">MOTOR does not store prompts, secrets or customer payloads. If an event
-      cannot sanitise its content, it is not written with raw data.</div>
+      <div class="note ok">Security records use identifiers, metadata and hashes instead of raw
+      provider arguments. Privileged secrets stay out of model context. Data needed to execute a
+      workflow is handled within its agreed purpose and access boundaries.</div>
       <p>As a company we are bound by the General Data Protection Regulation (GDPR). Processing is
       limited, tied to a purpose and backed by the necessary technical and organisational measures.
       Contact us at <a href="mailto:kontakt@mrsoftware.dk">kontakt@mrsoftware.dk</a> with any
       questions about data protection.</p>
+    </section>
+
+    <section>
+      <h2>Built around your field and your customers</h2>
+      <p>Security should support the work, not force every customer into the same generic workflow.
+      We start with your field, your customers' interests and the systems your team already uses.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Map the real work</h3>
+          <p>We map the workflow, customer interests, data sources, systems and decisions that matter.
+          That includes where an agent can help and where your team needs to stay in control.</p>
+        </div>
+        <div class="card">
+          <h3>Agree the boundaries</h3>
+          <p>We agree data access, tenant separation, approval points and permitted actions with you.
+          Adapting a workflow does not give an agent broader access than agreed.</p>
+        </div>
+        <div class="card">
+          <h3>Connect and verify</h3>
+          <p>We connect the agreed systems and test real cases with you. We confirm what is supported
+          today before promising an integration, then make supported behaviour and remaining limits
+          visible.</p>
+        </div>
+      </div>
+      <p>Tell us about your customers, your field and the workflow you want to improve.
+      <a href="/contact/">Talk to us about a tailored solution →</a></p>
     </section>
 
     <section>
@@ -128,7 +204,7 @@
     <div class="footer-inner">
       <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software for trading, shipping and field service.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
       <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a></div>
-      <div class="footer-column"><h2>Resources</h2><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
+      <div class="footer-column"><h2>Resources</h2><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
       <div class="footer-column"><h2>Company</h2><a href="/contact/">Contact us</a><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a></div>
       <nav class="footer-legal" aria-label="Legal"><h2>Legal</h2><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
     </div>

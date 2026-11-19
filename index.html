@@ -60,6 +60,7 @@
         <a href="#solutions">Products</a>
         <a href="/integrations/">Integrations</a>
         <a href="/roadmap/">Roadmap</a>
+        <a href="#stories">Stories</a>
         <a href="#results">Results</a>
         <a href="/sikkerhed-og-dataprivatliv/">Security</a>
         <a href="/contact/">Contact</a>
@@ -189,28 +190,141 @@
       </div>
     </section>
 
+    <section class="section" id="stories" aria-labelledby="stories-heading">
+      <div class="page-width">
+        <div data-reveal>
+          <p class="eyebrow">Stories</p>
+          <h2 class="heading" id="stories-heading">Four working days, and the choices behind them.</h2>
+          <p class="lead">A buyer in a chat. A job on site. A shipment already on the road. The software is built for that day.</p>
+        </div>
+        <div class="uses" data-reveal>
+          <article class="use">
+            <h3><a href="/stories/the-offer/">The offer</a></h3>
+            <p>The buyer asks in the chat they already use. The offer is drafted there, and a person approves it before it is sent.</p>
+          </article>
+          <article class="use">
+            <h3><a href="/stories/the-job/">The job</a></h3>
+            <p>The checklist, the photos and the approval stay with the job. The office sees what was recorded on site.</p>
+          </article>
+          <article class="use">
+            <h3><a href="/stories/the-shipment/">The shipment</a></h3>
+            <p>Booking, documents, customs and status stay with the shipment. Nobody rebuilds it from an inbox.</p>
+          </article>
+          <article class="use">
+            <h3><a href="/stories/the-choices/">The choices</a></h3>
+            <p>Why the software sits where the work already is, and why a person still approves what leaves the building.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- Internal rule (docs/homepage-business-value-requirements.md, KR-03 and KR-12): these two figures may only
          be published with their source and scope, never as savings, ROI or a before-and-after claim, and marketing
-         data must pass internal data approval before release. Do not add, round or re-word the numbers.
+         data must pass internal data approval before release. The charts draw those same two medians on separate
+         scales. Day ticks sit at 1/4.6, 2/4.6, 3/4.6 and 4/4.6 of the elapsed bar. Do not add, round or re-word the numbers.
          TODO: confirm with the Workslip owner what one measured unit is, then name it in the two descriptions. -->
     <section class="section band-rose" id="results" aria-labelledby="results-heading">
-      <div class="page-width results">
-        <div class="metrics" data-reveal>
-          <div class="metric">
-            <span class="metric-value">3 min</span>
-            <p class="metric-name">Median active completion time</p>
-            <p class="metric-context">The time a person actively spends filling in. Waiting time is not counted.</p>
-          </div>
-          <div class="metric">
-            <span class="metric-value">4.6 days</span>
-            <p class="metric-name">Median from creation to approval</p>
-            <p class="metric-context">The whole elapsed time, including the time spent waiting between steps.</p>
-          </div>
-        </div>
-        <div class="copy" data-reveal>
+      <div class="page-width">
+        <div data-reveal>
           <p class="eyebrow">Results</p>
-          <h2 class="heading" id="results-heading">Two measurements from Workslip.</h2>
-          <p class="footnote">Internal, aggregated measurements from Workslip over a 30-day period, compiled in October 2026. They describe how work flows through the product. There is no before-and-after comparison, so they are not documented time savings, ROI or financial gain for the customer. <a href="#contact">Ask us how they were measured.</a></p>
+          <h2 class="heading" id="results-heading">Minutes to fill in. Days until a person approves.</h2>
+          <p class="lead">Two measurements from Workslip. One clock is the time a person spends filling in. The other is the time until a person approves.</p>
+        </div>
+        <div class="clock-board" data-reveal>
+          <article class="clock">
+            <p class="clock-kicker">The record</p>
+            <p class="metric-value">3 min</p>
+            <p class="metric-name">Median active completion time</p>
+            <div class="scale" role="img" aria-label="Active filling, on a scale from 0 to 3 minutes. The bar ends at the median, 3 minutes. Waiting is not on this scale.">
+              <span class="scale-bar"></span>
+              <span class="scale-tick is-start" style="--at: 0">0</span>
+              <span class="scale-tick" style="--at: 33.333">1</span>
+              <span class="scale-tick" style="--at: 66.667">2</span>
+              <span class="scale-tick is-end" style="--at: 100">3</span>
+            </div>
+            <p class="metric-context">The time a person actively spends filling in. Waiting time is not counted. The bar ends at 3 minutes.</p>
+          </article>
+          <article class="clock">
+            <p class="clock-kicker">The approval</p>
+            <p class="metric-value">4.6 days</p>
+            <p class="metric-name">Median from creation to approval</p>
+            <div class="scale" role="img" aria-label="Creation to approval, on a scale from 0 to 4.6 days. Whole-day marks sit at 1, 2, 3 and 4. The bar ends at the median, 4.6 days, and the coloured tip is the last part of a day. Waiting between steps is included.">
+              <span class="scale-bar"><span class="scale-tip" style="left: 86.957%"></span></span>
+              <span class="scale-tick is-start" style="--at: 0">0</span>
+              <span class="scale-tick" style="--at: 21.739">1</span>
+              <span class="scale-tick" style="--at: 43.478">2</span>
+              <span class="scale-tick" style="--at: 65.217">3</span>
+              <span class="scale-tick" style="--at: 86.957">4</span>
+            </div>
+            <p class="metric-context">The whole elapsed time, including the time spent waiting between steps. The ticks are whole days. The coloured tip runs from day 4 to 4.6.</p>
+          </article>
+        </div>
+        <ul class="effects" data-reveal>
+          <li>
+            <p class="clock-kicker">What the minutes show</p>
+            <p>The median person spends 3 min filling in. Waiting stays out of that count, so the number is the work on the record.</p>
+          </li>
+          <li>
+            <p class="clock-kicker">What the days show</p>
+            <p>A person still approves the job. The median from creation to that approval is 4.6 days, and the wait is part of the number.</p>
+          </li>
+          <li>
+            <p class="clock-kicker">What the charts refuse</p>
+            <p>Each bar has its own scale. There is no earlier measurement beside them, so the two clocks above are not a saving.</p>
+          </li>
+        </ul>
+        <p class="footnote" data-reveal>Internal, aggregated measurements from Workslip over a 30-day period, compiled in October 2026. They describe how work flows through the product. There is no before-and-after comparison, so they are not documented time savings, ROI or financial gain for the customer. <a href="#contact">Ask us how they were measured.</a></p>
+
+        <div class="potential" data-reveal>
+          <p class="eyebrow">Potential</p>
+          <h3 class="heading">Active minutes not typed again.</h3>
+          <p class="lead"><a href="/products/tradey/">Tradey</a> describes the same trade written three times. Shippy describes the shipment pieced into three systems. Workslip records the job once, on site. One writing is counted as 3 min, the only active time we have measured. The trading and shipping products do not have their own clock yet.</p>
+          <div class="pot-board">
+            <article class="pot">
+              <h4 class="clock-kicker"><a href="/products/workslip/">Workslip</a></h4>
+              <p class="metric-value">3 min</p>
+              <p class="metric-name">Potential per job</p>
+              <div class="scale" role="img" aria-label="Potential for Workslip: 3 minutes of active work not typed again per job, on a scale that ends at 6 minutes. The bar stops at 3.">
+                <span class="scale-track"></span>
+                <span class="scale-bar pot-fill" style="--fill: 50%"></span>
+                <span class="scale-tick is-start" style="--at: 0">0</span>
+                <span class="scale-tick" style="--at: 50">3</span>
+                <span class="scale-tick is-end" style="--at: 100">6</span>
+              </div>
+              <p class="metric-context">The office does not write the job again. 2 writings become 1. Avoided: 1 × 3 min.</p>
+            </article>
+            <article class="pot">
+              <h4 class="clock-kicker"><a href="/products/tradey/">Tradey</a></h4>
+              <p class="metric-value">6 min</p>
+              <p class="metric-name">Potential per trade</p>
+              <div class="scale" role="img" aria-label="Potential for Tradey: 6 minutes of active work not typed again per trade. Chat, spreadsheet and ERP become one record. 2 times 3 minutes.">
+                <span class="scale-track"></span>
+                <span class="scale-bar pot-fill" style="--fill: 100%"></span>
+                <span class="scale-tick is-start" style="--at: 0">0</span>
+                <span class="scale-tick" style="--at: 50">3</span>
+                <span class="scale-tick is-end" style="--at: 100">6</span>
+              </div>
+              <p class="metric-context">Chat, spreadsheet and ERP become one record. 3 writings become 1. Avoided: 2 × 3 min.</p>
+            </article>
+            <article class="pot">
+              <h4 class="clock-kicker"><a href="/products/shippy/">Shippy</a></h4>
+              <p class="metric-value">6 min</p>
+              <p class="metric-name">Potential per shipment</p>
+              <div class="scale" role="img" aria-label="Potential for Shippy: 6 minutes of active work not typed again per shipment. Transport, accounting and customs become one entry. 2 times 3 minutes.">
+                <span class="scale-track"></span>
+                <span class="scale-bar pot-fill" style="--fill: 100%"></span>
+                <span class="scale-tick is-start" style="--at: 0">0</span>
+                <span class="scale-tick" style="--at: 50">3</span>
+                <span class="scale-tick is-end" style="--at: 100">6</span>
+              </div>
+              <p class="metric-context">Transport, accounting and customs become one entry. 3 entries become 1. Avoided: 2 × 3 min.</p>
+            </article>
+          </div>
+          <div class="pot-sum">
+            <p><span class="metric-value">15 min</span><span class="metric-name">One of each</span><span class="metric-context">3 + 6 + 6. One job, one trade and one shipment.</span></p>
+            <p><span class="metric-value">2 h 30 min</span><span class="metric-name">Ten of each</span><span class="metric-context">15 min × 10 = 150 min. An example volume, not a customer count.</span></p>
+          </div>
+          <p class="footnote">The 4.6 days stay out of this sum. That clock includes waiting for a person, and waiting is not counted as time saved. This sum is a potential built from the product descriptions and the 3 min measurement. It is not a documented time saving for a named customer.</p>
         </div>
       </div>
     </section>
@@ -244,7 +358,7 @@
     <div class="footer-inner">
       <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software for trading, shipping and field service.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
       <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a></div>
-      <div class="footer-column"><h2>Resources</h2><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
+      <div class="footer-column"><h2>Resources</h2><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
       <div class="footer-column"><h2>Company</h2><a href="/contact/">Contact us</a><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a></div>
       <nav class="footer-legal" aria-label="Legal"><h2>Legal</h2><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
     </div>
