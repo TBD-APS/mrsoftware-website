@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Integrations | MR Software</title>
-  <meta name="description" content="MR Software products connect to the systems trading and shipping companies already use: ERP, accounting, carriers, forwarders, customs, warehouse, email and files.">
+  <meta name="description" content="Try Excel contact import and Outlook reply review with sample data, and see what else MR Software products can connect to.">
   <link rel="canonical" href="https://mrsoftware.dk/integrations/">
   <meta name="theme-color" content="#fffcf7">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MR Software">
   <meta property="og:title" content="Integrations | MR Software">
-  <meta property="og:description" content="MR Software products connect to the systems trading and shipping companies already use: ERP, accounting, carriers, forwarders, customs, warehouse, email and files.">
+  <meta property="og:description" content="Try Excel contact import and Outlook reply review with sample data, and see what else MR Software products can connect to.">
   <meta property="og:url" content="https://mrsoftware.dk/integrations/">
   <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -23,6 +23,7 @@
   <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
   <script src="/js/site.js" defer></script>
+  <script src="/js/integration-examples.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
 <body>
@@ -34,7 +35,8 @@
       <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
         <a href="/#solutions">Products</a>
-        <a href="/integrations/">Integrations</a>
+        <a href="/integrations/" aria-current="page">Integrations</a>
+        <a href="/roadmap/">Roadmap</a>
         <a href="/#results">Results</a>
         <a href="/sikkerhed-og-dataprivatliv/">Security</a>
         <a href="/contact/">Contact</a>
@@ -51,15 +53,68 @@
         <h1 class="blur-in" id="integrations-title"><span style="--i:0">Connected</span> <span style="--i:1">to</span> <span style="--i:2">the</span> <span style="--i:3">systems</span> <span style="--i:4">your</span> <span style="--i:5">trade</span> <span style="--i:6">already</span> <span style="--i:7">runs</span> <span style="--i:8">on.</span></h1>
         <p class="lead">Our products exchange data with the tools around them, so an order, a shipment or a document is entered once. Tell us what you use and we confirm what is supported today.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="/contact/">Ask about your system</a>
+          <a class="button button-primary" href="#examples">Try Excel and Outlook</a>
           <a class="button button-secondary" href="#categories">See what we connect to</a>
         </div>
         <div class="hub"><svg viewBox="0 0 1200 380" aria-hidden="true"><path class="hub-line" d="M330 64 C 450 64, 430 190, 500 190"/><rect class="hub-node" x="30" y="40" width="300" height="48" rx="12"/><text x="50" y="70">ERP and order management</text><path class="hub-line" d="M330 148 C 450 148, 430 190, 500 190"/><rect class="hub-node" x="30" y="124" width="300" height="48" rx="12"/><text x="50" y="154">Accounting and invoicing</text><path class="hub-line" d="M330 232 C 450 232, 430 190, 500 190"/><rect class="hub-node" x="30" y="208" width="300" height="48" rx="12"/><text x="50" y="238">Carriers and shipping lines</text><path class="hub-line" d="M330 316 C 450 316, 430 190, 500 190"/><rect class="hub-node" x="30" y="292" width="300" height="48" rx="12"/><text x="50" y="322">Freight forwarders</text><path class="hub-line" d="M700 190 C 770 190, 750 64, 870 64"/><rect class="hub-node" x="870" y="40" width="300" height="48" rx="12"/><text x="890" y="70">Customs and trade documents</text><path class="hub-line" d="M700 190 C 770 190, 750 148, 870 148"/><rect class="hub-node" x="870" y="124" width="300" height="48" rx="12"/><text x="890" y="154">Warehouse and inventory</text><path class="hub-line" d="M700 190 C 770 190, 750 232, 870 232"/><rect class="hub-node" x="870" y="208" width="300" height="48" rx="12"/><text x="890" y="238">Email and messaging</text><path class="hub-line" d="M700 190 C 770 190, 750 316, 870 316"/><rect class="hub-node" x="870" y="292" width="300" height="48" rx="12"/><text x="890" y="322">Files and spreadsheets</text><rect class="hub-core" x="500" y="150" width="200" height="80" rx="12"/><text class="hub-core-text" x="600" y="196" text-anchor="middle">Your workflow</text></svg></div>
       </div>
     </section>
 
-    <!-- This page names kinds of systems, not brands, and does not state a status per category.
-         TODO: add named integrations with their real status (Live, Demo, Planned) once the owner supplies the list. -->
+    <section class="section on-light integration-examples" id="examples" aria-labelledby="examples-heading">
+      <div class="page-width">
+        <h2 class="heading" id="examples-heading">Try two everyday integrations.</h2>
+        <p class="lead">See how an Excel sheet becomes contacts you can review, or how an Outlook reply is checked against a shipment. Both examples use sample data and run right here.</p>
+        <div class="integration-example-grid">
+          <article class="integration-example integration-example-excel" id="excel-example" aria-labelledby="excel-example-title">
+            <p class="integration-tool">Excel · CSV</p>
+            <h3 id="excel-example-title">Turn a spreadsheet into CRM contacts</h3>
+            <p>Export your contact list from Excel as CSV. Check the rows you want to import and spot gaps before they reach your CRM.</p>
+            <details class="integration-preview">
+              <summary>Review sample contacts</summary>
+              <div class="integration-preview-body">
+                <table>
+                  <caption>Review of sample-contacts.csv</caption>
+                  <thead><tr><th scope="col">Contact</th><th scope="col">Company</th><th scope="col">Review</th></tr></thead>
+                  <tbody>
+                    <tr><td>Eva Holm</td><td>North Quay</td><td><label><input type="checkbox" checked disabled aria-label="Include Eva Holm"> Include</label></td></tr>
+                    <tr><td>Mikkel Lund</td><td>Harbor Goods</td><td><label><input type="checkbox" checked disabled aria-label="Include Mikkel Lund"> Include</label></td></tr>
+                    <tr><td>—</td><td>Coastline Foods</td><td>Missing name</td></tr>
+                  </tbody>
+                </table>
+                <p class="integration-result" id="sample-contact-selection" role="status">2 contacts selected for import.</p>
+              </div>
+            </details>
+            <ul class="integration-example-links">
+              <li><a href="/assets/examples/sample-contacts.csv" download>Download the sample CSV</a></li>
+              <li><a href="/roadmap/#boney-crm-import">See the Boney CRM module</a></li>
+            </ul>
+          </article>
+
+          <article class="integration-example integration-example-outlook" id="outlook-example" aria-labelledby="outlook-example-title">
+            <p class="integration-tool">Microsoft Outlook</p>
+            <h3 id="outlook-example-title">Review a reply with the shipment open</h3>
+            <p>A customer asks about an ETA. See the draft alongside the shipment reference and check exactly what would go out.</p>
+            <details class="integration-preview">
+              <summary>Review sample reply</summary>
+              <div class="integration-preview-body">
+                <dl class="integration-mail">
+                  <dt>Shipment</dt><dd>SH-1042 · Expected Friday</dd>
+                  <dt>To</dt><dd>eva@northquay.example</dd>
+                  <dt>Subject</dt><dd>Re: ETA for shipment SH-1042</dd>
+                </dl>
+                <p class="integration-mail-body">Hi Eva, shipment SH-1042 is expected on Friday. I’ll let you know if that changes.</p>
+                <button class="button button-primary integration-approve" id="approve-sample-reply" type="button" hidden>Approve sample reply</button>
+                <p class="integration-result" id="sample-reply-status" role="status">Example draft. No email will be sent.</p>
+              </div>
+            </details>
+            <ul class="integration-example-links">
+              <li><a href="/roadmap/#boney-outlook">See the Boney Outlook module</a></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section on-dark" id="categories" aria-labelledby="categories-heading">
       <div class="page-width">
         <div class="section-head" data-reveal>
@@ -78,7 +133,7 @@
           <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 7 9-7"/></svg><h3>Email and messaging</h3><p>Incoming requests, replies and attachments.</p></li>
           <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM4 10h16M10 4v16"/></svg><h3>Files and spreadsheets</h3><p>Price lists, product sheets and exports.</p></li>
         </ul>
-        <p class="footnote" data-reveal>This page lists kinds of systems, not brand names. What is available depends on the system and the interface it offers. Ask us about yours.</p>
+        <p class="footnote" data-reveal>Availability depends on the product and how your system provides access. Ask us about yours.</p>
       </div>
     </section>
 

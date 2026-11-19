@@ -50,9 +50,71 @@
         <h1>Product roadmap</h1>
         <p class="lead">See what’s developed, in development or planned for each package.</p>
         <p class="roadmap-note">Developed features are implemented. Availability varies by product and setup.</p>
+        <nav class="roadmap-jumps" aria-label="Roadmap sections">
+          <a href="#boney-modules">Explore reusable Boney modules</a>
+          <a href="#roadmap-packages">Browse the product roadmap</a>
+        </nav>
       </div>
     </div>
     <div class="roadmap-body page-width">
+    <section class="boney-showcase" aria-labelledby="boney-modules">
+      <h2 id="boney-modules">Reusable Boney modules</h2>
+      <p class="boney-showcase-intro">Use the same building blocks across products, from sign-in and customer portals to shipment tracking. Teams select versioned .NET or JavaScript packages and configure access, storage and providers for their product.</p>
+      <p class="boney-showcase-examples"><a href="/integrations/#examples">Try the Excel and Outlook examples</a></p>
+      <ul class="boney-modules">
+        <li id="boney-module-starter">
+          <h3><a href="#boney-product-starter">Product starter and access</a></h3>
+          <p>Start a React and ASP.NET product with a shared app shell, Authy sign-in and organization-level access checks.</p>
+          <p class="boney-package-names"><code>Boney.ProductStarter</code> <code>Boney.App</code> <code>@mr-software/product-ui</code></p>
+        </li>
+        <li id="boney-module-portal">
+          <h3><a href="#boney-customer-portal">Customer portals</a></h3>
+          <p>Give customers a place to follow their records, documents and messages with access controlled by the host product.</p>
+          <p class="boney-package-names"><code>Boney.CustomerPortal</code> <code>@mr-software/product-ui</code></p>
+        </li>
+        <li id="boney-module-contacts">
+          <h3><a href="#boney-crm">Contacts and conversations</a></h3>
+          <p>Manage companies and contacts, review imports and keep replies and communication history with the right record.</p>
+          <p class="boney-package-names"><code>Boney.Crm</code> <code>Boney.Thread</code> <code>Boney.Comms</code> <code>Boney.Comms.Outlook</code></p>
+        </li>
+        <li id="boney-module-documents">
+          <h3><a href="#boney-document-intake">Document intake and review</a></h3>
+          <p>Keep the original document, validate extracted fields and give reviewers evidence for their decisions.</p>
+          <p class="boney-package-names"><code>Boney.Documents</code></p>
+        </li>
+        <li id="boney-module-planning">
+          <h3><a href="#boney-transport-planning">Transport and delivery planning</a></h3>
+          <p>Use shared transport models to plan vehicle visits, check capacity and track partial fulfilment.</p>
+          <p class="boney-package-names"><code>Boney.Transport</code> <code>Boney.Planning</code> <code>Boney.Fulfilment</code></p>
+        </li>
+        <li id="boney-module-tracking">
+          <h3><a href="#boney-shipment-tracking">Shipment tracking and maps</a></h3>
+          <p>Bring carrier updates into a common shipment history and display routes and stops on a map.</p>
+          <p class="boney-package-names"><code>MrSoftware.Shipping</code> <code>Boney.Transport.Shipping</code> <code>@mrsoftware/maps</code></p>
+        </li>
+        <li id="boney-module-workflows">
+          <h3><a href="#boney-business-workflows">Business workflows and product tools</a></h3>
+          <p>Offer business templates and connect approved tools to the product’s existing sign-in and permissions.</p>
+          <p class="boney-package-names"><code>Boney.Workflows</code> <code>Boney.Mcp</code></p>
+        </li>
+        <li id="boney-module-delivery">
+          <h3><a href="#boney-release-toolkit">Release and browser checks</a></h3>
+          <p>Test desktop and phone journeys and tie release evidence to the exact source revision.</p>
+          <p class="boney-package-names"><code>Boney.Deploy</code> <code>@mr-software/ux-gate</code></p>
+        </li>
+      </ul>
+      <div class="boney-adoption" aria-labelledby="boney-adoption-title">
+        <h3 id="boney-adoption-title">Where we use Boney</h3>
+        <ul>
+          <li><a href="#package-tradey">Tradey</a><span>Shared sign-in, transport and shipment tracking.</span></li>
+          <li><a href="#package-mr-saassy">MR SAAS’y</a><span>Transport planning packages and browser checks.</span></li>
+          <li><a href="#package-roady">Roady</a><span>The product starter, transport models and maps.</span></li>
+        </ul>
+      </div>
+      <a class="boney-showcase-detail" href="#package-boney">See the full Boney roadmap</a>
+    </section>
+
+    <div id="roadmap-packages">
     <!-- public-features:start -->
     <nav class="roadmap-packages" aria-label="Packages">
       <ul>
@@ -802,6 +864,7 @@
       </ul>
     </section>
     <!-- public-features:end -->
+    </div>
     </div>
   </main>
 

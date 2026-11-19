@@ -737,8 +737,27 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .roadmap-hero { padding-bottom: var(--s4); }
 .roadmap-hero h1 { margin-top: 0; }
 .roadmap-note { margin: var(--s1) 0 0; color: var(--muted-on-light); font-size: var(--fs-small); }
+.roadmap-jumps { display: flex; flex-wrap: wrap; column-gap: var(--s3); margin-top: var(--s2); }
+.roadmap-jumps a, .boney-showcase-detail { display: inline-flex; min-height: 44px; align-items: center; }
 .roadmap-body { padding-block: var(--s4) var(--section); }
-.roadmap-packages, .roadmap-section { max-width: 960px; }
+.roadmap-packages, .roadmap-section, .boney-showcase { max-width: 960px; }
+.boney-showcase { margin-bottom: var(--s6); border-top: 1px solid var(--hairline-light); padding-top: var(--s4); }
+.boney-showcase h2 { font-size: var(--fs-heading); line-height: 1.12; }
+.boney-showcase-intro { max-width: 65ch; margin: var(--s1) 0 0; color: var(--muted-on-light); }
+.boney-showcase-examples { margin: 0 0 var(--s2); }
+.boney-showcase-examples a { display: inline-flex; min-height: 44px; align-items: center; }
+.boney-modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s4); padding: 0; margin: 0; list-style: none; }
+.boney-modules li { border-top: 1px solid var(--hairline-light); padding: var(--s2) 0; }
+.boney-modules li:target { border-top-color: var(--accent); }
+.boney-showcase h3 { font-size: var(--fs-title); line-height: 1.2; margin: 0; }
+.boney-modules h3 a { display: inline-flex; min-height: 44px; align-items: center; }
+.boney-modules p { margin: 0; color: var(--muted-on-light); }
+.boney-modules .boney-package-names { display: flex; flex-wrap: wrap; gap: 4px var(--s1); margin-top: var(--s1); font: var(--fs-small)/1.5 var(--mono); overflow-wrap: anywhere; }
+.boney-adoption { border-top: 1px solid var(--hairline-light); margin-top: var(--s2); padding-top: var(--s2); }
+.boney-adoption ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 var(--s4); list-style: none; padding: 0; margin: 0 0 var(--s2); }
+.boney-adoption a { display: inline-flex; min-height: 44px; align-items: center; font-weight: 600; }
+.boney-adoption span { display: block; color: var(--muted-on-light); }
+.roadmap-jumps a, .boney-showcase a { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
 .roadmap-packages ul {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -767,6 +786,43 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .roadmap-stage { color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); }
 @media (max-width: 600px) {
   .roadmap-packages ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s1) var(--s2); }
+  .boney-showcase { margin-bottom: var(--s5); }
+  .boney-modules, .boney-adoption ul { grid-template-columns: minmax(0, 1fr); }
   .roadmap-feature { grid-template-columns: minmax(0, 1fr); gap: var(--s1); }
   .roadmap-section { margin-top: var(--s5); }
+}
+
+/* Integration examples */
+.integration-examples { border-block: 1px solid var(--hairline-light); }
+.integration-examples .heading { max-width: none; }
+.integration-example-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--s3); margin-top: var(--s4); }
+.integration-example { --example-color: var(--ok); border: 1px solid var(--hairline-light); border-top: 3px solid var(--example-color); border-radius: var(--radius); padding: var(--s4); background: #fff; }
+.integration-example-outlook { --example-color: #225a88; }
+.integration-tool { margin: 0 0 var(--s1); color: var(--example-color); font: var(--fs-small)/1.5 var(--mono); }
+.integration-example h3 { font-size: clamp(1.625rem, 1.25rem + 1.15vw, 2.125rem); line-height: 1.12; }
+.integration-example h3 + p { margin: var(--s2) 0 var(--s3); color: var(--muted-on-light); }
+.integration-preview { border: 1px solid var(--hairline-light); border-radius: 6px; background: var(--paper); }
+.integration-preview summary { min-height: 44px; padding: 12px var(--s2); cursor: pointer; color: var(--example-color); font-weight: 600; }
+.integration-preview[open] summary { border-bottom: 1px solid var(--hairline-light); }
+.integration-preview-body { padding: var(--s2); }
+.integration-preview table { width: 100%; border-collapse: collapse; text-align: left; font-size: .875rem; }
+.integration-preview caption { padding-bottom: var(--s1); text-align: left; font: var(--fs-small)/1.5 var(--mono); color: var(--muted-on-light); }
+.integration-preview :is(th, td) { border-bottom: 1px solid var(--hairline-light); padding: 8px 4px; vertical-align: middle; }
+.integration-preview th { font-weight: 600; }
+.integration-preview td label { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; cursor: pointer; }
+.integration-preview input { margin: 0; accent-color: var(--example-color); }
+.integration-preview tr:last-child td:last-child { color: var(--warn); }
+.integration-result { margin: var(--s2) 0 0; font-size: .875rem; font-weight: 600; }
+.integration-mail { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px var(--s2); margin: 0; font-size: .875rem; }
+.integration-mail dt { color: var(--muted-on-light); }
+.integration-mail dd { margin: 0; overflow-wrap: anywhere; }
+.integration-mail-body { margin: var(--s2) 0 0; padding-top: var(--s2); border-top: 1px solid var(--hairline-light); }
+.integration-approve { margin-top: var(--s2); cursor: pointer; }
+.integration-approve[hidden] { display: none; }
+.integration-approve:disabled { color: var(--muted-on-light); background: var(--paper-raised); cursor: default; }
+.integration-example-links { display: flex; flex-wrap: wrap; gap: 0 var(--s3); list-style: none; margin: var(--s1) 0 0; padding: 0; }
+.integration-example-links a { display: inline-flex; min-height: 44px; align-items: center; color: var(--accent); text-decoration: underline; text-underline-offset: 4px; font-size: .875rem; }
+@media (max-width: 760px) {
+  .integration-example-grid { grid-template-columns: minmax(0, 1fr); }
+  .integration-example { padding: var(--s2); }
 }
