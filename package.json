@@ -3,19 +3,28 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/*.test.mjs && playwright test --config tests/backoffice/playwright.config.mjs && npm run ux-gate",
+    "test": "env -u NO_COLOR -u FORCE_COLOR node tools/run-tests.mjs",
     "links": "vite --config backoffice/vite.config.js",
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",
-    "ux-gate": "playwright test"
+    "ux-gate": "env -u NO_COLOR -u FORCE_COLOR playwright test",
+    "build:commercial": "node tools/build-commercial.mjs",
+    "ux-gate:commercial": "npm run build:commercial && env -u NO_COLOR -u FORCE_COLOR playwright test --config playwright.commercial.config.mjs",
+    "ux-gate:private": "npm run build:commercial && env -u NO_COLOR -u FORCE_COLOR playwright test --config playwright.private.config.mjs",
+    "preview:commercial": "npm run build:commercial && env -u NO_COLOR -u FORCE_COLOR node tools/preview-commercial.mjs",
+    "check:commercial": "node tools/commercial-readiness.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
+    "miniflare": "5.20261023.0-beta",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "vite": "8.0.16",
     "wrangler": "4.153.0"
   },
   "dependencies": {
-    "jose": "6.2.13"
+    "astro": "6.4.8",
+    "jose": "6.2.13",
+    "jsqr": "1.4.0",
+    "qrcode": "1.5.4"
   }
 }

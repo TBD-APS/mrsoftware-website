@@ -1,0 +1,15 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Scenario from '../../../components/Scenario.astro';
+import { recordRoutes, products } from '../../../data/scenarios.mjs';
+export function getStaticPaths() {
+  return Object.entries(recordRoutes).map(([scenario, route]) => {
+    const [product, kind, id] = route.split('/').filter(Boolean);
+    return { params: { product, kind, id }, props: { scenario } };
+  });
+}
+const { product } = Astro.params;
+const { scenario } = Astro.props;
+const title = scenario === 'material' ? 'Copper pipe 15 mm' : scenario === 'order' ? 'Summer produce order' : products[product].title;
+---
+<Layout title={title} product={product}><Scenario product={product} kind={scenario} /></Layout>

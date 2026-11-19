@@ -53,6 +53,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
       - run: npm ci --no-audit --no-fund
+      - name: Require the commercial app before unpacking private inputs or publishing links
+        run: node tools/commercial-readiness.mjs
       - name: Prepare the private reviewed dashboard snapshot
         run: node tools/dashboard-snapshot.mjs unpack
         env:

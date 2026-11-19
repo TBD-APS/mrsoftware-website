@@ -234,6 +234,12 @@ a:hover > .arrow { transform: translateX(4px); }
 .hero .lead { margin: 0; font-size: .9375rem; color: #4d4843; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .hero-actions .button { min-height: 48px; padding-inline: 28px; font-size: .875rem; }
+.commercial-entrypoints { margin-top: var(--s5); }
+.commercial-entrypoints .related-links h2 { font-size: var(--fs-body); font-family: var(--sans); }
+.commercial-entrypoints .related-links ul { display: flex; flex-wrap: wrap; }
+.commercial-entrypoints .related-links li { flex: 1 1 240px; max-width: 360px; }
+.commercial-entrypoints .related-link { border-radius: 0; }
+.commercial-entrypoints .related-link-summary { font-size: .875rem; }
 
 /* Rotating word: the second line of the headline. Without script or with reduced motion the first word stays. */
 .rotate { position: relative; display: block; height: 1.12em; overflow: hidden; color: var(--accent); font-style: italic; }
