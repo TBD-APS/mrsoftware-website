@@ -74,9 +74,12 @@ records the prior deployment/version before uploading with `--keep-vars`, then
 deploys only the exact uploaded version. Routes, custom domains and existing
 variables remain in place. The artifact contains only a safe release receipt
 (commit, PR, Action URL, deployment/version IDs and smoke statuses), never the
-private dashboard or bundle. Inspect provider state after an uncertain result;
-there is no automatic retry or rollback. A rollback to the recorded prior
-version requires Rasmus's separate approval.
+private dashboard or bundle. If Cloudflare says the uploaded version cannot
+be found yet (code 100146), the same version is deployed again a few times,
+because that response means traffic did not move. Any other uncertain result
+is not retried and is not rolled back. Inspect the provider before trying
+again. A rollback to the recorded prior version requires Rasmus's separate
+approval.
 
 ## Development overview on dashboard.mrsoftware.dk
 

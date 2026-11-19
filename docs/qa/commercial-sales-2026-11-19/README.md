@@ -45,7 +45,7 @@ machine-readable results are in [evidence.json](evidence.json).
 
 ## Verification and review boundary
 
-The final `npm test` passed with **101 Node tests**, **2 upstream link-editor
+The final `npm test` passed with **104 Node tests**, **2 upstream link-editor
 browser tests**, **119 company/dashboard browser tests** and **112 integrated
 commercial browser tests**. The company suite retains 21 intentional skips;
 there are no new commercial skips or raised click budgets. All three shared UX
