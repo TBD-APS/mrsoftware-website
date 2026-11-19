@@ -16,24 +16,44 @@ const stateLabels = new Map([
 ]);
 const escape = value => value.replace(/[&<>"']/g, part => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[part]);
 
-function validateFeatures(features) {
-  if (!Array.isArray(features)) throw Error('The public feature registry must be an array');
-  const ids = new Set();
+const slug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const issueId = /^[A-Z][A-Z0-9]*-[1-9][0-9]*$/;
+const repositoryPath = /^(?:[A-Za-z0-9_@.-]+\/)*[A-Za-z0-9_@.-]+$/;
+const publicText = value => typeof value === 'string' && value.trim() === value
+  && value.length > 0 && !/[\u0000-\u001f\u007f]/u.test(value);
+
+function collectIssueIds(packages) {
+  if (!Array.isArray(packages)) throw Error('The public package registry must be an array');
+  const packageIds = new Set();
+  const featureIds = new Set(['main', 'main-nav']);
   const issues = new Set();
-  for (const feature of features) {
-    if (!feature || Object.keys(feature).length !== 5 || typeof feature.id !== 'string'
-      || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(feature.id)
-      || ['developed', 'in-the-pipeline', 'main', 'main-nav'].includes(feature.id) || ids.has(feature.id)
-      || typeof feature.issue !== 'string' || !/^[A-Z][A-Z0-9]*-[1-9][0-9]*$/.test(feature.issue) || issues.has(feature.issue)) {
-      throw Error('Every public feature needs a distinct URL ID and Linear issue identifier');
+  for (const item of packages) {
+    if (!item || Object.keys(item).length !== 3 || typeof item.id !== 'string'
+      || !slug.test(item.id) || packageIds.has(item.id) || !publicText(item.name) || !Array.isArray(item.features)) {
+      throw Error('Every public package needs a distinct ID, name and feature list');
     }
-    if ([feature.product, feature.title, feature.summary].some(value =>
-      typeof value !== 'string' || value === '' || value.trim() !== value || /[\u0000-\u001f\u007f]/u.test(value))) {
-      throw Error(`Invalid public copy for ${feature.id}`);
-    }
-    ids.add(feature.id);
-    issues.add(feature.issue);
+    packageIds.add(item.id);
+    featureIds.add(`package-${item.id}`);
   }
+  for (const { features } of packages) {
+    for (const feature of features) {
+      if (!feature || Object.keys(feature).length !== 4 || typeof feature.id !== 'string'
+        || !slug.test(feature.id) || featureIds.has(feature.id) || !publicText(feature.title) || !publicText(feature.summary)) {
+        throw Error('Every public feature needs a distinct URL ID, title and summary');
+      }
+      featureIds.add(feature.id);
+      const { source } = feature;
+      if (source && Object.keys(source).length === 1 && typeof source.issue === 'string'
+        && issueId.test(source.issue) && !issues.has(source.issue)) {
+        issues.add(source.issue);
+      } else if (!source || Object.keys(source).length !== 2 || !['developed', 'planned'].includes(source.stage)
+        || typeof source.path !== 'string' || !repositoryPath.test(source.path)
+        || source.path.split('/').some(part => part === '.' || part === '..')) {
+        throw Error(`Expected a unique Linear issue or a reviewed repository source for ${feature.id}`);
+      }
+    }
+  }
+  return [...issues];
 }
 
 export async function fetchIssueStates(identifiers, token, request = fetch) {
@@ -63,53 +83,68 @@ export async function fetchIssueStates(identifiers, token, request = fetch) {
   return result;
 }
 
-export function renderRoadmap(html, features, issues) {
-  validateFeatures(features);
+function featureStatus({ id, source }, issues) {
+  if (source.stage) return source.stage === 'developed' ? 'Developed' : 'Planned';
+  const issue = issues.get(source.issue);
+  if (!issue || !Object.hasOwn(issue, 'archivedAt') || !stateLabels.has(issue.state?.type)) {
+    throw Error(`Missing or unsupported Linear state for ${id}`);
+  }
+  return issue.archivedAt ? null : stateLabels.get(issue.state.type);
+}
+
+function packageSections(packages, issues) {
+  const links = [];
+  const sections = [];
+  for (const { id, name, features } of packages) {
+    const anchor = `package-${id}`;
+    const groups = { Developed: [], 'In development': [], Planned: [] };
+    for (const feature of features) {
+      const status = featureStatus(feature, issues);
+      if (status) groups[status].push(`        <li class="roadmap-feature" id="${feature.id}">
+          <div>
+            <h3>${escape(feature.title)}</h3>
+            <p>${escape(feature.summary)}</p>
+          </div>
+          <span class="roadmap-stage">${status}</span>
+        </li>`);
+    }
+    const developed = groups.Developed.length;
+    const pending = groups['In development'].length + groups.Planned.length;
+    const rows = [...groups.Developed, ...groups['In development'], ...groups.Planned];
+    links.push(`        <li><a href="#${anchor}"><span>${escape(name)}</span>
+          <span class="roadmap-count">${developed} developed · ${pending} in the pipeline</span></a></li>`);
+    sections.push(`    <section class="roadmap-section" aria-labelledby="${anchor}">
+      <h2 id="${anchor}">${escape(name)}</h2>
+${rows.length
+    ? `      <ul class="roadmap-list">\n${rows.join('\n')}\n      </ul>`
+    : '      <p>No features are listed yet.</p>'}
+    </section>`);
+  }
+  return `    <nav class="roadmap-packages" aria-label="Packages">
+      <ul>
+${links.join('\n')}
+      </ul>
+    </nav>
+
+${sections.join('\n\n')}`;
+}
+
+export function renderRoadmap(html, packages, issues) {
+  collectIssueIds(packages);
   const startAt = html.indexOf(start);
   const endAt = html.indexOf(end);
   if (startAt < 0 || endAt < startAt || html.indexOf(start, startAt + 1) >= 0 || html.indexOf(end, endAt + 1) >= 0) {
     throw Error('Expected one public feature region in the roadmap page');
   }
-  const developed = [];
-  const inProgress = [];
-  const planned = [];
-  for (const feature of features) {
-    const issue = issues.get(feature.issue);
-    if (!issue || !Object.hasOwn(issue, 'archivedAt') || !stateLabels.has(issue.state?.type)) {
-      throw Error(`Missing or unsupported Linear state for ${feature.id}`);
-    }
-    const status = issue.archivedAt ? null : stateLabels.get(issue.state.type);
-    if (!status) continue;
-    const group = status === 'Developed' ? developed : status === 'In development' ? inProgress : planned;
-    const displayState = status === 'Developed' ? '' : `\n          <span class="roadmap-stage">${status}</span>`;
-    group.push(`        <li class="roadmap-feature" id="${feature.id}">
-          <p class="roadmap-product">${escape(feature.product)}</p>
-          <div>
-            <h3>${escape(feature.title)}</h3>
-            <p>${escape(feature.summary)}</p>
-          </div>${displayState}
-        </li>`);
-  }
-  const section = (id, title, items, empty) => `    <section class="roadmap-section" aria-labelledby="${id}">
-      <h2 id="${id}">${title}</h2>
-${items.length
-    ? `      <ul class="roadmap-list">\n${items.join('\n')}\n      </ul>`
-    : `      <p>${empty}</p>`}
-    </section>`;
-  const content = [
-    section('developed', 'Developed', developed, 'No completed features are listed yet.'),
-    section('in-the-pipeline', 'In the pipeline', [...inProgress, ...planned], 'No upcoming features are listed yet.'),
-  ].join('\n\n');
-  return html.slice(0, startAt + start.length) + '\n' + content + '\n    ' + html.slice(endAt);
+  return html.slice(0, startAt + start.length) + '\n' + packageSections(packages, issues) + '\n    ' + html.slice(endAt);
 }
 
 export async function syncRoadmap({ loadIssues = fetchIssueStates, token = process.env.LINEAR_ROADMAP_TOKEN,
   registryPath = registry, roadmapPath = roadmap } = {}) {
   const [input, html] = await Promise.all([readFile(registryPath, 'utf8'), readFile(roadmapPath, 'utf8')]);
-  const features = JSON.parse(input);
-  validateFeatures(features);
-  const issues = await loadIssues(features.map(feature => feature.issue), token);
-  const next = renderRoadmap(html, features, issues);
+  const packages = JSON.parse(input);
+  const issues = await loadIssues(collectIssueIds(packages), token);
+  const next = renderRoadmap(html, packages, issues);
   if (next === html) return false;
   await writeFile(roadmapPath, next);
   return true;

@@ -48,86 +48,516 @@
     <div class="page-hero on-light roadmap-hero">
       <div class="page-width">
         <h1>Product roadmap</h1>
-        <p class="lead">See what we’ve developed and what we’re working on next. Availability can vary by product and setup.</p>
-        <nav class="roadmap-jump" aria-label="Roadmap sections">
-          <a href="#developed">Developed</a>
-          <a href="#in-the-pipeline">In the pipeline</a>
-        </nav>
+        <p class="lead">See what’s developed, in development or planned for each package.</p>
+        <p class="roadmap-note">Developed features are implemented. Availability varies by product and setup.</p>
       </div>
     </div>
     <div class="roadmap-body page-width">
     <!-- public-features:start -->
-    <section class="roadmap-section" aria-labelledby="developed">
-      <h2 id="developed">Developed</h2>
+    <nav class="roadmap-packages" aria-label="Packages">
+      <ul>
+        <li><a href="#package-authy"><span>Authy</span>
+          <span class="roadmap-count">5 developed · 0 in the pipeline</span></a></li>
+        <li><a href="#package-boney"><span>Boney</span>
+          <span class="roadmap-count">31 developed · 2 in the pipeline</span></a></li>
+        <li><a href="#package-greeny"><span>Greeny</span>
+          <span class="roadmap-count">4 developed · 2 in the pipeline</span></a></li>
+        <li><a href="#package-mr-saassy"><span>MR SAAS’y</span>
+          <span class="roadmap-count">7 developed · 6 in the pipeline</span></a></li>
+        <li><a href="#package-roady"><span>Roady</span>
+          <span class="roadmap-count">5 developed · 5 in the pipeline</span></a></li>
+        <li><a href="#package-shippy"><span>Shippy</span>
+          <span class="roadmap-count">13 developed · 4 in the pipeline</span></a></li>
+        <li><a href="#package-tradey"><span>Tradey</span>
+          <span class="roadmap-count">6 developed · 0 in the pipeline</span></a></li>
+        <li><a href="#package-zavn"><span>Zavn</span>
+          <span class="roadmap-count">6 developed · 1 in the pipeline</span></a></li>
+      </ul>
+    </nav>
+
+    <section class="roadmap-section" aria-labelledby="package-authy">
+      <h2 id="package-authy">Authy</h2>
       <ul class="roadmap-list">
-        <li class="roadmap-feature" id="container-tracking">
-          <p class="roadmap-product">Shippy</p>
+        <li class="roadmap-feature" id="authy-single-sign-in">
           <div>
-            <h3>Container tracking</h3>
-            <p>See container status, location updates and estimated arrivals beside the purchase order when the tracking integration is enabled.</p>
+            <h3>Shared sign-in</h3>
+            <p>Let registered products hand sign-in to Authy and use the verified identity when the user returns.</p>
           </div>
+          <span class="roadmap-stage">Developed</span>
         </li>
-        <li class="roadmap-feature" id="shipment-links">
-          <p class="roadmap-product">Shippy</p>
+        <li class="roadmap-feature" id="authy-organization-roles">
           <div>
-            <h3>Links on shipments</h3>
-            <p>Keep a tracking page, customer link or document URL with the purchase order it belongs to.</p>
+            <h3>Organization and branch roles</h3>
+            <p>Assign shared roles at organization or branch level for participating products.</p>
           </div>
+          <span class="roadmap-stage">Developed</span>
         </li>
-        <li class="roadmap-feature" id="shipment-carbon-qr">
-          <p class="roadmap-product">Shippy</p>
+        <li class="roadmap-feature" id="authy-current-access">
           <div>
-            <h3>Shipment carbon QR codes</h3>
-            <p>Print or scan a QR code to open the shipment’s carbon information.</p>
+            <h3>Current access and revocation</h3>
+            <p>Let a product check whether a signed-in user still has access when they make a protected request.</p>
           </div>
+          <span class="roadmap-stage">Developed</span>
         </li>
-        <li class="roadmap-feature" id="search-with-sources">
-          <p class="roadmap-product">MR SAAS’y</p>
+        <li class="roadmap-feature" id="authy-email-codes">
           <div>
-            <h3>Document search with sources</h3>
-            <p>Find the relevant passage in company documentation and open the section it came from.</p>
+            <h3>Sign-in by email code</h3>
+            <p>Offer email-code sign-in for explicitly enabled products and bind the session to that product.</p>
           </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="authy-machine-clients">
+          <div>
+            <h3>Product-to-product identity</h3>
+            <p>Register a machine client for an approved connection so two products can exchange scoped requests.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
         </li>
       </ul>
     </section>
 
-    <section class="roadmap-section" aria-labelledby="in-the-pipeline">
-      <h2 id="in-the-pipeline">In the pipeline</h2>
+    <section class="roadmap-section" aria-labelledby="package-boney">
+      <h2 id="package-boney">Boney</h2>
       <ul class="roadmap-list">
-        <li class="roadmap-feature" id="terminal-visits">
-          <p class="roadmap-product">Roady</p>
+        <li class="roadmap-feature" id="boney-app-foundation">
           <div>
-            <h3>Terminal visits</h3>
-            <p>Follow each vehicle from arrival to departure and see how long it has been waiting.</p>
+            <h3>Application foundation</h3>
+            <p>Give product teams a shared starting point for sign-in, access checks, tenant context and health endpoints.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-superadmin">
+          <div>
+            <h3>Organization and branch administration</h3>
+            <p>Manage organizations, branches, users and roles through a reusable administration package.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-product-starter">
+          <div>
+            <h3>Product starter</h3>
+            <p>Generate a React frontend with a consistent application shell and explicitly selected dependencies.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-customer-portal">
+          <div>
+            <h3>Customer portal</h3>
+            <p>Reuse customer records, updates, messaging and document transport with host-controlled access.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-crm">
+          <div>
+            <h3>Company and contact directory</h3>
+            <p>Store, search and link companies and contacts using product-defined roles and record ownership.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-crm-import">
+          <div>
+            <h3>Reviewed contact import</h3>
+            <p>Review CSV or vCard contacts and possible duplicates before importing selected records.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-record-threads">
+          <div>
+            <h3>Record conversations</h3>
+            <p>Keep replies attached to the record they concern and check access at the record boundary.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-communications">
+          <div>
+            <h3>Communication records</h3>
+            <p>Link email, SMS, WhatsApp and call records to a customer or order.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-outlook">
+          <div>
+            <h3>Outlook connection</h3>
+            <p>Connect a permitted Outlook mailbox, read scoped messages and review outgoing mail.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-whatsapp">
+          <div>
+            <h3>WhatsApp adapter</h3>
+            <p>Reuse the WhatsApp message client and delivery-status handling with product-controlled approval.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-document-intake">
+          <div>
+            <h3>Document intake and review</h3>
+            <p>Keep uploaded source material, extracted results and the reviewer’s decision together.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-billing">
+          <div>
+            <h3>Billing settings</h3>
+            <p>Manage organization billing details and bank-transfer instructions in an admin-only area.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-accounting-reader">
+          <div>
+            <h3>Accounting data reader</h3>
+            <p>Read scoped invoice data through an opt-in e-conomic adapter.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-fulfilment">
+          <div>
+            <h3>Partial fulfilment</h3>
+            <p>Track partial quantities and assign people to follow up on what remains outstanding.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-order-handoff">
+          <div>
+            <h3>Order handoff</h3>
+            <p>Send transport orders to a forwarder and use a shared format for updates coming back.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-product-events">
+          <div>
+            <h3>Product-to-product events</h3>
+            <p>Exchange signed events and preserve ordering and delivery history with the shared inbox and outbox.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-transport-planning">
+          <div>
+            <h3>Transport planning</h3>
+            <p>Compare pickup and delivery suggestions against capacity and time windows for operator review.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-automation">
+          <div>
+            <h3>Automation runs</h3>
+            <p>Coordinate versioned checks, durable results and approval steps through shared automation contracts.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-maps">
+          <div>
+            <h3>Routes and maps</h3>
+            <p>Show routes and stops across products, with controlled access to optional map-provider calls.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-shipment-tracking">
+          <div>
+            <h3>Shipment tracking adapters</h3>
+            <p>Read container updates through an optional tracking adapter with a controlled call budget.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-business-workflows">
+          <div>
+            <h3>Business workflow templates</h3>
+            <p>Discover reusable templates for sales, projects, operations and reporting through the shared catalogue.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-assistant">
+          <div>
+            <h3>Product assistant</h3>
+            <p>Embed a shared assistant that uses the host product’s context and connection permissions.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-module-access">
+          <div>
+            <h3>Module access</h3>
+            <p>Let a product check whether a module is enabled and available for an organization.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-feature-flags">
+          <div>
+            <h3>Feature flags</h3>
+            <p>Evaluate product feature flags and keep optional capabilities off until enabled.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-audit-history">
+          <div>
+            <h3>Audit and record history</h3>
+            <p>Verify audit entries and use a shared presentation for record changes.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-release-toolkit">
+          <div>
+            <h3>Release and integration checks</h3>
+            <p>Run product-specific delivery adapters and repeatable integration checks from a shared toolkit.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-versioned-artifacts">
+          <div>
+            <h3>Versioned package artifacts</h3>
+            <p>Build independently tested .NET and web packages with exact versions and source provenance.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-passwordless">
+          <div>
+            <h3>Passwordless challenges</h3>
+            <p>Offer a reusable challenge engine for hosts that explicitly enable passwordless verification.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-resilient-requests">
+          <div>
+            <h3>Resilient requests</h3>
+            <p>Reuse bounded retries for supported requests and keep retry behavior consistent across products.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-test-data">
+          <div>
+            <h3>Repeatable test data</h3>
+            <p>Generate the same test people, places and records from a fixed seed.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-authenticated-tools">
+          <div>
+            <h3>Authorized product tools</h3>
+            <p>Expose product tools with scoped access and require confirmation for supported changes.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="boney-site-conversation">
+          <div>
+            <h3>Website conversation adapter</h3>
+            <p>Connect website assistants to a shared server-side model adapter.</p>
           </div>
           <span class="roadmap-stage">In development</span>
         </li>
+        <li class="roadmap-feature" id="boney-remote-mission">
+          <div>
+            <h3>Remote mission startup</h3>
+            <p>Queue work for a named desktop mission and show whether the machine was reached.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-greeny">
+      <h2 id="package-greeny">Greeny</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="greeny-report-pdfs">
+          <div>
+            <h3>ESG report previews and PDFs</h3>
+            <p>Preview and export a versioned ESG report as a PDF.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="greeny-report-sharing">
+          <div>
+            <h3>Controlled report sharing</h3>
+            <p>Keep customer reports private and create expiring links when sharing is approved.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="greeny-electricity-review">
+          <div>
+            <h3>Electricity evidence review</h3>
+            <p>Review extracted electricity totals before using them in an example report.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="greeny-road-carbon">
+          <div>
+            <h3>Road freight carbon calculation</h3>
+            <p>Estimate emissions for a road leg when distance, load and a reviewed factor are supplied.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
         <li class="roadmap-feature" id="energy-and-data-reports">
-          <p class="roadmap-product">Greeny</p>
           <div>
             <h3>Energy and data savings reports</h3>
             <p>Add energy and data savings to ESG reports, with the evidence behind the figures.</p>
           </div>
           <span class="roadmap-stage">In development</span>
         </li>
-        <li class="roadmap-feature" id="scanned-purchase-orders">
-          <p class="roadmap-product">Shippy</p>
+        <li class="roadmap-feature" id="greeny-shipment-reports">
           <div>
-            <h3>Purchase orders from scans</h3>
-            <p>Extract fields from a scanned purchase order so an operator can review them before saving the draft.</p>
+            <h3>Shipment-based ESG reports</h3>
+            <p>Create reports from shipment stages and trace each emissions figure back to its inputs and factors.</p>
           </div>
           <span class="roadmap-stage">In development</span>
         </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-mr-saassy">
+      <h2 id="package-mr-saassy">MR SAAS’y</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="saasy-operator-workspace">
+          <div>
+            <h3>Operator workspace</h3>
+            <p>See missions, repository work and decisions in one Control Center.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-action-approvals">
+          <div>
+            <h3>Approval queue</h3>
+            <p>Review actions that need a decision, record the decision and keep its approval history.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-agent-access">
+          <div>
+            <h3>Agent permissions</h3>
+            <p>Give approved agents scoped permissions and review access by organization.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-audit-fleet">
+          <div>
+            <h3>Audit overview</h3>
+            <p>Review audit activity and privileged actions across the environments an operator is allowed to see.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-pipeline-radar">
+          <div>
+            <h3>Build and release monitoring</h3>
+            <p>Track selected GitHub workflows, link failed runs to the relevant change and follow retries.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-release-evidence">
+          <div>
+            <h3>Mission release evidence</h3>
+            <p>Bind the evidence for a release to its mission and source version.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="search-with-sources">
+          <div>
+            <h3>Document search with sources</h3>
+            <p>Find the relevant passage in company documentation and open the section it came from.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
         <li class="roadmap-feature" id="connected-knowledge">
-          <p class="roadmap-product">MR SAAS’y</p>
           <div>
             <h3>Connected company knowledge</h3>
             <p>Find current, authorized information across company sources, with links back to the original material.</p>
           </div>
           <span class="roadmap-stage">In development</span>
         </li>
+        <li class="roadmap-feature" id="saasy-product-releases">
+          <div>
+            <h3>Shared product release orchestration</h3>
+            <p>Apply approvals and release rules across products while each product keeps its own deployment adapter.</p>
+          </div>
+          <span class="roadmap-stage">In development</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-module-entitlements">
+          <div>
+            <h3>Persistent module entitlements</h3>
+            <p>Keep module access decisions consistent across the application, navigation and API.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-customer-exports">
+          <div>
+            <h3>Customer data exports</h3>
+            <p>Request and download a product-owned data export through a common, tenant-scoped contract.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-combined-operations">
+          <div>
+            <h3>Cloud operations overview</h3>
+            <p>See sourced cost, mail delivery, storage and database capacity in the Control Center.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-site-assistant">
+          <div>
+            <h3>Website assistant</h3>
+            <p>Provide an accessible site conversation using the shared model adapter.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-roady">
+      <h2 id="package-roady">Roady</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="roady-transport-overview">
+          <div>
+            <h3>Transport overview</h3>
+            <p>Browse and search transport records, then open the route and its recorded events.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="roady-stop-maps">
+          <div>
+            <h3>Routes and saved stops</h3>
+            <p>Open a transport map, select a known stop and share the selected record by link.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="roady-source-history">
+          <div>
+            <h3>Source and correction history</h3>
+            <p>Compare recorded events with later corrections while keeping the original evidence visible.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="roady-access-status">
+          <div>
+            <h3>Workspace access status</h3>
+            <p>See whether a session is signed in and whether the workspace has verified its current access.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="roady-source-check">
+          <div>
+            <h3>Source freshness checks</h3>
+            <p>Find old or missing updates and store the results of repeatable checks.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="terminal-visits">
+          <div>
+            <h3>Terminal visits</h3>
+            <p>Follow each vehicle from arrival to departure and see how long it has been waiting.</p>
+          </div>
+          <span class="roadmap-stage">In development</span>
+        </li>
+        <li class="roadmap-feature" id="roady-transport-feed">
+          <div>
+            <h3>Transport source connections</h3>
+            <p>Connect an approved feed and retain the history of late, missing and corrected events.</p>
+          </div>
+          <span class="roadmap-stage">In development</span>
+        </li>
+        <li class="roadmap-feature" id="roady-scheduled-checks">
+          <div>
+            <h3>Scheduled transport checks</h3>
+            <p>Run checks from SAAS’y and retain their results through retries and restarts.</p>
+          </div>
+          <span class="roadmap-stage">In development</span>
+        </li>
         <li class="roadmap-feature" id="transport-exceptions">
-          <p class="roadmap-product">Roady</p>
           <div>
             <h3>Transport exceptions</h3>
             <p>See delays and missing updates, assign someone to follow up and keep a record of how each issue was resolved.</p>
@@ -135,10 +565,237 @@
           <span class="roadmap-stage">Planned</span>
         </li>
         <li class="roadmap-feature" id="transport-carbon-reports">
-          <p class="roadmap-product">Roady</p>
           <div>
             <h3>Transport carbon reports</h3>
             <p>Review emissions by shipment, vehicle, customer and period, with the data and calculation method behind each figure.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-shippy">
+      <h2 id="package-shippy">Shippy</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="shippy-purchase-orders">
+          <div>
+            <h3>Purchase orders and approvals</h3>
+            <p>Create or import purchase orders and keep their review, approval and delivery milestones on one record.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-partial-deliveries">
+          <div>
+            <h3>Partial deliveries</h3>
+            <p>Split quantities across shipments, record receipts and assign follow-up on outstanding items.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-customer-portal">
+          <div>
+            <h3>Customer workspace</h3>
+            <p>Give customers a scoped view of their orders, updates, messages and documents.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-document-review">
+          <div>
+            <h3>Purchase order document review</h3>
+            <p>Review uploaded PDFs, extracted freight fields and the resulting purchase order draft before approval.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shipment-links">
+          <div>
+            <h3>Links on shipments</h3>
+            <p>Keep a tracking page, customer link or document URL with the purchase order it belongs to.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-map-and-milestones">
+          <div>
+            <h3>Shipment maps and milestones</h3>
+            <p>Open a saved shipment route and see its recorded milestones and planned delivery.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="container-tracking">
+          <div>
+            <h3>Container tracking</h3>
+            <p>See container status, location updates and estimated arrivals beside the purchase order when the tracking integration is enabled.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shipment-carbon-qr">
+          <div>
+            <h3>Shipment carbon QR codes</h3>
+            <p>Print or scan a QR code to open the shipment’s carbon information.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-customer-directory">
+          <div>
+            <h3>Customer and consignee directory</h3>
+            <p>Link orders to customer, company and consignee records with scoped access.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-communications">
+          <div>
+            <h3>Order communication history</h3>
+            <p>Keep messages, call evidence and reviewed replies linked to the relevant orders.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-accounting">
+          <div>
+            <h3>Accounting and billing views</h3>
+            <p>Show authorized invoice evidence, bank details and payment references for the customer workspace.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-order-analytics">
+          <div>
+            <h3>Order analytics</h3>
+            <p>Break down accessible orders by status, weight and route volume.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-product-connections">
+          <div>
+            <h3>Connected products</h3>
+            <p>Inspect pairing status, event delivery failures and scoped recovery evidence for connected orders.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="scanned-purchase-orders">
+          <div>
+            <h3>Purchase orders from scans</h3>
+            <p>Extract fields from a scanned purchase order so an operator can review them before saving the draft.</p>
+          </div>
+          <span class="roadmap-stage">In development</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-outlook-assistant">
+          <div>
+            <h3>Outlook and order assistant</h3>
+            <p>Synchronize relevant Outlook messages with orders and prepare reviewable replies and summaries.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-transcripts">
+          <div>
+            <h3>Recordings and transcripts</h3>
+            <p>Attach a recording and searchable transcript to the purchase order or customer it belongs to.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-customer-overview-fields">
+          <div>
+            <h3>Customer overview fields</h3>
+            <p>Show agreed transport fields on the customer overview, with their source and last update.</p>
+          </div>
+          <span class="roadmap-stage">Planned</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-tradey">
+      <h2 id="package-tradey">Tradey</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="tradey-product-catalogue">
+          <div>
+            <h3>Product catalogue</h3>
+            <p>Browse goods and their classifications in a searchable catalogue.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-buyers-and-deals">
+          <div>
+            <h3>Buyers and deals</h3>
+            <p>Open buyer and deal records from the trading workspace.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-supplier-offers">
+          <div>
+            <h3>Supplier offers</h3>
+            <p>Capture supplier offers and review the details used for trading decisions.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-shipment-overview">
+          <div>
+            <h3>Shipment overview</h3>
+            <p>See shipment milestones and open the transport map from the shipment record.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-container-tracking">
+          <div>
+            <h3>Container tracking</h3>
+            <p>Read container observations and estimated arrivals when the provider connection is enabled.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-whatsapp-connection">
+          <div>
+            <h3>WhatsApp connection</h3>
+            <p>Set up and inspect a scoped WhatsApp connection for a trading workspace.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-zavn">
+      <h2 id="package-zavn">Zavn</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="zavn-inbox">
+          <div>
+            <h3>Clinic conversation inbox</h3>
+            <p>Review incoming conversations and see which messages need a receptionist’s attention.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-reply-drafts">
+          <div>
+            <h3>Receptionist reply drafts</h3>
+            <p>Prepare a reply that clinic staff can review before using it.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-transcription">
+          <div>
+            <h3>Transcripts and note drafts</h3>
+            <p>Transcribe recordings and prepare structured notes for clinic staff to review.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-skills">
+          <div>
+            <h3>Receptionist skills</h3>
+            <p>Browse, configure and enable skills for a clinic’s receptionist.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-onboarding">
+          <div>
+            <h3>Clinic onboarding</h3>
+            <p>Set up a clinic trial with the clinic’s details and branding.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-support">
+          <div>
+            <h3>Clinic support assistant</h3>
+            <p>Open support from the clinic dashboard and get help with the workspace.</p>
+          </div>
+          <span class="roadmap-stage">Developed</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-mitid">
+          <div>
+            <h3>MitID integration</h3>
+            <p>Add MitID to the clinic integration options.</p>
           </div>
           <span class="roadmap-stage">Planned</span>
         </li>

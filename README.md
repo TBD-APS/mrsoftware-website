@@ -103,18 +103,23 @@ The report is `.ux-gate/report/index.html` and is also retained in CI.
 
 ## Public product roadmap
 
-The list at `/roadmap/` shows developed features and the pipeline. To list a
-new feature, add its stable anchor, Linear issue identifier, product and
-customer-facing English title and summary to `tools/public-features.json`.
-Review the copy in the website PR. Add features when planning starts so
-their progress is reflected automatically. Never copy Linear issue bodies
-or private project details into the registry.
+The list at `/roadmap/` groups features by package and counts developed and
+upcoming work for each one. The package ID in `tools/public-features.json` is the
+product repository slug. Add a stable feature anchor and reviewed customer-facing
+English copy under the corresponding package.
+
+- Use `source.issue` to track a feature's workflow state in Linear.
+- Use `source.path` and `source.stage` for a feature verified in its repository
+  when there is no useful Linear issue. Cite implementation evidence for
+  `developed` or a documented commitment for `planned`. Review the source on
+  the default branch when adding or changing the entry.
 
 The sync reads only each registered issue's identifier, archive flag and
-workflow type. Completed work appears under **Developed**. Started work is
-**In development** and backlog or unstarted work is **Planned**. Canceled,
-duplicate, triage and archived issues are omitted. Developed describes the
-work status in Linear. It does not assert a customer rollout or availability.
+workflow type. It displays completed work as **Developed**, started work as
+**In development**, and backlog or unstarted work as **Planned**. Canceled,
+duplicate, triage and archived issues are omitted. Repo-backed entries retain
+their reviewed state. Counts reflect the reviewed public inventory. Developed
+describes an implementation and availability depends on product setup.
 
 Set the following in the website repository's GitHub Actions settings:
 

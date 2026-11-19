@@ -6,17 +6,21 @@ import { prepareContext } from './fixtures.mjs';
 
 const template = await readFile(new URL('../../roadmap/index.html', import.meta.url), 'utf8');
 const fixtures = [
-  { id: 'container-tracking', issue: 'SAS-1', product: 'Shippy', title: 'Container tracking', summary: 'See container updates with the purchase order.' },
-  { id: 'terminal-visits', issue: 'SAS-2', product: 'Roady', title: 'Terminal visits', summary: 'Follow each vehicle from arrival to departure.' },
-  { id: 'carbon-reports', issue: 'SAS-3', product: 'Greeny', title: 'Carbon reports', summary: 'See the emissions data behind your shipments.' },
+  { id: 'boney-crm', source: { path: 'docs/crm.md', stage: 'developed' }, title: 'Company and contact directory', summary: 'Find and manage companies and contacts.' },
+  { id: 'terminal-visits', source: { issue: 'SAS-2' }, title: 'Terminal visits', summary: 'Follow each vehicle from arrival to departure.' },
+  { id: 'carbon-reports', source: { issue: 'SAS-3' }, title: 'Carbon reports', summary: 'See the emissions data behind your shipments.' },
 ];
-const roadmapHtml = renderRoadmap(template, fixtures, new Map(
-  ['completed', 'started', 'backlog'].map((type, index) => [fixtures[index].issue, { archivedAt: null, state: { type } }]),
-));
+const roadmapHtml = renderRoadmap(template, [
+  { id: 'boney', name: 'Boney', features: fixtures.slice(0, 1) },
+  { id: 'roady', name: 'Roady', features: fixtures.slice(1) },
+], new Map([
+  ['SAS-2', { archivedAt: null, state: { type: 'started' } }],
+  ['SAS-3', { archivedAt: null, state: { type: 'backlog' } }],
+]));
 
-// Desktop / 390px journeys: open the roadmap in one click (two from the
-// phone's menu), find a completed feature, and jump straight to planned work.
-test('discover the public feature list and its two stages', async ({ page, context, isMobile }, info) => {
+// Open the roadmap in one click (two from the phone menu), scan package
+// counts and jump straight to either package without opening a new screen.
+test('find the package overview, compare counts and jump to the feature list', async ({ page, context, isMobile }, info) => {
   const app = await startSite({ roadmapHtml });
   try {
     await prepareContext(context, app.base);
@@ -25,15 +29,17 @@ test('discover the public feature list and its two stages', async ({ page, conte
     await page.locator('#main-nav').getByRole('link', { name: 'Roadmap' }).click();
     await expect(page).toHaveURL(/\/roadmap\/$/);
     await expect(page.getByRole('heading', { name: 'Product roadmap', level: 1 })).toBeVisible();
-    const developed = page.getByRole('region', { name: 'Developed' });
-    const pipeline = page.getByRole('region', { name: 'In the pipeline' });
-    await expect(developed.getByRole('heading', { name: 'Container tracking' })).toBeAttached();
-    await expect(pipeline.getByRole('heading', { name: 'Terminal visits' })).toBeAttached();
-    await page.getByRole('link', { name: 'In the pipeline' }).click();
-    await expect(page).toHaveURL(/#in-the-pipeline$/);
-    await expect(pipeline.getByRole('heading', { name: 'In the pipeline' })).toBeInViewport();
-    await expect(pipeline.getByText('In development').first()).toBeAttached();
-    await expect(pipeline.getByText('Planned').first()).toBeAttached();
+    const packages = page.getByRole('navigation', { name: 'Packages' });
+    await expect(packages.getByRole('link', { name: /Boney/ })).toContainText('1 developed · 0 in the pipeline');
+    const roadyLink = packages.getByRole('link', { name: /Roady/ });
+    await expect(roadyLink).toContainText('0 developed · 2 in the pipeline');
+    await roadyLink.click();
+    await expect(page).toHaveURL(/#package-roady$/);
+    const roady = page.getByRole('region', { name: 'Roady' });
+    await expect(roady.getByRole('heading', { name: 'Roady' })).toBeInViewport();
+    await expect(roady.getByRole('heading', { name: 'Terminal visits' })).toBeAttached();
+    await expect(roady.getByText('In development')).toBeAttached();
+    await expect(roady.getByText('Planned')).toBeAttached();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     await page.getByRole('heading', { name: 'Product roadmap' }).scrollIntoViewIfNeeded();
     await page.screenshot({ path: info.outputPath('roadmap.png'), fullPage: true });
