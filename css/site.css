@@ -826,3 +826,37 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .integration-example-grid { grid-template-columns: minmax(0, 1fr); }
   .integration-example { padding: var(--s2); }
 }
+
+/* Greeny showcase */
+.greeny-spotlight, .greeny-roadmap { background: color-mix(in srgb, var(--ok) 6%, var(--paper)); }
+.greeny-spotlight-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: var(--s5); }
+.greeny-spotlight-copy { max-width: 58ch; }
+.greeny-product-label { margin: 0 0 var(--s2); color: var(--ok); font: var(--fs-small)/1.5 var(--mono); }
+.greeny-spotlight-copy h2 { margin-bottom: var(--s3); }
+.greeny-spotlight-copy .button { margin-right: var(--s2); text-align: center; }
+.greeny-text-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--ok); text-decoration: underline; text-underline-offset: 4px; }
+.greeny-estimate { border: 1px solid var(--hairline-light); border-top: 3px solid var(--ok); border-radius: var(--radius); padding: var(--s4); background: var(--paper); }
+.greeny-estimate h3 { font-size: var(--fs-title); line-height: 1.2; }
+.greeny-estimate h3 + p { margin: var(--s1) 0 var(--s3); color: var(--muted-on-light); }
+.greeny-estimate-inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); }
+.greeny-estimate dl { margin: 0; }
+.greeny-estimate dd { margin: 0; font-weight: 600; }
+.greeny-estimate dt, .greeny-estimate label, .greeny-estimate-total span { color: var(--muted-on-light); }
+.greeny-estimate-inputs dt, .greeny-estimate label { display: block; margin-bottom: var(--s1); font-size: .875rem; }
+.greeny-estimate-inputs dd { min-height: 44px; display: flex; align-items: center; }
+.greeny-estimate select { width: 100%; min-height: 44px; padding: var(--s1); color: var(--ink); background: var(--paper); border: 1px solid currentColor; border-radius: 6px; }
+.greeny-estimate-total { margin: var(--s3) 0 var(--s2); padding: var(--s2) 0 0; border-top: 1px solid var(--hairline-light); }
+.greeny-estimate-total output { display: block; color: var(--ok); font: var(--fs-heading)/1.2 var(--serif); }
+.greeny-estimate-breakdown div { display: flex; justify-content: space-between; gap: var(--s2); padding: var(--s1) 0; border-bottom: 1px solid var(--hairline-light); font-size: .875rem; }
+.greeny-estimate-method { margin-top: var(--s1); font-size: .875rem; }
+.greeny-estimate-method summary { min-height: 44px; padding-block: var(--s1); color: var(--ok); cursor: pointer; }
+.greeny-estimate-method p { margin: 0; }
+.greeny-roadmap { max-width: 960px; margin-bottom: var(--s5); padding: var(--s4); border-left: 3px solid var(--ok); border-radius: var(--radius); }
+.greeny-roadmap h2 { font-size: var(--fs-heading); line-height: 1.12; }
+.greeny-roadmap p { max-width: 60ch; margin: var(--s1) 0 var(--s2); }
+.greeny-roadmap-links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s3); }
+.greeny-roadmap .button { text-align: center; }
+@media (max-width: 760px) {
+  .greeny-spotlight-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
+  .greeny-estimate, .greeny-roadmap { padding: var(--s2); }
+}
