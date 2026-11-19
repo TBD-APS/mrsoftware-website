@@ -57,3 +57,38 @@ test('review an Excel export and approve an Outlook sample using only sample dat
     await expect(page.getByRole('heading', { level: 3, name: 'Outlook connection' })).toBeInViewport();
   } finally { await app.close(); }
 });
+
+test('find Greeny and see how road distance changes emissions', async ({ page, isMobile }, info) => {
+  const app = await startSite();
+  try {
+    const site = app.base.replace('dashboard.mrsoftware.dk', '127.0.0.1');
+    await page.goto(site + 'roadmap/');
+    await page.getByRole('link', { name: 'Explore Greeny' }).click();
+    const spotlight = page.getByRole('region', { name: 'Greeny', exact: true }).filter({ has: page.getByRole('link', { name: 'Try the freight emissions example' }) });
+    await expect(spotlight.getByRole('heading', { level: 2 })).toBeInViewport();
+    await spotlight.getByRole('link', { name: 'Try the freight emissions example' }).click();
+    await expect(page).toHaveURL(/\/integrations\/#greeny-example$/);
+    await expect(page.getByRole('heading', { name: 'See where freight emissions come from.' })).toBeInViewport();
+    await expect(page.getByRole('link', { name: 'Open Greeny’s demo workspace' })).toHaveAttribute('href', 'https://greeny.mrsoftware.dk/');
+
+    const estimate = page.locator('#greeny-estimate');
+    const total = estimate.getByRole('status', { name: 'Estimated emissions for this leg' });
+    await expect(total).toHaveText('18 kg CO₂e');
+    await estimate.getByLabel('Road distance').selectOption('250');
+    await expect(total).toHaveText('45 kg CO₂e');
+    await expect(total).toBeInViewport();
+    await expect(estimate.locator('#greeny-driving')).toHaveText('37.5 kg CO₂e');
+    await expect(estimate.locator('#greeny-energy')).toHaveText('7.5 kg CO₂e');
+    await estimate.getByText('See the calculation', { exact: true }).click();
+    await expect(estimate.getByText('375 tonne-km', { exact: true })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+
+    const screenshotStart = isMobile ? estimate : page.locator('#greeny-example');
+    await screenshotStart.evaluate(element => element.scrollIntoView({ behavior: 'instant' }));
+    await page.screenshot({ path: info.outputPath('greeny-freight-estimate.png'), animations: 'disabled' });
+
+    await page.getByRole('link', { name: 'See Greeny’s roadmap' }).click();
+    await expect(page).toHaveURL(/\/roadmap\/#package-greeny$/);
+    await expect(page.getByRole('heading', { name: 'Road freight carbon calculation' })).toBeAttached();
+  } finally { await app.close(); }
+});
