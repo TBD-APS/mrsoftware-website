@@ -1,4 +1,4 @@
-// Source: @mr-software/linking packages/linking/src/index.js. Keep this copy in step with that package.
+// Source: TBD-APS/boney packages/product-ui/src/links.js @ 70c52d6ec4f6. Keep this copy in step. Public pages do not load React.
 const placeIdPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const placeKeys = new Set(['id', 'title', 'href', 'summary']);
 const linkKeys = new Set(['id', 'toId', 'label']);

@@ -1,4 +1,4 @@
-// Source: @mr-software/linking packages/linking/src/react.js. Keep this copy in step with that package.
+// Source: TBD-APS/boney packages/product-ui/src/links.js @ 70c52d6ec4f6. Keep this copy in step. LinkEditor is the Product UI component.
 import { createElement as h, useEffect, useLayoutEffect, useState } from 'react';
 import { changeLinks, linksOn, searchPlaces } from '../js/linking.js';
 
