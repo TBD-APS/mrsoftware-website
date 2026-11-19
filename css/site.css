@@ -334,8 +334,10 @@ a:hover > .arrow { transform: translateX(4px); }
 .uses { margin-top: var(--s6); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); }
 .use { position: relative; }
 .use .scene { aspect-ratio: 3 / 2; }
-.use h3 { margin-top: var(--s3); font-size: 1.25rem; }
-.use h3 a::after { content: ""; position: absolute; inset: 0; }
+.use h2, .use h3 { margin-top: var(--s3); font-size: 1.25rem; font-weight: 400; }
+.use h2 a::after, .use h3 a::after { content: ""; position: absolute; inset: 0; }
+.story-label { margin: var(--s2) 0 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); }
+.story-label a { display: inline-flex; align-items: center; min-height: 44px; }
 .use p { max-width: 62ch; margin: var(--s1) 0 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); }
 .use .scene svg.art { transition: transform .8s var(--ease); }
 .use:hover .scene svg.art { transform: scale(1.03); }
