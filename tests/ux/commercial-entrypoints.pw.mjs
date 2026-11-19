@@ -7,8 +7,18 @@ test('company and product entrypoints use the managed catalogue and reach exact 
   try {
     await prepareContext(context, app.base);
     const base = app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
+    const port = new URL(app.base).port;
     const visits = [];
-    await page.route('https://demos.mrsoftware.dk/**', async route => { visits.push(route.request().url()); await route.fulfill({ contentType: 'text/html', body: '<h1>Public demo destination</h1>' }); });
+    // Chromium follows a fulfilled 307 without a second intercept, so the gate
+    // reads the company redirect and answers itself instead of loading production.
+    await page.route('**/*', async route => {
+      const url = new URL(route.request().url());
+      if (url.hostname !== 'mrsoftware.dk' || url.port !== port || !/^\/(?:demos(?:\/(?:workslip|tradey|shippy))?|pricing(?:\/(?:workslip|tradey|shippy))?)\/?$/.test(url.pathname)) return route.fallback();
+      const response = await context.request.get(`http://127.0.0.1:${port}${url.pathname}${url.search}`, { maxRedirects: 0, headers: { 'x-test-host': 'mrsoftware.dk' } });
+      if (response.status() !== 307) return route.fallback();
+      visits.push(response.headers().location ?? '');
+      await route.fulfill({ contentType: 'text/html', body: '<h1>Public demo destination</h1>' });
+    });
     for (const [pathname, label, destination] of [
       ['', 'Try the demos', 'https://demos.mrsoftware.dk/'],
       ['', 'Compare packages', 'https://demos.mrsoftware.dk/pricing/'],
@@ -28,8 +38,8 @@ test('company and product entrypoints use the managed catalogue and reach exact 
       expect(box.height).toBeGreaterThanOrEqual(44);
       // One click from the company/product page. Redirects carry no private data.
       await link.click();
-      await expect(page).toHaveURL(destination);
       await expect(page.getByRole('heading', { name: 'Public demo destination' })).toBeVisible();
+      expect(visits.at(-1)).toBe(destination);
     }
     expect(visits).toHaveLength(8);
   } finally { await app.close(); }
