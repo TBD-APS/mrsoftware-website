@@ -11,6 +11,7 @@ const collectionFor = { customer: 'customers', opportunity: 'opportunities', quo
 let generation = 0;
 let currentRequest;
 let notice = '';
+let currentRoute = location.pathname + location.search;
 
 function navigate(url) {
   if (url === location.pathname + location.search) return;
@@ -67,6 +68,7 @@ function upsert(state, kind, item) {
 }
 async function load() {
   const run = ++generation;
+  currentRoute = location.pathname + location.search;
   currentRequest?.abort(); currentRequest = new AbortController();
   const signal = currentRequest.signal;
   main.setAttribute('aria-busy', 'true'); main.removeAttribute('data-ready');
@@ -164,13 +166,17 @@ document.addEventListener('click', event => {
   const anchor = event.target.closest('a[href]');
   if (anchor) {
     const target = new URL(anchor.href, location.href);
-    if (anchor.hasAttribute('download') || anchor.target || target.origin !== location.origin || target.pathname !== '/backoffice/') return;
+    if (anchor.hasAttribute('download') || anchor.target || target.href.includes('#') || target.origin !== location.origin || target.pathname !== '/backoffice/') return;
     event.preventDefault(); navigate(target.pathname + target.search); return;
   }
   const card = event.target.closest('[data-href]');
   if (card && !event.target.closest('button,input,select,textarea,label')) navigate(card.dataset.href);
 });
-addEventListener('popstate', () => { notice = ''; load(); });
+addEventListener('popstate', () => {
+  // Same-document fragments keep the browser's native focus/scroll behavior.
+  if (location.pathname + location.search === currentRoute) return;
+  notice = ''; load();
+});
 // A restored browser page must read authoritative data again. Never persist a
 // private record to browser storage or register a private offline worker.
 addEventListener('pageshow', event => { if (event.persisted) { notice = ''; load(); } });

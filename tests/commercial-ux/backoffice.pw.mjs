@@ -197,6 +197,13 @@ test('specific records and missing linked customers load beyond the bounded stat
   await page.getByLabel('Open customer by record ID', { exact: true }).fill(customer.id);
   await page.getByRole('button', { name: 'Open record', exact: true }).click();
   await expect(page.locator('h1')).toHaveText('Outside first page');
+  const limited = 'No matching records in this recent page. Older records remain available at their saved links.';
+  await expect(page.locator('main')).toContainText(limited);
+  await expect(page.locator('main')).not.toContainText('record ID below');
+  await expect(page.getByLabel('Open customer by record ID', { exact: true })).toHaveCount(0);
+  await page.getByRole('link', { name: 'Today', exact: true }).click(); await ready(page);
+  await expect(page.locator('main')).toContainText(limited);
+  await expect(page.locator('main')).not.toContainText('record ID below');
 });
 
 test('unauthorized private origin fails closed and expired API access has a finished error state', async ({ page, app }) => {
@@ -283,4 +290,37 @@ test('public worker graphs exclude the new private page and its entry bundle', a
     expect(paths.some(path => /backoffice|^\/api\//.test(path))).toBe(false);
     for (const privateEntry of privateEntries) expect(paths).not.toContain(privateEntry);
   }
+});
+
+test('keyboard skip link preserves native fragment focus and scroll on a query-addressed record', async ({ page, app }) => {
+  const customer = await seedCustomer(app, { notes: Array(30).fill('Private customer note.').join('\n') });
+  const address = route(app, 'customer', customer.id);
+  await page.goto(address); await ready(page);
+  const skip = page.getByRole('link', { name: 'Skip to content', exact: true });
+  await page.keyboard.press('Tab');
+  await expect(skip).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(address + '#main');
+  await expect(page.locator('main')).toBeFocused();
+  await expect.poll(() => page.locator('main').evaluate(main => Math.round(main.getBoundingClientRect().top))).toBeLessThanOrEqual(32);
+  await expect(page.locator('h1')).toHaveText('Holm & Co');
+  // A normal record-query link still changes views after fragment navigation.
+  await page.getByRole('link', { name: 'Customers', exact: true }).click(); await ready(page);
+  await expect(page).toHaveURL(route(app, 'customers'));
+  await page.getByRole('link', { name: 'Holm & Co', exact: true }).click(); await ready(page);
+  await expect(page).toHaveURL(address);
+  const customers = page.getByRole('link', { name: 'Customers', exact: true });
+  await page.evaluate(() => {
+    document.addEventListener('click', event => { window.modifiedLinkPrevented = event.defaultPrevented; }, { once: true });
+  });
+  await customers.click({ modifiers: [process.platform === 'darwin' ? 'Meta' : 'Control'] });
+  expect(await page.evaluate(() => window.modifiedLinkPrevented)).toBe(false);
+  await expect(page).toHaveURL(address);
+  await customers.evaluate(anchor => { anchor.target = '_blank'; });
+  const targetPopup = page.waitForEvent('popup');
+  await customers.click();
+  const target = await targetPopup; await ready(target);
+  await expect(target).toHaveURL(route(app, 'customers'));
+  await expect(page).toHaveURL(address);
+  await target.close();
 });

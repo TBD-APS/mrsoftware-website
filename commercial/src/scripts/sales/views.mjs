@@ -4,7 +4,7 @@ import { statuses } from './forms.mjs';
 const customerById = (state, id) => state.customers.find(c => c.id === id);
 const customerLink = (state, id) => link(customerById(state, id)?.name ?? 'Customer', 'customer', { id });
 const cards = children => el('div', { className: 'record-list' }, ...children);
-const noRecords = (state, text) => muted(state.truncated ? 'No matching records in this recent page. Open a saved record link or enter its record ID below.' : text);
+const noRecords = (state, text) => muted(state.truncated ? 'No matching records in this recent page. Older records remain available at their saved links.' : text);
 export function listWarning(state) {
   return state.truncated ? el('aside', { className: 'bounded-notice no-print' }, 'Latest records · Showing up to 100 recent records per list, plus records opened directly. Older records remain available at their saved links or by record ID. Activity may also be limited.') : null;
 }
