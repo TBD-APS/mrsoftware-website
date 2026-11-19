@@ -27,4 +27,11 @@ export const homepageJourneys = [
     target: '#contact',
     expectedHeading: /Tell us where the work gets stuck/,
   },
+  {
+    id: 'find-stories',
+    task: 'Find the product stories',
+    budget: 1,
+    target: '#stories',
+    expectedHeading: /Four working days, and the choices behind them/,
+  },
 ];
