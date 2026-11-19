@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: '.',
-  testMatch: ['tests/commercial-ux/*.pw.mjs', 'commercial/tests/ux/*.pw.mjs'],
+  testMatch: ['tests/commercial-ux/*.pw.mjs', 'commercial/tests/ux/*.pw.mjs', 'commercial/private/tests/ux/*.pw.mjs'],
   outputDir: '.ux-gate/commercial/results', fullyParallel: true, workers: 2,
   forbidOnly: !!process.env.CI, retries: 0, timeout: 120_000,
   expect: { timeout: 5_000 },

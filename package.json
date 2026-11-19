@@ -7,7 +7,8 @@
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",
     "ux-gate": "playwright test",
     "build:commercial": "node tools/build-commercial.mjs",
-    "ux-gate:commercial": "npm run build:commercial && playwright test --config playwright.commercial.config.mjs"
+    "ux-gate:commercial": "npm run build:commercial && playwright test --config playwright.commercial.config.mjs",
+    "ux-gate:private": "npm run build:commercial && playwright test --config playwright.private.config.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
