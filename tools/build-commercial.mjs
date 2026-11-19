@@ -47,7 +47,7 @@ async function generatePublicAssets() {
   await qr('workslip', 'mat-101', recordRoutes.material);
 }
 const privatePath = pathname => /(?:^|\/)backoffice(?:[./]|$)|^\/api(?:\/|$)/i.test(pathname);
-const diskPath = pathname => path.join(outputDir, pathname.replace(/^\//, '') + (pathname.endsWith('/') ? 'index.html' : ''));
+const diskPath = (pathname, directory = outputDir) => path.join(directory, pathname.replace(/^\//, '') + (pathname.endsWith('/') ? 'index.html' : ''));
 function localDependency(value, source) {
   if (!value || value.startsWith('data:') || value.startsWith('#')) return null;
   const url = new URL(value, 'https://assets.example' + source);
@@ -55,23 +55,30 @@ function localDependency(value, source) {
   if (privatePath(url.pathname)) throw new Error(`Public page depends on private asset ${url.pathname}`);
   return url.pathname;
 }
-export async function publicDependencies(product) {
+// Dependency discovery in trusted build output, not an HTML sanitizer. HTML
+// names are case-insensitive; values (including asset paths) retain their case.
+function htmlAttribute(tag, name) {
+  const match = new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'=<>\x60]+))`, 'i').exec(tag);
+  return match ? match[1] ?? match[2] ?? match[3] : null;
+}
+export async function publicDependencies(product, directory = outputDir) {
   const pending = [...productRoutes(product), `/${product}/manifest.webmanifest`];
   const found = new Set();
   while (pending.length) {
     const current = pending.shift();
     if (found.has(current)) continue;
     if (privatePath(current)) throw new Error('A public precache cannot contain a private route.');
-    const bytes = await readFile(diskPath(current)); found.add(current);
+    const bytes = await readFile(diskPath(current, directory)); found.add(current);
     const source = bytes.toString('utf8'); const dependencies = [];
     if (current.endsWith('/')) {
-      for (const match of source.matchAll(/<(script|img|link)\b[^>]*>/g)) {
-        const tag = match[0];
-        if (match[1] === 'link' && !/rel="(?:stylesheet|preload|modulepreload|manifest|icon|apple-touch-icon)"/.test(tag)) continue;
-        const attribute = /(?:src|href)="([^"]+)"/.exec(tag)?.[1]; if (attribute) dependencies.push(attribute);
+      for (const match of source.matchAll(/<(script|img|link|a)\b[^>]*>/gi)) {
+        const tag = match[0], kind = match[1].toLowerCase();
+        if (kind === 'link' && !(htmlAttribute(tag, 'rel') ?? '').toLowerCase().split(/\s+/).some(value => ['stylesheet', 'preload', 'modulepreload', 'manifest', 'icon', 'apple-touch-icon'].includes(value))) continue;
+        const attribute = htmlAttribute(tag, kind === 'link' || kind === 'a' ? 'href' : 'src');
+        // Downloadable QR labels are part of the offline scenario too.
+        if (kind === 'a' && (!/\sdownload(?:\s|=|\/?>)/i.test(tag) || !attribute?.endsWith('.png'))) continue;
+        if (attribute) dependencies.push(attribute);
       }
-      // Downloadable QR labels are part of the offline scenario too.
-      for (const match of source.matchAll(/href="([^"?]+\.png)"\s+download/g)) dependencies.push(match[1]);
     } else if (current.endsWith('.js') || current.endsWith('.mjs')) {
       for (const match of source.matchAll(/(?:\bfrom\s*|\bimport\s*(?:\(\s*)?)["']([^"']+)["']/g)) dependencies.push(match[1]);
     } else if (current.endsWith('.css')) {
