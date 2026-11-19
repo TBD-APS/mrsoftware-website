@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "node tools/dev-server.mjs",
     "test": "node --test tests/*.test.mjs && playwright test --config tests/backoffice/playwright.config.mjs && npm run ux-gate",
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",
     "ux-gate": "playwright test"

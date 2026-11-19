@@ -71,6 +71,12 @@
       "title": "Roadmap",
       "href": "/roadmap/",
       "summary": "What is live, in demo, and still being built."
+    },
+    {
+      "id": "research",
+      "title": "How we work",
+      "href": "/research/",
+      "summary": "The evidence, gates and research behind how MR Software builds and learns."
     }
   ],
   "links": {
@@ -132,6 +138,13 @@
       {
         "id": "to:the-shipment",
         "toId": "the-shipment"
+      }
+    ],
+    "home": [
+      {
+        "id": "to:research",
+        "toId": "research",
+        "label": "How we work"
       }
     ]
   }
