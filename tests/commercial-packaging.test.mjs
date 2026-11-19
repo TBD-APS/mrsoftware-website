@@ -15,7 +15,7 @@ test('the actual company upload manifest excludes commercial source, builds and 
   t.after(() => rm(sentinel, { force: true }));
   const manifest = await wranglerAssetManifest(root);
   assert.ok(manifest['/index.html'] || manifest['index.html'], 'Company homepage is still uploaded');
-  const leaked = Object.keys(manifest).filter(file => /(?:^|\/)(?:commercial|\.commercial-dist|\.superpowers|\.astro|docs|qa|tests|test-results|tools|\.local|node_modules)(?:\/|$)|(?:^|\/)(?:wrangler[^/]*|astro\.[^/]*|commercial\.[^/]*|playwright\.[^/]*|AGENTS\.md|package[^/]*)$/.test(file));
+  const leaked = Object.keys(manifest).filter(file => /(?:^|\/)(?:backoffice|commercial|\.commercial-dist|\.superpowers|\.astro|docs|qa|tests|test-results|tools|\.local|node_modules)(?:\/|$)|(?:^|\/)(?:wrangler[^/]*|astro\.[^/]*|commercial\.[^/]*|playwright\.[^/]*|AGENTS\.md|package[^/]*)$/.test(file));
   assert.deepEqual(leaked, [], 'The company upload must contain public company assets only');
   await mkdir(path.join(root, '.local'), { recursive: true });
   await writeFile(path.join(root, '.local/company-asset-manifest.json'), JSON.stringify(manifest, null, 2));

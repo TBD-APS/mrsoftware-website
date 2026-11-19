@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "env -u NO_COLOR -u FORCE_COLOR node tools/run-tests.mjs",
+    "links": "vite --config backoffice/vite.config.js",
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",
     "ux-gate": "env -u NO_COLOR -u FORCE_COLOR playwright test",
     "build:commercial": "node tools/build-commercial.mjs",
@@ -15,6 +16,9 @@
   "devDependencies": {
     "@playwright/test": "1.63.0",
     "miniflare": "5.20261023.0-beta",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "vite": "8.0.16",
     "wrangler": "4.153.0"
   },
   "dependencies": {

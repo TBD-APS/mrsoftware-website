@@ -15,7 +15,9 @@ no identity bypass flag.
 
 The company site's `/demos/`, `/demos/<product>/`, `/pricing/` and
 `/pricing/<product>/` entrypoints are managed in `data/links.json`, edited through
-`node tools/link-backoffice.mjs` and rendered by `@mr-software/linking`.
+`npm run links` (the local React `LinkEditor` copied into
+`backoffice/linking-react.js`) and rendered by the static `@mr-software/linking`
+helpers. Public pages do not load React.
 Their Worker redirects intentionally target the future owned public hostname;
 they are not a deployed preview. Use the printed loopback URLs for local review.
 Only an allowed product and matching package survive a pricing redirect. These
