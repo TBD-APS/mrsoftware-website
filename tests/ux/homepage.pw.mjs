@@ -82,10 +82,15 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.locator('.product-hero .status-state')).toHaveText('In development · Demo');
     await page.goto(publicBase(app.base) + 'products/shippy/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Demo');
-    // The integrations page names kinds of systems only, and says so.
+    // The category overview still uses generic system types and explains availability.
     await page.goto(publicBase(app.base) + 'integrations/');
-    await expect(page.locator('.cats li')).toHaveCount(8);
-    await expect(page.locator('#categories')).toContainText('kinds of systems, not brand names');
+    const categories = page.locator('#categories');
+    await expect(categories.getByRole('heading', { level: 3 })).toHaveText([
+      'ERP and order management', 'Accounting and invoicing', 'Carriers and shipping lines',
+      'Freight forwarders', 'Customs and trade documents', 'Warehouse and inventory',
+      'Email and messaging', 'Files and spreadsheets',
+    ]);
+    await expect(categories).toContainText('Availability depends on the product');
   } finally {
     await app.close();
   }
