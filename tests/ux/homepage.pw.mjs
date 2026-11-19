@@ -62,6 +62,11 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.locator('#results')).toContainText('3 min');
     await expect(page.locator('#results')).toContainText('4.6 days');
     await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
+    await expect(page.locator('#results')).toContainText('2 × 3 min');
+    await expect(page.locator('#results')).toContainText('15 min');
+    await expect(page.locator('#results')).toContainText('2 h 30 min');
+    await expect(page.locator('#results .pot').filter({ hasText: 'Tradey' }).getByRole('link', { name: 'Tradey' })).toHaveAttribute('href', '/products/tradey/');
+    await expect(page.locator('#results .pot').filter({ hasText: 'Shippy' }).getByRole('link', { name: 'Shippy' })).toHaveAttribute('href', '/products/shippy/');
     // Each product states its real status, and every illustration is marked as demo data.
     await expect(page.locator('#solutions article').filter({ hasText: 'Workslip' }).locator('.status-state')).toHaveText('Live');
     await expect(page.locator('#solutions article').filter({ hasText: 'Tradey' }).locator('.status-state')).toHaveText('In development · Demo');
@@ -82,10 +87,15 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.locator('.product-hero .status-state')).toHaveText('In development · Demo');
     await page.goto(publicBase(app.base) + 'products/shippy/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Demo');
-    // The integrations page names kinds of systems only, and says so.
+    // The category overview still uses generic system types and explains availability.
     await page.goto(publicBase(app.base) + 'integrations/');
-    await expect(page.locator('.cats li')).toHaveCount(8);
-    await expect(page.locator('#categories')).toContainText('kinds of systems, not brand names');
+    const categories = page.locator('#categories');
+    await expect(categories.getByRole('heading', { level: 3 })).toHaveText([
+      'ERP and order management', 'Accounting and invoicing', 'Carriers and shipping lines',
+      'Freight forwarders', 'Customs and trade documents', 'Warehouse and inventory',
+      'Email and messaging', 'Files and spreadsheets',
+    ]);
+    await expect(categories).toContainText('Availability depends on the product');
   } finally {
     await app.close();
   }
