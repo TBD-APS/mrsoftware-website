@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Integrations | MR Software</title>
-  <meta name="description" content="Try Excel contact import and Outlook reply review with sample data, and see what else MR Software products can connect to.">
+  <meta name="description" content="Try Greeny’s road freight emissions example, Excel contact import and Outlook reply review with sample data.">
   <link rel="canonical" href="https://mrsoftware.dk/integrations/">
   <meta name="theme-color" content="#fffcf7">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MR Software">
   <meta property="og:title" content="Integrations | MR Software">
-  <meta property="og:description" content="Try Excel contact import and Outlook reply review with sample data, and see what else MR Software products can connect to.">
+  <meta property="og:description" content="Try Greeny’s road freight emissions example, Excel contact import and Outlook reply review with sample data.">
   <meta property="og:url" content="https://mrsoftware.dk/integrations/">
   <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -53,10 +53,52 @@
         <h1 class="blur-in" id="integrations-title"><span style="--i:0">Connected</span> <span style="--i:1">to</span> <span style="--i:2">the</span> <span style="--i:3">systems</span> <span style="--i:4">your</span> <span style="--i:5">trade</span> <span style="--i:6">already</span> <span style="--i:7">runs</span> <span style="--i:8">on.</span></h1>
         <p class="lead">Our products exchange data with the tools around them, so an order, a shipment or a document is entered once. Tell us what you use and we confirm what is supported today.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="#examples">Try Excel and Outlook</a>
+          <a class="button button-primary" href="#greeny-example">Explore Greeny</a>
+          <a class="button button-secondary" href="#examples">Try Excel and Outlook</a>
           <a class="button button-secondary" href="#categories">See what we connect to</a>
         </div>
         <div class="hub"><svg viewBox="0 0 1200 380" aria-hidden="true"><path class="hub-line" d="M330 64 C 450 64, 430 190, 500 190"/><rect class="hub-node" x="30" y="40" width="300" height="48" rx="12"/><text x="50" y="70">ERP and order management</text><path class="hub-line" d="M330 148 C 450 148, 430 190, 500 190"/><rect class="hub-node" x="30" y="124" width="300" height="48" rx="12"/><text x="50" y="154">Accounting and invoicing</text><path class="hub-line" d="M330 232 C 450 232, 430 190, 500 190"/><rect class="hub-node" x="30" y="208" width="300" height="48" rx="12"/><text x="50" y="238">Carriers and shipping lines</text><path class="hub-line" d="M330 316 C 450 316, 430 190, 500 190"/><rect class="hub-node" x="30" y="292" width="300" height="48" rx="12"/><text x="50" y="322">Freight forwarders</text><path class="hub-line" d="M700 190 C 770 190, 750 64, 870 64"/><rect class="hub-node" x="870" y="40" width="300" height="48" rx="12"/><text x="890" y="70">Customs and trade documents</text><path class="hub-line" d="M700 190 C 770 190, 750 148, 870 148"/><rect class="hub-node" x="870" y="124" width="300" height="48" rx="12"/><text x="890" y="154">Warehouse and inventory</text><path class="hub-line" d="M700 190 C 770 190, 750 232, 870 232"/><rect class="hub-node" x="870" y="208" width="300" height="48" rx="12"/><text x="890" y="238">Email and messaging</text><path class="hub-line" d="M700 190 C 770 190, 750 316, 870 316"/><rect class="hub-node" x="870" y="292" width="300" height="48" rx="12"/><text x="890" y="322">Files and spreadsheets</text><rect class="hub-core" x="500" y="150" width="200" height="80" rx="12"/><text class="hub-core-text" x="600" y="196" text-anchor="middle">Your workflow</text></svg></div>
+      </div>
+    </section>
+
+    <section class="section greeny-spotlight" id="greeny-example" aria-labelledby="greeny-example-heading">
+      <div class="page-width greeny-spotlight-layout">
+        <div class="greeny-spotlight-copy">
+          <p class="greeny-product-label">Greeny · ESG reporting</p>
+          <h2 class="heading" id="greeny-example-heading">See where freight emissions come from.</h2>
+          <p>Change the road distance to see how it affects the estimate. Greeny shows the share from driving and the share from supplying the fuel or electricity.</p>
+          <p>In Greeny’s demo workspace, you can also review electricity figures, preview an ESG report and open the PDF.</p>
+          <a class="button button-primary" href="https://greeny.mrsoftware.dk/">Open Greeny’s demo workspace</a>
+          <a class="greeny-text-link" href="/roadmap/#package-greeny">See Greeny’s roadmap</a>
+        </div>
+
+        <div class="greeny-estimate" id="greeny-estimate">
+          <h3>Road freight estimate</h3>
+          <p>Sample data and factors for one road leg.</p>
+          <div class="greeny-estimate-inputs">
+            <dl><dt>Cargo weight</dt><dd>1.5 tonnes</dd></dl>
+            <div>
+              <label for="greeny-distance">Road distance</label>
+              <select id="greeny-distance" disabled>
+                <option value="50">50 km</option>
+                <option value="100" selected>100 km</option>
+                <option value="250">250 km</option>
+              </select>
+            </div>
+          </div>
+          <div class="greeny-estimate-total">
+            <span id="greeny-total-label">Estimated emissions for this leg</span>
+            <output id="greeny-total" for="greeny-distance" aria-labelledby="greeny-total-label">18 kg CO₂e</output>
+          </div>
+          <dl class="greeny-estimate-breakdown">
+            <div><dt>Driving</dt><dd id="greeny-driving">15 kg CO₂e</dd></div>
+            <div><dt>Energy supply</dt><dd id="greeny-energy">3 kg CO₂e</dd></div>
+          </dl>
+          <details class="greeny-estimate-method">
+            <summary>See the calculation</summary>
+            <p>Cargo weight × distance gives <strong id="greeny-activity">150 tonne-km</strong>. The sample factors are 0.10 kg CO₂e per tonne-km for driving and 0.02 kg CO₂e per tonne-km for energy supply.</p>
+          </details>
+        </div>
       </div>
     </section>
 
