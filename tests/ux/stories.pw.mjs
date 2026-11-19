@@ -20,10 +20,13 @@ test('Each story opens from its name and stays put on reload', async ({ page, co
 
     for (const [path, name, heading] of stories) {
       await page.goto(base + 'stories/');
-      await page.getByRole('link', { name, exact: true }).click();
+      await page.locator('.uses').getByRole('link', { name, exact: true }).click();
       await expect(page).toHaveURL(new RegExp(`${path}$`));
       await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
       await expect(page.locator('main')).toContainText('not a measured saving');
+      if (path === '/stories/the-offer/') {
+        await expect(page.getByRole('region', { name: 'See also' }).getByRole('link', { name: /The job/ })).toHaveAttribute('href', '/stories/the-job/');
+      }
       await page.reload();
       await expect(page).toHaveURL(new RegExp(`${path}$`));
       await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
