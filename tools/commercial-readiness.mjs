@@ -28,7 +28,9 @@ export async function commercialReadiness(request = fetch) {
       const reference = /\b(?:src|href)="([^"]+)"/i.exec(tag)?.[1];
       if (!reference) continue;
       const url = new URL(reference, demoOrigin + pathname);
-      if (url.origin !== demoOrigin || !url.pathname.startsWith('/_astro/')) throw Error('Public page has an unexpected application dependency');
+      // Cloudflare WebMCP adds this same-origin module after the compiled app leaves the Worker.
+      const cloudflareBridge = /^<script\b/i.test(tag) && /\btype="module"/i.test(tag) && url.href === `${demoOrigin}/.webmcp/bridge.js`;
+      if (url.origin !== demoOrigin || (!url.pathname.startsWith('/_astro/') && !cloudflareBridge)) throw Error('Public page has an unexpected application dependency');
       dependencies.add(url.href);
     }
   }
@@ -48,7 +50,7 @@ export async function commercialReadiness(request = fetch) {
     if ([302, 303].includes(response.status)) {
       const login = new URL(response.headers.get('Location'), backofficeOrigin);
       if (login.protocol !== 'https:' || !/^[a-z0-9-]+\.cloudflareaccess\.com$/.test(login.hostname) || !login.pathname.startsWith('/cdn-cgi/access/login/backoffice.mrsoftware.dk') || login.username || login.password) throw Error('Private sign-in redirect is not Cloudflare Access');
-      if (login.searchParams.has('redirect_url') && new URL(login.searchParams.get('redirect_url')).origin !== backofficeOrigin) throw Error('Private sign-in has a wrong-host return address');
+      if (login.searchParams.has('redirect_url') && new URL(login.searchParams.get('redirect_url'), backofficeOrigin).origin !== backofficeOrigin) throw Error('Private sign-in has a wrong-host return address');
     }
   }
   return receipt;

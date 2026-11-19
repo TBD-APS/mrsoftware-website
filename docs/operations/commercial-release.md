@@ -70,6 +70,11 @@ does not authorize them.
    exactly one email allow policy for William's privately confirmed login. The
    public `wp@mrsoftware.dk` contact is not his login. Add no other identities or
    bypass policy. Configure Access denial responses with `Cache-Control: no-store`.
+   Inspect account-wide Worker Access as well. If it protects new Workers, create
+   a separate hostname-only public application for `demos.mrsoftware.dk`, attaching
+   a reusable bypass/everyone policy there. The private hostname must keep its
+   dedicated William-only policy. Do not bypass the entire shared Worker or change
+   the account-wide protection for other applications.
 2. Configure main-only GitHub environment `mrsoftware-commercial-production`,
    reviewed by Rasmus. Environment secrets: `CLOUDFLARE_API_TOKEN` and
    `COMMERCIAL_ALLOWED_EMAILS` (the one privately confirmed login). Variables:
@@ -123,5 +128,11 @@ public/private commercial gate once each. Pinned CI actions retain company and
 commercial reports. Conflicting inherited color settings are normalized before
 browser subprocesses. See the [visual QA report](../qa/commercial-sales-2026-11-19/README.md)
 for selected highlighted desktop/phone views and database-checked amounts/counts.
+The production readiness gate also fetches the exact same-origin
+`/.webmcp/bridge.js` module that Cloudflare's enabled WebMCP feature injects at
+the edge. Other unexpected dependencies remain rejected. Access login return
+paths may be relative; both relative and absolute returns must resolve to the
+private origin. See [Cloudflare's WebMCP delivery documentation](https://blog.cloudflare.com/webmcp/)
+and [Worker Access precedence](https://developers.cloudflare.com/workers/configuration/cloudflare-access/#understand-access-hierarchy).
 Physical iPhone/Android installation, Safari, native print destinations and a
 physical camera remain unverified.
