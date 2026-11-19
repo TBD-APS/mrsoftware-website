@@ -62,6 +62,11 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.locator('#results')).toContainText('3 min');
     await expect(page.locator('#results')).toContainText('4.6 days');
     await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
+    await expect(page.locator('#results')).toContainText('2 × 3 min');
+    await expect(page.locator('#results')).toContainText('15 min');
+    await expect(page.locator('#results')).toContainText('2 h 30 min');
+    await expect(page.locator('#results .pot').filter({ hasText: 'Tradey' }).getByRole('link', { name: 'Tradey' })).toHaveAttribute('href', '/products/tradey/');
+    await expect(page.locator('#results .pot').filter({ hasText: 'Shippy' }).getByRole('link', { name: 'Shippy' })).toHaveAttribute('href', '/products/shippy/');
     // Each product states its real status, and every illustration is marked as demo data.
     await expect(page.locator('#solutions article').filter({ hasText: 'Workslip' }).locator('.status-state')).toHaveText('Live');
     await expect(page.locator('#solutions article').filter({ hasText: 'Tradey' }).locator('.status-state')).toHaveText('In development · Demo');
