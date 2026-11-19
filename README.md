@@ -100,3 +100,42 @@ credentials on loopback. CI uses synthetic task/graph data; setting
 `DASHBOARD_SNAPSHOT_DIR` runs browser tests against the reviewed private snapshot.
 Worker tests reject forged, expired and incorrectly scoped JWTs and public hosts.
 The report is `.ux-gate/report/index.html` and is also retained in CI.
+
+## Public product roadmap
+
+The list at `/roadmap/` groups features by package and counts developed and
+upcoming work for each one. The package ID in `tools/public-features.json` is the
+product repository slug. Add a stable feature anchor and reviewed customer-facing
+English copy under the corresponding package.
+
+- Use `source.issue` to track a feature's workflow state in Linear.
+- Use `source.path` and `source.stage` for a feature verified in its repository
+  when there is no useful Linear issue. Cite implementation evidence for
+  `developed` or a documented commitment for `planned`. Review the source on
+  the default branch when adding or changing the entry.
+
+The sync reads only each registered issue's identifier, archive flag and
+workflow type. It displays completed work as **Developed**, started work as
+**In development**, and backlog or unstarted work as **Planned**. Canceled,
+duplicate, triage and archived issues are omitted. Repo-backed entries retain
+their reviewed state. Counts reflect the reviewed public inventory. Developed
+describes an implementation and availability depends on product setup.
+
+Set the following in the website repository's GitHub Actions settings:
+
+- `LINEAR_ROADMAP_TOKEN` is a read-only Linear API key for the relevant teams.
+- `PUBLIC_ROADMAP_GH_TOKEN` is a dedicated GitHub automation credential with
+  Contents and Pull requests write access to this repository only.
+- `PUBLIC_ROADMAP_SYNC=true` enables hourly polling on `main`.
+
+Manually run **Sync public feature roadmap** from `main` for a preview. The
+default run only checks and tests the proposed change. Select `propose` to
+open a review PR. A scheduled run opens a PR only for a changed, tested
+page, with one proposal open at a time. The next poll picks up additional
+changes after that proposal is resolved. If Linear returns incomplete or
+invalid data, the sync leaves the last reviewed page in place. The normal
+owner-merged website release publishes approved updates.
+
+To preview the exact change locally, provide the Linear key through the
+environment and run `node tools/sync-public-roadmap.mjs`. Inspect the diff
+in `roadmap/index.html` and run `npm test`.
