@@ -1,0 +1,96 @@
+{
+  "viewports": {
+    "desktop": "1440x900",
+    "phone": "390x844"
+  },
+  "public": {
+    "activeDemos": 3,
+    "packages": 5,
+    "monthlyMinor": [
+      {
+        "id": "workslip-core",
+        "monthlyMinor": 89900
+      },
+      {
+        "id": "workslip-drift",
+        "monthlyMinor": 189600
+      },
+      {
+        "id": "workslip-complete",
+        "monthlyMinor": 244400
+      },
+      {
+        "id": "tradey-custom",
+        "monthlyMinor": null
+      },
+      {
+        "id": "shippy-custom",
+        "monthlyMinor": null
+      }
+    ],
+    "visiblePrices": [
+      "DKK 899",
+      "DKK 1,896",
+      "DKK 2,444",
+      "Let’s agree a price",
+      "Let’s agree a price"
+    ]
+  },
+  "sales": {
+    "customers": 2,
+    "opportunities": 2,
+    "quotes": 1,
+    "enquiries": 1,
+    "due": 1,
+    "newEnquiries": 1,
+    "openQuotes": 1,
+    "quote": {
+      "monthlyMinor": 89900,
+      "setupMinor": 125050,
+      "snapshotCustomer": "Local preview customer",
+      "status": "draft"
+    }
+  },
+  "overflowChecks": [
+    {
+      "file": "directory-desktop.png",
+      "overflow": 0
+    },
+    {
+      "file": "directory-phone.png",
+      "overflow": 0
+    },
+    {
+      "file": "pricing-desktop.png",
+      "overflow": 0
+    },
+    {
+      "file": "enquiry-phone.png",
+      "overflow": 0
+    },
+    {
+      "file": "today-desktop.png",
+      "overflow": 0
+    },
+    {
+      "file": "quote-desktop.png",
+      "overflow": 0
+    },
+    {
+      "file": "today-phone.png",
+      "overflow": 0
+    },
+    {
+      "file": "quote-phone.png",
+      "overflow": 0
+    },
+    {
+      "file": "company-desktop.png",
+      "overflow": 0
+    },
+    {
+      "file": "company-phone.png",
+      "overflow": 0
+    }
+  ]
+}

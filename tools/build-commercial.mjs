@@ -6,6 +6,7 @@ import { deflateSync } from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { products, productRoutes, publicOrigin, recordRoutes } from '../commercial/src/data/scenarios.mjs';
+import { writeCommercialAssetPolicy } from './commercial-asset-policy.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const publicDir = path.join(root, 'commercial/public');
@@ -143,5 +144,6 @@ export async function buildCommercial() {
   await generatePublicAssets();
   await build({ root, configFile: 'astro.commercial.config.mjs' });
   await generateServiceWorkers();
+  await writeCommercialAssetPolicy(outputDir, path.join(root, '.local/commercial-asset-policy.json'));
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await buildCommercial();

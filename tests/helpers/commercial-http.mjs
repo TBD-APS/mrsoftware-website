@@ -44,12 +44,12 @@ export async function startCommercialSite({ root = defaultRoot, verifyIdentity =
       outgoing.end('Local preview failed.');
     }
   });
-  await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, resolve); });
+  await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
   const port = server.address().port;
   env.DEMO_HOST = `127.0.0.1:${port}`;
   env.BACKOFFICE_HOST = `localhost:${port}`;
   return {
-    ...harness, assetOverrides, assets,
+    ...harness, assetOverrides, assets, port, address: server.address().address,
     base: `http://${env.DEMO_HOST}/`,
     privateBase: `http://${env.BACKOFFICE_HOST}/`,
     async close() {

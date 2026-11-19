@@ -22,6 +22,7 @@ async function fixture(change = {}) {
       return [{ type: 'version-deploy', worker_name: 'mrsoftware', deployment_id: 'new-deployment' }];
     },
     smoke: async () => [{ url: 'https://mrsoftware.dk/', status: 200 }],
+    readiness: async () => [{ url: 'https://demos.mrsoftware.dk/api/catalog', status: 200 }],
     receiptPath: join(dir, 'receipt.json'), ...change,
   };
   return { deps, calls, cleanup: () => rm(dir, { recursive: true, force: true }) };

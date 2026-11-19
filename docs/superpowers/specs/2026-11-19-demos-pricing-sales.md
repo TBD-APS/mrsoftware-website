@@ -4,7 +4,7 @@ Approved by Rasmus's `go` on 19 November 2026, following the feasibility investi
 
 ## Architecture
 
-Build an independent static Astro application in `commercial/`. A new Cloudflare Worker serves it on `demo.mrsoftware.dk` and `backoffice.mrsoftware.dk`, while the existing company website keeps its Worker, private development snapshot and release gates. The company site links to the new experience.
+Build an independent static Astro application in `commercial/`. A new Cloudflare Worker serves it on `demos.mrsoftware.dk` and `backoffice.mrsoftware.dk`, while the existing company website keeps its Worker, private development snapshot and release gates. The company site links to the new experience. The occupied singular `demo.mrsoftware.dk` is preserved.
 
 Use Cloudflare D1 for the first sales workspace so it runs entirely in the chosen Cloudflare setup. Boney.Crm's C# package requires another runtime and PostgreSQL; this release does not introduce that server. Keep the small sales domain separate from the development control plane.
 

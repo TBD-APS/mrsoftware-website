@@ -71,6 +71,54 @@
       "title": "Roadmap",
       "href": "/roadmap/",
       "summary": "What is live, in demo, and still being built."
+    },
+    {
+      "id": "demos",
+      "title": "Try the demos",
+      "href": "/demos/",
+      "summary": "Three safe examples, without a sign-in."
+    },
+    {
+      "id": "prices",
+      "title": "Compare packages",
+      "href": "/pricing/",
+      "summary": "See prices and ask for a quote."
+    },
+    {
+      "id": "workslip-demo",
+      "title": "Try Workslip",
+      "href": "/demos/workslip/",
+      "summary": "Open an interactive example with safe sample records."
+    },
+    {
+      "id": "workslip-prices",
+      "title": "Workslip packages",
+      "href": "/pricing/workslip/",
+      "summary": "Compare options and request a quote."
+    },
+    {
+      "id": "tradey-demo",
+      "title": "Try Tradey",
+      "href": "/demos/tradey/",
+      "summary": "Open an interactive example with safe sample records."
+    },
+    {
+      "id": "tradey-prices",
+      "title": "Tradey packages",
+      "href": "/pricing/tradey/",
+      "summary": "Compare options and request a quote."
+    },
+    {
+      "id": "shippy-demo",
+      "title": "Try Shippy",
+      "href": "/demos/shippy/",
+      "summary": "Open an interactive example with safe sample records."
+    },
+    {
+      "id": "shippy-prices",
+      "title": "Shippy packages",
+      "href": "/pricing/shippy/",
+      "summary": "Compare options and request a quote."
     }
   ],
   "links": {
@@ -132,6 +180,46 @@
       {
         "id": "to:the-shipment",
         "toId": "the-shipment"
+      }
+    ],
+    "home": [
+      {
+        "id": "to:demos",
+        "toId": "demos"
+      },
+      {
+        "id": "to:prices",
+        "toId": "prices"
+      }
+    ],
+    "workslip": [
+      {
+        "id": "to:workslip-demo",
+        "toId": "workslip-demo"
+      },
+      {
+        "id": "to:workslip-prices",
+        "toId": "workslip-prices"
+      }
+    ],
+    "tradey": [
+      {
+        "id": "to:tradey-demo",
+        "toId": "tradey-demo"
+      },
+      {
+        "id": "to:tradey-prices",
+        "toId": "tradey-prices"
+      }
+    ],
+    "shippy": [
+      {
+        "id": "to:shippy-demo",
+        "toId": "shippy-demo"
+      },
+      {
+        "id": "to:shippy-prices",
+        "toId": "shippy-prices"
       }
     ]
   }
