@@ -1,0 +1,72 @@
+[
+  {
+    "id": "container-tracking",
+    "issue": "SAS-532",
+    "product": "Shippy",
+    "title": "Container tracking",
+    "summary": "See container status, location updates and estimated arrivals beside the purchase order when the tracking integration is enabled."
+  },
+  {
+    "id": "shipment-links",
+    "issue": "SAS-523",
+    "product": "Shippy",
+    "title": "Links on shipments",
+    "summary": "Keep a tracking page, customer link or document URL with the purchase order it belongs to."
+  },
+  {
+    "id": "shipment-carbon-qr",
+    "issue": "SAS-516",
+    "product": "Shippy",
+    "title": "Shipment carbon QR codes",
+    "summary": "Print or scan a QR code to open the shipment’s carbon information."
+  },
+  {
+    "id": "search-with-sources",
+    "issue": "SAS-415",
+    "product": "MR SAAS’y",
+    "title": "Document search with sources",
+    "summary": "Find the relevant passage in company documentation and open the section it came from."
+  },
+  {
+    "id": "terminal-visits",
+    "issue": "SAS-541",
+    "product": "Roady",
+    "title": "Terminal visits",
+    "summary": "Follow each vehicle from arrival to departure and see how long it has been waiting."
+  },
+  {
+    "id": "transport-exceptions",
+    "issue": "SAS-544",
+    "product": "Roady",
+    "title": "Transport exceptions",
+    "summary": "See delays and missing updates, assign someone to follow up and keep a record of how each issue was resolved."
+  },
+  {
+    "id": "transport-carbon-reports",
+    "issue": "SAS-545",
+    "product": "Roady",
+    "title": "Transport carbon reports",
+    "summary": "Review emissions by shipment, vehicle, customer and period, with the data and calculation method behind each figure."
+  },
+  {
+    "id": "energy-and-data-reports",
+    "issue": "SAS-529",
+    "product": "Greeny",
+    "title": "Energy and data savings reports",
+    "summary": "Add energy and data savings to ESG reports, with the evidence behind the figures."
+  },
+  {
+    "id": "scanned-purchase-orders",
+    "issue": "SAS-517",
+    "product": "Shippy",
+    "title": "Purchase orders from scans",
+    "summary": "Extract fields from a scanned purchase order so an operator can review them before saving the draft."
+  },
+  {
+    "id": "connected-knowledge",
+    "issue": "SAS-36",
+    "product": "MR SAAS’y",
+    "title": "Connected company knowledge",
+    "summary": "Find current, authorized information across company sources, with links back to the original material."
+  }
+]

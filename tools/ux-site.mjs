@@ -6,7 +6,7 @@ import { createDashboardHandler } from '../dashboard/handler.mjs';
 import { verifyTestAccess, testToken } from '../tests/ux/access-fixture.mjs';
 import { data as sampleData, graphs as sampleGraphs } from '../tests/ux/snapshot-fixture.mjs';
 
-export async function startSite() {
+export async function startSite({ roadmapHtml } = {}) {
   const root = fileURLToPath(new URL('../', import.meta.url));
   const snapshotDir = process.env.DASHBOARD_SNAPSHOT_DIR;
   const data = snapshotDir ? JSON.parse(await readFile(path.join(snapshotDir, 'data.json'), 'utf8')) : sampleData;
@@ -32,7 +32,7 @@ export async function startSite() {
       const relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
       const filename = path.resolve(root, relative + (url.pathname.endsWith('/') ? 'index.html' : ''));
       if (!filename.startsWith(root) || relative.split('/').some(part => part.startsWith('.'))) { response.writeHead(403); response.end(); return; }
-      const body = await readFile(filename);
+      const body = url.pathname === '/roadmap/' && roadmapHtml !== undefined ? roadmapHtml : await readFile(filename);
       response.writeHead(200, { 'Content-Type': types[path.extname(filename)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
       response.end(body);
     } catch { response.writeHead(404); response.end('Not found'); }

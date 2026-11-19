@@ -100,3 +100,37 @@ credentials on loopback. CI uses synthetic task/graph data; setting
 `DASHBOARD_SNAPSHOT_DIR` runs browser tests against the reviewed private snapshot.
 Worker tests reject forged, expired and incorrectly scoped JWTs and public hosts.
 The report is `.ux-gate/report/index.html` and is also retained in CI.
+
+## Public product roadmap
+
+The list at `/roadmap/` shows developed features and the pipeline. To list a
+new feature, add its stable anchor, Linear issue identifier, product and
+customer-facing English title and summary to `tools/public-features.json`.
+Review the copy in the website PR. Add features when planning starts so
+their progress is reflected automatically. Never copy Linear issue bodies
+or private project details into the registry.
+
+The sync reads only each registered issue's identifier, archive flag and
+workflow type. Completed work appears under **Developed**. Started work is
+**In development** and backlog or unstarted work is **Planned**. Canceled,
+duplicate, triage and archived issues are omitted. Developed describes the
+work status in Linear. It does not assert a customer rollout or availability.
+
+Set the following in the website repository's GitHub Actions settings:
+
+- `LINEAR_ROADMAP_TOKEN` is a read-only Linear API key for the relevant teams.
+- `PUBLIC_ROADMAP_GH_TOKEN` is a dedicated GitHub automation credential with
+  Contents and Pull requests write access to this repository only.
+- `PUBLIC_ROADMAP_SYNC=true` enables hourly polling on `main`.
+
+Manually run **Sync public feature roadmap** from `main` for a preview. The
+default run only checks and tests the proposed change. Select `propose` to
+open a review PR. A scheduled run opens a PR only for a changed, tested
+page, with one proposal open at a time. The next poll picks up additional
+changes after that proposal is resolved. If Linear returns incomplete or
+invalid data, the sync leaves the last reviewed page in place. The normal
+owner-merged website release publishes approved updates.
+
+To preview the exact change locally, provide the Linear key through the
+environment and run `node tools/sync-public-roadmap.mjs`. Inspect the diff
+in `roadmap/index.html` and run `npm test`.
