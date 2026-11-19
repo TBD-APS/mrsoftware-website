@@ -4,11 +4,27 @@ import { validateCatalog } from '../commercial/server/validation.mjs';
 export const demoOrigin = 'https://demos.mrsoftware.dk';
 export const backofficeOrigin = 'https://backoffice.mrsoftware.dk';
 
+const READ_ATTEMPTS = 3;
+const READ_WAIT_MS = 1000;
+
+function transientRead(error) {
+  return error?.name === 'TimeoutError' || error?.name === 'TypeError' || error?.message === 'fetch failed';
+}
+
 // GET-only: this is also the gate before the company site publishes its links.
-export async function commercialReadiness(request = fetch) {
+export async function commercialReadiness(request = fetch, { attempts = READ_ATTEMPTS, sleep = ms => new Promise(resolve => setTimeout(resolve, ms)) } = {}) {
   const receipt = [];
   async function read(url, statuses = [200]) {
-    const response = await request(url, { method: 'GET', redirect: 'manual', signal: AbortSignal.timeout(15000), headers: { 'Cache-Control': 'no-cache' } });
+    let response;
+    for (let attempt = 1; ; attempt++) {
+      try {
+        response = await request(url, { method: 'GET', redirect: 'manual', signal: AbortSignal.timeout(15000), headers: { 'Cache-Control': 'no-cache' } });
+        break;
+      } catch (error) {
+        if (!transientRead(error) || attempt >= attempts) throw error;
+        await sleep(READ_WAIT_MS);
+      }
+    }
     if (!statuses.includes(response.status) || (response.url && new URL(response.url).origin !== new URL(url).origin)) throw Error(`Commercial readiness failed for ${url} (HTTP ${response.status})`);
     receipt.push({ url, status: response.status });
     return response;
@@ -28,6 +44,8 @@ export async function commercialReadiness(request = fetch) {
       const reference = /\b(?:src|href)="([^"]+)"/i.exec(tag)?.[1];
       if (!reference) continue;
       const url = new URL(reference, demoOrigin + pathname);
+      // Cloudflare injects this bridge in front of the origin when WebMCP is on. It is not an application file.
+      if (url.origin === demoOrigin && url.pathname === '/.webmcp/bridge.js') continue;
       if (url.origin !== demoOrigin || !url.pathname.startsWith('/_astro/')) throw Error('Public page has an unexpected application dependency');
       dependencies.add(url.href);
     }
@@ -48,7 +66,13 @@ export async function commercialReadiness(request = fetch) {
     if ([302, 303].includes(response.status)) {
       const login = new URL(response.headers.get('Location'), backofficeOrigin);
       if (login.protocol !== 'https:' || !/^[a-z0-9-]+\.cloudflareaccess\.com$/.test(login.hostname) || !login.pathname.startsWith('/cdn-cgi/access/login/backoffice.mrsoftware.dk') || login.username || login.password) throw Error('Private sign-in redirect is not Cloudflare Access');
-      if (login.searchParams.has('redirect_url') && new URL(login.searchParams.get('redirect_url')).origin !== backofficeOrigin) throw Error('Private sign-in has a wrong-host return address');
+      // Cloudflare Access sends a same-host path, not an absolute URL.
+      if (login.searchParams.has('redirect_url')) {
+        let ret;
+        try { ret = new URL(login.searchParams.get('redirect_url'), backofficeOrigin); }
+        catch { throw Error('Private sign-in has a wrong-host return address'); }
+        if (ret.origin !== backofficeOrigin) throw Error('Private sign-in has a wrong-host return address');
+      }
     }
   }
   return receipt;
