@@ -11,6 +11,7 @@ const pages = [
   'integrations/',
   'contact/',
   'demo/',
+  'demo/shippy/',
   'roadmap/',
   'stories/',
   'stories/the-offer/',
