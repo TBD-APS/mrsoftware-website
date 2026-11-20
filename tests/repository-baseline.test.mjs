@@ -156,4 +156,5 @@ test('baseline workflow keeps read-only credentials, pinned actions and excluded
   const ignored = await readFile(new URL('../.assetsignore', import.meta.url), 'utf8');
   assert.ok(ignored.split('\n').includes('.local/**'));
   assert.ok(ignored.split('\n').includes('tools/**'));
+  assert.ok(ignored.split('\n').includes('qa/**'), 'internal QA decks must not be public static assets');
 });
