@@ -2,6 +2,10 @@
 
 Tracking: [SAS-561](https://linear.app/workslip/issue/SAS-561/offer-public-qrpwa-demos-and-williams-sales-backoffice).
 
+## Compiled asset propagation after deployment
+
+After the provider confirms the exact commercial version at 100%, its GET-only smoke may repeat the complete read probe if a public compiled `/_astro/*.css` or `/_astro/*.js` dependency returns 404. The wait schedule is bounded to 1, 3, 10, 15 and 30 seconds; a persistent missing dependency still fails with an uncertain receipt. Other statuses, wrong hosts, invalid catalogue data and private-access failures stop immediately. Pre-release readiness remains immediate. Uploads and deployments are never automatically retried.
+
 ## Working local preview
 
 Run `npm ci`, then `npm run preview:commercial`. Keep the process running while

@@ -22,7 +22,7 @@ async function wrangler(args) {
 
 export async function deployCommercial(env = process.env, {
   authorize = verifyRelease, preflight = commercialPreflight, readDeployments = () => readCommercialDeployments(env), run = wrangler,
-  smoke = commercialReadiness, receiptPath = '.local/commercial-release-receipt.json', configPath = '.local/wrangler-commercial-release.json',
+  smoke = () => commercialReadiness(fetch, { assetPropagation: true }), receiptPath = '.local/commercial-release-receipt.json', configPath = '.local/wrangler-commercial-release.json',
 } = {}) {
   if (env.GITHUB_ACTIONS !== 'true' || !env.CLOUDFLARE_API_TOKEN?.trim() || !/^[a-f0-9]{40}$/.test(env.GITHUB_SHA ?? '')) throw Error('Commercial production requires the approved release Action and credentials');
   const eligibility = await authorize();
