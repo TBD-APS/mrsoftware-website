@@ -23,6 +23,11 @@ selvvalideringsartefakt.
 
 ## Lokal udvikling
 
+ElevenLabs webhooks use the shared Boney module at
+`/api/webhooks/elevenlabs`. The receiver accepts events only with its private D1
+inbox, signing secret and exact module version configured. See
+[activation and storage](docs/elevenlabs-webhooks.md).
+
 Åbn filerne i en lokal HTTP-server, f.eks.
 
 ```sh

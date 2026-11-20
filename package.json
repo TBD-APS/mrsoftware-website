@@ -22,6 +22,7 @@
     "wrangler": "4.153.0"
   },
   "dependencies": {
+    "@mr-software/elevenlabs": "file:vendor/boney/mr-software-elevenlabs-0.1.0.tgz",
     "astro": "6.4.8",
     "jose": "6.2.13",
     "jsqr": "1.4.0",
