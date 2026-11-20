@@ -157,4 +157,5 @@ test('baseline workflow keeps read-only credentials, pinned actions and excluded
   assert.ok(ignored.split('\n').includes('.local/**'));
   assert.ok(ignored.split('\n').includes('tools/**'));
   assert.ok(ignored.split('\n').includes('qa/**'), 'internal QA decks must not be public static assets');
+  assert.ok(ignored.split('\n').includes('docs/**'), 'internal docs, plans and specs must not be public static assets');
 });
