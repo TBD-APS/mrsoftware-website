@@ -30,6 +30,9 @@ astro.*
 commercial.*
 playwright.*
 website-entry.mjs
+elevenlabs-webhook.mjs
+vendor/**
+migrations/**
 .gitignore
 .DS_Store
 .npmrc

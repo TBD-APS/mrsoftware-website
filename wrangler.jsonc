@@ -5,6 +5,17 @@
   "build": { "command": "npm run prepare-dashboard" },
   "compatibility_date": "2026-09-02",
   "workers_dev": true,
+  "vars": {
+    "ELEVENLABS_WEBHOOK_ENABLED": "false",
+    "ELEVENLABS_MODULE_VERSION": "0.1.0"
+  },
+  "d1_databases": [{
+    "binding": "ELEVENLABS_INBOX",
+    "database_name": "mrsoftware-elevenlabs",
+    "database_id": "11edf7b3-e711-4cbc-9376-ee507605e3bd",
+    "migrations_dir": "migrations/elevenlabs"
+  }],
+  "observability": { "enabled": true, "traces": { "enabled": true } },
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
