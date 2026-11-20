@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { pathToFileURL } from 'node:url';
 import { verifyRelease } from './release-eligibility.mjs';
 import { commercialReadiness } from './commercial-readiness.mjs';
+import { waitForWorkerVersion, confirmWorkerDeployment } from './cloudflare-visibility.mjs';
 
 const WORKER = 'mrsoftware';
 const UUID = /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/;
@@ -67,6 +68,7 @@ function versionNotVisible(error) {
 
 export async function deployProduction(env = process.env, {
   authorize = verifyRelease, readDeployments = () => deployments(env), run = wrangler,
+  waitForVersion = versionId => waitForWorkerVersion(env, WORKER, versionId),
   smoke = productionSmoke, readiness = commercialReadiness, sleep = delay, receiptPath = '.local/release-receipt.json',
 } = {}) {
   if (env.GITHUB_ACTIONS !== 'true' || !env.CLOUDFLARE_API_TOKEN?.trim() || !/^[a-f0-9]{32}$/.test(env.CLOUDFLARE_ACCOUNT_ID ?? '') || !env.DASHBOARD_SNAPSHOT_DIR) {
@@ -88,6 +90,7 @@ export async function deployProduction(env = process.env, {
     const uploads = uploaded.filter(x => x.type === 'version-upload' && x.worker_name === WORKER && UUID.test(x.version_id));
     if (uploads.length !== 1) throw Error('Wrangler did not identify one uploaded mrsoftware version');
     receipt.versionId = uploads[0].version_id; receipt.state = 'uploaded'; await save();
+    await waitForVersion(receipt.versionId);
     await authorize();
     receipt.state = 'deploying'; await save();
     const deployArgs = ['versions', 'deploy', `${receipt.versionId}@100%`, '--yes', '--message', `GitHub main ${env.GITHUB_SHA}`];
@@ -105,8 +108,7 @@ export async function deployProduction(env = process.env, {
     const confirmation = deployed.filter(x => x.type === 'version-deploy' && x.worker_name === WORKER && x.deployment_id);
     if (confirmation.length !== 1) throw Error('Wrangler did not confirm the deployment');
     receipt.deploymentId = confirmation[0].deployment_id; await save();
-    const current = (await readDeployments())[0];
-    if (current?.id !== receipt.deploymentId || current.versions?.length !== 1 || current.versions[0].version_id !== receipt.versionId || current.versions[0].percentage !== 100) throw Error('The provider did not confirm 100% traffic on the exact uploaded version');
+    await confirmWorkerDeployment({ read: readDeployments, previousId: previous.id, deploymentId: receipt.deploymentId, versionId: receipt.versionId, pause: sleep });
     receipt.smoke = await smoke(); receipt.state = 'verified'; await save();
     return receipt;
   } catch (error) {

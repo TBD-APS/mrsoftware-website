@@ -6,6 +6,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { verifyRelease } from './release-eligibility.mjs';
 import { commercialPreflight, commercialWorker, readCommercialDeployments, UUID } from './commercial-release-config.mjs';
 import { commercialReadiness } from './commercial-readiness.mjs';
+import { waitForWorkerVersion, confirmWorkerDeployment, visibilityPause } from './cloudflare-visibility.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 async function wrangler(args) {
@@ -22,6 +23,7 @@ async function wrangler(args) {
 
 export async function deployCommercial(env = process.env, {
   authorize = verifyRelease, preflight = commercialPreflight, readDeployments = () => readCommercialDeployments(env), run = wrangler,
+  waitForVersion = versionId => waitForWorkerVersion(env, commercialWorker, versionId), sleep = visibilityPause,
   smoke = () => commercialReadiness(fetch, { assetPropagation: true }), receiptPath = '.local/commercial-release-receipt.json', configPath = '.local/wrangler-commercial-release.json',
 } = {}) {
   if (env.GITHUB_ACTIONS !== 'true' || !env.CLOUDFLARE_API_TOKEN?.trim() || !/^[a-f0-9]{40}$/.test(env.GITHUB_SHA ?? '')) throw Error('Commercial production requires the approved release Action and credentials');
@@ -56,6 +58,7 @@ export async function deployCommercial(env = process.env, {
       const versions = output.filter(item => item.type === 'version-upload' && item.worker_name === commercialWorker && UUID.test(item.version_id));
       if (versions.length !== 1) throw Error('Wrangler did not identify one uploaded commercial version');
       receipt.versionId = versions[0].version_id; receipt.state = 'uploaded'; await save();
+      await waitForVersion(receipt.versionId);
       await authorize();
       receipt.state = 'deploying'; await save();
       const deployment = await run(['versions', 'deploy', `${receipt.versionId}@100%`, ...common, '--yes', '--message', `GitHub main ${env.GITHUB_SHA}`]);
@@ -64,8 +67,7 @@ export async function deployCommercial(env = process.env, {
       receipt.deploymentId = confirmation[0].deployment_id;
     }
     await save();
-    const current = (await readDeployments())[0];
-    if (!current?.id || (receipt.deploymentId && current.id !== receipt.deploymentId) || current.versions?.length !== 1 || current.versions[0].version_id !== receipt.versionId || current.versions[0].percentage !== 100) throw Error('Provider did not confirm the exact commercial version at 100%');
+    const current = await confirmWorkerDeployment({ read: readDeployments, previousId: prepared.previous?.id ?? null, deploymentId: receipt.deploymentId, versionId: receipt.versionId, pause: sleep });
     receipt.deploymentId = current.id;
     receipt.smoke = await smoke(); receipt.state = 'verified'; await save();
     return receipt;
