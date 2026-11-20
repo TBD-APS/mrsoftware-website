@@ -2,11 +2,44 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { productionCommercial } from './helpers/production-commercial.mjs';
 
-async function readiness(request) {
+async function readiness(request, options) {
   const module = await import('../tools/commercial-readiness.mjs').catch(() => ({}));
   assert.equal(typeof module.commercialReadiness, 'function', 'The commercial readiness gate is required');
-  return module.commercialReadiness(request);
+  return module.commercialReadiness(request, options);
 }
+
+test('post-deployment readiness rechecks GET-only probes for a temporarily missing compiled asset', async t => {
+  const app = await productionCommercial(t);
+  const delays = [], methods = [];
+  let failures = 2;
+  const receipt = await readiness((url, options) => {
+    methods.push(options.method);
+    if (url.includes('/_astro/') && failures > 0) { failures--; return new Response('Not propagated', { status: 404 }); }
+    return app.mf.dispatchFetch(url, options);
+  }, { assetPropagation: true, pause: async ms => { delays.push(ms); } });
+  assert.deepEqual(delays, [1000, 3000]);
+  assert.ok(receipt.length >= 10);
+  assert.ok(methods.every(method => method === 'GET'));
+});
+
+test('the asset propagation window is bounded and never delays other readiness failures', async t => {
+  const app = await productionCommercial(t);
+  const delays = [];
+  await assert.rejects(readiness((url, options) => url.includes('/_astro/') ? new Response('Missing', { status: 404 }) : app.mf.dispatchFetch(url, options),
+    { assetPropagation: true, pause: async ms => { delays.push(ms); } }), /HTTP 404/);
+  assert.deepEqual(delays, [1000, 3000, 10000, 15000, 30000]);
+  for (const failure of ['public-page', 'private', 'asset-403', 'asset-foreign-404']) {
+    let pauses = 0;
+    await assert.rejects(readiness((url, options) => {
+      if (failure === 'public-page' && url === 'https://demos.mrsoftware.dk/') return new Response('Missing', { status: 404 });
+      if (failure === 'private' && url.startsWith('https://backoffice.')) return new Response('<h1>Exposed</h1>', { headers: { 'Content-Type': 'text/html' } });
+      if (failure === 'asset-403' && url.includes('/_astro/')) return new Response('Forbidden', { status: 403 });
+      if (failure === 'asset-foreign-404' && url.includes('/_astro/')) return { status: 404, url: 'https://wrong.example.test/missing.css' };
+      return app.mf.dispatchFetch(url, options);
+    }, { assetPropagation: true, pause: async () => { pauses++; } }));
+    assert.equal(pauses, 0, failure);
+  }
+});
 
 test('readiness verifies built public catalogue/pages/dependencies and private denial without any sales writes', async t => {
   const app = await productionCommercial(t);

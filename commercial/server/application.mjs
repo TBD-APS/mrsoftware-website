@@ -1,6 +1,6 @@
 import { accessVerifier, identitySettings, validIdentity } from './identity.mjs';
 import { createStore } from './store.mjs';
-import { HttpError, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateOpportunity, validateQuote, validateQuoteUpdate } from './validation.mjs';
+import { HttpError, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateOpportunity, validateQuote, validateQuoteUpdate, validateTodayQuery } from './validation.mjs';
 
 const productionIdentity = accessVerifier();
 const notFound = () => { throw new HttpError(404, 'Page or record was not found.'); };
@@ -74,6 +74,12 @@ export function createApplication({ verifyIdentity = productionIdentity } = {}) 
         if (path === '/api/backoffice/state') {
           if (request.method !== 'GET') methodNotAllowed();
           return json(await createStore(env.DB).state());
+        }
+
+        if (path === '/api/backoffice/today') {
+          if (request.method !== 'GET') methodNotAllowed();
+          const query = validateTodayQuery(url.searchParams);
+          return json(await createStore(env.DB).today(query));
         }
 
         if (path === '/api/backoffice/catalog') {

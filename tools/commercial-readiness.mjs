@@ -4,12 +4,33 @@ import { validateCatalog } from '../commercial/server/validation.mjs';
 export const demoOrigin = 'https://demos.mrsoftware.dk';
 export const backofficeOrigin = 'https://backoffice.mrsoftware.dk';
 
+class ReadinessHttpError extends Error {
+  constructor(url, status) {
+    super(`Commercial readiness failed for ${url} (HTTP ${status})`);
+    this.url = url; this.status = status;
+  }
+}
+
+export async function commercialReadiness(request = fetch, { assetPropagation = false, pause = ms => new Promise(resolve => setTimeout(resolve, ms)) } = {}) {
+  const delays = assetPropagation ? [1000, 3000, 10000, 15000, 30000] : [];
+  for (let attempt = 0; ; attempt++) {
+    try { return await probe(request); } catch (error) {
+      const url = error instanceof ReadinessHttpError ? new URL(error.url) : null;
+      if (error.status !== 404 || url?.origin !== demoOrigin || !/^\/_astro\/[^/]+\.(?:css|js)$/.test(url.pathname) || attempt >= delays.length) throw error;
+      // Only re-read a known compiled dependency during edge propagation. This
+      // does not retry an upload, deployment, private failure or another status.
+      await pause(delays[attempt]);
+    }
+  }
+}
+
 // GET-only: this is also the gate before the company site publishes its links.
-export async function commercialReadiness(request = fetch) {
+async function probe(request) {
   const receipt = [];
   async function read(url, statuses = [200]) {
     const response = await request(url, { method: 'GET', redirect: 'manual', signal: AbortSignal.timeout(15000), headers: { 'Cache-Control': 'no-cache' } });
-    if (!statuses.includes(response.status) || (response.url && new URL(response.url).origin !== new URL(url).origin)) throw Error(`Commercial readiness failed for ${url} (HTTP ${response.status})`);
+    if (response.url && new URL(response.url).origin !== new URL(url).origin) throw Error(`Commercial readiness returned an unexpected host for ${url}`);
+    if (!statuses.includes(response.status)) throw new ReadinessHttpError(url, response.status);
     receipt.push({ url, status: response.status });
     return response;
   }

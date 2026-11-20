@@ -1,5 +1,5 @@
 import { apiJson, ApiError } from './api.mjs';
-import { el, action, link, pageHeading, result, productName, quoteName, titleCase, dayString, href } from './sales/dom.mjs';
+import { el, action, link, pageHeading, result, productName, quoteName, titleCase, dayString, dateLabel, href } from './sales/dom.mjs';
 import { customerForm, opportunityForm, quoteForm, catalogForm } from './sales/forms.mjs';
 import { listWarning, todayView, customersView, salesView, quotesView, customerView, opportunityView, quoteView, catalogueView } from './sales/views.mjs';
 
@@ -80,7 +80,11 @@ async function load() {
     const view = params.get('view') || 'today';
     if (!allowedViews.includes(view)) throw new ApiError('This page was not found. Open Today to continue.', 404);
     setNavigation(view);
-    const [session, state] = await Promise.all([apiJson('/api/backoffice/session', { signal }), apiJson('/api/backoffice/state', { signal })]);
+    const queueQuery = new URLSearchParams({ date: params.get('date') ?? dayString() });
+    for (const key of ['followUpsAfter', 'enquiriesAfter', 'quotesAfter']) if (params.has(key)) queueQuery.set(key, params.get(key));
+    const [session, data] = await Promise.all([apiJson('/api/backoffice/session', { signal }), apiJson(view === 'today' ? '/api/backoffice/today?' + queueQuery : '/api/backoffice/state', { signal })]);
+    // Today reads its filtered queues directly, independently of recent lists.
+    const state = view === 'today' ? { customers: [], opportunities: [], quotes: [], events: [], truncated: false } : data;
     const getRecord = async (kind, id) => {
       if (!id) throw new ApiError('A record ID is needed to open this page.', 404);
       const { item } = await apiJson(`/api/backoffice/${kind}/${encodeURIComponent(id)}`, { signal });
@@ -107,8 +111,8 @@ async function load() {
     let title, description = '', actions = [], content = [], savedMessage = '';
     switch (view) {
       case 'today':
-        title = 'Today'; description = 'The conversations and next steps that need your attention.';
-        actions = [link('New customer', 'customer-new', {}, 'button primary')]; content = [todayView(state, dayString())]; break;
+        title = 'Today'; description = 'Follow-ups due by ' + dateLabel(data.date) + '. New enquiries and open quotes that need your attention.';
+        actions = [link('New customer', 'customer-new', {}, 'button primary')]; content = [todayView(data, params)]; break;
       case 'customers':
         title = 'Customers'; description = 'Companies, contacts and the work you are discussing.';
         actions = [link('New customer', 'customer-new', {}, 'button primary')]; content = customersView(state, navigate); break;
@@ -155,7 +159,9 @@ async function load() {
     }
     document.title = title + ' | MR Software sales';
     main.replaceChildren(pageHeading(title, description, actions), ...(notice || savedMessage ? [result(notice || savedMessage)] : []), ...(listWarning(state) ? [listWarning(state)] : []), ...content.flat(Infinity).filter(Boolean));
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    const queue = view === 'today' && ['follow-ups', 'enquiries', 'quotes'].includes(params.get('queue')) ? document.getElementById('today-' + params.get('queue')) : null;
+    if (queue) { queue.scrollIntoView({ block: 'start', behavior: 'instant' }); queue.focus({ preventScroll: true }); }
+    else window.scrollTo({ top: 0, behavior: 'instant' });
   } catch (error) {
     if (run === generation) showError(error);
   } finally { if (run === generation) markReady(); }

@@ -125,6 +125,8 @@ async function commercialFixture(t, changes = {}) {
       return [{ type: 'version-deploy', worker_name: 'mrsoftware-commercial', deployment_id: 'new' }];
     },
     readDeployments: async () => { deployments++; return [{ id: 'new', versions: [{ version_id: next, percentage: 100 }] }]; },
+    waitForVersion: async () => {},
+    sleep: async () => {},
     smoke: async () => [{ url: 'https://demos.mrsoftware.dk/api/catalog', status: 200 }],
     receiptPath: join(dir, 'receipt.json'), configPath: join(dir, 'config.json'), ...changes,
   };
@@ -158,6 +160,33 @@ test('an update deploys only the exact uploaded commercial version after a secon
   assert.equal(f.writes[1][1], 'deploy');
   assert.ok(f.writes[1].includes(next + '@100%'));
   assert.equal(calls.length, 2);
+});
+
+test('commercial release waits for its uploaded version before rechecking main and moving traffic once', async t => {
+  const deploy = await implementation('deployCommercial');
+  const order = [];
+  const f = await commercialFixture(t, {
+    authorize: async () => { order.push('authorize'); return { pullRequest: 12 }; },
+    waitForVersion: async id => { assert.equal(id, next); order.push('visible'); },
+    preflight: async () => ({ initial: false, previous: { id: 'old', versions: [{ version_id: previous, percentage: 100 }] }, config: { name: 'mrsoftware-commercial', main: 'commercial/worker.mjs', assets: { directory: '.commercial-dist' }, d1_databases: [] } }),
+  });
+  const run = f.deps.run;
+  f.deps.run = async args => { order.push(args[1]); return run(args); };
+  await deploy({ ...releaseEnv, COMMERCIAL_RELEASE_MODE: 'update' }, f.deps);
+  assert.deepEqual(order, ['authorize', 'upload', 'visible', 'authorize', 'deploy']);
+});
+
+test('commercial release rechecks stale provider reads without repeating an upload or deployment', async t => {
+  const deploy = await implementation('deployCommercial');
+  let reads = 0;
+  const f = await commercialFixture(t, {
+    preflight: async () => ({ initial: false, previous: { id: 'old', versions: [{ version_id: previous, percentage: 100 }] }, config: { name: 'mrsoftware-commercial', main: 'commercial/worker.mjs', assets: { directory: '.commercial-dist' }, d1_databases: [] } }),
+    readDeployments: async () => [{ id: ++reads < 3 ? 'old' : 'new', versions: [{ version_id: reads < 3 ? previous : next, percentage: 100 }] }],
+  });
+  const receipt = await deploy({ ...releaseEnv, COMMERCIAL_RELEASE_MODE: 'update' }, f.deps);
+  assert.equal(receipt.state, 'verified');
+  assert.equal(reads, 3);
+  assert.equal(f.writes.length, 2);
 });
 
 test('commercial release refuses failed eligibility/preflight and never retries an uncertain write', async t => {
