@@ -12,7 +12,7 @@ test('Open the demo centre from the homepage in one click', async ({ page, conte
     await page.locator('.site-footer').getByRole('link', { name: 'Demo centre' }).click();
     await expect(page).toHaveURL(/\/demo\/$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Explore the products.');
-    await expect(page.locator('.demo-grid h2')).toHaveText(['Roady', 'Shippy', 'Tradey']);
+    await expect(page.locator('.demo-grid h2')).toHaveText(['Roady', 'Shippy', 'Tradey', 'Workslip']);
     await testInfo.attach(`demo-centre-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
   } finally {
     await app.close();
@@ -34,6 +34,7 @@ test('Demo centre needs no code and states its boundary', async ({ page, context
     const card = name => cards.locator('article').filter({ has: page.getByRole('heading', { name }) });
     await expect(card('Shippy').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/shippy/');
     await expect(card('Tradey').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/tradey/');
+    await expect(card('Workslip').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/workslip/');
     for (const link of await cards.locator('a[target="_blank"]').all()) await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     // Demos are open to everyone: no access code may be published or required on the page.
     await expect(page.locator('main')).not.toContainText(/demo ?code|demokode|\b\d{4,}\b/i);
@@ -112,6 +113,41 @@ test('See Tradey read-only: its own demo company, offers, catalogue, files and d
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     expect(errors).toEqual([]);
     await testInfo.attach(`tradey-view-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
+  } finally {
+    await app.close();
+  }
+});
+
+test('See Workslip read-only: job statuses, the six creation steps and the leader analysis', async ({ page, context }, testInfo) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+    await page.goto(publicBase(app.base) + 'demo/');
+    await page.locator('.demo-grid article').filter({ has: page.getByRole('heading', { name: 'Workslip' }) })
+      .getByRole('link', { name: 'Open the read-only view' }).click();
+    await expect(page).toHaveURL(/\/demo\/workslip\/$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Workslip, read only');
+
+    // Status counts agree with the job table.
+    const rows = page.locator('#jobs tbody tr');
+    await expect(rows).toHaveCount(6);
+    await expect(rows.filter({ hasText: 'Aktiv' })).toHaveCount(3);
+    await expect(page.locator('#jobs .view-kpis')).toContainText('Aktiv3');
+    await expect(page.locator('#create-job .view-rail li')).toHaveCount(6);
+    // Each month's approved, rejected and open jobs add up to its total.
+    for (const row of await page.locator('#analysis tbody tr').all()) {
+      const [, total, approved, rejected, open] = (await row.locator('td').allTextContents()).map(Number);
+      expect(approved + rejected + open).toBe(total);
+    }
+
+    await expect(page.locator('main form, main button, main input')).toHaveCount(0);
+    expect(await page.locator('script:not([src="/js/site.js"])').count()).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    expect(errors).toEqual([]);
+    await testInfo.attach(`workslip-view-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
   } finally {
     await app.close();
   }
