@@ -299,3 +299,23 @@ test('The headline word rotates, and stays still when motion is reduced', async 
     await app.close();
   }
 });
+
+test('Workslip opens with its step-by-step: six steps on site, the office review, then documentation (SAS-588)', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base) + 'products/workslip/');
+    // The first section after the hero is the step-by-step.
+    await expect(page.locator('main > section').nth(1).locator('.flowmap')).toHaveCount(1);
+    const flow = page.locator('.flowmap');
+    await expect(flow.locator('.flow-group h3')).toHaveText(['The job is recorded in six steps', 'The office reviews the same record', 'Documentation and overview']);
+    // The Danish names are Workslip's own: JOB_STEPS and JOB_STATUS_LABELS in the Workslip front end.
+    await expect(flow.locator('.is-field small')).toHaveText(['Sagsdetaljer', 'Anlægstyper', 'Kontrolpunkter', 'Timesedler', 'Afslutning', 'Attestering']);
+    await expect(flow.locator('.is-office small')).toHaveText(['Til gennemsyn', 'Godkendt', 'Afvist', 'Genåbnet']);
+    // Boxes are filled, not outlined.
+    for (const box of await flow.locator('.flow-boxes li').all()) await expect(box).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+  } finally {
+    await app.close();
+  }
+});

@@ -888,3 +888,30 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .greeny-spotlight-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
   .greeny-estimate, .greeny-roadmap { padding: var(--s2); }
 }
+
+/* Workslip step-by-step (SAS-588): filled boxes, grouped by where the work happens. */
+.flowmap { display: grid; grid-template-columns: minmax(0, 2.2fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr); align-items: stretch; gap: var(--s2); }
+.flow-group { padding: var(--s3); border-radius: var(--radius); }
+.flow-group.is-field { background: var(--rose); }
+.flow-group.is-office { background: var(--paper-raised); }
+.flow-group.is-done { background: var(--ink); color: var(--paper); }
+.flow-where { margin: 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); }
+.flow-group.is-done .flow-where { color: rgba(255, 252, 247, .72); }
+.flow-group h3 { margin: 6px 0 var(--s2); font-size: var(--fs-title); line-height: 1.2; }
+.flow-boxes { margin: 0; padding: 0; display: grid; gap: 8px; list-style: none; }
+.is-field .flow-boxes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.flow-boxes li { position: relative; padding: 14px 14px 16px; background: var(--paper); color: var(--ink); border-radius: 6px; }
+.flow-boxes b { display: block; font-weight: 500; }
+.flow-boxes small { display: block; color: var(--accent); font-family: var(--mono); font-size: .75rem; }
+.flow-boxes p { margin: 6px 0 0; color: #4d4843; font-size: .875rem; line-height: 1.5; }
+.flow-n { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-bottom: 8px; color: var(--paper); background: var(--accent); border-radius: 50%; font-family: var(--mono); font-size: .75rem; }
+.flow-arrow { align-self: center; justify-self: center; width: 28px; height: 2px; background: var(--ink); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; right: -1px; top: -4px; border: 5px solid transparent; border-left: 7px solid var(--ink); border-right: 0; }
+@media (max-width: 1023px) {
+  .flowmap { grid-template-columns: minmax(0, 1fr); }
+  .flow-arrow { width: 2px; height: 24px; }
+  .flow-arrow::after { right: -4px; top: auto; bottom: -1px; border: 5px solid transparent; border-top: 7px solid var(--ink); border-bottom: 0; }
+}
+@media (max-width: 760px) {
+  .is-field .flow-boxes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
