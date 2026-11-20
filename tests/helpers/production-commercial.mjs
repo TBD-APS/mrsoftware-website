@@ -7,7 +7,7 @@ import { unstable_getMiniflareWorkerOptions } from 'wrangler';
 import { generateKeyPair, exportJWK, SignJWT } from 'jose';
 
 const root = path.resolve(new URL('../..', import.meta.url).pathname);
-export async function productionCommercial(t) {
+export async function productionCommercial(t, { allowedEmails = 'owner@example.test' } = {}) {
   const directory = await mkdtemp(path.join(tmpdir(), 'commercial-worker-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const configPath = path.join(root, 'wrangler.commercial.jsonc');
@@ -22,7 +22,7 @@ export async function productionCommercial(t) {
     assertOutbound(request.url);
     return Response.json({ keys: [jwk] });
   };
-  const settings = { DEMO_HOST: 'demos.mrsoftware.dk', BACKOFFICE_HOST: 'backoffice.mrsoftware.dk', ACCESS_ISSUER: 'https://commercial-test.cloudflareaccess.com', ACCESS_AUDIENCE: 'synthetic-commercial-audience', ALLOWED_EMAILS: 'owner@example.test' };
+  const settings = { DEMO_HOST: 'demos.mrsoftware.dk', BACKOFFICE_HOST: 'backoffice.mrsoftware.dk', ACCESS_ISSUER: 'https://commercial-test.cloudflareaccess.com', ACCESS_AUDIENCE: 'synthetic-commercial-audience', ALLOWED_EMAILS: allowedEmails };
   const mf = new Miniflare(convertV4MiniflareOptions({ rootPath: path.join(directory, 'bundle'), compatibilityDate: workerOptions.compatibilityDate, assets: workerOptions.assets, scriptPath: path.join(directory, 'bundle', script), modules: true, bindings: settings, outboundService, d1Databases: ['DB'] }));
   t.after(() => mf.dispose());
   const db = await mf.getD1Database('DB');
