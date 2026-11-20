@@ -7,7 +7,7 @@ import { verifyTestAccess, testToken } from '../tests/ux/access-fixture.mjs';
 import { data as sampleData, graphs as sampleGraphs } from '../tests/ux/snapshot-fixture.mjs';
 import { publicCommercialEntry } from '../website-entry.mjs';
 
-export async function startSite({ roadmapHtml } = {}) {
+export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0 } = {}) {
   const root = fileURLToPath(new URL('../', import.meta.url));
   const snapshotDir = process.env.DASHBOARD_SNAPSHOT_DIR;
   const data = snapshotDir ? JSON.parse(await readFile(path.join(snapshotDir, 'data.json'), 'utf8')) : sampleData;
@@ -17,7 +17,7 @@ export async function startSite({ roadmapHtml } = {}) {
   files['graphs.js'] = 'window.MR_SOFTWARE_GRAPHS = ' + JSON.stringify(graphs) + ';';
   const token = await testToken();
   const handle = createDashboardHandler({ files, verifyAccess: verifyTestAccess });
-  const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png' };
+  const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png', '.pdf': 'application/pdf' };
   const server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, 'http://localhost');
@@ -40,7 +40,7 @@ export async function startSite({ roadmapHtml } = {}) {
       response.end(body);
     } catch { response.writeHead(404); response.end('Not found'); }
   });
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  await new Promise(resolve => server.listen(port, host, resolve));
   return {
     base: `http://dashboard.mrsoftware.dk:${server.address().port}/`,
     expected: { data, graphs },
