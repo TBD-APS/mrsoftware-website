@@ -43,8 +43,8 @@ The company site's `/demos/`, `/demos/<product>/`, `/pricing/` and
 `npm run links` (the local React `LinkEditor` copied into
 `backoffice/linking-react.js`) and rendered by the static `@mr-software/linking`
 helpers. Public pages do not load React.
-Their Worker redirects intentionally target the future owned public hostname;
-they are not a deployed preview. Use the printed loopback URLs for local review.
+Their Worker redirects target the deployed public hostname
+`demos.mrsoftware.dk`. Use the printed loopback URLs for local review.
 Only an allowed product and matching package survive a pricing redirect. These
 redirects never run on the development dashboard host.
 
@@ -53,8 +53,8 @@ redirects never run on the development dashboard host.
 | Purpose | Worker / hostname | Assets and storage |
 | --- | --- | --- |
 | Company and private development dashboard | Existing `mrsoftware` / existing hosts | Existing root public files and approved private dashboard snapshot |
-| Public demos and prices | New `mrsoftware-commercial` / `demos.mrsoftware.dk` | Only compiled `.commercial-dist`; visitor-local synthetic progress |
-| Private sales | Same new Worker / `backoffice.mrsoftware.dk` | Dedicated D1 and Access audience, explicitly confirmed login |
+| Public demos and prices | `mrsoftware-commercial` / `demos.mrsoftware.dk` | Only compiled `.commercial-dist`; visitor-local synthetic progress |
+| Private sales | Same Worker / `backoffice.mrsoftware.dk` | Dedicated D1 and Access audience, explicitly confirmed login |
 
 Preserve the existing singular **demo.mrsoftware.dk**, which points to
 `custom-domains.chatgpt.site`. All new canonical/QR/PWA links, routes and smoke
@@ -75,13 +75,24 @@ reviewed; it neither changes the installed bundle nor invokes production APIs.
 
 ## Known readiness gap — 19 November 2026
 
-Read-only discovery found account `9dd0c66615faab3122f01b14ebe3bbdd`, active zone
+This is the discovery record from before the first release. Read-only discovery
+found account `9dd0c66615faab3122f01b14ebe3bbdd`, active zone
 `e5d39e744a77fb4c6df798124e57047c` and existing Worker `mrsoftware`.
-`mrsoftware-commercial` did not exist. No Access application matched the private
+`mrsoftware-commercial` did not exist yet. No Access application matched the private
 hostname, no dedicated sales D1 existed, and the plural public hostname had no
 DNS record. Do not borrow unrelated databases or the dashboard Access audience.
-Nothing was provisioned, migrated or deployed during implementation. Refresh
-discovery at release time.
+Nothing was provisioned, migrated or deployed during that implementation.
+
+## Current commercial release
+
+The Worker `mrsoftware-commercial` is live on `demos.mrsoftware.dk` and
+`backoffice.mrsoftware.dk`. Later releases use `release_mode=update`. `initial`
+stops when the Worker already exists. The verified update receipt is
+https://github.com/TBD-APS/mrsoftware-website/actions/runs/44701286696
+on main `c9be000b2de8ba5d5747c59d7e65dd608db0d6c6`, version
+`cb813e06-8be9-4095-9625-9dac079fd41e`. A company-site deploy does not publish
+this Worker. An uncertain receipt means the traffic write may already have
+happened. Read the receipt and the provider before another traffic write.
 
 Production merge, provisioning, migration, Access changes and deployment remain
 separate release actions requiring Rasmus's approval. Implementation/PR approval
