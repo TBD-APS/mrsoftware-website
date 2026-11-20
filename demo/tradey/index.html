@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tradey read-only demo | MR Software</title>
+  <meta name="description" content="A read-only view of Tradey, the food trading workspace, with its own synthetic demo company, offers and order drafts.">
+  <link rel="canonical" href="https://mrsoftware.dk/demo/tradey/">
+  <meta name="theme-color" content="#fffcf7">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Tradey read-only demo | MR Software">
+  <meta property="og:description" content="A read-only view of Tradey with fictional data.">
+  <meta property="og:url" content="https://mrsoftware.dk/demo/tradey/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. One place for every order, shipment and document.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/demo-view.css">
+  <script src="/js/site.js" defer></script>
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/#solutions">Products</a>
+        <a href="/integrations/">Integrations</a>
+        <a href="/#results">Results</a>
+        <a href="/sikkerhed-og-dataprivatliv/">Security</a>
+        <a href="/contact/">Contact</a>
+        <a class="button button-primary" href="/contact/">Talk to us</a>
+      </nav>
+    </div>
+  </header>
+
+    <main id="main">
+    <section class="section on-light" aria-labelledby="view-title">
+      <div class="page-width">
+        <p class="breadcrumbs"><a href="/">Home</a> · <a href="/demo/">Demo centre</a> · Tradey</p>
+        <h1 id="view-title">Tradey, read only</h1>
+        <p class="lead">Tradey is the workspace for food trading: supplier offers, a shared catalogue, supplier files and order drafts for chain buyers, where a person decides and nothing is sent by itself. This page shows Tradey's own synthetic demo company, Demo Frosthandel, in Tradey's own Danish labels. Nothing here can be clicked into action.</p>
+
+        <p class="view-banner"><strong>Read-only demo</strong><span>Fictional data</span><span>Fictional prices, not a market feed</span><span>No sign-in</span></p>
+
+        <nav aria-label="Tradey sections">
+          <ul class="view-tabs">
+            <li><a href="#today">Today</a></li>
+            <li><a href="#offers">Offers</a></li>
+            <li><a href="#catalogue">Catalogue</a></li>
+            <li><a href="#documents">Documents</a></li>
+            <li><a href="#order-drafts">Order drafts</a></li>
+          </ul>
+        </nav>
+
+        <section class="view-panel" id="today" aria-labelledby="today-title">
+          <h2 id="today-title">I dag</h2>
+          <p>Dine tilbud og næste opgaver.</p>
+          <dl class="view-kpis">
+            <div><dt>Åbne tilbud</dt><dd>12</dd></div>
+            <div><dt>Ventende ordrer</dt><dd>Ukendt</dd></div>
+            <div><dt>Kendt avance</dt><dd>Ukendt</dd></div>
+          </dl>
+          <p class="view-note">Tradey shows "Ukendt" (unknown), never zero or a guess, for figures it has no authoritative record of: confirmed orders and realised margin.</p>
+          <div class="view-columns" style="margin-top:var(--s3)">
+            <div>
+              <h3>Gør nu</h3>
+              <ul class="view-list">
+                <li>FIL · TJEK OPLYSNINGER: salmon offer file<small>The file has no validity date, so a person checks it before it becomes an offer</small></li>
+                <li>TILBUD · VÆLG NÆSTE SKRIDT: Torskefilet (syntetisk)<small>Demo Fjordfrost · 1,200 kg · gyldigt til 04.12.2026 16.00 UTC</small></li>
+                <li>TILBUD · VÆLG NÆSTE SKRIDT: Sejfilet (syntetisk)<small>Demo Havkurven · 800 kg · gyldigt til 04.12.2026 16.00 UTC</small></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Du bestemmer</h3>
+              <p class="view-note">Dit valg gemmes til dit team. Intet bliver sendt. Der oprettes ingen ordre.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="view-panel" id="offers" aria-labelledby="offers-title">
+          <h2 id="offers-title">Offers</h2>
+          <p>Twelve supplier offers from three suppliers, each with a lot number, a price per kilo and a deadline. Every lot is frozen at -18 °C, collected at the demo cold store and best before 30 September 2027. Offers expire on 4 December 2026.</p>
+          <div class="view-table-wrap">
+            <table class="view-table">
+              <caption class="visually-hidden">Supplier offers with fictional data</caption>
+              <thead><tr><th scope="col">Product</th><th scope="col">Supplier</th><th scope="col">Quantity</th><th scope="col">Price</th><th scope="col">Lot</th></tr></thead>
+              <tbody>
+                <tr><td>Torskefilet (syntetisk)</td><td>Demo Fjordfrost (syntetisk)</td><td>1,200 kg</td><td>8.40 EUR/kg</td><td>DEMO-1-01</td></tr>
+                <tr><td>Lakseportioner (syntetisk)</td><td>Demo Fjordfrost (syntetisk)</td><td>800 kg</td><td>11.90 EUR/kg</td><td>DEMO-1-02</td></tr>
+                <tr><td>Pillede rejer (syntetisk)</td><td>Demo Fjordfrost (syntetisk)</td><td>800 kg</td><td>9.95 EUR/kg</td><td>DEMO-1-03</td></tr>
+                <tr><td>Blåmuslingekød (syntetisk)</td><td>Demo Fjordfrost (syntetisk)</td><td>800 kg</td><td>5.10 EUR/kg</td><td>DEMO-1-04</td></tr>
+                <tr><td>Torskefilet (syntetisk)</td><td>Demo Havkurven (syntetisk)</td><td>1,200 kg</td><td>8.40 EUR/kg</td><td>DEMO-2-01</td></tr>
+                <tr><td>Lakseportioner (syntetisk)</td><td>Demo Havkurven (syntetisk)</td><td>800 kg</td><td>11.90 EUR/kg</td><td>DEMO-2-02</td></tr>
+                <tr><td>Sejfilet (syntetisk)</td><td>Demo Havkurven (syntetisk)</td><td>800 kg</td><td>4.65 EUR/kg</td><td>DEMO-2-05</td></tr>
+                <tr><td>Fine ærter (syntetisk)</td><td>Demo Havkurven (syntetisk)</td><td>800 kg</td><td>1.65 EUR/kg</td><td>DEMO-2-06</td></tr>
+                <tr><td>Pillede rejer (syntetisk)</td><td>Demo Frysehuset (syntetisk)</td><td>800 kg</td><td>9.95 EUR/kg</td><td>DEMO-3-03</td></tr>
+                <tr><td>Fine ærter (syntetisk)</td><td>Demo Frysehuset (syntetisk)</td><td>800 kg</td><td>1.65 EUR/kg</td><td>DEMO-3-06</td></tr>
+                <tr><td>Broccolibuketter (syntetisk)</td><td>Demo Frysehuset (syntetisk)</td><td>800 kg</td><td>2.20 EUR/kg</td><td>DEMO-3-07</td></tr>
+                <tr><td>Blæksprutteringe (syntetisk)</td><td>Demo Frysehuset (syntetisk)</td><td>800 kg</td><td>6.15 EUR/kg</td><td>DEMO-3-08</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view-panel" id="catalogue" aria-labelledby="catalogue-title">
+          <h2 id="catalogue-title">Catalogue</h2>
+          <p>Eight shared products, each linked to the suppliers that offer it, so the same product is compared across suppliers.</p>
+          <div class="view-table-wrap">
+            <table class="view-table">
+              <caption class="visually-hidden">Shared products with fictional data</caption>
+              <thead><tr><th scope="col">Product</th><th scope="col">Category</th><th scope="col">Packaging</th><th scope="col">Suppliers</th></tr></thead>
+              <tbody>
+                <tr><td>Torskefilet (syntetisk)</td><td>fish</td><td>120–160 g, uden skind; 10 × 1 kg; frost -18 °C</td><td>2</td></tr>
+                <tr><td>Lakseportioner (syntetisk)</td><td>fish</td><td>140–160 g, med skind; 5 × 2 kg; frost -18 °C</td><td>2</td></tr>
+                <tr><td>Pillede rejer (syntetisk)</td><td>shrimp</td><td>100/200, kogte; 10 × 1 kg; frost -18 °C</td><td>2</td></tr>
+                <tr><td>Blåmuslingekød (syntetisk)</td><td>seafood</td><td>Kogt uden skal; 5 × 2 kg; frost -18 °C</td><td>1</td></tr>
+                <tr><td>Sejfilet (syntetisk)</td><td>fish</td><td>160–200 g, uden skind; 2 × 5 kg; frost -18 °C</td><td>1</td></tr>
+                <tr><td>Fine ærter (syntetisk)</td><td>vegetables</td><td>Løsfrosne; 4 × 2.5 kg; frost -18 °C</td><td>2</td></tr>
+                <tr><td>Broccolibuketter (syntetisk)</td><td>vegetables</td><td>40–60 mm, løsfrosne; 4 × 2.5 kg; frost -18 °C</td><td>1</td></tr>
+                <tr><td>Blæksprutteringe (syntetisk)</td><td>octopus</td><td>Uden panering; 10 × 1 kg; frost -18 °C</td><td>1</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view-panel" id="documents" aria-labelledby="documents-title">
+          <h2 id="documents-title">Documents</h2>
+          <p>Supplier files go through intake. Each file ends in one of three states, and only a complete file becomes an offer.</p>
+          <ul class="view-list">
+            <li><span class="view-status is-done">Offer draft saved</span> Cod offer file<small>Complete, approved through intake and saved as an offer</small></li>
+            <li><span class="view-status is-warn">Needs a person</span> Salmon offer file<small>Missing its validity date</small></li>
+            <li><span class="view-status">Rejected</span> Test file<small>An explicitly synthetic file with a harmless test marker, refused by intake</small></li>
+          </ul>
+        </section>
+
+        <section class="view-panel" id="order-drafts" aria-labelledby="drafts-title">
+          <h2 id="drafts-title">Order drafts</h2>
+          <p>Two chain buyers each have a three-line order guide draft. Both buy the same cod product, from different suppliers. Drafts are checked against the current catalogue; nothing is sent and no order is confirmed.</p>
+          <div class="view-columns">
+            <div><h3>Demo Hverdagskæden (syntetisk)</h3><ul class="view-list"><li>Torskefilet (syntetisk) · 600 kg · 8.40 EUR/kg<small>Supplier: Demo Fjordfrost (syntetisk)</small></li><li>Lakseportioner (syntetisk) · 400 kg · 11.90 EUR/kg<small>Supplier: Demo Fjordfrost (syntetisk)</small></li><li>Pillede rejer (syntetisk) · 400 kg · 9.95 EUR/kg<small>Supplier: Demo Fjordfrost (syntetisk)</small></li></ul><p class="view-note">Draft · FCA · 14 days from invoice date · nothing sent</p></div><div><h3>Demo Nabokæden (syntetisk)</h3><ul class="view-list"><li>Torskefilet (syntetisk) · 600 kg · 8.40 EUR/kg<small>Supplier: Demo Havkurven (syntetisk)</small></li><li>Sejfilet (syntetisk) · 400 kg · 4.65 EUR/kg<small>Supplier: Demo Havkurven (syntetisk)</small></li><li>Fine ærter (syntetisk) · 400 kg · 1.65 EUR/kg<small>Supplier: Demo Havkurven (syntetisk)</small></li></ul><p class="view-note">Draft · FCA · 14 days from invoice date · nothing sent</p></div>
+          </div>
+        </section>
+
+        <p class="lead">In the real Tradey, every request is checked against the person's access and workspace on the server, and a person approves what is sent. <a href="/products/tradey/">Read about Tradey</a> or <a href="/contact/">ask for a walkthrough</a>.</p>
+      </div>
+    </section>
+</main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software for trading, shipping and field service.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a></div>
+      <div class="footer-column"><h2>Resources</h2><a href="/demo/">Demo centre</a><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/research/">How we work</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/contact/">Contact us</a><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a></div>
+      <nav class="footer-legal" aria-label="Legal"><h2>Legal</h2><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
+    </div>
+    <div class="footer-bottom">
+      <span>MR software I/S · VAT DK46743091 · Aarhus</span>
+      <span>© <span class="year">2026</span> MR Software</span>
+    </div>
+  </footer>
+</body>
+</html>
