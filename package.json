@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "node tools/dev-server.mjs",
     "test": "env -u NO_COLOR -u FORCE_COLOR node tools/run-tests.mjs",
     "links": "vite --config backoffice/vite.config.js",
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",

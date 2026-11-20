@@ -119,6 +119,12 @@ export const graph = {
       "title": "Shippy packages",
       "href": "/pricing/shippy/",
       "summary": "Compare options and request a quote."
+    },
+    {
+      "id": "research",
+      "title": "How we work",
+      "href": "/research/",
+      "summary": "The evidence, gates and research behind how MR Software builds and learns."
     }
   ],
   "links": {
@@ -190,6 +196,11 @@ export const graph = {
       {
         "id": "to:prices",
         "toId": "prices"
+      },
+      {
+        "id": "to:research",
+        "toId": "research",
+        "label": "How we work"
       }
     ],
     "workslip": [
