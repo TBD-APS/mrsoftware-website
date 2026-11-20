@@ -12,9 +12,13 @@ inside the approved release Action. The request routes exactly the uploaded UUID
 at 100%, with the current main SHA in its deployment message. This avoids an
 additional Wrangler 4.153.0 version lookup observed returning code 100146 after
 the Action's native GET had already verified the same version. The response must
-confirm a deployment UUID and exactly that version at 100%; the separate provider
-listing and live smoke still follow. Any POST timeout, rejection or malformed
-confirmation leaves an uncertain receipt and is never retried automatically.
+acknowledge a deployment UUID. Its separate provider GET must then confirm that
+deployment ID, exactly the uploaded version and 100% traffic before live smoke
+and a verified receipt. Do not require redundant traffic metadata in the POST
+acknowledgement: a 200 response can already have committed the deployment. Any
+POST timeout, rejection or missing UUID leaves an uncertain receipt and is never
+retried automatically. Reconcile that receipt with provider/live reads before
+considering another traffic write.
 The company helper and explicit first-commercial-release path retain Wrangler.
 No new local production entrypoint, route change or non-versioned setting is
 introduced. This commercial app has no Durable Objects or container deployment.

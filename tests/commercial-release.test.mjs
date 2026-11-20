@@ -191,6 +191,26 @@ test('commercial release rechecks stale provider reads without repeating an uplo
   assert.equal(f.writes.length, 2);
 });
 
+test('a deployment acknowledgement cannot verify wrong, split or unrelated provider traffic', async t => {
+  const deploy = await implementation('deployCommercial');
+  for (const current of [
+    { id: 'new', versions: [{ version_id: previous, percentage: 100 }] },
+    { id: 'new', versions: [{ version_id: next, percentage: 50 }, { version_id: previous, percentage: 50 }] },
+    { id: 'other', versions: [{ version_id: next, percentage: 100 }] },
+  ]) {
+    const f = await commercialFixture(t, {
+      preflight: async () => ({ initial: false, previous: { id: 'old', versions: [{ version_id: previous, percentage: 100 }] }, config: { name: 'mrsoftware-commercial', main: 'commercial/worker.mjs', assets: { directory: '.commercial-dist' }, d1_databases: [] } }),
+      readDeployments: async () => [current],
+    });
+    await assert.rejects(deploy({ ...releaseEnv, COMMERCIAL_RELEASE_MODE: 'update' }, f.deps), /unexpected deployment or traffic split/);
+    assert.equal(f.writes.length, 2);
+    const receipt = JSON.parse(await readFile(f.deps.receiptPath, 'utf8'));
+    assert.equal(receipt.state, 'uncertain');
+    assert.equal(receipt.deploymentId, 'new');
+    assert.equal(receipt.versionId, next);
+  }
+});
+
 test('an ambiguous commercial API promotion leaves rollback evidence and never retries traffic or uploads', async t => {
   const deploy = await implementation('deployCommercial');
   let promotions = 0;
