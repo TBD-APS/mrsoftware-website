@@ -49,7 +49,7 @@ test('offline examples retain actions and never cache APIs or private/other-prod
   await page.goto(app.base + products.workslip.route.slice(1));
   await expect(page.locator('#offline-notice')).toBeVisible();
   await page.getByRole('button', { name: 'Save time', exact: true }).click();
-  await expect(page.locator('#scenario-result')).toContainText('30 minutes saved');
+  await expect(page.locator('#scenario-result')).toContainText('30 minutes recorded');
   await page.goto(app.base + 'workslip/materials/mat-101/');
   await page.getByRole('button', { name: 'Use material', exact: true }).click();
   await expect(page.locator('#scenario-result')).toContainText('11 metres available');
@@ -107,7 +107,7 @@ test('a changed shell and module stay in one generation before and after explici
   const oldCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('mrsoftware-workslip-')));
   await page.getByLabel('Minutes worked').fill('21');
   await page.getByRole('button', { name: 'Save time', exact: true }).click();
-  await expect(page.locator('#scenario-result')).toContainText('21 minutes saved');
+  await expect(page.locator('#scenario-result')).toContainText('21 minutes recorded');
 
   // Simulate a real deployment: changed HTML imports a new content-addressed
   // module, and the waiting worker precaches that complete new dependency set.
@@ -130,7 +130,7 @@ test('a changed shell and module stay in one generation before and after explici
   await page.reload();
   await page.getByLabel('Minutes worked').fill('32');
   await page.getByRole('button', { name: 'Save time', exact: true }).click();
-  await expect(page.locator('#scenario-result')).toContainText('32 minutes saved');
+  await expect(page.locator('#scenario-result')).toContainText('32 minutes recorded');
   expect(await page.locator('h1').getAttribute('data-shell-generation')).toBeNull();
   const oldHtml = await page.evaluate(async ({ name, path }) => (await (await caches.open(name)).match(path)).text(), { name: oldCache, path: route });
   expect(oldHtml).toContain(originalModule);
@@ -165,7 +165,7 @@ test('a changed shell and module stay in one generation before and after explici
   await expect(page.locator('html')).toHaveAttribute('data-demo-module-generation', 'two');
   await page.getByLabel('Minutes worked').fill('47');
   await page.getByRole('button', { name: 'Save time', exact: true }).click();
-  await expect(page.locator('#scenario-result')).toContainText('47 minutes saved');
+  await expect(page.locator('#scenario-result')).toContainText('47 minutes recorded');
   await page.goto(new URL('/workslip/materials/mat-101/', app.base).href);
   await expect(page.locator('html')).toHaveAttribute('data-demo-module-generation', 'two');
   await page.getByRole('button', { name: 'Use material', exact: true }).click();

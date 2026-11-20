@@ -24,7 +24,7 @@ if (record) {
         const button = document.querySelector('#quantity-form button');
         button.disabled = state.quantity === 0; button.textContent = state.quantity === 0 ? 'No material remaining' : 'Use material';
       }
-      if (state.resultKind !== kind) result.textContent = kind === 'material' ? `${state.quantity} metres available` : state.minutes ? `${state.minutes} minutes saved · ${state.checked.length}/2 checks complete` : 'Job ready · complete the checklist';
+      if (state.resultKind !== kind) result.textContent = kind === 'material' ? `${state.quantity} metres available` : state.minutes ? `${state.minutes} minutes recorded · ${state.checked.length}/2 checks complete` : 'Job ready · complete the checklist';
     }
     if (product === 'tradey') {
       const approve = document.querySelector('#approve-offer');
@@ -56,7 +56,7 @@ if (record) {
     event.preventDefault();
     const minutes = Number(document.querySelector('#minutes').value);
     if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) return;
-    state.minutes = minutes; activity(`${minutes} minutes recorded on the job`); showResult(`${minutes} minutes saved · ${state.checked.length}/2 checks complete`);
+    state.minutes = minutes; activity(`${minutes} minutes recorded on the job`); showResult(`${minutes} minutes recorded · ${state.checked.length}/2 checks complete`);
   });
   document.querySelector('#quantity-form')?.addEventListener('submit', event => {
     event.preventDefault();
