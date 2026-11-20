@@ -24,7 +24,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22.23.2'
+          node-version: '22.23.5'
           cache: npm
       - name: Require the exact current main PR merged by Rasmus
         run: node tools/release-eligibility.mjs
@@ -46,13 +46,15 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22.23.2'
+          node-version: '22.23.5'
           cache: npm
       - name: Recheck main after any production environment wait
         run: node tools/release-eligibility.mjs
         env:
           GH_TOKEN: ${{ github.token }}
       - run: npm ci --no-audit --no-fund
+      - name: Require the commercial app before unpacking private inputs or publishing links
+        run: node tools/commercial-readiness.mjs
       - name: Prepare the private reviewed dashboard snapshot
         run: node tools/dashboard-snapshot.mjs unpack
         env:

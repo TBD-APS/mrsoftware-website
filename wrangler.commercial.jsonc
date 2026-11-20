@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mrsoftware-commercial",
+  "main": "commercial/worker.mjs",
+  "compatibility_date": "2026-10-23",
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": ".commercial-dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "none"
+  },
+  "routes": [
+    { "pattern": "demos.mrsoftware.dk", "custom_domain": true },
+    { "pattern": "backoffice.mrsoftware.dk", "custom_domain": true }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mrsoftware-sales",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "commercial/migrations"
+    }
+  ],
+  "vars": {
+    "DEMO_HOST": "demos.mrsoftware.dk",
+    "BACKOFFICE_HOST": "backoffice.mrsoftware.dk",
+    "ACCESS_ISSUER": "",
+    "ACCESS_AUDIENCE": "",
+    "ALLOWED_EMAILS": ""
+  }
+}

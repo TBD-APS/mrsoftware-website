@@ -1,0 +1,34 @@
+---
+import DemoNotice from './DemoNotice.astro';
+import History from './History.astro';
+import { products, recordRoutes } from '../data/scenarios.mjs';
+const { product, kind } = Astro.props;
+const item = products[product];
+const material = kind === 'material';
+const order = kind === 'order';
+const title = material ? 'Copper pipe 15 mm' : order ? 'Summer produce order' : item.title;
+---
+<article class="record" data-scenario={kind}>
+  <p class="eyebrow">{item.name} / {material ? 'MAT-101 · Material' : order ? 'ORDER-1048 · Order' : `${item.code} · Example`}</p>
+  <h1>{title}</h1>
+  <p class="lead">{material ? 'Storage A · Shelf 3 · priced per metre' : item.detail}</p>
+  <p id="scenario-result" class="result" role="status" tabindex="-1">{material ? '12 metres available' : order ? 'Example order · approve the offer to create it' : product === 'shippy' ? 'In transit · ready for delivery' : product === 'tradey' ? 'Offer ready for approval' : 'Job ready · complete the checklist'}</p>
+  <DemoNotice />
+  {product === 'workslip' && !material && <section class="work-area" aria-labelledby="checklist-title">
+    <div><h2 id="checklist-title">Ready before you leave.</h2><p>Check the installation, then record the time spent on the job.</p><div class="checklist"><label><input type="checkbox" data-check="supply" />Water supply checked</label><label><input type="checkbox" data-check="connections" />Connections tested</label></div></div>
+    <form id="time-form" class="action-form"><label for="minutes">Minutes worked<input id="minutes" name="minutes" type="number" min="1" max="1440" step="1" value="30" required /></label><button class="button primary" type="submit">Save time</button><p class="fine">Adds time to this example job.</p></form>
+  </section>}
+  {material && <section class="work-area"><div><h2>Stock you can count on.</h2><p><strong id="material-quantity">12</strong> metres on the shelf.</p><a href={recordRoutes.job}>Kitchen service</a></div><form id="quantity-form" class="action-form"><label for="quantity">Metres used<input id="quantity" type="number" min="1" max="12" step="1" value="1" required /></label><button type="submit" class="button primary">Use material</button><p class="fine">Updates the example stock and activity.</p></form></section>}
+  {product === 'tradey' && <>
+    <section class="section-block"><h2>Everything agreed, together.</h2><dl class="facts"><div><dt>Customer</dt><dd>Nordic Kitchen</dd></div><div><dt>Delivery</dt><dd>Aarhus · next working day</dd></div><div><dt>Total, before VAT</dt><dd>DKK 2,400</dd></div></dl><div class="line-item"><span>Seasonal tomatoes</span><span>80 kg × DKK 20</span><strong>DKK 1,600</strong></div><div class="line-item"><span>Cucumber</span><span>40 kg × DKK 20</span><strong>DKK 800</strong></div></section>
+    {!order && <div class="action-area"><button type="button" id="approve-offer" class="button primary">Approve offer</button><p>Creates an example order. No supplier is contacted.</p><a id="existing-order" href={recordRoutes.order} hidden>Summer produce order</a></div>}
+    {order && <div class="action-area"><a href={recordRoutes.offer}>Summer produce offer</a><p id="order-note">This is a preview until the offer is approved.</p></div>}
+  </>}
+  {product === 'shippy' && <>
+    <section class="section-block"><h2>The last step, kept on record.</h2><dl class="facts"><div><dt>From</dt><dd>Holm & Co · Copenhagen</dd></div><div><dt>To</dt><dd>Nordic Kitchen · Aarhus</dd></div><div><dt>Cargo</dt><dd>2 pallets · 320 kg</dd></div></dl><ol class="delivery-steps"><li>Booked</li><li>In transit</li><li id="delivery-step">Delivery pending</li></ol></section>
+    <form id="delivery-form" class="action-form"><label for="receiver">Received by<input id="receiver" name="receiver" maxlength="100" required autocomplete="off" /></label><button type="submit" class="button primary">Complete delivery</button><p class="fine">Records example proof of delivery. Nothing is sent.</p></form>
+  </>}
+  <History />
+  <div class="record-footer"><button type="button" class="button secondary" id="reset-demo">Reset demo</button><a href={`/pricing/?product=${product}#enquiry`}>Talk about {item.name}</a><a href={`/${product}/install/`}>Keep the demo on your phone</a></div>
+</article>
+<script>import '../scripts/scenario.mjs';</script>

@@ -1,5 +1,6 @@
 import { renderRelatedLinks } from './linking.js';
 import { graph } from './site-links.js';
 
-const slot = document.querySelector('[data-related-from]');
-if (slot) slot.innerHTML = renderRelatedLinks(graph, slot.getAttribute('data-related-from'));
+for (const slot of document.querySelectorAll('[data-related-from]')) {
+  slot.innerHTML = renderRelatedLinks(graph, slot.getAttribute('data-related-from'), { heading: slot.getAttribute('data-related-heading') ?? undefined });
+}

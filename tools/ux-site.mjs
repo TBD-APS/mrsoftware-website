@@ -5,6 +5,7 @@ import path from 'node:path';
 import { createDashboardHandler } from '../dashboard/handler.mjs';
 import { verifyTestAccess, testToken } from '../tests/ux/access-fixture.mjs';
 import { data as sampleData, graphs as sampleGraphs } from '../tests/ux/snapshot-fixture.mjs';
+import { publicCommercialEntry } from '../website-entry.mjs';
 
 export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0 } = {}) {
   const root = fileURLToPath(new URL('../', import.meta.url));
@@ -29,6 +30,8 @@ export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0 } = 
         return;
       }
       if (url.pathname === '/favicon.ico') { response.writeHead(204); response.end(); return; }
+      const entry = publicCommercialEntry(new Request('https://' + (request.headers['x-test-host'] || 'mrsoftware.dk') + url.pathname + url.search, { method: request.method }));
+      if (entry) { response.writeHead(entry.status, Object.fromEntries(entry.headers)); response.end(); return; }
       const relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
       const filename = path.resolve(root, relative + (url.pathname.endsWith('/') ? 'index.html' : ''));
       if (!filename.startsWith(root) || relative.split('/').some(part => part.startsWith('.'))) { response.writeHead(403); response.end(); return; }

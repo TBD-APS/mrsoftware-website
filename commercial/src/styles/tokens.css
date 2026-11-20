@@ -1,0 +1,98 @@
+/* MR Software public site.
+   Editorial layout: a serif for headings, a mono for labels and short copy, a sans for navigation and long text.
+   Warm off-white paper, near-black ink and one bordeaux. Tokens are defined once here. */
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url(/assets/fonts/newsreader.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Newsreader";
+  font-style: italic;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url(/assets/fonts/newsreader-italic.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Fragment Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/assets/fonts/fragment-mono.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/assets/fonts/geist-variable.woff2) format("woff2");
+}
+/* Local fonts adjusted to the web fonts' metrics, so the swap does not move the layout. */
+@font-face { font-family: "Geist Fallback"; src: local("Arial"), local("Helvetica Neue"), local("Helvetica"); size-adjust: 105.6%; ascent-override: 95.1%; descent-override: 27.9%; line-gap-override: 0%; }
+@font-face { font-family: "Newsreader Fallback"; src: local("Georgia"), local("Times New Roman"); size-adjust: 94%; ascent-override: 98%; descent-override: 26%; line-gap-override: 0%; }
+@font-face { font-family: "Fragment Mono Fallback"; src: local("Menlo"), local("Consolas"), local("Courier New"); size-adjust: 98%; }
+
+:root {
+  --serif: "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;
+  --mono: "Fragment Mono", "Fragment Mono Fallback", ui-monospace, Menlo, Consolas, monospace;
+  --sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* Colour */
+  --ink: #181513;
+  --paper: #fffcf7;
+  --paper-raised: #f5efe6;
+  --muted-on-light: #6b6560;
+  --hairline-light: rgba(24, 21, 19, .12);
+  --accent: #8a1c2c;
+  --accent-hover: #6c1422;
+  --accent-tint: #8a1c2c;
+  --rose: #ecdcd6;
+  --night: #181513;
+  --on-night: #fffcf7;
+  --ok: #1b7448;
+  --warn: #855509;
+  --bad: #b3261e;
+  /* Older names, still used by the product illustrations and subpages. */
+  --band: var(--paper-raised);
+  --surface-dark: #ffffff;
+  --raised-dark: var(--paper-raised);
+  --hairline-dark: rgba(24, 21, 19, .1);
+  --hairline-dark-strong: rgba(24, 21, 19, .2);
+  --on-dark: var(--ink);
+  --muted-on-dark: var(--muted-on-light);
+  --ok-on-dark: var(--ok);
+
+  /* Type: five sizes */
+  --fs-display: clamp(2.75rem, 1.5rem + 3.4vw, 4.75rem);
+  --fs-heading: clamp(2rem, 1.4rem + 1.4vw, 2.625rem);
+  --fs-title: 1.5rem;
+  --fs-body: 1rem;
+  --fs-small: .8125rem;
+
+  /* Space: 8 px scale */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 64px;
+  --s7: 96px;
+  --section: clamp(64px, 8vw, 112px);
+  --gutter: 32px;
+  --page: min(100% - 2 * var(--gutter), 1376px);
+  --radius: 8px;
+  --header-h: 56px;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+
+  /* Names the dashboard overview stylesheet reads. */
+  --line: var(--hairline-light);
+  --muted: var(--muted-on-light);
+  --bg-soft: var(--paper-raised);
+  --accent-ink: #fff;
+
+  font-family: var(--sans);
+  color-scheme: light;
+}
