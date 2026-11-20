@@ -293,7 +293,7 @@ a:hover > .arrow { transform: translateX(4px); }
   @keyframes ticker { to { transform: translateX(-50%); } }
 }
 
-/* Platform statement and four product cards */
+/* Platform statement and the three product cards */
 .statement-head { max-width: 980px; margin-inline: auto; text-align: center; }
 .statement-head .heading { max-width: none; font-size: clamp(1.625rem, 1.1rem + 1.4vw, 2.25rem); line-height: 1.25; }
 .cards { margin-top: var(--s6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
