@@ -29,7 +29,7 @@ test('development server accepts host and port and serves the research page', as
     ]);
     const response = await fetch(new URL('research/', address));
     assert.equal(response.status, 200);
-    assert.match(await response.text(), /Evidence before authority\./);
+    assert.match(await response.text(), /Research behind the software\./);
   } finally {
     clearTimeout(timer);
     if (child.exitCode === null) {

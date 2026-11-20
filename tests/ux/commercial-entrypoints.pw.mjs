@@ -39,7 +39,7 @@ test('company and product entrypoints use the managed catalogue and reach exact 
     ]) {
       await page.goto(base + pathname);
       const slot = page.locator('.commercial-entrypoints');
-      await expect(slot.getByRole('heading', { name: 'Try it yourself' })).toBeVisible();
+      await expect(slot.getByRole('heading', { name: pathname ? 'Try it yourself' : 'Research and products' })).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
       const link = slot.getByRole('link', { name: new RegExp('^' + label) });
       const box = await link.boundingBox();
