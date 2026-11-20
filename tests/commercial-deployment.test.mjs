@@ -5,9 +5,9 @@ const { createCommercialDeployment } = await import('../tools/deploy-commercial.
 const version = '22222222-2222-4222-8222-222222222222';
 const deployment = '33333333-3333-4333-8333-333333333333';
 const env = { GITHUB_ACTIONS: 'true', CLOUDFLARE_ACCOUNT_ID: '9dd0c66615faab3122f01b14ebe3bbdd', CLOUDFLARE_API_TOKEN: 'synthetic-token', GITHUB_SHA: 'b'.repeat(40) };
-const confirmation = () => ({ id: deployment, strategy: 'percentage', versions: [{ version_id: version, percentage: 100 }] });
+const confirmation = () => ({ id: deployment });
 
-test('commercial promotion sends one exact deployment POST without another CLI version lookup', async () => {
+test('commercial promotion sends one exact POST and accepts a deployment UUID acknowledgement', async () => {
   const calls = [];
   const result = await createCommercialDeployment(env, version, { request: async (url, options) => {
     calls.push({ url, options });
@@ -37,15 +37,13 @@ test('commercial promotion rejects missing Action credentials, wrong account and
   }
 });
 
-test('rejected or ambiguous deployment confirmations never repeat the POST', async () => {
+test('rejected or incomplete deployment acknowledgements never repeat the POST', async () => {
   for (const response of [
     Response.json({ success: false, errors: [{ code: 100146 }] }, { status: 404 }),
     Response.json({ success: false }, { status: 403 }), Response.json({ success: false }, { status: 500 }),
     Response.json({ success: false, result: confirmation() }),
     Response.json({ success: true, result: { ...confirmation(), id: 'invalid' } }),
-    Response.json({ success: true, result: { ...confirmation(), strategy: 'other' } }),
-    Response.json({ success: true, result: { ...confirmation(), versions: [{ version_id: deployment, percentage: 100 }] } }),
-    Response.json({ success: true, result: { ...confirmation(), versions: [{ version_id: version, percentage: 50 }, { version_id: deployment, percentage: 50 }] } }),
+    Response.json({ success: true, result: { strategy: 'percentage', versions: [{ version_id: version, percentage: 100 }] } }),
     new Response('invalid json'),
   ]) {
     let calls = 0;

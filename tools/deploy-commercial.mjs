@@ -21,8 +21,10 @@ export async function createCommercialDeployment(env, versionId, { request = fet
   });
   const body = await response.json();
   const deployed = body.result;
-  if (!response.ok || body.success !== true || !UUID.test(deployed?.id) || deployed?.strategy !== 'percentage' || deployed?.versions?.length !== 1 || deployed.versions[0].version_id !== versionId || deployed.versions[0].percentage !== 100) throw Error(`Cloudflare did not confirm the exact commercial deployment (HTTP ${response.status})`);
-  return deployed;
+  if (!response.ok || body.success !== true || !UUID.test(deployed?.id)) throw Error(`Cloudflare did not acknowledge a commercial deployment UUID (HTTP ${response.status})`);
+  // The POST acknowledges the write. The independent provider GET below must
+  // confirm this deployment ID, exact version and 100% traffic before success.
+  return { id: deployed.id };
 }
 
 async function wrangler(args) {
