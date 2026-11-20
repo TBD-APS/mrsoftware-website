@@ -32,6 +32,7 @@ test('Demo centre needs no code and states its boundary', async ({ page, context
     await expect(cards.getByRole('link', { name: 'Open Roady' })).toHaveAttribute('href', 'https://pbrsgtftzin4k.kimi.page/');
     await expect(cards.getByRole('link', { name: 'Open Tradey' })).toHaveAttribute('href', 'https://ztrutb4jielr6.kimi.page/');
     const card = name => cards.locator('article').filter({ has: page.getByRole('heading', { name }) });
+    await expect(card('Roady').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/roady/');
     await expect(card('Shippy').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/shippy/');
     await expect(card('Tradey').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/tradey/');
     await expect(card('Workslip').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/workslip/');
@@ -148,6 +149,45 @@ test('See Workslip read-only: job statuses, the six creation steps and the leade
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     expect(errors).toEqual([]);
     await testInfo.attach(`workslip-view-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
+  } finally {
+    await app.close();
+  }
+});
+
+test('See Roady read-only: transports, one transport\'s sourced events and the gate register', async ({ page, context }, testInfo) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+    await page.goto(publicBase(app.base) + 'demo/');
+    await page.locator('.demo-grid article').filter({ has: page.getByRole('heading', { name: 'Roady' }) })
+      .getByRole('link', { name: 'Open the read-only view' }).click();
+    await expect(page).toHaveURL(/\/demo\/roady\/$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Roady, read only');
+    const nav = page.getByRole('navigation', { name: 'Roady sections' });
+    await expect(nav.getByRole('link')).toHaveText(['Transports', 'One transport', 'Gate register', 'Connections']);
+
+    // The totals agree with the transport table they summarise.
+    const rows = page.locator('#transports tbody tr');
+    await expect(rows).toHaveCount(5);
+    const vehicles = (await rows.locator('td:nth-child(4)').allTextContents()).map(Number).reduce((a, b) => a + b, 0);
+    await expect(page.locator('#transports .view-kpis')).toContainText(`Vehicles${vehicles}`);
+    await expect(page.locator('#transports .view-kpis')).toContainText(`Need attention${await rows.filter({ hasText: 'needs attention' }).count()}`);
+    await expect(page.locator('#transports .view-list li')).toHaveCount(3);
+    // Every event names its source and whether it was observed or planned.
+    for (const row of await page.locator('#transport tbody tr').all()) {
+      await expect(row.locator('td').nth(3)).toHaveText(/^(Observed|Planned)$/);
+      await expect(row.locator('td').nth(4)).not.toBeEmpty();
+    }
+    await expect(page.locator('#gate-register tbody tr')).toHaveCount(4);
+
+    await expect(page.locator('main form, main button, main input')).toHaveCount(0);
+    expect(await page.locator('script:not([src="/js/site.js"])').count()).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    expect(errors).toEqual([]);
+    await testInfo.attach(`roady-view-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
   } finally {
     await app.close();
   }
