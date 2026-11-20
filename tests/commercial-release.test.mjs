@@ -124,6 +124,7 @@ async function commercialFixture(t, changes = {}) {
       if (args[1] === 'upload') return [{ type: 'version-upload', worker_name: 'mrsoftware-commercial', version_id: next }];
       return [{ type: 'version-deploy', worker_name: 'mrsoftware-commercial', deployment_id: 'new' }];
     },
+    deployVersion: async id => { writes.push(['api-deploy', id]); return { id: 'new' }; },
     readDeployments: async () => { deployments++; return [{ id: 'new', versions: [{ version_id: next, percentage: 100 }] }]; },
     waitForVersion: async () => {},
     sleep: async () => {},
@@ -157,8 +158,7 @@ test('an update deploys only the exact uploaded commercial version after a secon
   const receipt = await deploy({ ...releaseEnv, COMMERCIAL_RELEASE_MODE: 'update' }, f.deps);
   assert.equal(receipt.previousVersions[0].version_id, previous);
   assert.equal(f.writes[0][1], 'upload');
-  assert.equal(f.writes[1][1], 'deploy');
-  assert.ok(f.writes[1].includes(next + '@100%'));
+  assert.deepEqual(f.writes[1], ['api-deploy', next]);
   assert.equal(calls.length, 2);
 });
 
@@ -172,6 +172,8 @@ test('commercial release waits for its uploaded version before rechecking main a
   });
   const run = f.deps.run;
   f.deps.run = async args => { order.push(args[1]); return run(args); };
+  const promote = f.deps.deployVersion;
+  f.deps.deployVersion = async id => { order.push('deploy'); return promote(id); };
   await deploy({ ...releaseEnv, COMMERCIAL_RELEASE_MODE: 'update' }, f.deps);
   assert.deepEqual(order, ['authorize', 'upload', 'visible', 'authorize', 'deploy']);
 });
@@ -187,6 +189,39 @@ test('commercial release rechecks stale provider reads without repeating an uplo
   assert.equal(receipt.state, 'verified');
   assert.equal(reads, 3);
   assert.equal(f.writes.length, 2);
+});
+
+test('an ambiguous commercial API promotion leaves rollback evidence and never retries traffic or uploads', async t => {
+  const deploy = await implementation('deployCommercial');
+  let promotions = 0;
+  const f = await commercialFixture(t, {
+    preflight: async () => ({ initial: false, previous: { id: 'old', versions: [{ version_id: previous, percentage: 100 }] }, config: { name: 'mrsoftware-commercial', main: 'commercial/worker.mjs', assets: { directory: '.commercial-dist' }, d1_databases: [] } }),
+    deployVersion: async id => { assert.equal(id, next); promotions++; throw Error('Synthetic response lost'); },
+  });
+  await assert.rejects(deploy({ ...releaseEnv, COMMERCIAL_RELEASE_MODE: 'update' }, f.deps), /No automatic retry or rollback/);
+  assert.equal(promotions, 1);
+  assert.equal(f.writes.length, 1);
+  assert.equal(f.writes[0][1], 'upload');
+  const receipt = JSON.parse(await readFile(f.deps.receiptPath, 'utf8'));
+  assert.equal(receipt.state, 'uncertain');
+  assert.equal(receipt.versionId, next);
+  assert.equal(receipt.previousVersions[0].version_id, previous);
+  assert.equal(receipt.deploymentId, undefined);
+});
+
+test('main moving while the uploaded version becomes visible prevents the commercial deployment POST', async t => {
+  const deploy = await implementation('deployCommercial');
+  let authorizations = 0, promotions = 0, visible = false;
+  const f = await commercialFixture(t, {
+    authorize: async () => { if (++authorizations === 2) { assert.equal(visible, true); throw Error('Main moved'); } return { pullRequest: 12 }; },
+    preflight: async () => ({ initial: false, previous: { id: 'old', versions: [{ version_id: previous, percentage: 100 }] }, config: { name: 'mrsoftware-commercial', main: 'commercial/worker.mjs', assets: { directory: '.commercial-dist' }, d1_databases: [] } }),
+    waitForVersion: async () => { visible = true; },
+    deployVersion: async () => { promotions++; throw Error('No traffic change after main moves'); },
+  });
+  await assert.rejects(deploy({ ...releaseEnv, COMMERCIAL_RELEASE_MODE: 'update' }, f.deps), /Main moved/);
+  assert.equal(promotions, 0);
+  assert.equal(f.writes.length, 1);
+  assert.equal(JSON.parse(await readFile(f.deps.receiptPath, 'utf8')).versionId, next);
 });
 
 test('commercial release refuses failed eligibility/preflight and never retries an uncertain write', async t => {

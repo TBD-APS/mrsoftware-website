@@ -6,6 +6,21 @@ Tracking: [SAS-561](https://linear.app/workslip/issue/SAS-561/offer-public-qrpwa
 
 Both release helpers first wait for the exact uploaded version to become readable before their final owner/main authorization check. Only Cloudflare's explicit missing-version response is retried with GETs. After a confirmed deployment command they may re-read the preceding deployment while the listing catches up; an unrelated deployment, wrong version or traffic split fails immediately. Each provider visibility phase allows ten bounded waits totaling 209 seconds. Uploads are not repeated, and the commercial helper requests the traffic change once. The company helper retains its existing narrowly scoped handling of a definitive version-not-found rejection.
 
+Commercial updates upload through pinned Wrangler, then make one official
+`POST /accounts/{account_id}/workers/scripts/mrsoftware-commercial/deployments`
+inside the approved release Action. The request routes exactly the uploaded UUID
+at 100%, with the current main SHA in its deployment message. This avoids an
+additional Wrangler 4.153.0 version lookup observed returning code 100146 after
+the Action's native GET had already verified the same version. The response must
+confirm a deployment UUID and exactly that version at 100%; the separate provider
+listing and live smoke still follow. Any POST timeout, rejection or malformed
+confirmation leaves an uncertain receipt and is never retried automatically.
+The company helper and explicit first-commercial-release path retain Wrangler.
+No new local production entrypoint, route change or non-versioned setting is
+introduced. This commercial app has no Durable Objects or container deployment.
+
+Contract: [Cloudflare Create Worker Deployment](https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/deployments/methods/create/).
+
 After the provider confirms the exact commercial version at 100%, its GET-only smoke may repeat the complete read probe if a public compiled `/_astro/*.css` or `/_astro/*.js` dependency returns 404. The wait schedule is bounded to 1, 3, 10, 15 and 30 seconds; a persistent missing dependency still fails with an uncertain receipt. Other statuses, wrong hosts, invalid catalogue data and private-access failures stop immediately. Pre-release readiness remains immediate. These smoke retries never repeat an upload or traffic change.
 
 ## Working local preview
