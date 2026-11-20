@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { createHmac } from 'node:crypto';
+import { createHmac, createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { withElevenLabsWebhook, elevenLabsPath } from '../elevenlabs-webhook.mjs';
@@ -15,6 +15,21 @@ const request = (body, signature = sign(body), host = 'mrsoftware.dk') => new Re
   method: 'POST', body, headers: { 'Content-Type': 'application/json', 'ElevenLabs-Signature': signature }
 });
 const schema = await readFile(new URL('../migrations/elevenlabs/0001_inbox.sql', import.meta.url), 'utf8');
+
+test('The installed archive is pinned to the clean producer CI artifact and its original integrity', async () => {
+  const receipt = JSON.parse(await readFile(new URL('../vendor/boney/elevenlabs-manifest.json', import.meta.url), 'utf8'));
+  const lock = JSON.parse(await readFile(new URL('../package-lock.json', import.meta.url), 'utf8'));
+  const artifact = receipt.artifacts[0];
+  assert.equal(receipt.source.repository, 'https://github.com/TBD-APS/boney');
+  assert.match(receipt.source.commit, /^[0-9a-f]{40}$/);
+  assert.equal(receipt.source.releaseEligible, true); assert.equal(receipt.source.dirty, false);
+  assert.ok(Number.isSafeInteger(receipt.ci.runId) && Number.isSafeInteger(receipt.ci.artifactId));
+  assert.equal(artifact.id, '@mr-software/elevenlabs'); assert.equal(artifact.version, '0.1.0');
+  assert.equal(artifact.file, 'mr-software-elevenlabs-0.1.0.tgz');
+  const archive = await readFile(new URL('../vendor/boney/' + artifact.file, import.meta.url));
+  assert.equal('sha512-' + createHash('sha512').update(archive).digest('base64'), artifact.integrity);
+  assert.equal(lock.packages['node_modules/@mr-software/elevenlabs'].integrity, artifact.integrity);
+});
 
 async function harness(t) {
   const mf = new Miniflare(convertV4MiniflareOptions({ modules: true, compatibilityDate: '2026-09-02',

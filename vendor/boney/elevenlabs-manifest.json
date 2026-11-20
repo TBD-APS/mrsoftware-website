@@ -2,14 +2,24 @@
   "schemaVersion": 1,
   "source": {
     "repository": "https://github.com/TBD-APS/boney",
-    "commit": "83bbec751a2fec5deb210c0cc84b34159922d825"
+    "commit": "83bbec751a2fec5deb210c0cc84b34159922d825",
+    "treeSha256": "203b5de306cc67d719a4800e82d94eb54258170d8c05895bca85d79bd9df4fd7",
+    "dirty": false,
+    "releaseEligible": true
+  },
+  "ci": {
+    "runId": 44798323188,
+    "artifactId": 14660631658,
+    "url": "https://github.com/TBD-APS/boney/actions/runs/44798323188"
   },
   "artifacts": [
     {
+      "ecosystem": "npm",
       "id": "@mr-software/elevenlabs",
       "version": "0.1.0",
       "file": "mr-software-elevenlabs-0.1.0.tgz",
-      "integrity": "sha512-35BqiYJFKx5kvMuLvJco5lRk+02BSHxxYfDTCLPAP0nTvZC/oai4X3LqgdU/4+GdPlElyngApyv069Ar/rZDMw=="
+      "integrity": "sha512-R9ZE7vRtHju2QYv6G09SOtA5DypZYZGA9FQoIrN+tUeIEH463seldMAIzbvMwUQu9C30A8FqN5+skDZ+lfz4IA==",
+      "dependency": false
     }
   ]
 }
