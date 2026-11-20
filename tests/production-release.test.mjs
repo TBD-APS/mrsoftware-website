@@ -22,6 +22,9 @@ async function fixture(change = {}) {
       return [{ type: 'version-deploy', worker_name: 'mrsoftware', deployment_id: 'new-deployment' }];
     },
     smoke: async () => [{ url: 'https://mrsoftware.dk/', status: 200 }],
+    readiness: async () => [{ url: 'https://demos.mrsoftware.dk/api/catalog', status: 200 }],
+    waitForVersion: async () => {},
+    sleep: async () => {},
     receiptPath: join(dir, 'receipt.json'), ...change,
   };
   return { deps, calls, cleanup: () => rm(dir, { recursive: true, force: true }) };
@@ -44,6 +47,17 @@ test('missing credentials or private input prevents any upload', async () => {
     try { await assert.rejects(deployProduction({ ...env, [key]: '' }, f.deps)); assert.deepEqual(f.calls, []); }
     finally { await f.cleanup(); }
   }
+});
+test('a stale provider list is re-read after deployment without another routing write', async () => {
+  let reads = 0;
+  const f = await fixture({ readDeployments: async () => [{ id: ++reads < 4 ? 'deployment' : 'new-deployment', versions: [{ version_id: reads < 4 ? previous : next, percentage: 100 }] }] });
+  try {
+    const receipt = await deployProduction(env, f.deps);
+    assert.equal(receipt.state, 'verified');
+    assert.equal(reads, 4);
+    assert.equal(f.calls.filter(call => call === 'upload').length, 1);
+    assert.equal(f.calls.filter(call => call === 'deploy').length, 1);
+  } finally { await f.cleanup(); }
 });
 test('authorization failure prevents any Cloudflare write', async () => {
   const f = await fixture({ authorize: async () => { throw Error('Wrong merger'); } });

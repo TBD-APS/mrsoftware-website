@@ -1,5 +1,10 @@
 # mrsoftware.dk
 
+The independent public demo/pricing app and private sales workspace have a
+[local preview and guarded release guide](docs/operations/commercial-release.md).
+Run `npm run preview:commercial` for working loopback demo, pricing and Today URLs.
+Production release remains a separate approved action.
+
 Statisk virksomhedssite for MR Software — sikkerhed, dataprivatliv og en åben
 selvvalideringsartefakt.
 

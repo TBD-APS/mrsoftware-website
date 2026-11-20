@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DemoNotice from '../../components/DemoNotice.astro';
+import Scanner from '../../components/Scanner.astro';
+import { products } from '../../data/scenarios.mjs';
+export function getStaticPaths() { return Object.keys(products).map(product => ({ params: { product } })); }
+const { product } = Astro.params;
+const item = products[product];
+---
+<Layout title={`${item.name} demo`} product={product}>
+  <section class="intro product-intro"><p class="eyebrow">{item.category} / Interactive example</p><h1>{item.name},<br />in your hands.</h1><p class="lead">{item.summary}</p><DemoNotice /><article class="record-card" data-href={item.route}><span class="eyebrow">{item.code}</span><h2><a href={item.route}>{item.title}</a></h2><p>{item.detail}</p><span class="text-link">{item.action} →</span></article></section>
+  {product === 'workslip' && <Scanner />}
+</Layout>

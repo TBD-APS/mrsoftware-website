@@ -1,0 +1,34 @@
+---
+import '../styles/commercial.css';
+import { products, publicOrigin } from '../data/scenarios.mjs';
+const { title, description = 'Try Workslip, Tradey and Shippy with example data. No sign-in needed.', product } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title} | MR Software</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#fffcf7" />
+    <link rel="canonical" href={publicOrigin + Astro.url.pathname} />
+    <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml" />
+    {product && <link rel="manifest" href={`/${product}/manifest.webmanifest`} />}
+    {product && <link rel="apple-touch-icon" href={`/${product}/icons/icon-192.png`} />}
+    <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body data-product={product}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="MR Software demos"><img src="/assets/brand/mr-mark.svg" alt="" width="53" height="26" /><span>Try the software</span></a>
+      <nav aria-label="Main navigation"><a href="/">Demos</a><a href="/pricing/">Prices</a></nav>
+    </header>
+    {product && <div class="product-bar"><a href={`/${product}/`} class="product-name">{products[product].name}</a><nav aria-label="Demo navigation"><a href={products[product].route}>Example</a>{product === 'workslip' && <a href="/workslip/#scanner">QR & materials</a>}<a href={`/${product}/install/`}>Install</a></nav></div>}
+    <main id="main"><slot /></main>
+    <footer class="site-footer"><span>MR Software · Built around the work.</span><a href="https://mrsoftware.dk/">Company website ↗</a><a href="https://mrsoftware.dk/privacy-policy/">Privacy</a></footer>
+    <script>
+      import '../scripts/common.mjs';
+    </script>
+  </body>
+</html>

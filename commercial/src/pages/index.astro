@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { products } from '../data/scenarios.mjs';
+import { initialCatalog } from '../../shared/catalog.mjs';
+---
+<Layout title="Try the software">
+  <section class="intro"><p class="eyebrow">A little less talk. A little more trying.</p><h1>See how the work<br />comes together.</h1><div class="intro-bottom"><p class="lead">Three products. Realistic examples.<br />Try the next step, without a sign-in.</p><a class="text-link" href="/pricing/">Compare packages ↗</a></div></section>
+  <section aria-label="Product demos" id="demo-directory" data-catalog-view="demos"><div id="demo-list" class="demo-list">{Object.entries(products).map(([id, product]) => <article class="demo-card" data-href={product.route} data-demo={id}><div class="demo-index">{product.number} / {product.category}</div><h2><a href={product.route}>{product.name}</a></h2><p>{initialCatalog.demos.find(demo => demo.id === id).summary}</p><div class="demo-preview"><span class="eyebrow">Your example</span><strong><a href={product.route}>{product.title}</a></strong><span>{product.detail}</span><p>{product.action}</p></div><a class="button primary" href={product.route}>Try {product.name}</a></article>)}</div></section>
+  <div class="catalog-feedback"><p id="catalog-status" role="status" aria-busy="true">Checking available demos…</p><button type="button" id="retry-catalog" class="button secondary" hidden>Try again</button></div>
+  <p class="demo-explainer">These are safe examples. Changes stay in your browser; a shared link opens the original example on another device.</p>
+</Layout>
+<script>import '../scripts/catalog.mjs';</script>
