@@ -3,7 +3,9 @@
 The independent public demo/pricing app and private sales workspace have a
 [local preview and guarded release guide](docs/operations/commercial-release.md).
 Run `npm run preview:commercial` for working loopback demo, pricing and Today URLs.
-Production release remains a separate approved action.
+Production release remains a separate approved action. The company sitemap
+and robots file are described in
+[docs/operations/sitemap.md](docs/operations/sitemap.md).
 
 Statisk virksomhedssite for MR Software — sikkerhed, dataprivatliv og en åben
 selvvalideringsartefakt.
