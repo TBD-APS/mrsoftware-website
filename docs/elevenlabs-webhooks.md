@@ -12,8 +12,10 @@ Company pages and Cloudflare Access verification retain their existing handlers.
 
 ## Activation
 
-The receiver is default-off. Deploy only through the existing owner-merged
-production Action. No local Wrangler deployment is authorized by this change.
+The shared receiver is default-off; this website's reviewed release configuration
+explicitly grants module 0.1.0. A missing signing secret or inbox still returns
+503 and stores nothing. Deploy only through the existing owner-merged production
+Action. No local Wrangler deployment is authorized by this change.
 
 1. Bind the dedicated `mrsoftware-elevenlabs` D1 database as `ELEVENLABS_INBOX`
    using the reviewed ID in `wrangler.jsonc`. Apply `migrations/elevenlabs/0001_inbox.sql`
@@ -28,9 +30,10 @@ production Action. No local Wrangler deployment is authorized by this change.
    and retries. Keep audio delivery off: the shared receiver limits requests to
    1 MiB. Voice-removal, transcription, failure and generation envelopes fit the
    same contract, subject to that limit.
-4. Grant this system connection by setting `ELEVENLABS_WEBHOOK_ENABLED` to `true`
-   and keeping `ELEVENLABS_MODULE_VERSION` at `0.1.0` in an owner-reviewed release.
-   The current checked-in default is `false`; enabling it is an explicit change.
+4. Verify the reviewed release's `ELEVENLABS_WEBHOOK_ENABLED=true` and
+   `ELEVENLABS_MODULE_VERSION=0.1.0` grant. The route remains unavailable until
+   its signing secret and inbox are present; configuration alone cannot accept
+   unsigned events. Set the enable flag to `false` to disconnect through a release.
 5. Send an ElevenLabs test delivery and redeliver it. Confirm 200 `accepted` then
    200 `duplicate` and one private database row. A 503 is incomplete activation
    or storage failure, and must never be reported as a successful delivery.
@@ -49,8 +52,8 @@ operator. This change only receives evidence; it sends no messages, triggers
 no model/tool calls and marks no business record as processed. Add a separately
 authorized, idempotent consumer when a concrete product workflow needs it.
 
-Select and configure a retention policy before enabling production ingestion;
-the receiver does not silently schedule deletion of evidence. Restrict database
+The company operator owns retention and erasure; the receiver does not silently
+schedule deletion of evidence. Restrict database
 and Worker administration to the existing authorized operators. To disconnect,
 disable the webhook in ElevenLabs and set the host enable flag to false through
 the release process. Existing stored evidence remains subject to retention.

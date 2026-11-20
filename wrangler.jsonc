@@ -6,7 +6,7 @@
   "compatibility_date": "2026-09-02",
   "workers_dev": true,
   "vars": {
-    "ELEVENLABS_WEBHOOK_ENABLED": "false",
+    "ELEVENLABS_WEBHOOK_ENABLED": "true",
     "ELEVENLABS_MODULE_VERSION": "0.1.0"
   },
   "d1_databases": [{

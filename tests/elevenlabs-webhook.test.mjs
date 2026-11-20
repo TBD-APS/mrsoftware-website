@@ -75,11 +75,11 @@ test('Only the exact company callback is public; other routes retain company and
   assert.equal(await (await handle(new Request('https://dashboard.mrsoftware.dk/_development/'), {})).text(), 'Existing company or Access handler');
 });
 
-test('Host migration matches the installed Boney schema and its defaults cannot enable ingestion', async () => {
+test('Host migration matches the installed Boney schema and the release grants the pinned module', async () => {
   const require = createRequire(import.meta.url);
   assert.equal(schema, await readFile(require.resolve('@mr-software/elevenlabs/inbox.sql'), 'utf8'));
   const config = JSON.parse(await readFile(new URL('../wrangler.jsonc', import.meta.url), 'utf8'));
-  assert.equal(config.vars.ELEVENLABS_WEBHOOK_ENABLED, 'false');
+  assert.equal(config.vars.ELEVENLABS_WEBHOOK_ENABLED, 'true');
   assert.equal(config.vars.ELEVENLABS_MODULE_VERSION, '0.1.0');
   assert.equal(config.d1_databases[0].binding, 'ELEVENLABS_INBOX');
   const ignored = await readFile(new URL('../.assetsignore', import.meta.url), 'utf8');
