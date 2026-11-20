@@ -229,9 +229,29 @@ test('Enquiries create a customer and enquiry opportunity once across exact conc
   assert.equal(state.customers[0].name, input.company);
   assert.equal(state.customers[0].contacts[0].email, input.email);
   assert.equal(state.opportunities[0].customerId, state.customers[0].id);
+  assert.equal(state.opportunities[0].title, 'Workslip enquiry: Core');
   assert.equal(state.opportunities[0].stage, 'enquiry');
   assert.ok(state.opportunities[0].notes.includes('Please contact us.'));
   assert.equal((await h.call('POST', '/api/enquiries', { ...input, message: 'Changed request' })).status, 409);
+});
+
+test('Enquiries use the current catalogue package names and allow no selected package', async t => {
+  const h = await createCommercialHarness(t);
+  const { catalog } = (await h.call('GET', '/api/catalog')).body;
+  assert.equal((await h.call('PUT', '/api/backoffice/catalog', { revision: catalog.revision, packages: catalog.packages.map(pkg => ({ ...pkg, name: pkg.id === 'tradey-custom' ? 'Tradey Growth' : pkg.name })), demos: catalog.demos })).status, 200);
+  for (const [product, packageId, title] of [
+    ['workslip', 'workslip-core', 'Workslip enquiry: Core'],
+    ['tradey', 'tradey-custom', 'Tradey enquiry: Tradey Growth'],
+    ['shippy', 'shippy-custom', 'Shippy enquiry: Shippy'],
+    ['tradey', null, 'Tradey enquiry'],
+  ]) {
+    const input = enquiryInput({ company: `${product} ${packageId ?? 'no package'}`, product, packageId });
+    assert.equal((await h.call('POST', '/api/enquiries', input)).status, 201);
+    const state = (await h.call('GET', '/api/backoffice/state')).body;
+    const customer = state.customers.find(item => item.name === input.company);
+    const opportunity = state.opportunities.find(item => item.customerId === customer.id);
+    assert.equal(opportunity.title, title);
+  }
 });
 
 test('Enquiry failures roll back the receipt, rate counter and every sales record', async t => {
@@ -246,14 +266,18 @@ test('Enquiry failures roll back the receipt, rate counter and every sales recor
   assert.equal((await h.call('POST', '/api/enquiries', input)).status, 201);
 });
 
-test('A maximum-length enquiry keeps all submitted text within opportunity field bounds', async t => {
+test('Maximum-length enquiries and package names stay within editable opportunity field bounds', async t => {
   const h = await createCommercialHarness(t);
+  const { catalog } = (await h.call('GET', '/api/catalog')).body;
+  assert.equal((await h.call('PUT', '/api/backoffice/catalog', { revision: catalog.revision, packages: catalog.packages.map(pkg => ({ ...pkg, name: pkg.id === 'workslip-core' ? 'Core ' + 'c'.repeat(195) : pkg.name })), demos: catalog.demos })).status, 200);
   const input = enquiryInput({ message: 'x'.repeat(4000) });
   assert.equal((await h.call('POST', '/api/enquiries', input)).status, 201);
   const { opportunities } = (await h.call('GET', '/api/backoffice/state')).body;
   assert.equal(opportunities[0].notes, input.message);
-  assert.ok(opportunities[0].title.includes('workslip-core'));
+  assert.ok(opportunities[0].title.startsWith('Workslip enquiry: Core '));
   assert.ok(opportunities[0].title.length <= 200);
+  const opportunity = opportunities[0];
+  assert.equal((await h.call('PUT', `/api/backoffice/opportunities/${opportunity.id}`, opportunityInput(opportunity.customerId, { revision: opportunity.revision, title: opportunity.title, stage: opportunity.stage, nextFollowUp: null, notes: input.message }))).status, 200);
 });
 
 test('Concurrent enquiries enforce a per-network limit while exact retries keep their receipt', async t => {

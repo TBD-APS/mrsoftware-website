@@ -112,12 +112,16 @@ for (const customProduct of ['tradey', 'shippy']) test(`custom ${customProduct} 
 });
 
 test('Today surfaces new public enquiries without follow-up dates', async ({ page, app }) => {
-  await app.call('POST', '/api/enquiries', enquiryInput({ company: 'New Enquiry Ltd' }));
+  await app.call('POST', '/api/enquiries', enquiryInput({ company: 'New Enquiry Ltd', product: 'tradey', packageId: 'tradey-custom' }));
   await page.goto(route(app)); await ready(page);
   await expect(page.getByRole('heading', { name: 'New enquiries', exact: true })).toBeVisible();
-  await page.getByRole('link', { name: 'Workslip enquiry: workslip-core', exact: true }).click();
-  await expect(page.locator('h1')).toHaveText('Workslip enquiry: workslip-core');
-  await expect(page.getByRole('link', { name: 'New Enquiry Ltd', exact: true }).first()).toBeVisible();
+  await page.getByRole('link', { name: 'Tradey enquiry: Tradey', exact: true }).click();
+  await expect(page.locator('h1')).toHaveText('Tradey enquiry: Tradey');
+  await page.getByRole('link', { name: 'New Enquiry Ltd', exact: true }).first().click();
+  await expect(page.locator('h1')).toHaveText('New Enquiry Ltd');
+  await page.getByRole('link', { name: 'Tradey enquiry: Tradey', exact: true }).click();
+  await page.reload();
+  await expect(page.locator('h1')).toHaveText('Tradey enquiry: Tradey');
 });
 
 test('Today keeps older due work, enquiries, open quotes and customer links beyond the recent workspace', async ({ page, app }) => {

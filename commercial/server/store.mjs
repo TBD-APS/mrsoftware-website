@@ -186,13 +186,13 @@ export function createStore(db) {
     };
     const existing = await receiptStatement().first();
     if (existing) return { created: false, receipt: receipt(existing) };
-    selectedPackage(await catalog(), input.packageId, input.product);
+    const pkg = selectedPackage(await catalog(), input.packageId, input.product);
     const now = new Date().toISOString();
     const reference = crypto.randomUUID();
     const network = await digest(networkKey(address));
     const windowStart = Math.floor(Date.now() / 3600000);
     const customer = record({ name: input.company, contacts: [{ name: input.name, email: input.email, phone: '' }], notes: '' }, now);
-    const opportunity = record({ customerId: customer.id, title: `${input.product[0].toUpperCase()}${input.product.slice(1)} enquiry${input.packageId ? `: ${input.packageId}` : ''}`, product: input.product, stage: 'enquiry', nextFollowUp: null, notes: input.message }, now);
+    const opportunity = record({ customerId: customer.id, title: `${input.product[0].toUpperCase()}${input.product.slice(1)} enquiry${pkg ? `: ${pkg.name}` : ''}`.slice(0, 200), product: input.product, stage: 'enquiry', nextFollowUp: null, notes: input.message }, now);
     const condition = 'WHERE EXISTS (SELECT 1 FROM sales_enquiries WHERE reference = ?)';
     const actor = { type: 'public-enquiry' };
     const results = await db.batch([
