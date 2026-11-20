@@ -10,3 +10,4 @@ test-results/
 .local/
 .commercial-dist/
 .astro/
+/roadmap/report/

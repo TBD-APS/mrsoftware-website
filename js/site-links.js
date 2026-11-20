@@ -125,6 +125,12 @@ export const graph = {
       "title": "How we work",
       "href": "/research/",
       "summary": "The evidence, gates and research behind how MR Software builds and learns."
+    },
+    {
+      "id": "roadmap-report",
+      "title": "Roadmap overview",
+      "href": "/roadmap/report/",
+      "summary": "Compare published feature counts and download the same overview in several formats."
     }
   ],
   "links": {
@@ -231,6 +237,20 @@ export const graph = {
       {
         "id": "to:shippy-prices",
         "toId": "shippy-prices"
+      }
+    ],
+    "roadmap": [
+      {
+        "id": "to:roadmap-report",
+        "toId": "roadmap-report",
+        "label": "View roadmap overview and reports"
+      }
+    ],
+    "roadmap-report": [
+      {
+        "id": "to:roadmap",
+        "toId": "roadmap",
+        "label": "Return to roadmap"
       }
     ]
   }

@@ -14,6 +14,7 @@ const pages = [
   'demo/shippy/',
   'research/',
   'roadmap/',
+  'roadmap/report/',
   'stories/',
   'stories/the-offer/',
   'stories/the-job/',
