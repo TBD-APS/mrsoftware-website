@@ -1,5 +1,12 @@
 # mrsoftware.dk
 
+The independent public demo/pricing app and private sales workspace have a
+[local preview and guarded release guide](docs/operations/commercial-release.md).
+Run `npm run preview:commercial` for working loopback demo, pricing and Today URLs.
+Production release remains a separate approved action. The company sitemap
+and robots file are described in
+[docs/operations/sitemap.md](docs/operations/sitemap.md).
+
 Statisk virksomhedssite for MR Software — sikkerhed, dataprivatliv og en åben
 selvvalideringsartefakt.
 
@@ -15,6 +22,11 @@ selvvalideringsartefakt.
   (testlandskab, CI-gates, dækning, kendte huller, tidsstempel)
 
 ## Lokal udvikling
+
+ElevenLabs webhooks use the shared Boney module at
+`/api/webhooks/elevenlabs`. The receiver accepts events only with its private D1
+inbox, signing secret and exact module version configured. See
+[activation and storage](docs/elevenlabs-webhooks.md).
 
 Åbn filerne i en lokal HTTP-server, f.eks.
 
@@ -69,9 +81,12 @@ records the prior deployment/version before uploading with `--keep-vars`, then
 deploys only the exact uploaded version. Routes, custom domains and existing
 variables remain in place. The artifact contains only a safe release receipt
 (commit, PR, Action URL, deployment/version IDs and smoke statuses), never the
-private dashboard or bundle. Inspect provider state after an uncertain result;
-there is no automatic retry or rollback. A rollback to the recorded prior
-version requires Rasmus's separate approval.
+private dashboard or bundle. If Cloudflare says the uploaded version cannot
+be found yet (code 100146), the same version is deployed again a few times,
+because that response means traffic did not move. Any other uncertain result
+is not retried and is not rolled back. Inspect the provider before trying
+again. A rollback to the recorded prior version requires Rasmus's separate
+approval.
 
 ## Development overview on dashboard.mrsoftware.dk
 

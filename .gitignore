@@ -6,4 +6,7 @@
 !.env.example
 node_modules/
 .ux-gate/
+test-results/
 .local/
+.commercial-dist/
+.astro/

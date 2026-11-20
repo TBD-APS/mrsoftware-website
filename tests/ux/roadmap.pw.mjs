@@ -20,12 +20,13 @@ const roadmapHtml = renderRoadmap(template, [
 
 // Open the roadmap in one click (two from the phone menu), scan package
 // counts and jump straight to either package without opening a new screen.
-test('find the package overview, compare counts and jump to the feature list', async ({ page, context }, info) => {
+test('find the package overview, compare counts and jump to the feature list', async ({ page, context, isMobile }, info) => {
   const app = await startSite({ roadmapHtml });
   try {
     await prepareContext(context, app.base);
     await page.goto(app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk'));
-    await page.locator('.company-footer').getByRole('link', { name: 'Roadmap' }).click();
+    if (isMobile) await page.getByRole('button', { name: 'Open menu' }).click();
+    await page.locator('#main-nav').getByRole('link', { name: 'Roadmap' }).click();
     await expect(page).toHaveURL(/\/roadmap\/$/);
     await expect(page.getByRole('heading', { name: 'Product roadmap', level: 1 })).toBeVisible();
     const packages = page.getByRole('navigation', { name: 'Packages' });

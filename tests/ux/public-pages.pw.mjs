@@ -2,15 +2,21 @@ import { test, expect } from '@playwright/test';
 import { startSite } from '../../tools/ux-site.mjs';
 import { prepareContext } from './fixtures.mjs';
 
-// The existing public pages share one header, one footer and one set of rules.
-// The new project homepage and demo centre have their own dedicated journeys.
+// Every public page shares one header, one footer and one set of rules.
 const pages = [
+  '',
   'products/workslip/',
   'products/tradey/',
   'products/shippy/',
   'integrations/',
   'contact/',
+  'demo/',
   'roadmap/',
+  'stories/',
+  'stories/the-offer/',
+  'stories/the-job/',
+  'stories/the-shipment/',
+  'stories/the-choices/',
   'status/',
   'sikkerhed-og-dataprivatliv/',
   'sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/',

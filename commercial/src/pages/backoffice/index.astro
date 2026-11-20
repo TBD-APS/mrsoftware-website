@@ -1,0 +1,9 @@
+---
+import PrivateLayout from '../../layouts/PrivateLayout.astro';
+---
+<PrivateLayout>
+  <div class="page-heading"><p class="eyebrow">William's workspace</p><h1>Sales workspace</h1></div>
+  <p role="status">Loading your workspace…</p>
+  <noscript><p>Enable JavaScript to open the sales workspace. Customer information is loaded securely after sign-in.</p></noscript>
+  <script>import '../../scripts/backoffice.mjs';</script>
+</PrivateLayout>

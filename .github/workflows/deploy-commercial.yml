@@ -1,0 +1,92 @@
+name: Release owner-merged commercial app
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_mode:
+        description: Initial release has no commercial rollback version
+        required: true
+        type: choice
+        options: [initial, update]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: mrsoftware-commercial-production
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.23.2'
+          cache: npm
+      - name: Require the exact current main PR merged by Rasmus
+        run: node tools/release-eligibility.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - name: Retain company and commercial browser evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: commercial-release-validation
+          path: .ux-gate/
+          include-hidden-files: true
+          if-no-files-found: error
+
+  release:
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    environment: mrsoftware-commercial-production
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.23.2'
+          cache: npm
+      - name: Recheck main after the production environment wait
+        run: node tools/release-eligibility.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build:commercial
+      - name: Verify resources, release the commercial Worker and run GET-only smoke
+        run: node tools/deploy-commercial.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          COMMERCIAL_D1_DATABASE_ID: ${{ vars.COMMERCIAL_D1_DATABASE_ID }}
+          COMMERCIAL_ACCESS_APP_ID: ${{ vars.COMMERCIAL_ACCESS_APP_ID }}
+          COMMERCIAL_ACCESS_ISSUER: ${{ vars.COMMERCIAL_ACCESS_ISSUER }}
+          COMMERCIAL_ACCESS_AUDIENCE: ${{ vars.COMMERCIAL_ACCESS_AUDIENCE }}
+          COMMERCIAL_ALLOWED_EMAILS: ${{ secrets.COMMERCIAL_ALLOWED_EMAILS }}
+          COMMERCIAL_RELEASE_MODE: ${{ inputs.release_mode }}
+          WRANGLER_SEND_METRICS: 'false'
+      - name: Retain only the safe commercial release receipt
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: commercial-release-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .local/commercial-release-receipt.json
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Remove deployment-owned settings and build output
+        if: always()
+        run: node --input-type=module -e 'import {rm} from "node:fs/promises"; for (const path of [".local/wrangler-commercial-release.json",".commercial-dist",".wrangler"]) await rm(path,{recursive:true,force:true});'

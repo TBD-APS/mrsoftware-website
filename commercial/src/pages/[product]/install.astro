@@ -1,0 +1,15 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DemoNotice from '../../components/DemoNotice.astro';
+import { products, publicOrigin } from '../../data/scenarios.mjs';
+export function getStaticPaths() { return Object.keys(products).map(product => ({ params: { product } })); }
+const { product } = Astro.params;
+const item = products[product];
+---
+<Layout title={`Install the ${item.name} demo`} product={product}>
+  <section class="intro install-page"><p class="eyebrow">{item.name} / On your phone</p><h1>Keep the next step<br />close at hand.</h1><p class="lead">Add this demo to your home screen. The saved example also works offline.</p><DemoNotice /><p id="pwa-status" class="notice" role="status" aria-busy="true">Saving the example for offline use…</p><button type="button" class="button secondary" id="retry-offline" hidden>Try saving again</button><button type="button" class="button primary" id="install-demo" hidden>Install demo</button>
+    <div class="install-instructions"><section><h2>On iPhone or iPad</h2><p>Open this page in Safari. Tap Share, then <strong>Add to Home Screen</strong>. Choose Add.</p></section><section><h2>On Android or desktop</h2><p>Use <strong>Install demo</strong> when the button appears, or choose Install app in your browser menu. A bookmark also works.</p></section></div>
+    <figure class="qr-label"><img src={`/${product}/qr/example.svg`} width="184" height="184" alt={`QR code for the ${item.name} example`} /><figcaption><strong>Try it on another device</strong><a href={item.route}>{item.title}</a><span>Opens the original example. Your changes stay on this device.</span><a href={`/${product}/qr/example.png`} download>Download QR label</a></figcaption></figure>
+    <a class="button secondary" href={item.route}>Return to the example</a><p class="fine canonical-link">{publicOrigin + item.route}</p>
+  </section>
+</Layout>
