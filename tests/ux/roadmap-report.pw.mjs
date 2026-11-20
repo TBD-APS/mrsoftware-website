@@ -19,7 +19,7 @@ test('open the roadmap overview and download the same data as PDF and Office fil
     await expect(page.locator('.mr-content')).toHaveAttribute('data-content-snapshot', receipt.snapshotHash);
     for (const metric of receipt.metrics) await expect(page.locator(`[data-metric="${metric.id}"]`)).toHaveText(metric.display);
     const downloads = page.getByRole('navigation', { name: 'Report downloads' });
-    for (const [label, file] of [['PDF', 'roadmap.pdf'], ['DOCX', 'roadmap.docx'], ['XLSX', 'roadmap.xlsx'], ['PPTX', 'roadmap.pptx'], ['CSV', 'roadmap.csv'], ['SVG: developed', 'developed-by-package.svg']]) {
+    for (const [label, file] of [['PDF', 'roadmap.pdf'], ['Word', 'roadmap.docx'], ['Excel', 'roadmap.xlsx'], ['PowerPoint', 'roadmap.pptx'], ['CSV data', 'roadmap.csv'], ['Developed graph (SVG)', 'developed-by-package.svg']]) {
       const promise = page.waitForEvent('download');
       await downloads.getByRole('link', { name: label, exact: true }).click();
       const download = await promise;

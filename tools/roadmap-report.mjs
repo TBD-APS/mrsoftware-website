@@ -1,5 +1,5 @@
 import { parseFragment } from 'parse5';
-import { sha256 } from '@mr-software/content';
+import { createHash } from 'node:crypto';
 
 const start = '<!-- public-features:start -->', end = '<!-- public-features:end -->';
 const attribute = (node, name) => node.attrs?.find(item => item.name === name)?.value;
@@ -35,7 +35,7 @@ export function roadmapReport(html, { at } = {}) {
   });
   return {
     version: 1, id: 'public-roadmap', title: 'Roadmap overview', period: 'Published feature counts', synthetic: false,
-    source: { name: 'MR Software public roadmap', version: `roadmap-${sha256(published).slice(0, 12)}`, at, url: 'https://mrsoftware.dk/roadmap/#roadmap-packages' },
+    source: { name: 'MR Software public roadmap', version: `roadmap-${createHash('sha256').update(published).digest('hex').slice(0, 12)}`, at, url: 'https://mrsoftware.dk/roadmap/#roadmap-packages' },
     locale: 'en-GB', timezone: 'Europe/Copenhagen',
     datasets: { products: { columns: { product: 'string', products: 'number', developed: 'number', development: 'number', planned: 'number', pipeline: 'number' }, rows } },
     blocks: [

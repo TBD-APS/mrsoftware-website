@@ -40,4 +40,5 @@ test('generated exports are bound to one snapshot and the public page contains i
   assert.match((await readFile(new URL('index.html', root), 'utf8')), new RegExp(receipt.snapshotHash));
   assert.ok(Object.keys(receipt.files).includes('roadmap.pptx'));
   assert.ok(Object.keys(receipt.files).includes('roadmap.xlsx'));
+  assert.equal((await readFile(new URL('roadmap.html', root), 'utf8')).includes('Report downloads'), false, 'The saved web page must not contain server-only download links');
 });

@@ -3,24 +3,29 @@ import { mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
-import { renderReport, toCsv, sha256, moduleInfo } from '@mr-software/content';
-import { exportXlsx, exportPptx, exportDocx } from '@mr-software/content/office';
-import { exportPdf, renderChartImages } from '@mr-software/content/pdf';
 import { roadmapReport } from './roadmap-report.mjs';
+import { verifyContentModule } from './verify-content-module.mjs';
 
 export async function buildRoadmapReports() {
   const root = fileURLToPath(new URL('..', import.meta.url));
+  const admission = await verifyContentModule(root);
+  const [{ renderReport, toCsv, sha256, moduleInfo }, { exportXlsx, exportPptx, exportDocx }, { exportPdf, renderChartImages }] = await Promise.all([
+    import('@mr-software/content'), import('@mr-software/content/office'), import('@mr-software/content/pdf'),
+  ]);
+  if (moduleInfo.moduleId !== 'mr.content' || moduleInfo.implementationVersion !== admission.artifact.version) throw Error('Loaded content module does not match its admitted identity');
   const [source, template] = await Promise.all([
     readFile(join(root, 'roadmap/index.html'), 'utf8'), readFile(join(root, 'tools/roadmap-report-template.html'), 'utf8'),
   ]);
   const at = execFileSync('git', ['log', '-1', '--format=%cI', '--', 'roadmap/index.html'], { cwd: root, encoding: 'utf8' }).trim();
   const report = roadmapReport(source, { at });
-  const downloads = ['pdf', 'docx', 'xlsx', 'pptx', 'csv', 'html'].map(extension => ({ label: extension === 'html' ? 'Standalone HTML' : extension.toUpperCase(), href: `/roadmap/report/roadmap.${extension}` }));
-  for (const chart of report.blocks.filter(block => block.type === 'chart')) downloads.push({ label: `SVG: ${chart.measure === 'developed' ? 'developed' : 'pipeline'}`, href: `/roadmap/report/${chart.id}.svg` });
+  const downloads = [['pdf', 'PDF'], ['docx', 'Word'], ['xlsx', 'Excel'], ['pptx', 'PowerPoint'], ['csv', 'CSV data'], ['html', 'Web page (HTML)']].map(([extension, label]) => ({ label, href: `/roadmap/report/roadmap.${extension}` }));
+  for (const chart of report.blocks.filter(block => block.type === 'chart')) downloads.push({ label: `${chart.measure === 'developed' ? 'Developed' : 'Pipeline'} graph (SVG)`, href: `/roadmap/report/${chart.id}.svg` });
   const rendered = await renderReport(report, { downloads });
+  const standalone = await renderReport(report);
+  if (standalone.hash !== rendered.hash) throw Error('Standalone report must use the same snapshot');
   const files = new Map([
     ['index.html', template.replace('<!-- content:styles -->', `<style>${rendered.css}</style>`).replace('<!-- content:report -->', rendered.fragment)],
-    ['roadmap.html', rendered.html], ['roadmap.csv', toCsv(rendered.report.datasets.products)], ['snapshot.json', rendered.json],
+    ['roadmap.html', standalone.html], ['roadmap.csv', toCsv(rendered.report.datasets.products)], ['snapshot.json', rendered.json],
   ]);
   for (const chart of rendered.charts) if (chart.svg) files.set(`${chart.id}.svg`, chart.svg);
   const browser = await chromium.launch({ ...(process.env.UX_CHROME ? { executablePath: process.env.UX_CHROME } : { channel: 'chrome' }), headless: true });
