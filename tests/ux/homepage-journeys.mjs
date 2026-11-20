@@ -11,7 +11,7 @@ export const homepageJourneys = [
     task: 'Find both solutions',
     budget: 1,
     target: '#solutions',
-    expectedHeading: /Three products that keep the order, the shipment/,
+    expectedHeading: /Three products for the trade, the shipment and the transport/,
   },
   {
     id: 'see-results',
