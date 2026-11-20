@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { startSite } from '../../tools/ux-site.mjs';
-import { prepareContext } from './fixtures.mjs';
-
-const publicBase = base => base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
 const papers = [
   'saassy-medical-platform-research-paper.pdf',
   'donor-network-consolidation-research-paper.pdf',
@@ -13,8 +10,12 @@ const papers = [
 test('Research opens directly from the homepage and exposes working sections and papers', async ({ page, context, request }, testInfo) => {
   const app = await startSite();
   try {
-    await prepareContext(context, app.base);
-    const base = publicBase(app.base);
+    // Exercise real HTTP for the browser's download manager. The shared
+    // dashboard fixture fulfils a synthetic hostname rather than serving it.
+    // Keep every request confined to this test's own loopback server.
+    const base = `http://127.0.0.1:${new URL(app.base).port}/`;
+    await context.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin
+      ? route.continue() : route.abort());
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
 
@@ -54,7 +55,7 @@ test('Research opens directly from the homepage and exposes working sections and
       expect(response.status()).toBe(200);
       expect(response.headers()['content-type']).toContain('application/pdf');
       expect((await response.body()).subarray(0, 4).toString()).toBe('%PDF');
-      const downloadPromise = page.waitForEvent('download');
+      const downloadPromise = page.waitForEvent('download', { timeout: 10_000 });
       await page.locator(`.research-paper[href="/research/${paper}"]`).click();
       const download = await downloadPromise;
       expect(download.suggestedFilename()).toBe(paper);
