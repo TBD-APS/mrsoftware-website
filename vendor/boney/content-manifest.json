@@ -1,0 +1,1037 @@
+{
+  "schemaVersion": 1,
+  "kind": "boney-package-artifacts",
+  "source": {
+    "repository": "https://github.com/TBD-APS/boney",
+    "commit": "8f6fd3fa8241f94dcb1ecc33ec73d0e2cc7c40f8",
+    "treeSha256": "66d8cea2eaa30ea8def845a3a1abf109dba8a3a0c246dade4a63afc77a398806",
+    "dirty": false,
+    "releaseEligible": true
+  },
+  "artifacts": [
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.ElevenLabs",
+      "version": "0.1.0",
+      "file": "nuget/Boney.ElevenLabs.0.1.0.nupkg",
+      "integrity": "sha512-rq71g+qd6FMcR4XmpTzJmawLQijXND4hf+wf31vAkYdG9XIZQH1/H26x6UnDwZid7uGtwCu5nSVH2otRqdvahw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Comms.WhatsApp",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Comms.WhatsApp.0.1.0.nupkg",
+      "integrity": "sha512-k8z8m7bP+IDaCJ0sJs4KXTLGbKZuFxXTXpN8t3fjXxVL7EhjJvGymEx6onP9VD95UB3ydlO5tddYa2Hgowyv0w==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Automation",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Automation.0.1.0.nupkg",
+      "integrity": "sha512-LyJVVHAPNql+KOrQR1ak718iHwkZudlLtf0n/u2VDApdQSky8gKaK3fdFHDw3wLQIhORrWST0X4POYapnYF/ZQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Planning",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Planning.0.1.0.nupkg",
+      "integrity": "sha512-XVoNgcyDUbcWgpGTHJHmOLWHwdlcZ6dO9q3LaNLRd3fiX/+tXTUaGoXtl8XiGn68nmFEavGrgwaleLRteokvzQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Fulfilment",
+      "version": "0.1.2",
+      "file": "nuget/Boney.Fulfilment.0.1.2.nupkg",
+      "integrity": "sha512-SxTwkbwn8c51eOHxABGxeWXq34HAP3k7+xLOcy+z7Nxzz4bZk8iZ1uLrEI4uvaF6ERfGxv4qzoirza1Aokaszg==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Economic",
+      "version": "0.1.1",
+      "file": "nuget/Boney.Economic.0.1.1.nupkg",
+      "integrity": "sha512-0sZJ4vVkyMrKY/3aRb/zLBDo83JuqTvTHcIVnc+pzzRR9OQ0At7UisuzulIvum4/pPp+D3ygqpZQ+BZBjYS3yQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.YouTube",
+      "version": "0.1.0",
+      "file": "nuget/Boney.YouTube.0.1.0.nupkg",
+      "integrity": "sha512-OvDEpcbhOtB11mREi4iV2vHZPrgYup9hjUrLBjaqzgd/Ps873a0OfnZgRqyFHM8xikif/toI8T+wh8/Q6YWvaA==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.AspNetCore.Authentication.JwtBearer",
+      "version": "10.0.13",
+      "file": "nuget/microsoft.aspnetcore.authentication.jwtbearer.10.0.13.nupkg",
+      "integrity": "sha512-AxUBSV4jRTHkQqJ84nFOufhvqHcjVT8FqgDp3gUPQlFAxixWgFyhUgdZtO0pRS53hxmd2ivh2nIJ6BT12n3uqA==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Bcl.Cryptography",
+      "version": "10.0.2",
+      "file": "nuget/microsoft.bcl.cryptography.10.0.2.nupkg",
+      "integrity": "sha512-rbP/krRdXXVG10QyWH0rWa5+0qP5Rob8VZDKno910kHnDcmH9XdFbBtdedO5pVVlpA1y2MXWx360zLLNLctJ+Q==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.IdentityModel.Abstractions",
+      "version": "8.19.2",
+      "file": "nuget/microsoft.identitymodel.abstractions.8.19.2.nupkg",
+      "integrity": "sha512-ASRJB/oHIKh2N45fTt/t/+p2WaKxWUfvjTrHUq2N39mON6wJTQTX2gwfZOtwWBM4FZ9I7uNi8rFNaynXbMYNsQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.IdentityModel.JsonWebTokens",
+      "version": "8.19.2",
+      "file": "nuget/microsoft.identitymodel.jsonwebtokens.8.19.2.nupkg",
+      "integrity": "sha512-9kokzW5MVsHjANELTihcvrI48azhzhdFQW+oaEce2rD/sGe5Vf57BRQdXFIyDoWluxYh3vhe8aLQ3mg3BP983w==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.IdentityModel.Logging",
+      "version": "8.19.2",
+      "file": "nuget/microsoft.identitymodel.logging.8.19.2.nupkg",
+      "integrity": "sha512-15BrxnYEFaE+3svU/8GB7EYQkOd+x0UdlqmNFoV3gY6vN/u4dg10NuXLoDSSUhxHPdc01cvKeoztwGvAw6Vhng==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.IdentityModel.Protocols",
+      "version": "8.19.2",
+      "file": "nuget/microsoft.identitymodel.protocols.8.19.2.nupkg",
+      "integrity": "sha512-+OTRiYr9kxDvuGaNtPblS0ZlUcMmgF07YkPa+5lZ1wL7OXnXDeym29XQWiuKnimfnhkO7T4imtkA8dy46p44OQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.IdentityModel.Protocols.OpenIdConnect",
+      "version": "8.19.2",
+      "file": "nuget/microsoft.identitymodel.protocols.openidconnect.8.19.2.nupkg",
+      "integrity": "sha512-JMioo0XfC6Gk6Ui5Sbs9lSzkFkp78vjcxb7qtzRgK3k1BXB8Baegq/Sr/ROg00qkq99MsZZZt3mgDGdACFTv0w==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.IdentityModel.Tokens",
+      "version": "8.19.2",
+      "file": "nuget/microsoft.identitymodel.tokens.8.19.2.nupkg",
+      "integrity": "sha512-4rGCcWWvktrOG1esOPr2DMLJpxl9DjIAD943L8C8K8Rcsq30vnOG0IcFMlckuOMots/FHNSUJDxqsmo/EG6eBw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "System.IdentityModel.Tokens.Jwt",
+      "version": "8.19.2",
+      "file": "nuget/system.identitymodel.tokens.jwt.8.19.2.nupkg",
+      "integrity": "sha512-DXewKSmxxRBuvUOd2aG/TAZafCVR6VcqLD0AJAG74wwoDLqukwTPGa0I2SOItZdhXuz43Mfiog1BSpHAC8SVkg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Billing",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Billing.0.1.0.nupkg",
+      "integrity": "sha512-F7VlxI/uAew5yGAdwoMrlweE+eZm9VVnNsPcXBr6Sc1OXb2K5zeqJd4G4XwAoBfplQRCqnWOiahryB5U9VwB5Q==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "version": "8.0.0",
+      "file": "nuget/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg",
+      "integrity": "sha512-lLwF7Sl1UQlWXZzfyQEIfuH6CDAt2jkxBryaC9c4Tw3CtsLxI8G9U/zga6vb+oRdxtIqFjxLBkbFJR3MWurCgg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Logging.Abstractions",
+      "version": "8.0.0",
+      "file": "nuget/microsoft.extensions.logging.abstractions.8.0.0.nupkg",
+      "integrity": "sha512-UKCt2W0w2QWA+44ColzqCqFfTSJ0Qnm1rP4YzIVot0QCqgYtXbE8xYh6CL/STgfLyIsvwQ7o7sLDft87zaf4pw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Crm",
+      "version": "0.1.9",
+      "file": "nuget/Boney.Crm.0.1.9.nupkg",
+      "integrity": "sha512-cgCSoKfZpFjYMEhvrIZmiHUGHos3DnAuZEMYaW1YaxlOff5sFbDOMIVrlUMUKRkqYXBbvrWlih5Al+ojYQwhdQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.CustomerPortal",
+      "version": "0.1.0",
+      "file": "nuget/Boney.CustomerPortal.0.1.0.nupkg",
+      "integrity": "sha512-vbH706e01Ur/PQwFq0XL91eYJsg58hWUV4xUsuPlY5L2Pg7k6FSVauPSoLmkbzt4Kf9cS3fXaH3tLpPXn5cJ7Q==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Comms",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Comms.0.1.0.nupkg",
+      "integrity": "sha512-7g1oFCn8UWut2JhUa2Q4gJttDffhz6U+mIWe4TXBWPgZ5qyLDhRyjlDvCf+O9Wa2Jo/zeXfFLs3Wxn3rATdlYQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.DemoData",
+      "version": "0.1.0",
+      "file": "nuget/Boney.DemoData.0.1.0.nupkg",
+      "integrity": "sha512-pIfwhu7duGGxnr5EqvtY56cHr5wcZpsUGAOnMfROkOGO4s84Vx+GtsNEVdCylDG6CdyQwqkAUVlk3Xp3e0D0mg==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.App",
+      "version": "1.0.0",
+      "file": "nuget/Boney.App.1.0.0.nupkg",
+      "integrity": "sha512-uExqyVgorjjA+nz4mYeY9vRuL+RpPSwwZ3ltEEbj8yyb8mAKXXA2uAZjOENJYpvIt1no6dzUQKbgK3hdMIw9OQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Workflows",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Workflows.0.1.0.nupkg",
+      "integrity": "sha512-8n1R6Wjf/I9fC9Vy7a4BbEaWxF8hoA9Nklr8T634eKsEC/K69jdmgxycs/mRTP6uBbLB/e3mQa3WIiifgXdatw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.AI.Abstractions",
+      "version": "10.11.0",
+      "file": "nuget/microsoft.extensions.ai.abstractions.10.11.0.nupkg",
+      "integrity": "sha512-uCGFTvae/ZLMVdARRH0qVxCRKqfn8ynh4wyOEwlNTKcHTq9pqowdELTWOqL+iCdxgqgapCPumCq1E+EvLrcFlQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "version": "10.0.13",
+      "file": "nuget/microsoft.extensions.dependencyinjection.abstractions.10.0.13.nupkg",
+      "integrity": "sha512-sqnzVqf7TBGwINY7FQdWkE76L+wjOJlTLo6Z+CW9oeiWATGt7c8sT2yLt0nTNiACtS75XgX99Q7bFLlMDt9KMw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Logging.Abstractions",
+      "version": "10.0.13",
+      "file": "nuget/microsoft.extensions.logging.abstractions.10.0.13.nupkg",
+      "integrity": "sha512-Y3oe2I5CEKRytcK6YOWFZJJOFFykrc9GmjSMWJ+Em0Z1XGGOMXE0Z+5xWmeEoc2pZHGz50YDFvosOaYypYerxA==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "ModelContextProtocol.Core",
+      "version": "2.3.0",
+      "file": "nuget/modelcontextprotocol.core.2.3.0.nupkg",
+      "integrity": "sha512-jnCDayv+LWLfXWbi3dHsvru8rtcksCfA2Fe/Lol1AbvsManxJKlpf/8bAfWQyCcFGUqv7ORqq4Xn18m5mUZmQg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Thread",
+      "version": "1.0.0",
+      "file": "nuget/Boney.Thread.1.0.0.nupkg",
+      "integrity": "sha512-AtGPtaSO6IprwIvdC00UlkpP3G6fHNk5clgyj8hZpCellOv/ifyATtE0bgxQZCoaLsgIiou69xWoe8AU2JUb7A==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Superadmin",
+      "version": "1.0.0",
+      "file": "nuget/Boney.Superadmin.1.0.0.nupkg",
+      "integrity": "sha512-yX2RuHbf+5cF/tk1ei2VyhJj2SUzXALD+I5HDnwahzgVgepPdRzRrLgdJRi599IsBvFVnwE1RAbsivGkwJRtGg==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Deploy",
+      "version": "1.0.0",
+      "file": "nuget/Boney.Deploy.1.0.0.nupkg",
+      "integrity": "sha512-FB+7KQnH/Gh5TymTKVYbMwLlL4I2AeEO4HiWg+5kCb5n765TEyqKbrH0HRFGk0TzzVGIIy2QhFHugxo+ixiHHg==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "MrSoftware.Auth.Passwordless",
+      "version": "0.1.0",
+      "file": "nuget/MrSoftware.Auth.Passwordless.0.1.0.nupkg",
+      "integrity": "sha512-Mlir/39q/PuLAjIcRdHrPtldTRMCpJORXlTb6e2plKfXkT98NKbd6jayZOdIgFNblzIv9U3tJ9W/BuWo/Q5xng==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "MR.SAASy.Infrastructure.Resilience",
+      "version": "0.1.0",
+      "file": "nuget/MR.SAASy.Infrastructure.Resilience.0.1.0.nupkg",
+      "integrity": "sha512-86s+rHRJyQzxD1+GUauxGytOpsklkomKG3F3oCD1o8/pSP7dWjB6/hve+XIclHNp4TkDP/9bZJOP47LDFvThGw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Configuration",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.configuration.10.0.0.nupkg",
+      "integrity": "sha512-cUi/56QZA0Idt8SeyMEsjHkXX55smUqGnWDstFo2BoaKoEKbHY5/eOMqiVGTsc6OdsXq5Jy9fSLOORhhkS5LNQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Configuration.Abstractions",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.configuration.abstractions.10.0.0.nupkg",
+      "integrity": "sha512-Y8QH4IjWknpk7NhN3qfodzXFFk6k86h3Q1um3h816DofDVZaIXnKfH6q3rz8zFBpKuzhDgISp8PVgDIpRGxuFg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Configuration.Binder",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.configuration.binder.10.0.0.nupkg",
+      "integrity": "sha512-bH+AO/Klr68TI53UlfjyVmPjb65C14QEFmGcE5ds/SlN4sS0coIGGU3Qs47oMQiagfP2PoulNsYNG3/VuXaR0A==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.DependencyInjection",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.dependencyinjection.10.0.0.nupkg",
+      "integrity": "sha512-jKVOffyzW7yqmikvAQf69oCKjPlMiHmnqv4xroQRdNKQCYlUIc4rvJv6/YbQyqvUArvrzITxlhd0dA3MFVIpuw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg",
+      "integrity": "sha512-R1JUmDhx81zXARj7/3QwSexiO9lNE2PBPXyK47sblSGIOl4Jd60iLY8wtmJ/NzhpXtPBiSOTMn2KFYuf7QaRIw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Diagnostics",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.diagnostics.10.0.0.nupkg",
+      "integrity": "sha512-+/sUzO4o+mDmo6HFIITzWMsm5Lu7z6/rifZL90ENE63hDAa+zPUa65A9zBGQRTZGpouZsHUDnqTbvCpCwR1Frg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Diagnostics.Abstractions",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.diagnostics.abstractions.10.0.0.nupkg",
+      "integrity": "sha512-8dkT57qrPe80rEjtkQpo8mc6Z4cx1LkF0LbDF0h2uGUgQFJivXquaEpJVyMYGpDZnW9LprDN7IAqf7M18bwF6A==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Http",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.http.10.0.0.nupkg",
+      "integrity": "sha512-AqyJ1p9gob9acp7kHHqBsRYJhdtTeH6YLiDExuBkFpBpo/wi6g2DsB22ggDqR++HJymhL8DkKAXhVpIyA4twrQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Logging",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.logging.10.0.0.nupkg",
+      "integrity": "sha512-4U8pXWCPfYUj/65LYjWT4eic4+bQTV1lO0X6Omw87AM8bp5FISmXRWFTR/8HHCWK6JitWdcnQjXkqVX8tk2nKQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Logging.Abstractions",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.logging.abstractions.10.0.0.nupkg",
+      "integrity": "sha512-CElGLz6i7loG2KuKixPwXzz0Zt5m67xqCpysS+/JHOsYCuA8QgiasMp6Jsp/5bTtGo9z4jXhMI2Zl8lSnDad0Q==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Options",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.options.10.0.0.nupkg",
+      "integrity": "sha512-olgvJlmRKzxNWACXtbRTNQBSj9IvAHQzJthPFZbHRULVVRg1wK98lWp20zUWGCePPtHEERkKg2O5G6RGZ1CzYw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Options.ConfigurationExtensions",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.options.configurationextensions.10.0.0.nupkg",
+      "integrity": "sha512-E22PBySOcYXl1o1qMM6MnMLu9Hb75sCVemGuy/7uuWVFbByZ0d3FHmZiH41j9P5Izi35ZuvsfTZPUkLhrgV6gw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Primitives",
+      "version": "10.0.0",
+      "file": "nuget/microsoft.extensions.primitives.10.0.0.nupkg",
+      "integrity": "sha512-q7BfP5mrTfRnuM0qBFh+VWpXauE8LTzXtIL1SZg0h/MyOYGLKnsPPbXrRR0odHcYxA5On3IQdKLdqTOMNAk7bQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Polly",
+      "version": "8.7.0",
+      "file": "nuget/polly.8.7.0.nupkg",
+      "integrity": "sha512-jdIKLZskjeEHbbk1TA19CScaKxQJ2QDafdxFUMqYm5nTK7OhMHP83zhOJA3s/wPZEjFUsTZbSOLOCEWo7f1V+g==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Polly.Core",
+      "version": "8.7.0",
+      "file": "nuget/polly.core.8.7.0.nupkg",
+      "integrity": "sha512-3GWahyTlj/qJHsUSW6IkkVhNJurnjEPPiRrZAIf74rmM2/Afncb6oqWi4XS8USoMhYoQ60WB+Es4KWBRXgjkNQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Polly.Extensions",
+      "version": "8.7.0",
+      "file": "nuget/polly.extensions.8.7.0.nupkg",
+      "integrity": "sha512-K2AjuTG/w0jhUFjmKN8CSF0QxmaFGxgN7eoKYVeC5PvMVMC5c/682rke+MOODJgKsQ/WoYTB/i0lRm1jJz40Tg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.ModuleAccess",
+      "version": "0.1.0",
+      "file": "nuget/Boney.ModuleAccess.0.1.0.nupkg",
+      "integrity": "sha512-7i6mHRAHyW7H/0LEdarGntvPfyigvsNYwNBi33lQIYXxFuU34vGeopRLKjcSIaeeochKWa6PCWmZg24qTid+5w==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Assistant",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Assistant.0.1.0.nupkg",
+      "integrity": "sha512-IqFTs1mGiIYFD+p7upVR6IACURjuhJgQ9ekkf2TRH1WaqPapiRDOQ8PpfPu4u+Mi2OashM1O6d1e5qiK0kZ3ng==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.FeatureFlags",
+      "version": "0.1.0",
+      "file": "nuget/Boney.FeatureFlags.0.1.0.nupkg",
+      "integrity": "sha512-QMxiebeKCjpDiRJPEFIXSYczZCGIH8vH2xur9vnoSNexkFFOMg8j/N9zYadZcWEMXvcwryx3pf6WrlKiZnLntQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Audit",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Audit.0.1.0.nupkg",
+      "integrity": "sha512-2nTUsAqYZx2OgtbxFVV4PVCY+Lt/Q2Q2pOfD8RWufaH0uOZOzXi9fmn5dJhlbAOmM6JZ1AeJ1i7nM28n6+9lOw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Transport",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Transport.0.1.0.nupkg",
+      "integrity": "sha512-OajEqRGxLDol9NgO6WNH4Dl4nPlJZi9878YOXhuSyezTOt9kwki34UKGlxH0+wmY+jwM2n6qHO5e7YwIQQZUaA==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "MrSoftware.Shipping",
+      "version": "0.1.0",
+      "file": "nuget/MrSoftware.Shipping.0.1.0.nupkg",
+      "integrity": "sha512-uV23SHeqrrIva1GbPpxH7NRVkaS8ug3DD75DKZIu0T668peqso/ppex7BthobACEPfxHP8WKxEl2CVcSGQGpzw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "MrSoftware.Shipping.Vizion",
+      "version": "0.1.0",
+      "file": "nuget/MrSoftware.Shipping.Vizion.0.1.0.nupkg",
+      "integrity": "sha512-TEaresiPegPjcss8mTPhiijewhJsf3k+6vwBtDrK6iH/O7338b50ep86fpcEOg97zIQUISR4ZNd/aciYN5sqPw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "MrSoftware.Shipping.JsonCargo",
+      "version": "0.1.0",
+      "file": "nuget/MrSoftware.Shipping.JsonCargo.0.1.0.nupkg",
+      "integrity": "sha512-Y6y4LfPm9fer4uKidoZ1AY+w5YNBx1I191EJv2WZgfB0Oj7OfHfv1Rmxwskm6mA9GWP6y2yAl+c44ivTlFm9BQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Transport.Shipping",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Transport.Shipping.0.1.0.nupkg",
+      "integrity": "sha512-kQxZ+V0rztdciwaNlP0jFZnOvsRT6uXfkUXxj+imN3VEBqe1orktuwItums/BaHtQWuZEfgDmmTAFlSPBFjDug==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Logistics.Contracts",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Logistics.Contracts.0.1.0.nupkg",
+      "integrity": "sha512-lSLIqltyMTjCdlMjr2P8bC58tkLFLmf/P/zq/zrHx2dWWme8beJ6IFLgksmLV17yat8uAJwDdQMFWxJUFZczag==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Integration",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Integration.0.1.0.nupkg",
+      "integrity": "sha512-Gk3x7UBBAcGmmlxSZIfJe1I1AA8Ll3A2qvrzFCzPdZM6SqqtpqNDfp4uA3oRNN7zkIkfedmpTLr4mnHT/1KWQA==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Mcp",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Mcp.0.1.0.nupkg",
+      "integrity": "sha512-HYOhKQThMOq36Qq0SuZeLt2WWxG8LThUZc3Pt6ySdh6BqKuwI3ajhuVDmq6ptirDDVN/YjycwZGeKrizwHiv8g==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "ModelContextProtocol",
+      "version": "2.3.0",
+      "file": "nuget/modelcontextprotocol.2.3.0.nupkg",
+      "integrity": "sha512-dLLvWbN5l4dhZHRsEn19hiNfHkEjPZw+hl1m9jFdBgEWZsfqPQYmKeirDREu97CtiX8sGM97lNSr3L4F9Sx2Nw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "ModelContextProtocol.AspNetCore",
+      "version": "2.3.0",
+      "file": "nuget/modelcontextprotocol.aspnetcore.2.3.0.nupkg",
+      "integrity": "sha512-SUUadBRdPLetJNB8S+yFxFwXa/tV5zNVb6IjBKgfuq4DxXs4kyn+PYuHLY3t1OV0lHtDhVOX9v2ZtPye2U4qxA==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.ProductStarter",
+      "version": "0.3.2",
+      "file": "nuget/Boney.ProductStarter.0.3.2.nupkg",
+      "integrity": "sha512-Mje5Mpy3qmHTrFBZb7wSMY1n3XCeXmtbv0oyITRgLwIlqBPvwKXYXPO5FiO3zwBFiiqh9vEG5JQzrKwl/PdJTg==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Maps",
+      "version": "0.2.0",
+      "file": "nuget/Boney.Maps.0.2.0.nupkg",
+      "integrity": "sha512-YFiXrdyPwr1NtaaobQOpWrYDQpzPAiBY6+t2xOJlVIt2ruQg2bpP4hqthCCi8fzur3D9SMJd/GwCZyMn+K97JQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "version": "8.0.2",
+      "file": "nuget/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg",
+      "integrity": "sha512-uhlg7xEKxzh6Kgbu/ALFnOV7D+WLPgzMt5scjyFQEFxdH0tl4O2V/1DXDygUKRfGpzW4P05UBrsdj53R+WNdfQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Logging.Abstractions",
+      "version": "8.0.2",
+      "file": "nuget/microsoft.extensions.logging.abstractions.8.0.2.nupkg",
+      "integrity": "sha512-+LnfP6e4N8tfL6U6hr/Ucnn4G8My21W4u36hT1Xf4hWPNR01GZwMwOAcc185Te0qOo8chcP/bqHDq3hb+/Ni/Q==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Npgsql",
+      "version": "9.0.5",
+      "file": "nuget/npgsql.9.0.5.nupkg",
+      "integrity": "sha512-lAEhN3OVXXQSmHpa74iLnOtvlGiE5p8eX8sER8rGzqW+Rp7O6HY2nXKpHT8tDvnXsvswgcRnaNz767bqmeAYOg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Documents",
+      "version": "0.2.0",
+      "file": "nuget/Boney.Documents.0.2.0.nupkg",
+      "integrity": "sha512-JY9hefy6LFchSbDcotlLZwbVAvVutKY7+TvXyMzsPx8XYUowZC0pHhcf0P5iMgUSx20CICKRM1MZAQ93BLGLZQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Boney.Comms.Outlook",
+      "version": "0.1.0",
+      "file": "nuget/Boney.Comms.Outlook.0.1.0.nupkg",
+      "integrity": "sha512-c6nAxwyTWHblzHHLGUFNojeug4Gwlgwu72zW7aEhG3tfWGmRuA6y2RAubUHLzJ0EOx+w8UCct07grwn40PgBtw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Azure.Core",
+      "version": "1.53.0",
+      "file": "nuget/azure.core.1.53.0.nupkg",
+      "integrity": "sha512-fmjVvweNJO11msJ1M5Jyu8b/+AqEGRtMzo4GRs8lcmN24n38nUmHBsAktR94aPjKeeQdAP6uMFzfVuJZ8/n4LQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Bcl.AsyncInterfaces",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.bcl.asyncinterfaces.10.0.3.nupkg",
+      "integrity": "sha512-UFOLWf3uBrCNp/TsJNNQlGn4/9gitK4nvoOsdwnBmaAhY5LeZ0KmlytvdVWMNt7S6fiuBdSn+5DTwTg7SIf6Zg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Configuration.Abstractions",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.extensions.configuration.abstractions.10.0.3.nupkg",
+      "integrity": "sha512-CatW4LafYSa+OgAIo9Ecn25egZxKHKBlVBzzz67KXtgsUrdYl8FNCXlcDnAiZzyCjvwVAorDOT41U/cC0nhQxQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.extensions.dependencyinjection.abstractions.10.0.3.nupkg",
+      "integrity": "sha512-lny2Zd8gO8XmCYenfS7Prnul8Sa55ZX+Mu/fryKozuAlBJI/vziFTYsFNV25BRlDg+i9bvU7+cv6yj46ffE6Qw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Diagnostics.Abstractions",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.extensions.diagnostics.abstractions.10.0.3.nupkg",
+      "integrity": "sha512-GeVz4YaeCy6F+7NWMXO82NRb42o8sr4Cvi8kzDUEitwjh2l+fAF2xlNK2SfoAfRUsV+NpnS1lYi2xWQyTKS5pQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.FileProviders.Abstractions",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.extensions.fileproviders.abstractions.10.0.3.nupkg",
+      "integrity": "sha512-Tbl9+uELXZ9Bjqk14L7QLLmZGxTxeEje9utKSnOZ0bWjze+M5a+fn47X0YoSd007AGSBZcIfx2pQRQKvMfCA5A==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Hosting.Abstractions",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.extensions.hosting.abstractions.10.0.3.nupkg",
+      "integrity": "sha512-aAXnRgLXIG4a5UmIxMh8ocKv5hksum/yusmGTIXpWVUbbFKoRSkJGkTKisjgNkvPxSyBitHfTP5GU5nb1tcLrA==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Logging.Abstractions",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.extensions.logging.abstractions.10.0.3.nupkg",
+      "integrity": "sha512-umN5WAsuYBJhIRdq8WcLmFp9DrdkyojdIZiX2B++JcO085MrBqMqxbuuL73MSrWW0Ah1TRBKIi7I3uSm/cNZWg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Options",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.extensions.options.10.0.3.nupkg",
+      "integrity": "sha512-2ZMsRiV9vAOaHszrcIaLqVlZCifg3HdGZjoo2KrvDoNIhJv1coKh/xk/wHG+v+57Zs/RKXXsZeHJnTgfXDnyJw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Extensions.Primitives",
+      "version": "10.0.3",
+      "file": "nuget/microsoft.extensions.primitives.10.0.3.nupkg",
+      "integrity": "sha512-BliYZ5z45/DB9TIYGrBEOQIhjp6La8Da6Smhc9CSdv6ddM1Su5Di1sWfCvX1XM+6pBXpJULB/ujQfiHRYw6Xww==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Identity.Client",
+      "version": "4.83.1",
+      "file": "nuget/microsoft.identity.client.4.83.1.nupkg",
+      "integrity": "sha512-aSrl5rlhou9xt0eph396fwRgoD+fsu3A+n5NRXpUGaD1ZK+uU8Ypa3514KsrHGGz9iGp1W6ZlFuwR7Atz+mivQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "Microsoft.Identity.Client.Extensions.Msal",
+      "version": "4.83.1",
+      "file": "nuget/microsoft.identity.client.extensions.msal.4.83.1.nupkg",
+      "integrity": "sha512-+StSqQV+9BenjdxQFO2XPVPTfaQ3ywy5R9KaosF5vRU4cUyEhzeDZ5ww6MCqsddMZZzgau1Lby2jqq6ExSLh5A==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "System.ClientModel",
+      "version": "1.10.0",
+      "file": "nuget/system.clientmodel.1.10.0.nupkg",
+      "integrity": "sha512-YP7rIDHF72Hi8YWrwqPQUnsr+Li01FauSxQbjZjxAra0YDmUiF/qLkDI3zwCXbQNYiJ4AiYRmG+7lBlQ2NzaGg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "System.Memory.Data",
+      "version": "10.0.3",
+      "file": "nuget/system.memory.data.10.0.3.nupkg",
+      "integrity": "sha512-9yb4RTk8gVIUrHdV7xAwnNOqGhVwqh/z+kknF/TB6DfMNV31pqBwQ/Px7XSb3od1LJtWK5ipqqr4GbjADcK1Uw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "nuget",
+      "id": "System.Security.Cryptography.ProtectedData",
+      "version": "4.5.0",
+      "file": "nuget/system.security.cryptography.protecteddata.4.5.0.nupkg",
+      "integrity": "sha512-s/MFK8BvgtejZj5a8qAPDXEGBtWkpFX98qwQP/wqVa9CgIC7LrKHxDFdlN5x6afGAb0ZVBVGIZlCdBLnO2QjZw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@mr-software/content",
+      "version": "0.1.0",
+      "file": "npm/mr-software-content-0.1.0.tgz",
+      "integrity": "sha512-Zp8QbRyW6hY/s2vOJV74q/ly+5xMgEi51S5ryTrGziOlCSAgAc0hwPtrENQZ4/LVt4/dtakWglE0oFz6l/A4Iw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@mr-software/elevenlabs",
+      "version": "0.1.0",
+      "file": "npm/mr-software-elevenlabs-0.1.0.tgz",
+      "integrity": "sha512-R9ZE7vRtHju2QYv6G09SOtA5DypZYZGA9FQoIrN+tUeIEH463seldMAIzbvMwUQu9C30A8FqN5+skDZ+lfz4IA==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "boney-superadmin-screen",
+      "version": "0.1.0",
+      "file": "npm/boney-superadmin-screen-0.1.0.tgz",
+      "integrity": "sha512-xZVO7Zra0xPjXHOT9q5fQGeDXghPRdHG1aBK29XEYrhYaTWnNQs0mfVFn53xgYo2m3I8wp+F+n3UFGmZDAfzMw==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "react",
+      "version": "19.1.1",
+      "file": "npm/react-19.1.1.tgz",
+      "integrity": "sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "react-dom",
+      "version": "19.1.1",
+      "file": "npm/react-dom-19.1.1.tgz",
+      "integrity": "sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "scheduler",
+      "version": "0.26.0",
+      "file": "npm/scheduler-0.26.0.tgz",
+      "integrity": "sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@mr-software/history",
+      "version": "0.1.1",
+      "file": "npm/mr-software-history-0.1.1.tgz",
+      "integrity": "sha512-GhhhbpD+X7LwPjV58kUQXhPoQIY//Hjdy5qaaW5tsoqQvEPUb8pOCCBhpAGvH/s7qDh7Tg162OjK9WLOmIoatQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@mr-software/assistant",
+      "version": "0.2.1",
+      "file": "npm/mr-software-assistant-0.2.1.tgz",
+      "integrity": "sha512-iDxAU4J8BrduRkBJQwBestDrZSVsEyg5PLz/TAcVqYC8hy2NrnX7RgZmnG25fzdLTCeCxWuZhFzqDiUmw3Q9NQ==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@mr-software/product-ui",
+      "version": "0.3.2",
+      "file": "npm/mr-software-product-ui-0.3.2.tgz",
+      "integrity": "sha512-VCGmg1w2a4t+17NpHdC4p+Nm4wNxXaxr/z14fPfzMnfPCsW3v8uJueH+YZamLi1trEGARw5gQYsEgHiGBN8qZA==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "react",
+      "version": "19.2.6",
+      "file": "npm/react-19.2.6.tgz",
+      "integrity": "sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "react-dom",
+      "version": "19.2.6",
+      "file": "npm/react-dom-19.2.6.tgz",
+      "integrity": "sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "scheduler",
+      "version": "0.27.0",
+      "file": "npm/scheduler-0.27.0.tgz",
+      "integrity": "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "lucide-react",
+      "version": "1.17.0",
+      "file": "npm/lucide-react-1.17.0.tgz",
+      "integrity": "sha512-9FA9evdox/JQL5PT57fdA1x/yg8T7knJ98+zjTL3UfKza6pflQUUh3XtaQIHKvnsJw1lmsEyHVlt5jchYxOQ5w==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "react-router-dom",
+      "version": "7.18.5",
+      "file": "npm/react-router-dom-7.18.5.tgz",
+      "integrity": "sha512-9HcfDMU6JJ/fp6gJZYGwNE6RknVGS4kBjH1HkNw959mCJi70TVwdipQWv2FEol9uGpi+SZTFtVpJPtEQfayeOw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "react-router",
+      "version": "7.18.5",
+      "file": "npm/react-router-7.18.5.tgz",
+      "integrity": "sha512-dTgvcXDOrLPrlLHrcZAqWveiK1hMSqN+rGAJzegP8HtmNkfRxOoshGWBNX3ZJ0cZjOHkRdlUJtaIhZMLLyGyPw==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "cookie",
+      "version": "1.1.1",
+      "file": "npm/cookie-1.1.1.tgz",
+      "integrity": "sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "set-cookie-parser",
+      "version": "2.7.3",
+      "file": "npm/set-cookie-parser-2.7.3.tgz",
+      "integrity": "sha512-irZHtTqurLna57KQG/s+fzOwv/J6XSH4cs8M/vsrY3uCaQ3S6+QJguAH0WdN47SXlk82voMZ4naWMQf8fdEoIg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@mr-software/ux-gate",
+      "version": "0.1.0",
+      "file": "npm/mr-software-ux-gate-0.1.0.tgz",
+      "integrity": "sha512-czFtDIVQoBPCgYRWkz09VJ4OitSd6Umuiks868tEPCeGoQ+55Abit0uhFZ7uzhyG0KwtSMDKFX6wwa4Of+4i8A==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@playwright/test",
+      "version": "1.63.0",
+      "file": "npm/playwright-test-1.63.0.tgz",
+      "integrity": "sha512-oxMK4vllB9RK5NQ2l1pq1IfOf2AvnEuj/vYGDj0H2nMtmtZpKtCwt/l00GEO6xjGfpBNAvjovvYdCm50dRQkpQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "playwright",
+      "version": "1.63.0",
+      "file": "npm/playwright-1.63.0.tgz",
+      "integrity": "sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "playwright-core",
+      "version": "1.63.0",
+      "file": "npm/playwright-core-1.63.0.tgz",
+      "integrity": "sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@mr-software/honeytoken",
+      "version": "0.1.0",
+      "file": "npm/mr-software-honeytoken-0.1.0.tgz",
+      "integrity": "sha512-HZrRWTINAV1pxOomv8eH6AGYhk2UQadxWyYNJIYHNk5WK+S1IIZPlfeP2AV9ralt/IpGVLqFOEkUg3unfIp6DA==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "boney-authy-client",
+      "version": "0.1.0",
+      "file": "npm/boney-authy-client-0.1.0.tgz",
+      "integrity": "sha512-plxVWGMijaCUQ8ITQP6pKwCITvALW4xKIFyYEj1FNTGKiaZF6H1YsQSl4ZKY18HHKo8uFH/cgjzgR3zWo21Kgg==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@mrsoftware/maps",
+      "version": "1.2.0",
+      "file": "npm/mrsoftware-maps-1.2.0.tgz",
+      "integrity": "sha512-m1N2oODbD/ZvLGjp9FXXvQgx4VCdMKPTqLhAGgqfR6JOklgHaA0ADLizQukUHmqPRIX4c5o5CrmcpXzY5s0k+Q==",
+      "dependency": false
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/bearing",
+      "version": "7.4.0",
+      "file": "npm/turf-bearing-7.4.0.tgz",
+      "integrity": "sha512-utMyjTU5U3QfHWLRIKUAvJerCMmC6NLI7X6cmL6PA5+KYdzul/ymxL6CQrwJugrf9zt4Hnzvipwz0j5H1Yo87w==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/clone",
+      "version": "7.4.0",
+      "file": "npm/turf-clone-7.4.0.tgz",
+      "integrity": "sha512-IfYnuil7XYJauy3crzIYEr26QkmBiTgFdGfYwUUe3S6dawX+lyb3vhuaYyssEPcCJq83g0G7hwxZy7141Mmzjg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/distance",
+      "version": "7.4.0",
+      "file": "npm/turf-distance-7.4.0.tgz",
+      "integrity": "sha512-ODkopQDG1m/U6Mx7OMmShncaCvneomwX3lZY1CDA7x40bhDdTTRYP/n/6LicZVyIO4/oK+aXkov4NOtWYthA2g==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/explode",
+      "version": "7.4.0",
+      "file": "npm/turf-explode-7.4.0.tgz",
+      "integrity": "sha512-kTWoryCTAiBwFvyJYNQWLJCaFx4bSRpyCjJWmuLoBEQRh9Fi4JLDEug+6JZxygMxCMWGXBH8/R3ICl+soLPFAg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/helpers",
+      "version": "7.4.0",
+      "file": "npm/turf-helpers-7.4.0.tgz",
+      "integrity": "sha512-7PAwLZqOdRzTI5g9bHvUwlloAXPDH/mlajtryk0tw4ZwGMtmXsAyF4QundsAMfy4u48Fyd3AUqMXY0SMxqJGWg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/invariant",
+      "version": "7.4.0",
+      "file": "npm/turf-invariant-7.4.0.tgz",
+      "integrity": "sha512-OAsc3qdNx+tRqzWmMNFMnVlWWACIqnYqIejZKvb2oKkKPYJJrURPXZ6OdrGD58ljJMolLoqwIZGSx3VndaEjxg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/length",
+      "version": "7.4.0",
+      "file": "npm/turf-length-7.4.0.tgz",
+      "integrity": "sha512-vQsJLuL7uy8m6HAMuJJKoiOHYY1de1Hd6mY/fM90qfu2RyIrkoF8J4bRUb72XZNCVnvob/eHpUMdhZeoUhSyfQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/meta",
+      "version": "7.4.0",
+      "file": "npm/turf-meta-7.4.0.tgz",
+      "integrity": "sha512-3cLUvlEyDuSnMSzrjhaLAEiYR8xhbfWyTVQlrlEw40xL81d4KF4PqUWbjTXKpXZStdYbet2GCurl79KMypNw6g==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/nearest-point-on-line",
+      "version": "7.4.0",
+      "file": "npm/turf-nearest-point-on-line-7.4.0.tgz",
+      "integrity": "sha512-eKTKf/qODIsPankYMZrNfI3LjLaVtQvYV/1hcj9kH/Zr3GfLUszevjhTRDZtMgTFrv8+awW3+MyhmN+PJGuLdQ==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/point-to-line-distance",
+      "version": "7.4.0",
+      "file": "npm/turf-point-to-line-distance-7.4.0.tgz",
+      "integrity": "sha512-2Egagkj3BK6SrcUxMBJ40PHhW/numknLsJQhlv4kl3d3t83HChhUtH2mXnhqcdi97V3jXSRV1SZIhZKc8TrwOg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/projection",
+      "version": "7.4.0",
+      "file": "npm/turf-projection-7.4.0.tgz",
+      "integrity": "sha512-ZS932qM+18V1UBvNlrNXUCD7mh9CzQqZzw/ElVtb0kAk6N00FYQ9bo26Cca08UZKXh3rZqG/e4eCK74JNGS4Zg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/rhumb-bearing",
+      "version": "7.4.0",
+      "file": "npm/turf-rhumb-bearing-7.4.0.tgz",
+      "integrity": "sha512-y5omgg5SqHwz46fZlra2/70z5eOKXSp/ZzRNIDYKJVYF5oNT2YbG9Z6lj4Az51bjqJQESXUoR6wRmFnpliIp0w==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@turf/rhumb-distance",
+      "version": "7.4.0",
+      "file": "npm/turf-rhumb-distance-7.4.0.tgz",
+      "integrity": "sha512-29pFCftS/yxEzrYWB777I23Mob+yw9WAECJNw+uabbJi6fwFphJfqWApMXY2ZnudVSJFCGJbByVAHVDTvOGG+w==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "@types/geojson",
+      "version": "7946.0.16",
+      "file": "npm/types-geojson-7946.0.16.tgz",
+      "integrity": "sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "geojson-path-finder",
+      "version": "2.1.0",
+      "file": "npm/geojson-path-finder-2.1.0.tgz",
+      "integrity": "sha512-ngg+rxoUSkhjOpKaQ2VpuvY6v2o/12JF1JF09AUzMg5iOVJ2dKLfT4vr8NleEk5pVwmx3nANyH8rK8mCn90LSA==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "searoute-ts",
+      "version": "2.3.1",
+      "file": "npm/searoute-ts-2.3.1.tgz",
+      "integrity": "sha512-edHIFZh1Q0SUsu5G12gf3Y+Qu/fBcNzFZIniujHFjRBSS/3xi+hhk//Vsnt3CX/mwbt1FxbHYj3s6yVzYMCDkA==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "tinyqueue",
+      "version": "2.0.3",
+      "file": "npm/tinyqueue-2.0.3.tgz",
+      "integrity": "sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==",
+      "dependency": true
+    },
+    {
+      "ecosystem": "npm",
+      "id": "tslib",
+      "version": "2.8.1",
+      "file": "npm/tslib-2.8.1.tgz",
+      "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==",
+      "dependency": true
+    }
+  ]
+}
