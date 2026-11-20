@@ -3,11 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build:reports": "node tools/build-roadmap-reports.mjs",
+    "predev": "npm run build:reports",
     "dev": "node tools/dev-server.mjs",
     "test": "env -u NO_COLOR -u FORCE_COLOR node tools/run-tests.mjs",
     "links": "vite --config backoffice/vite.config.js",
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",
-    "ux-gate": "env -u NO_COLOR -u FORCE_COLOR playwright test",
+    "ux-gate": "npm run build:reports && env -u NO_COLOR -u FORCE_COLOR playwright test",
     "build:commercial": "node tools/build-commercial.mjs",
     "ux-gate:commercial": "npm run build:commercial && env -u NO_COLOR -u FORCE_COLOR playwright test --config playwright.commercial.config.mjs",
     "ux-gate:private": "npm run build:commercial && env -u NO_COLOR -u FORCE_COLOR playwright test --config playwright.private.config.mjs",
@@ -15,8 +17,10 @@
     "check:commercial": "node tools/commercial-readiness.mjs"
   },
   "devDependencies": {
+    "@mr-software/content": "file:vendor/boney/mr-software-content-0.1.0.tgz",
     "@playwright/test": "1.63.0",
     "miniflare": "5.20261023.0-beta",
+    "parse5": "8.1.1",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "vite": "8.3.8",

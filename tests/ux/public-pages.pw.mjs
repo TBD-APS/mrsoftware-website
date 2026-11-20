@@ -18,6 +18,7 @@ const pages = [
   'demo/workslip/',
   'research/',
   'roadmap/',
+  'roadmap/report/',
   'stories/',
   'stories/the-offer/',
   'stories/the-job/',
