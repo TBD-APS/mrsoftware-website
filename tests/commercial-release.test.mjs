@@ -189,6 +189,22 @@ test('commercial release rechecks stale provider reads without repeating an uplo
   assert.equal(f.writes.length, 2);
 });
 
+test('main moving while the uploaded version becomes visible prevents the commercial deployment POST', async t => {
+  const deploy = await implementation('deployCommercial');
+  let authorizations = 0, promotions = 0, visible = false;
+  const f = await commercialFixture(t, {
+    authorize: async () => { if (++authorizations === 2) { assert.equal(visible, true); throw Error('Main moved'); } return { pullRequest: 12 }; },
+    preflight: async () => ({ initial: false, previous: { id: 'old', versions: [{ version_id: previous, percentage: 100 }] }, config: { name: 'mrsoftware-commercial', main: 'commercial/worker.mjs', assets: { directory: '.commercial-dist' }, d1_databases: [] } }),
+    waitForVersion: async () => { visible = true; },
+    deployVersion: async () => { promotions++; throw Error('No traffic change after main moves'); },
+  });
+  await assert.rejects(deploy({ ...releaseEnv, COMMERCIAL_RELEASE_MODE: 'update' }, f.deps), /Main moved/);
+  assert.equal(promotions, 0);
+  assert.equal(f.writes.length, 1);
+  assert.equal(JSON.parse(await readFile(f.deps.receiptPath, 'utf8')).versionId, next);
+});
+
+
 test('commercial release refuses failed eligibility/preflight and never retries an uncertain write', async t => {
   const deploy = await implementation('deployCommercial');
   for (const failing of ['authorize', 'preflight', 'run']) {
