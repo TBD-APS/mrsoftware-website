@@ -1,16 +1,35 @@
 import { spawn } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 
 const repo = new URL('../..', import.meta.url);
 
-function start(root) {
-  const child = spawn(process.execPath, ['tools/link-backoffice.mjs'], {
+function freePort() {
+  return new Promise((resolve, reject) => {
+    const probe = createServer();
+    probe.listen(0, '127.0.0.1', () => {
+      const { port } = probe.address();
+      probe.close(error => error ? reject(error) : resolve(port));
+    });
+  });
+}
+
+async function start(root) {
+  const port = await freePort();
+  const child = spawn(process.execPath, [
+    'node_modules/vite/bin/vite.js',
+    '--config', 'backoffice/vite.config.js',
+    '--host', '127.0.0.1',
+    '--port', String(port),
+    '--strictPort',
+  ], {
     cwd: new URL(repo).pathname,
     env: { ...process.env, LINKS_ROOT: root },
     stdio: ['ignore', 'pipe', 'pipe'],
+    detached: true,
   });
   const ready = new Promise((resolve, reject) => {
     let buffer = '';
@@ -30,8 +49,9 @@ test('a page link is added, saved, and still there after reload', async ({ page 
   page.on('pageerror', error => errors.push(error.message));
   const root = await mkdtemp(join(tmpdir(), 'site-links-'));
   await mkdir(join(root, 'data'), { recursive: true });
-  await writeFile(join(root, 'data/links.json'), await readFile(new URL('../../data/links.json', import.meta.url)));
-  const { child, ready } = start(root);
+  const original = await readFile(new URL('../../data/links.json', import.meta.url));
+  await writeFile(join(root, 'data/links.json'), original);
+  const { child, ready } = await start(root);
   try {
     const base = await ready;
     await page.goto(base);
@@ -48,6 +68,7 @@ test('a page link is added, saved, and still there after reload', async ({ page 
     await expect(page.locator('.link-editor-preview').getByRole('link', { name: /Roadmap/ })).toHaveAttribute('href', '/roadmap/');
     const saved = JSON.parse(await readFile(join(root, 'data/links.json'), 'utf8'));
     assertHas(saved, 'the-offer', 'roadmap');
+    expect(saved.sitemapPages).toEqual(JSON.parse(original.toString()).sitemapPages);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
     if (info.project.name === 'phone') {
       const box = await page.getByRole('button', { name: 'Save links' }).boundingBox();
@@ -55,7 +76,7 @@ test('a page link is added, saved, and still there after reload', async ({ page 
     }
     expect(errors).toEqual([]);
   } finally {
-    child.kill();
+    try { process.kill(-child.pid, 'SIGTERM'); } catch { child.kill('SIGTERM'); }
   }
 });
 
