@@ -21,7 +21,7 @@ test('public routes open exact seeded records and actions survive reload', async
   await page.getByLabel('Connections tested').check();
   await page.getByLabel('Minutes worked').fill('45');
   await page.getByRole('button', { name: 'Save time', exact: true }).click();
-  await expect(page.locator('#scenario-result')).toContainText('45 minutes saved');
+  await expect(page.locator('#scenario-result')).toContainText('45 minutes recorded');
   await page.reload();
   await expect(page.getByLabel('Water supply checked')).toBeChecked();
   await expect(page.locator('#history')).toContainText('45 minutes');
@@ -70,7 +70,7 @@ test('material results belong to the material and a reset preserves the other pr
   await expect(page.locator('#scenario-result')).toContainText('Order created');
   await page.goto(app.base + 'workslip/jobs/ws-1042/');
   await page.getByRole('button', { name: 'Save time', exact: true }).click();
-  await expect(page.locator('#scenario-result')).toContainText('30 minutes saved');
+  await expect(page.locator('#scenario-result')).toContainText('30 minutes recorded');
   await page.goto(app.base + 'workslip/materials/mat-101/');
   await expect(page.locator('#scenario-result')).toHaveText('12 metres available');
   await page.getByLabel('Metres used').fill('2');
@@ -89,7 +89,7 @@ test('blocked browser storage still permits actions with a visible warning', asy
   await page.goto(app.base + 'workslip/jobs/ws-1042/');
   await expect(page.locator('#storage-notice')).toBeVisible();
   await page.getByRole('button', { name: 'Save time', exact: true }).click();
-  await expect(page.locator('#scenario-result')).toContainText('30 minutes saved');
+  await expect(page.locator('#scenario-result')).toContainText('30 minutes recorded');
   await expect(page.locator('#history')).toContainText('30 minutes');
 });
 

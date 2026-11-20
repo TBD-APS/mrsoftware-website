@@ -11,7 +11,7 @@ export const journeys = [
     id: 'workslip-job', task: 'Complete a checklist and save time', start: 'workslip/jobs/ws-1042/',
     budget: { clicks: 3, fields: 1 },
     steps: [{ check: 'Water supply checked' }, { check: 'Connections tested' }, { fill: 'Minutes worked', value: '45' }, { click: 'button', name: 'Save time' }],
-    done: { route: 'workslip/jobs/ws-1042/', text: [['#scenario-result', /45 minutes saved/], ['#history', /Checklist complete/]], inView: '#scenario-result' },
+    done: { route: 'workslip/jobs/ws-1042/', text: [['#scenario-result', /45 minutes recorded/], ['#history', /Checklist complete/]], inView: '#scenario-result' },
   },
   {
     id: 'material-lookup', task: 'Find a material by its code', start: 'workslip/',
