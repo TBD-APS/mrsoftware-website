@@ -2,6 +2,7 @@ import { parseFragment } from 'parse5';
 import { createHash } from 'node:crypto';
 
 const start = '<!-- public-features:start -->', end = '<!-- public-features:end -->';
+const stageFields = new Map([['Developed', 'developed'], ['In development', 'development'], ['Planned', 'planned']]);
 const attribute = (node, name) => node.attrs?.find(item => item.name === name)?.value;
 const hasClass = (node, name) => attribute(node, 'class')?.split(/\s+/).includes(name);
 function descendants(node, predicate) {
@@ -27,7 +28,7 @@ export function roadmapReport(html, { at } = {}) {
     for (const feature of descendants(section, node => hasClass(node, 'roadmap-feature'))) {
       const id = attribute(feature, 'id'), stages = descendants(feature, node => hasClass(node, 'roadmap-stage'));
       if (!id || featureIds.has(id) || stages.length !== 1) throw Error('Every published feature needs one unique identity and stage'); featureIds.add(id);
-      const stage = { Developed: 'developed', 'In development': 'development', Planned: 'planned' }[text(stages[0]).trim()];
+      const stage = stageFields.get(text(stages[0]).trim());
       if (!stage) throw Error('Unknown public roadmap stage'); record[stage]++;
     }
     record.pipeline = record.development + record.planned;

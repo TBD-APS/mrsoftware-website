@@ -24,7 +24,7 @@ export async function buildRoadmapReports() {
   const standalone = await renderReport(report);
   if (standalone.hash !== rendered.hash) throw Error('Standalone report must use the same snapshot');
   const files = new Map([
-    ['index.html', template.replace('<!-- content:styles -->', `<style>${rendered.css}</style>`).replace('<!-- content:report -->', rendered.fragment)],
+    ['index.html', template.replace('<!-- content:styles -->', () => `<style>${rendered.css}</style>`).replace('<!-- content:report -->', () => rendered.fragment)],
     ['roadmap.html', standalone.html], ['roadmap.csv', toCsv(rendered.report.datasets.products)], ['snapshot.json', rendered.json],
   ]);
   for (const chart of rendered.charts) if (chart.svg) files.set(`${chart.id}.svg`, chart.svg);

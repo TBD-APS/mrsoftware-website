@@ -28,7 +28,7 @@ test('newly published states change every derived export input together', () => 
   const after = roadmapReport(fixture.replace('>In development</span>', '>Developed</span>'), { at });
   assert.equal(before.datasets.products.rows[0].development, 1); assert.equal(after.datasets.products.rows[0].developed, 1);
   assert.notEqual(before.source.version, after.source.version);
-  assert.throws(() => roadmapReport(fixture.replace('>In development</span>', '>Unknown</span>'), { at }), /Unknown/);
+  for (const stage of ['Unknown', 'toString', '__proto__']) assert.throws(() => roadmapReport(fixture.replace('>In development</span>', `>${stage}</span>`), { at }), /Unknown/);
 });
 
 test('generated exports are bound to one snapshot and the public page contains its hash', async () => {
