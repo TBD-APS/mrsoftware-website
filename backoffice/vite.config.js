@@ -15,7 +15,9 @@ function modulePath() {
 }
 
 async function readGraph() {
-  const checked = checkGraph(JSON.parse(await readFile(jsonPath(), 'utf8')));
+  // Sitemap metadata belongs to the catalogue, not the link editor's graph.
+  const { sitemapPages, ...graph } = JSON.parse(await readFile(jsonPath(), 'utf8'));
+  const checked = checkGraph(graph);
   if (!checked.ok) throw new Error(checked.errors[0]);
   return checked.graph;
 }
@@ -23,10 +25,11 @@ async function readGraph() {
 async function writeGraph(graph) {
   const checked = checkGraph(graph);
   if (!checked.ok) throw new Error(checked.errors[0]);
+  const { sitemapPages } = JSON.parse(await readFile(jsonPath(), 'utf8'));
   const text = `${JSON.stringify(checked.graph, null, 2)}\n`;
   await mkdir(dirname(jsonPath()), { recursive: true });
   await mkdir(dirname(modulePath()), { recursive: true });
-  await writeFile(jsonPath(), text);
+  await writeFile(jsonPath(), `${JSON.stringify({ ...checked.graph, sitemapPages }, null, 2)}\n`);
   await writeFile(modulePath(), `export const graph = ${text};\n`);
   return checked.graph;
 }

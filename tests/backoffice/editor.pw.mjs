@@ -49,7 +49,8 @@ test('a page link is added, saved, and still there after reload', async ({ page 
   page.on('pageerror', error => errors.push(error.message));
   const root = await mkdtemp(join(tmpdir(), 'site-links-'));
   await mkdir(join(root, 'data'), { recursive: true });
-  await writeFile(join(root, 'data/links.json'), await readFile(new URL('../../data/links.json', import.meta.url)));
+  const original = await readFile(new URL('../../data/links.json', import.meta.url));
+  await writeFile(join(root, 'data/links.json'), original);
   const { child, ready } = await start(root);
   try {
     const base = await ready;
@@ -67,6 +68,7 @@ test('a page link is added, saved, and still there after reload', async ({ page 
     await expect(page.locator('.link-editor-preview').getByRole('link', { name: /Roadmap/ })).toHaveAttribute('href', '/roadmap/');
     const saved = JSON.parse(await readFile(join(root, 'data/links.json'), 'utf8'));
     assertHas(saved, 'the-offer', 'roadmap');
+    expect(saved.sitemapPages).toEqual(JSON.parse(original.toString()).sitemapPages);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
     if (info.project.name === 'phone') {
       const box = await page.getByRole('button', { name: 'Save links' }).boundingBox();
