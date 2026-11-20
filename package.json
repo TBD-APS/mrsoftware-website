@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@mr-software/elevenlabs": "file:vendor/boney/mr-software-elevenlabs-0.1.0.tgz",
-    "astro": "6.4.8",
+    "astro": "7.4.7",
     "jose": "6.2.13",
     "jsqr": "1.4.0",
     "qrcode": "1.5.4"
