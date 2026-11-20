@@ -59,6 +59,12 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(solutions.getByRole('link', { name: 'Workslip', exact: true })).toHaveAttribute('href', '/products/workslip/');
     await expect(solutions.getByRole('link', { name: 'Tradey', exact: true })).toHaveAttribute('href', '/products/tradey/');
     await expect(solutions.getByRole('link', { name: 'Shippy', exact: true })).toHaveAttribute('href', '/products/shippy/');
+    await expect(solutions.getByRole('link', { name: 'Roady', exact: true })).toHaveAttribute('href', '/demo/roady/');
+    // SAS-585: three main products, MR SAAS'y underneath with Workslip as its live case, and Integrations is not a product.
+    await expect(solutions.locator('.cards > article h3')).toHaveText(['Tradey', 'Shippy', 'Roady']);
+    await expect(solutions.locator('.platform')).toContainText("MR SAAS'y");
+    await expect(solutions.locator('.platform article h3')).toHaveText('Workslip');
+    await expect(solutions.getByRole('link', { name: 'Integrations', exact: true })).toHaveCount(0);
     await expect(page.locator('#results')).toContainText('3 min');
     await expect(page.locator('#results')).toContainText('4.6 days');
     await expect(page.locator('#results')).toContainText(/not documented time savings, ROI or financial gain for the customer/i);
@@ -69,6 +75,7 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.locator('#solutions article').filter({ hasText: 'Workslip' }).locator('.status-state')).toHaveText('Live');
     await expect(page.locator('#solutions article').filter({ hasText: 'Tradey' }).locator('.status-state')).toHaveText('In development · Demo');
     await expect(page.locator('#solutions article').filter({ hasText: 'Shippy' }).locator('.status-state')).toHaveText('Demo');
+    await expect(page.locator('#solutions article').filter({ hasText: 'Roady' }).locator('.status-state')).toHaveText('Demo');
     for (const figure of await page.locator('#main figure.frame').all()) {
       await expect(figure).toHaveAttribute('aria-label', /demo data/i);
       await expect(figure.locator('.demo-tag')).toHaveText('Demo data');
