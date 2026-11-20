@@ -57,3 +57,31 @@ test('company and product entrypoints use the managed catalogue and reach exact 
     await app.close();
   }
 });
+
+test('The "Try it yourself" cards are filled, firmly framed and the same height (SAS-583)', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    const base = app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
+    for (const pathname of ['', 'products/tradey/']) {
+      await page.goto(base + pathname);
+      const cards = page.locator('.commercial-entrypoints .related-link');
+      expect(await cards.count()).toBeGreaterThan(1);
+      const looks = await cards.evaluateAll(nodes => nodes.map(node => {
+        const style = getComputedStyle(node);
+        return { background: style.backgroundColor, border: parseFloat(style.borderTopWidth), height: Math.round(node.getBoundingClientRect().height), top: Math.round(node.getBoundingClientRect().top) };
+      }));
+      for (const look of looks) {
+        expect(look.background).not.toBe('rgba(0, 0, 0, 0)');
+        expect(look.border).toBeGreaterThanOrEqual(2);
+      }
+      // Cards side by side in one row share a height.
+      const rows = Object.values(Object.groupBy(looks, look => look.top));
+      for (const row of rows) expect(new Set(row.map(look => look.height)).size).toBe(1);
+      // The arrow is decoration and stays out of the link's accessible name.
+      await expect(cards.first()).toHaveAccessibleName(/[^→]$/);
+    }
+  } finally {
+    await app.close();
+  }
+});

@@ -237,9 +237,12 @@ a:hover > .arrow { transform: translateX(4px); }
 .commercial-entrypoints { margin-top: var(--s5); }
 .commercial-entrypoints .related-links h2 { font-size: var(--fs-body); font-family: var(--sans); }
 .commercial-entrypoints .related-links ul { display: flex; flex-wrap: wrap; }
-.commercial-entrypoints .related-links li { flex: 1 1 240px; max-width: 360px; }
-.commercial-entrypoints .related-link { border-radius: 0; }
-.commercial-entrypoints .related-link-summary { font-size: .875rem; }
+.commercial-entrypoints .related-links li { display: flex; flex: 1 1 240px; max-width: 360px; }
+/* SAS-583: filled cards with a firm frame, equal height, so the box reads as something to try. */
+.commercial-entrypoints .related-link { flex: 1; padding: var(--s2) var(--s3); color: var(--ink); background: var(--paper-raised); border: 2px solid var(--ink); border-radius: var(--radius); transition: background-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease); }
+.commercial-entrypoints .related-link:hover { background: var(--rose); transform: translateY(-2px); box-shadow: 0 12px 24px -16px rgba(20, 16, 14, .5); }
+.commercial-entrypoints .related-link-title::after { content: " →" / ""; color: var(--accent); }
+.commercial-entrypoints .related-link-summary { color: #4d4843; font-size: .875rem; }
 
 /* Rotating word: the second line of the headline. Without script or with reduced motion the first word stays. */
 .rotate { position: relative; display: block; height: 1.12em; overflow: hidden; color: var(--accent); font-style: italic; }
