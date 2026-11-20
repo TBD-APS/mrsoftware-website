@@ -1,5 +1,17 @@
 import { test, expect } from './fixtures.mjs';
 
+test('example titles and the privacy link are 44px tap targets', async ({ page, app }) => {
+  await page.goto(app.base);
+  for (const name of ['Kitchen service', 'Summer produce offer', 'Aarhus delivery']) {
+    const box = await page.getByRole('link', { name, exact: true }).boundingBox();
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  await page.goto(app.base + 'pricing/');
+  const privacy = await page.getByRole('link', { name: 'How we handle your data' }).boundingBox();
+  expect(privacy.height).toBeGreaterThanOrEqual(44);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
 test('public routes open exact seeded records and actions survive reload', async ({ page, app }) => {
   const response = await page.goto(app.base);
   expect(response.status()).toBe(200);
