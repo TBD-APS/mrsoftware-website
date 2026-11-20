@@ -78,7 +78,9 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.locator('#solutions article').filter({ hasText: 'Roady' }).locator('.status-state')).toHaveText('Demo');
     for (const figure of await page.locator('#main figure.frame').all()) {
       await expect(figure).toHaveAttribute('aria-label', /demo data/i);
-      await expect(figure.locator('.demo-tag')).toHaveText('Demo data');
+      const tags = figure.locator('.demo-tag');
+      expect(await tags.count()).toBeGreaterThan(0);
+      for (const tag of await tags.all()) await expect(tag).toHaveText('Demo data');
     }
     // Internal process notes and prices stay out of the public page.
     await expect(page.locator('body')).not.toContainText(/internal approval|TODO|kr\.|DKK|€/i);
@@ -295,6 +297,59 @@ test('The headline word rotates, and stays still when motion is reduced', async 
     await page.reload();
     await page.waitForTimeout(3_000);
     await expect(page.locator('.rotate-word.is-in')).toHaveText('order.');
+  } finally {
+    await app.close();
+  }
+});
+
+test('The hero cycles through a shipment, an offer and a transport, and shows one still record when motion is reduced', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base));
+    const lanes = page.locator('.hero-lane');
+    await expect(lanes.locator('.frame-bar strong')).toHaveText(['Shippy · Shipment', 'Tradey · Offer', 'Roady · Transport']);
+    await expect(page.locator('.hero-frame')).toHaveAttribute('aria-label', /demo data.*Shippy.*Tradey.*Roady/i);
+    // The offer takes its turn after the shipment.
+    await expect.poll(() => lanes.nth(1).evaluate(node => Number(getComputedStyle(node).opacity)), { timeout: 9_000 }).toBeGreaterThan(0.9);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.reload();
+    await page.waitForTimeout(1_000);
+    expect(await lanes.evaluateAll(nodes => nodes.map(node => getComputedStyle(node).visibility))).toEqual(['visible', 'hidden', 'hidden']);
+    expect(await lanes.first().evaluate(node => getComputedStyle(node).animationName)).toBe('none');
+  } finally {
+    await app.close();
+  }
+});
+
+test('Pointing at a system type in the ticker pauses it and explains what it covers', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'Hover is a pointer interaction; keyboard focus is checked on desktop too.');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base));
+    const ticker = page.locator('.ticker-wrap');
+    const detail = ticker.locator('.ticker-detail');
+    await expect(detail).toBeHidden();
+    await ticker.locator('.ticker a').nth(2).hover({ force: true });
+    await expect(ticker.locator('.ticker ul')).toHaveCSS('animation-play-state', 'paused');
+    await expect(ticker.locator('.ticker a.is-active')).toHaveText('Carriers and shipping lines');
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Bookings, schedules and tracking.');
+    // The panel can be reached with the pointer and leads on to the integrations overview.
+    await detail.getByRole('link', { name: /Read more/ }).hover();
+    await expect(detail).toBeVisible();
+    await expect(detail.getByRole('link', { name: /Read more/ })).toHaveAttribute('href', '/integrations/#categories');
+
+    // The keyboard gets the same explanation, and Escape closes it. The repeated copy is not focusable.
+    await page.mouse.move(0, 0);
+    await expect(detail).toBeHidden();
+    await ticker.locator('.ticker a').first().focus();
+    await expect(detail).toContainText('Orders, customers and items.');
+    await page.keyboard.press('Escape');
+    await expect(detail).toBeHidden();
+    await expect(ticker.locator('li[aria-hidden="true"] a:not([tabindex="-1"])')).toHaveCount(0);
   } finally {
     await app.close();
   }

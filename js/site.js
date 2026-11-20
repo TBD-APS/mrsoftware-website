@@ -149,6 +149,38 @@
       }, 2400);
     });
 
+    // Ticker: hovering or focusing a system type pauses the strip and shows what it covers, with a link onward.
+    document.querySelectorAll('.ticker-wrap').forEach(function (wrap) {
+      var detail = wrap.querySelector('.ticker-detail');
+      if (!detail) return;
+      var active = null;
+      function show(link) {
+        if (active) active.classList.remove('is-active');
+        active = link;
+        link.classList.add('is-active');
+        detail.querySelector('b').textContent = link.textContent;
+        detail.querySelector('p').textContent = link.getAttribute('data-detail');
+        var box = wrap.getBoundingClientRect();
+        var item = link.getBoundingClientRect();
+        var half = Math.min(150, (window.innerWidth - 32) / 2);
+        var x = Math.max(16 + half, Math.min(window.innerWidth - 16 - half, item.left + item.width / 2));
+        detail.style.setProperty('--x', (x - box.left) + 'px');
+        detail.hidden = false;
+      }
+      function hide() {
+        if (active) active.classList.remove('is-active');
+        active = null;
+        detail.hidden = true;
+      }
+      wrap.querySelectorAll('.ticker a[data-detail]').forEach(function (link) {
+        link.addEventListener('mouseenter', function () { show(link); });
+        link.addEventListener('focus', function () { show(link); });
+      });
+      wrap.addEventListener('mouseleave', hide);
+      wrap.addEventListener('focusout', function (event) { if (!wrap.contains(event.relatedTarget)) hide(); });
+      wrap.addEventListener('keydown', function (event) { if (event.key === 'Escape') hide(); });
+    });
+
     if (window.matchMedia('(hover: hover)').matches) {
       document.querySelectorAll('.spot').forEach(function (card) {
         card.addEventListener('pointermove', function (event) {
