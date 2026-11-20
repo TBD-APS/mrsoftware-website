@@ -12,7 +12,7 @@ test('Open the demo centre from the homepage in one click', async ({ page, conte
     await page.locator('.site-footer').getByRole('link', { name: 'Demo centre' }).click();
     await expect(page).toHaveURL(/\/demo\/$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Explore the products.');
-    await expect(page.locator('.demo-grid h2')).toHaveText(['Roady', 'Shippy', 'Tradey', 'Workslip']);
+    await expect(page.locator('.demo-grid h2')).toHaveText(['Roady', 'Shippy', 'Tradey', 'Workslip', 'Greeny']);
     await testInfo.attach(`demo-centre-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
   } finally {
     await app.close();
@@ -31,11 +31,13 @@ test('Demo centre needs no code and states its boundary', async ({ page, context
     const cards = page.locator('.demo-grid');
     await expect(cards.getByRole('link', { name: 'Open Roady' })).toHaveAttribute('href', 'https://pbrsgtftzin4k.kimi.page/');
     await expect(cards.getByRole('link', { name: 'Open Tradey' })).toHaveAttribute('href', 'https://ztrutb4jielr6.kimi.page/');
+    await expect(cards.getByRole('link', { name: 'Open Greeny' })).toHaveAttribute('href', 'https://greeny.mrsoftware.dk/');
     const card = name => cards.locator('article').filter({ has: page.getByRole('heading', { name }) });
     await expect(card('Roady').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/roady/');
     await expect(card('Shippy').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/shippy/');
     await expect(card('Tradey').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/tradey/');
     await expect(card('Workslip').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/workslip/');
+    await expect(card('Greeny').getByRole('link', { name: 'Open the read-only view' })).toHaveAttribute('href', '/demo/greeny/');
     for (const link of await cards.locator('a[target="_blank"]').all()) await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     // Demos are open to everyone: no access code may be published or required on the page.
     await expect(page.locator('main')).not.toContainText(/demo ?code|demokode|\b\d{4,}\b/i);
@@ -188,6 +190,44 @@ test('See Roady read-only: transports, one transport\'s sourced events and the g
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     expect(errors).toEqual([]);
     await testInfo.attach(`roady-view-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
+  } finally {
+    await app.close();
+  }
+});
+
+test('See Greeny read-only: baseline figures, the document a person approves, the report and the group', async ({ page, context }, testInfo) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+    await page.goto(publicBase(app.base) + 'demo/');
+    await page.locator('.demo-grid article').filter({ has: page.getByRole('heading', { name: 'Greeny' }) })
+      .getByRole('link', { name: 'Open the read-only view' }).click();
+    await expect(page).toHaveURL(/\/demo\/greeny\/$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Greeny, read only');
+    const nav = page.getByRole('navigation', { name: 'Greeny sections' });
+    await expect(nav.getByRole('link')).toHaveText(['Overview', 'Evidence', 'Report', 'Group', 'Next steps']);
+
+    // The document's twelve months add up to the total the page states.
+    const months = (await page.locator('#evidence tbody tr td:nth-child(2)').allTextContents()).map(Number);
+    expect(months).toHaveLength(12);
+    expect(months.reduce((a, b) => a + b, 0)).toBe(198000);
+    await expect(page.locator('#evidence h3').first()).toContainText('198,000 kWh');
+    // The group shows suggestions but counts none of them, and never invents a CO2 figure.
+    const suggestions = (await page.locator('#group tbody tr td:nth-child(4)').allTextContents()).map(Number);
+    expect(suggestions.reduce((a, b) => a + b, 0)).toBe(350000);
+    await expect(page.locator('#group .view-note')).toContainText('350,000 kWh');
+    await expect(page.locator('#group .view-kpis')).toContainText('Godkendt elforbrugIngen endnu');
+    await expect(page.locator('#group .view-kpis')).toContainText('CO₂Ikke beregnet');
+    await expect(page.locator('#report tbody tr')).toHaveCount(8);
+
+    await expect(page.locator('main form, main button, main input')).toHaveCount(0);
+    expect(await page.locator('script:not([src="/js/site.js"])').count()).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    expect(errors).toEqual([]);
+    await testInfo.attach(`greeny-view-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
   } finally {
     await app.close();
   }
