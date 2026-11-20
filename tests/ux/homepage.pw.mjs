@@ -83,7 +83,7 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.getByRole('link', { name: /Open Workslip/ })).toHaveAttribute('href', 'https://app.mrsoftware.dk/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Live');
     await page.goto(publicBase(app.base) + 'products/tradey/');
-    await expect(page.getByRole('link', { name: /Open the Tradey demo/ })).toHaveAttribute('href', 'https://foodtrading.mrsoftware.dk/');
+    await expect(page.getByRole('link', { name: /Open the Tradey demo/ })).toHaveAttribute('href', 'https://ztrutb4jielr6.kimi.page/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('In development · Demo');
     await page.goto(publicBase(app.base) + 'products/shippy/');
     await expect(page.locator('.product-hero .status-state')).toHaveText('Demo');

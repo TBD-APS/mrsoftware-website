@@ -1,0 +1,50 @@
+/* Demo centre. Builds on site.css tokens only, so the page stays plain HTML with no bundle. */
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--s3);
+}
+
+.demo-grid article {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s3);
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline-light);
+}
+
+.demo-grid img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  object-fit: cover;
+}
+
+.demo-grid h2 {
+  margin: 0;
+  font-size: var(--fs-title);
+  line-height: 1.2;
+}
+
+.demo-grid p {
+  flex: 1;
+  margin: 0;
+  color: var(--muted-on-light);
+  font-family: var(--mono);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.demo-grid .button {
+  align-self: flex-start;
+}
+
+.demo-boundary {
+  max-width: 70ch;
+  margin: var(--s4) 0 0;
+  color: var(--muted-on-light);
+  font-family: var(--mono);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
