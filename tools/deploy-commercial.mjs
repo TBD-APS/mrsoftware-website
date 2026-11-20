@@ -4,11 +4,27 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { verifyRelease } from './release-eligibility.mjs';
-import { commercialPreflight, commercialWorker, readCommercialDeployments, UUID } from './commercial-release-config.mjs';
+import { commercialPreflight, commercialWorker, commercialAccount, readCommercialDeployments, UUID } from './commercial-release-config.mjs';
 import { commercialReadiness } from './commercial-readiness.mjs';
 import { waitForWorkerVersion, confirmWorkerDeployment, visibilityPause } from './cloudflare-visibility.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
+
+// The Action has already verified this uploaded version and rechecked main.
+// Send the traffic change once; an unknown outcome must be reconciled by reads.
+export async function createCommercialDeployment(env, versionId, { request = fetch } = {}) {
+  if (env.GITHUB_ACTIONS !== 'true' || env.CLOUDFLARE_ACCOUNT_ID !== commercialAccount || !env.CLOUDFLARE_API_TOKEN?.trim() || !/^[a-f0-9]{40}$/.test(env.GITHUB_SHA ?? '') || !UUID.test(versionId)) throw Error('Commercial promotion requires the approved Action context and uploaded version');
+  const response = await request(`https://api.cloudflare.com/client/v4/accounts/${commercialAccount}/workers/scripts/${commercialWorker}/deployments`, {
+    method: 'POST', redirect: 'error', signal: AbortSignal.timeout(30000),
+    headers: { Authorization: `Bearer ${env.CLOUDFLARE_API_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ strategy: 'percentage', versions: [{ version_id: versionId, percentage: 100 }], annotations: { 'workers/message': `GitHub main ${env.GITHUB_SHA}` } }),
+  });
+  const body = await response.json();
+  const deployed = body.result;
+  if (!response.ok || body.success !== true || !UUID.test(deployed?.id) || deployed?.strategy !== 'percentage' || deployed?.versions?.length !== 1 || deployed.versions[0].version_id !== versionId || deployed.versions[0].percentage !== 100) throw Error(`Cloudflare did not confirm the exact commercial deployment (HTTP ${response.status})`);
+  return deployed;
+}
+
 async function wrangler(args) {
   const directory = await mkdtemp(path.join(process.env.RUNNER_TEMP || tmpdir(), 'commercial-wrangler-'));
   const output = path.join(directory, 'output.jsonl');
@@ -23,6 +39,7 @@ async function wrangler(args) {
 
 export async function deployCommercial(env = process.env, {
   authorize = verifyRelease, preflight = commercialPreflight, readDeployments = () => readCommercialDeployments(env), run = wrangler,
+  deployVersion = versionId => createCommercialDeployment(env, versionId),
   waitForVersion = versionId => waitForWorkerVersion(env, commercialWorker, versionId), sleep = visibilityPause,
   smoke = () => commercialReadiness(fetch, { assetPropagation: true }), receiptPath = '.local/commercial-release-receipt.json', configPath = '.local/wrangler-commercial-release.json',
 } = {}) {
@@ -61,10 +78,8 @@ export async function deployCommercial(env = process.env, {
       await waitForVersion(receipt.versionId);
       await authorize();
       receipt.state = 'deploying'; await save();
-      const deployment = await run(['versions', 'deploy', `${receipt.versionId}@100%`, ...common, '--yes', '--message', `GitHub main ${env.GITHUB_SHA}`]);
-      const confirmation = deployment.filter(item => item.type === 'version-deploy' && item.worker_name === commercialWorker && item.deployment_id);
-      if (confirmation.length !== 1) throw Error('Wrangler did not confirm the commercial deployment');
-      receipt.deploymentId = confirmation[0].deployment_id;
+      const deployment = await deployVersion(receipt.versionId);
+      receipt.deploymentId = deployment.id;
     }
     await save();
     const current = await confirmWorkerDeployment({ read: readDeployments, previousId: prepared.previous?.id ?? null, deploymentId: receipt.deploymentId, versionId: receipt.versionId, pause: sleep });
