@@ -27,7 +27,7 @@ function cloudflareRead(env, patch = {}) {
       assert.match(JSON.parse(options.body).sql, /^SELECT /);
       result = [{ success: true, results: tables.map(name => ({ name })) }];
     } else if (endpoint.endsWith(`/access/apps/${applicationId}`)) result = { id: applicationId, type: 'self_hosted', domain: 'backoffice.mrsoftware.dk', aud: env.COMMERCIAL_ACCESS_AUDIENCE };
-    else if (endpoint.endsWith('/policies')) result = [{ decision: 'allow', include: [{ email: { email: env.COMMERCIAL_ALLOWED_EMAILS } }], exclude: [], require: [] }];
+    else if (endpoint.endsWith('/policies')) result = [{ decision: 'allow', include: env.COMMERCIAL_ALLOWED_EMAILS.split(',').map(email => ({ email: { email: email.trim().toLowerCase() } })), exclude: [], require: [] }];
     else if (endpoint.endsWith('/settings')) return Response.json({ success: false, errors: [{ code: 10007 }] }, { status: 404 });
     else assert.fail(`Unexpected preflight endpoint ${endpoint}`);
     return Response.json({ success: true, result: patch[endpoint.split('/').at(-1)] ?? result });
@@ -55,6 +55,60 @@ test('commercial preflight requires deployment-owned real settings and verified 
     { [databaseId]: { uuid: databaseId, name: 'another-product' } },
   ]) await assert.rejects(preflight(releaseEnv, { request: cloudflareRead(releaseEnv, patch) }));
   await assert.rejects(preflight(releaseEnv, { request: async (url, options) => url.endsWith('/settings') ? Response.json({ success: true, result: { bindings: [] } }) : cloudflareRead(releaseEnv)(url, options) }), /already exists/);
+});
+
+test('commercial preflight releases every confirmed sales user and accepts policy order differences', async () => {
+  const preflight = await implementation('commercialPreflight', 'commercial-release-config.mjs');
+  const env = { ...releaseEnv, COMMERCIAL_ALLOWED_EMAILS: ' Owner@Synthetic-Company.dk, SALES@synthetic-company.dk ' };
+  const policies = [{ decision: 'allow', include: [{ email: { email: 'sales@synthetic-company.dk' } }, { email: { email: 'owner@synthetic-company.dk' } }], exclude: [], require: [] }];
+  const prepared = await preflight(env, { request: cloudflareRead(env, { policies }) });
+  assert.equal(prepared.config.vars.ALLOWED_EMAILS, 'owner@synthetic-company.dk,sales@synthetic-company.dk');
+});
+
+test('duplicate Access selectors cannot hide a missing confirmed sales user', async () => {
+  const preflight = await implementation('commercialPreflight', 'commercial-release-config.mjs');
+  const env = { ...releaseEnv, COMMERCIAL_ALLOWED_EMAILS: 'owner@synthetic-company.dk,sales@synthetic-company.dk' };
+  for (const duplicate of ['owner@synthetic-company.dk', 'OWNER@synthetic-company.dk']) {
+    const policies = [{ decision: 'allow', include: [{ email: { email: 'owner@synthetic-company.dk' } }, { email: { email: duplicate } }], exclude: [], require: [] }];
+    await assert.rejects(preflight(env, { request: cloudflareRead(env, { policies }) }), /exactly the confirmed sales logins/);
+  }
+});
+
+test('multi-user release refuses incomplete, broader and malformed Access policies', async () => {
+  const preflight = await implementation('commercialPreflight', 'commercial-release-config.mjs');
+  const env = { ...releaseEnv, COMMERCIAL_ALLOWED_EMAILS: 'owner@synthetic-company.dk,sales@synthetic-company.dk' };
+  const owner = { email: { email: 'owner@synthetic-company.dk' } }, sales = { email: { email: 'sales@synthetic-company.dk' } };
+  for (const change of [
+    { include: [owner] },
+    { include: [owner, sales, { email: { email: 'unknown@synthetic-company.dk' } }] },
+    { include: [owner, { email_domain: { domain: 'synthetic-company.dk' } }] },
+    { include: [owner, { everyone: {} }] },
+    { include: [owner, { email: { email: 'sales@synthetic-company.dk', extra: true } }] },
+    { include: [owner, null] },
+    { exclude: {} },
+    { require: [{ everyone: {} }] },
+  ]) {
+    const policies = [{ decision: 'allow', include: [owner, sales], exclude: [], require: [], ...change }];
+    await assert.rejects(preflight(env, { request: cloudflareRead(env, { policies }) }));
+  }
+});
+
+test('release user configuration rejects duplicate, empty, oversized and synthetic login lists before provider reads', async () => {
+  const preflight = await implementation('commercialPreflight', 'commercial-release-config.mjs');
+  for (const emails of [
+    'owner@synthetic-company.dk,OWNER@synthetic-company.dk',
+    'owner@synthetic-company.dk,',
+    ',owner@synthetic-company.dk',
+    'owner@synthetic-company.dk,,sales@synthetic-company.dk',
+    'owner@synthetic-company.dk,invalid',
+    'owner@synthetic-company.dk,unknown@example.test',
+    'x'.repeat(245) + '@synthetic-company.dk',
+    Array.from({ length: 51 }, (_, index) => `user${index}@synthetic-company.dk`).join(','),
+  ]) {
+    let reads = 0;
+    await assert.rejects(preflight({ ...releaseEnv, COMMERCIAL_ALLOWED_EMAILS: emails }, { request: async () => { reads++; throw Error('No provider request with invalid users'); } }));
+    assert.equal(reads, 0);
+  }
 });
 
 async function commercialFixture(t, changes = {}) {

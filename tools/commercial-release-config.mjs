@@ -19,7 +19,7 @@ export function commercialSettings(env) {
   if (env.CLOUDFLARE_ACCOUNT_ID !== commercialAccount || !env.CLOUDFLARE_API_TOKEN?.trim()) throw Error('The approved Cloudflare account and release credentials are required');
   if (!UUID.test(databaseId) || /^0+-0+-0+-0+-0+$/.test(databaseId) || !UUID.test(applicationId) || /^0+-0+-0+-0+-0+$/.test(applicationId)) throw Error('Approved dedicated D1 and Access application ids are required');
   if (!/^[a-f0-9]{64}$/.test(audience) || audience === dashboardAudience || !/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(issuer)) throw Error('A dedicated commercial Access audience and issuer are required');
-  if (emails.length !== 1 || !/^[^\s@,]+@[^\s@,]+\.[a-z]{2,}$/.test(emails[0]) || /\.(?:test|invalid|example)$|@example\.(?:com|net|org)$/.test(emails[0])) throw Error('Configure the one confirmed sales login in deployment settings');
+  if (!emails.length || emails.length > 50 || new Set(emails).size !== emails.length || emails.some(email => email.length > 254 || !/^[^\s@,]+@[^\s@,]+\.[a-z]{2,}$/.test(email) || /\.(?:test|invalid|example)$|@example\.(?:com|net|org)$/.test(email))) throw Error('Configure 1–50 unique confirmed sales logins in deployment settings');
   if (!['initial', 'update'].includes(env.COMMERCIAL_RELEASE_MODE)) throw Error('Choose an explicit initial or update commercial release');
   return { databaseId, applicationId, audience, issuer, emails };
 }
@@ -55,7 +55,12 @@ export async function commercialPreflight(env = process.env, { request = fetch }
   const application = await read(`${base}/access/apps/${settings.applicationId}`);
   if (application.id !== settings.applicationId || application.type !== 'self_hosted' || application.domain !== 'backoffice.mrsoftware.dk' || application.aud !== settings.audience) throw Error('The dedicated backoffice Access application does not match release settings');
   const policies = await read(`${base}/access/apps/${settings.applicationId}/policies`);
-  if (!Array.isArray(policies) || policies.length !== 1 || policies[0].decision !== 'allow' || !Array.isArray(policies[0].include) || policies[0].include.length !== settings.emails.length || policies[0].include.some(rule => Object.keys(rule).length !== 1 || !settings.emails.includes(rule.email?.email?.toLowerCase())) || (policies[0].exclude ?? []).length || (policies[0].require ?? []).length) throw Error('Access must allow exactly the confirmed sales login without bypass policies');
+  const policy = Array.isArray(policies) && policies.length === 1 ? policies[0] : null;
+  const policyEmails = Array.isArray(policy?.include) ? policy.include.map(rule => {
+    if (!rule || Object.keys(rule).length !== 1 || !rule.email || Object.keys(rule.email).length !== 1 || typeof rule.email.email !== 'string') return null;
+    return rule.email.email.toLowerCase();
+  }) : [];
+  if (policy?.decision !== 'allow' || policyEmails.length !== settings.emails.length || new Set(policyEmails).size !== settings.emails.length || policyEmails.some(email => !settings.emails.includes(email)) || [policy?.exclude ?? [], policy?.require ?? []].some(rules => !Array.isArray(rules) || rules.length)) throw Error('Access must allow exactly the confirmed sales logins without bypass policies');
   const existing = await read(`${base}/workers/scripts/${commercialWorker}/settings`, { missingWorker: true });
   const initial = env.COMMERCIAL_RELEASE_MODE === 'initial';
   if (initial && existing) throw Error('The commercial Worker already exists; inspect the collision before changing release mode');

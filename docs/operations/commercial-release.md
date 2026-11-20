@@ -67,17 +67,17 @@ does not authorize them.
 1. After approval, provision a dedicated **mrsoftware-sales** D1 and apply the
    reviewed `commercial/migrations/0001_sales.sql`. Do not copy sample sales data.
    Create a dedicated self-hosted Access app on the entire private hostname with
-   exactly one email allow policy for William's privately confirmed login. The
-   public `wp@mrsoftware.dk` contact is not his login. Add no other identities or
+   exactly one reusable email allow policy listing every privately confirmed sales
+   login. The public `wp@mrsoftware.dk` contact is not William's login. Add no other identities or
    bypass policy. Configure Access denial responses with `Cache-Control: no-store`.
    Inspect account-wide Worker Access as well. If it protects new Workers, create
    a separate hostname-only public application for `demos.mrsoftware.dk`, attaching
    a reusable bypass/everyone policy there. The private hostname must keep its
-   dedicated William-only policy. Do not bypass the entire shared Worker or change
+   dedicated explicit-user policy. Do not bypass the entire shared Worker or change
    the account-wide protection for other applications.
 2. Configure main-only GitHub environment `mrsoftware-commercial-production`,
    reviewed by Rasmus. Environment secrets: `CLOUDFLARE_API_TOKEN` and
-   `COMMERCIAL_ALLOWED_EMAILS` (the one privately confirmed login). Variables:
+   `COMMERCIAL_ALLOWED_EMAILS` (1–50 unique, comma-separated confirmed logins). Variables:
    `CLOUDFLARE_ACCOUNT_ID`, `COMMERCIAL_D1_DATABASE_ID`, `COMMERCIAL_ACCESS_APP_ID`,
    `COMMERCIAL_ACCESS_ISSUER`, `COMMERCIAL_ACCESS_AUDIENCE`. Use the approved
    Worker/domain release permissions plus D1/Access read permissions for
@@ -102,6 +102,15 @@ does not authorize them.
 The initial automatic website run can fail readiness after the merge; this
 leaves its live version untouched. Use these reviewed Actions as release
 entrypoints, not a direct local deploy command.
+
+For an approved user change, synchronize the reusable Access policy and protected
+`COMMERCIAL_ALLOWED_EMAILS` setting, then run the guarded commercial `update`
+release. Preflight requires exactly the same unique email set in both places and
+rejects missing users, extra identities, duplicate selectors and broader rules.
+The deployed Worker also checks its own explicit allowlist on every private
+request; changing Access alone does not complete the user change. Keep existing
+users during an addition and verify both signed identities, including their
+separate audit attribution, before release.
 
 ## Initial release and uncertainty
 
