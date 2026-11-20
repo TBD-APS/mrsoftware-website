@@ -27,14 +27,23 @@ function quoteCard(quote) {
     el('p', { className: 'card-meta' }, titleCase(quote.status), ' · ', money(quote.monthlyMinor), '/month · Valid until ', dateLabel(quote.validUntil)),
   ]);
 }
-export function todayView(state, today) {
-  const due = state.opportunities.filter(o => o.nextFollowUp && o.nextFollowUp <= today && !['won', 'lost'].includes(o.stage)).sort((a, b) => a.nextFollowUp.localeCompare(b.nextFollowUp));
-  const enquiries = state.opportunities.filter(o => o.stage === 'enquiry' && !o.nextFollowUp);
-  const quotes = state.quotes.filter(q => ['draft', 'sent'].includes(q.status));
+export function todayView(work, params) {
+  const current = { date: work.date };
+  for (const key of ['followUpsAfter', 'enquiriesAfter', 'quotesAfter']) if (params.has(key)) current[key] = params.get(key);
+  const queue = (key, id, heading, label, empty, render) => {
+    const page = work[key], cursorKey = key + 'After';
+    const controls = [];
+    if (current[cursorKey]) controls.push(link('First ' + label, 'today', { ...current, [cursorKey]: '', queue: id }, 'button secondary'));
+    if (page.next) controls.push(link('More ' + label, 'today', { ...current, [cursorKey]: page.next, queue: id }, 'button secondary'));
+    const node = section(heading, page.items.length ? cards(page.items.map(render)) : muted(current[cursorKey] ? 'No more ' + label + ' on this page. Return to the first page to check current work.' : empty),
+      controls.length ? el('nav', { className: 'heading-actions', 'aria-label': heading + ' pages' }, ...controls) : null);
+    node.id = 'today-' + id; node.tabIndex = -1;
+    return node;
+  };
   return el('div', { className: 'today-grid' },
-    section('Follow up', due.length ? cards(due.map(o => opportunityCard(o, state))) : noRecords(state, 'No follow-ups due. Add a next follow-up to an opportunity to keep it here.')),
-    section('New enquiries', enquiries.length ? cards(enquiries.map(o => opportunityCard(o, state))) : noRecords(state, 'No new enquiries. Requests from the public price page will appear here.')),
-    section('Open quotes', quotes.length ? cards(quotes.map(quoteCard)) : noRecords(state, 'No open quotes. Saved drafts and sent quotes will appear here.')),
+    queue('followUps', 'follow-ups', 'Follow up', 'follow-ups', 'No follow-ups due. Add a next follow-up to an opportunity to keep it here.', o => opportunityCard(o, work)),
+    queue('enquiries', 'enquiries', 'New enquiries', 'enquiries', 'No new enquiries. Requests from the public price page will appear here.', o => opportunityCard(o, work)),
+    queue('quotes', 'quotes', 'Open quotes', 'quotes', 'No open quotes. Saved drafts and sent quotes will appear here.', quoteCard),
   );
 }
 export function customersView(state, navigate) {

@@ -60,6 +60,24 @@ function date(value, label) {
   return value;
 }
 
+export function validateTodayQuery(params) {
+  const keys = ['date', 'followUpsAfter', 'enquiriesAfter', 'quotesAfter'];
+  for (const key of params.keys()) if (!keys.includes(key) || params.getAll(key).length !== 1) invalid('The daily queue link has invalid fields.');
+  const cursors = {};
+  for (const kind of ['followUps', 'enquiries', 'quotes']) {
+    const raw = params.get(kind + 'After');
+    if (raw === null) { cursors[kind] = null; continue; }
+    let tuple;
+    try { if (raw.length > 200) throw Error(); tuple = JSON.parse(raw); } catch { invalid('The daily queue link is invalid. Open Today to start again.'); }
+    if (!Array.isArray(tuple) || tuple.length !== 2) invalid('The daily queue link is invalid. Open Today to start again.');
+    if (kind === 'enquiries') {
+      if (typeof tuple[0] !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(tuple[0]) || !Number.isFinite(Date.parse(tuple[0])) || new Date(tuple[0]).toISOString() !== tuple[0]) invalid('The enquiry queue link has an invalid date.');
+    } else date(tuple[0], 'Queue date');
+    cursors[kind] = [tuple[0], recordId(tuple[1])];
+  }
+  return { date: date(params.get('date'), 'Today'), cursors };
+}
+
 function email(value, optional = false) {
   const result = text(value, 'Email', 254);
   if ((!optional || result) && !emailPattern.test(result)) invalid('Email must be a valid email address.');

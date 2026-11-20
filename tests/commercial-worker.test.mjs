@@ -29,6 +29,10 @@ test('built production Worker authorizes both approved users and attributes thei
     assert.deepEqual(await session.json(), { email: email.toLowerCase() });
     assert.equal(session.headers.get('cache-control'), 'private, no-store');
     assert.equal((await app.request('/backoffice/', { host: 'backoffice.mrsoftware.dk', jwt })).status, 200);
+    const today = await app.request('/api/backoffice/today?date=2030-11-20', { host: 'backoffice.mrsoftware.dk', jwt });
+    assert.equal(today.status, 200);
+    assert.equal(today.headers.get('cache-control'), 'private, no-store');
+    assert.deepEqual((await today.json()).followUps, { items: [], next: null });
     assert.equal((await save(jwt, 'Customer saved by ' + sub)).status, 201);
   }
   const outsider = await save(await app.token({ sub: 'synthetic-outsider', email: 'unknown@example.test' }), 'Unauthorized customer');

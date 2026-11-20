@@ -3,6 +3,7 @@ import { HttpError } from './validation.mjs';
 
 const tables = { customers: 'sales_customers', opportunities: 'sales_opportunities', quotes: 'sales_quotes', events: 'sales_events' };
 const stateLimit = 100;
+const queueLimit = 25;
 const initialJson = JSON.stringify(initialCatalog);
 const parseRow = row => row ? JSON.parse(row.document) : null;
 const record = (input, now = new Date().toISOString()) => ({ ...input, id: crypto.randomUUID(), revision: 1, createdAt: now, updatedAt: now });
@@ -75,6 +76,34 @@ export function createStore(db) {
       if (rows.length > stateLimit) output.truncated = true;
     }
     output.catalog = parseRow(results[collections.length].results[0]) ?? structuredClone(initialCatalog);
+    return output;
+  }
+
+  async function today({ date, cursors }) {
+    const queues = [
+      { key: 'followUps', table: 'sales_opportunities', sort: "json_extract(s.document, '$.nextFollowUp')", filter: "json_extract(s.document, '$.nextFollowUp') <= ? AND json_extract(s.document, '$.stage') NOT IN ('won', 'lost')", bindings: [date], customer: true },
+      { key: 'enquiries', table: 'sales_opportunities', sort: 's.created_at', filter: "json_extract(s.document, '$.stage') = 'enquiry' AND json_extract(s.document, '$.nextFollowUp') IS NULL", bindings: [], customer: true },
+      { key: 'quotes', table: 'sales_quotes', sort: "json_extract(s.document, '$.validUntil')", filter: "json_extract(s.document, '$.status') IN ('draft', 'sent')", bindings: [], customer: false },
+    ];
+    // Filter across all records before limiting; unrelated recent work must not
+    // hide a due opportunity. The stable two-column cursor handles equal dates.
+    const results = await db.batch(queues.map(queue => {
+      const cursor = cursors[queue.key];
+      return db.prepare(`SELECT s.document, ${queue.sort} AS sort_value${queue.customer ? ', c.document AS customer' : ''}
+        FROM ${queue.table} s ${queue.customer ? 'JOIN sales_customers c ON c.id = s.customer_id' : ''}
+        WHERE ${queue.filter}${cursor ? ` AND (${queue.sort} > ? OR (${queue.sort} = ? AND s.id > ?))` : ''}
+        ORDER BY ${queue.sort} ASC, s.id ASC LIMIT ?`).bind(...queue.bindings, ...(cursor ? [cursor[0], cursor[0], cursor[1]] : []), queueLimit + 1);
+    }));
+    const output = { date, customers: [] };
+    const customers = new Map();
+    for (const [index, queue] of queues.entries()) {
+      const rows = results[index].results;
+      const page = rows.slice(0, queueLimit);
+      const last = page.at(-1);
+      output[queue.key] = { items: page.map(parseRow), next: rows.length > queueLimit ? JSON.stringify([last.sort_value, parseRow(last).id]) : null };
+      if (queue.customer) for (const row of page) { const customer = JSON.parse(row.customer); customers.set(customer.id, customer); }
+    }
+    output.customers = [...customers.values()];
     return output;
   }
 
@@ -190,5 +219,5 @@ export function createStore(db) {
     return { created: results[1].results.length === 1, receipt: receipt(saved) };
   }
 
-  return { catalog, state, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry };
+  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry };
 }

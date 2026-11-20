@@ -1,6 +1,7 @@
 import { test, expect } from './fixtures.mjs';
 import { startCommercialSite } from '../helpers/commercial-http.mjs';
 import { customerInput, opportunityInput, quoteInput, enquiryInput } from '../helpers/commercial.mjs';
+import { seedSalesQueue } from '../helpers/sales-queues.mjs';
 
 const route = (app, view = '', id = '') => app.privateBase + 'backoffice/' + (view ? `?view=${view}${id ? '&id=' + id : ''}` : '');
 const seedCustomer = async (app, values = {}) => (await app.call('POST', '/api/backoffice/customers', { ...customerInput, name: 'Holm & Co', ...values })).body.item;
@@ -119,10 +120,54 @@ test('Today surfaces new public enquiries without follow-up dates', async ({ pag
   await expect(page.getByRole('link', { name: 'New Enquiry Ltd', exact: true }).first()).toBeVisible();
 });
 
+test('Today keeps older due work, enquiries, open quotes and customer links beyond the recent workspace', async ({ page, app }) => {
+  const old = await seedSalesQueue(app, 1, { prefix: 'Older' });
+  await seedSalesQueue(app, 105, { matching: false, now: '2035-01-01T12:00:00.000Z', prefix: 'Newer' });
+  await page.goto(route(app)); await ready(page);
+  await expect(page.getByRole('link', { name: 'Older followUps 0', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Older enquiries 0', exact: true })).toBeVisible();
+  await expect(page.locator(`a[href*="${old.quotes[0].id}"]`)).toBeVisible();
+  await expect(page.locator('main')).not.toContainText('Latest records');
+  await page.getByRole('link', { name: 'Older customer', exact: true }).first().click();
+  await expect(page.locator('h1')).toHaveText('Older customer');
+  await page.goBack(); await ready(page);
+  await page.getByRole('link', { name: 'Older followUps 0', exact: true }).click();
+  await expect(page.locator('h1')).toHaveText('Older followUps 0');
+});
+
+test('Today queue pages retain their address on reload, record Back and other queue navigation', async ({ page, app }) => {
+  await seedSalesQueue(app, 27);
+  await page.goto(route(app)); await ready(page);
+  const followUps = page.locator('#today-follow-ups');
+  await expect(followUps.locator('.record-card')).toHaveCount(25);
+  await page.getByRole('link', { name: 'More follow-ups', exact: true }).click(); await ready(page);
+  const second = page.url();
+  expect(second).toContain('followUpsAfter=');
+  expect(second).toContain('date=');
+  await expect(followUps.locator('.record-card')).toHaveCount(2);
+  await page.reload(); await ready(page);
+  await expect(followUps.locator('.record-card')).toHaveCount(2);
+  await followUps.locator('.record-card h3 a').first().click();
+  await expect(page.locator('h1')).not.toHaveText('Today');
+  await page.goBack(); await ready(page);
+  expect(page.url()).toBe(second);
+  await expect(followUps.locator('.record-card')).toHaveCount(2);
+  await page.getByRole('link', { name: 'More enquiries', exact: true }).click(); await ready(page);
+  await expect(page.locator('#today-enquiries .record-card')).toHaveCount(2);
+  await expect(followUps.locator('.record-card')).toHaveCount(2);
+  await page.getByRole('link', { name: 'More quotes', exact: true }).click(); await ready(page);
+  await expect(page.locator('#today-quotes .record-card')).toHaveCount(2);
+  await expect(page.getByRole('heading', { name: 'Open quotes', exact: true })).toBeInViewport();
+  await page.getByRole('link', { name: 'First follow-ups', exact: true }).click(); await ready(page);
+  await expect(followUps.locator('.record-card')).toHaveCount(25);
+  await expect(page.locator('#today-enquiries .record-card')).toHaveCount(2);
+  await expect(page.locator('#today-quotes .record-card')).toHaveCount(2);
+});
+
 test('failed load ends busy state and offers retry without false empty counts', async ({ page, app }) => {
   await seedCustomer(app);
   let fail = true;
-  await page.route('**/api/backoffice/state', async r => fail ? r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'Sales storage is unavailable. Please try again later.' }) }) : r.continue());
+  await page.route('**/api/backoffice/today?*', async r => fail ? r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'Sales storage is unavailable. Please try again later.' }) }) : r.continue());
   await page.goto(route(app));
   await expect(page.getByRole('alert')).toContainText('Sales storage is unavailable');
   await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
@@ -202,7 +247,8 @@ test('specific records and missing linked customers load beyond the bounded stat
   await expect(page.locator('main')).not.toContainText('record ID below');
   await expect(page.getByLabel('Open customer by record ID', { exact: true })).toHaveCount(0);
   await page.getByRole('link', { name: 'Today', exact: true }).click(); await ready(page);
-  await expect(page.locator('main')).toContainText(limited);
+  await expect(page.locator('main')).toContainText('No follow-ups due.');
+  await expect(page.locator('main')).not.toContainText('Latest records');
   await expect(page.locator('main')).not.toContainText('record ID below');
 });
 
