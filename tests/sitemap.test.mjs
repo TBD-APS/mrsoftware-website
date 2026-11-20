@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile, stat } from 'node:fs/promises';
 import test from 'node:test';
 import { createDashboardHandler } from '../dashboard/handler.mjs';
+import { publicCommercialEntry } from '../website-entry.mjs';
 
 const origin = 'https://mrsoftware.dk';
 const catalogue = JSON.parse(await readFile(new URL('../data/links.json', import.meta.url), 'utf8'));
@@ -43,6 +44,12 @@ test('the sitemap serves XML containing every public catalogue place and additio
     assert.equal(url.hash, '');
     assert.equal(url.search, '');
     assert.equal(internalPath.test(url.pathname), false, `Internal page: ${address}`);
+    const entry = publicCommercialEntry(new Request(address));
+    if (entry) {
+      assert.equal(entry.status, 307);
+      assert.equal(new URL(entry.headers.get('Location')).origin, 'https://demos.mrsoftware.dk');
+      continue;
+    }
     const page = await stat(new URL(`..${url.pathname}index.html`, import.meta.url));
     assert.ok(page.isFile(), `Missing page file for ${address}`);
   }
