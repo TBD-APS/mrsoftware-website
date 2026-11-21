@@ -3,8 +3,17 @@ import { mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
+import { parseFragment } from 'parse5';
 import { roadmapReport } from './roadmap-report.mjs';
 import { verifyContentModule } from './verify-content-module.mjs';
+
+function findElement(node, attribute, value) {
+  if (node?.attrs?.some(item => item.name === attribute && item.value === value)) return node;
+  for (const child of node?.childNodes ?? []) {
+    const found = findElement(child, attribute, value);
+    if (found) return found;
+  }
+}
 
 export async function buildRoadmapReports() {
   const root = fileURLToPath(new URL('..', import.meta.url));
@@ -28,6 +37,13 @@ export async function buildRoadmapReports() {
     ['roadmap.html', standalone.html], ['roadmap.csv', toCsv(rendered.report.datasets.products)], ['snapshot.json', rendered.json],
   ]);
   for (const chart of rendered.charts) if (chart.svg) files.set(`${chart.id}.svg`, chart.svg);
+  // Reuse the renderer's existing phone layout, preserving its exact SVG bytes.
+  const tree = parseFragment(rendered.fragment, { sourceCodeLocationInfo: true });
+  const graph = findElement(tree, 'aria-labelledby', 'content-developed-by-package');
+  const phone = findElement(graph, 'class', 'content-small');
+  const location = phone?.childNodes?.find(node => node.tagName === 'svg')?.sourceCodeLocation;
+  if (!location) throw Error('The shared report must provide its responsive roadmap graph');
+  files.set('developed-by-package-compact.svg', rendered.fragment.slice(location.startOffset, location.endOffset));
   const browser = await chromium.launch({ ...(process.env.UX_CHROME ? { executablePath: process.env.UX_CHROME } : { channel: 'chrome' }), headless: true });
   try {
     const context = await browser.newContext();

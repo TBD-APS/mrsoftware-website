@@ -78,7 +78,9 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(page.locator('#solutions article').filter({ hasText: 'Roady' }).locator('.status-state')).toHaveText('Demo');
     for (const figure of await page.locator('#main figure.frame').all()) {
       await expect(figure).toHaveAttribute('aria-label', /demo data/i);
-      await expect(figure.locator('.demo-tag')).toHaveText('Demo data');
+      const tags = figure.locator('.demo-tag');
+      expect(await tags.count()).toBeGreaterThan(0);
+      for (const tag of await tags.all()) await expect(tag).toHaveText('Demo data');
     }
     // Internal process notes and prices stay out of the public page.
     await expect(page.locator('body')).not.toContainText(/internal approval|TODO|kr\.|DKK|€/i);
@@ -101,6 +103,22 @@ test('Product links and factual result labels stay explicit', async ({ page, con
       'Email and messaging', 'Files and spreadsheets',
     ]);
     await expect(categories).toContainText('Availability depends on the product');
+  } finally {
+    await app.close();
+  }
+});
+
+test('Visitors can open Guessy from the free products section', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.route('https://guessy.mrsoftware.dk/', route => route.fulfill({ body: 'Guessy' }));
+    await page.goto(publicBase(app.base));
+    const freeProducts = page.getByRole('region', { name: 'Free products' });
+    await expect(freeProducts.getByRole('heading', { name: 'Guessy' })).toBeVisible();
+    await expect(page.locator('.site-footer').getByRole('link', { name: 'Guessy' })).toHaveAttribute('href', 'https://guessy.mrsoftware.dk/');
+    await freeProducts.getByRole('link', { name: 'Play Guessy' }).click();
+    await expect(page).toHaveURL('https://guessy.mrsoftware.dk/');
   } finally {
     await app.close();
   }
@@ -315,6 +333,184 @@ test('Workslip opens with its step-by-step: six steps on site, the office review
     // Boxes are filled, not outlined.
     for (const box of await flow.locator('.flow-boxes li').all()) await expect(box).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+test('The hero cycles through a shipment, an offer and a transport, and shows one still record when motion is reduced', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base));
+    const lanes = page.locator('.hero-lane');
+    await expect(lanes.locator('.frame-bar strong')).toHaveText(['Shippy · Shipment', 'Tradey · Offer', 'Roady · Transport']);
+    await expect(page.locator('.hero-frame')).toHaveAttribute('aria-label', /demo data.*Shippy.*Tradey.*Roady/i);
+    // The offer takes its turn after the shipment.
+    await expect.poll(() => lanes.nth(1).evaluate(node => Number(getComputedStyle(node).opacity)), { timeout: 9_000 }).toBeGreaterThan(0.9);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.reload();
+    await page.waitForTimeout(1_000);
+    expect(await lanes.evaluateAll(nodes => nodes.map(node => getComputedStyle(node).visibility))).toEqual(['visible', 'hidden', 'hidden']);
+    expect(await lanes.first().evaluate(node => getComputedStyle(node).animationName)).toBe('none');
+  } finally {
+    await app.close();
+  }
+});
+
+test('Pointing at a system type in the ticker pauses it and explains what it covers', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'Hover is a pointer interaction; keyboard focus is checked on desktop too.');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.goto(publicBase(app.base));
+    const ticker = page.locator('.ticker-wrap');
+    const detail = ticker.locator('.ticker-detail');
+    await expect(detail).toBeHidden();
+    await ticker.locator('.ticker a').nth(2).hover({ force: true });
+    await expect(ticker.locator('.ticker ul')).toHaveCSS('animation-play-state', 'paused');
+    await expect(ticker.locator('.ticker a.is-active')).toHaveText('Carriers and shipping lines');
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Bookings, schedules and tracking.');
+    // The panel can be reached with the pointer and leads on to the integrations overview.
+    await detail.getByRole('link', { name: /Read more/ }).hover();
+    await expect(detail).toBeVisible();
+    await expect(detail.getByRole('link', { name: /Read more/ })).toHaveAttribute('href', '/integrations/#categories');
+
+    // The keyboard gets the same explanation, and Escape closes it. The repeated copy is not focusable.
+    await page.mouse.move(0, 0);
+    await expect(detail).toBeHidden();
+    await ticker.locator('.ticker a').first().focus();
+    await expect(detail).toContainText('Orders, customers and items.');
+    await page.keyboard.press('Escape');
+    await expect(detail).toBeHidden();
+    await expect(ticker.locator('li[aria-hidden="true"] a:not([tabindex="-1"])')).toHaveCount(0);
+  } finally {
+    await app.close();
+  }
+});
+
+test('Top menu items turn bold and open their pages on hover or focus (SAS-586)', async ({ page, context }, testInfo) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    if (testInfo.project.name === 'phone') {
+      // The phone menu stays a flat list: the dropdowns are not shown and cannot be tabbed into.
+      await page.goto(publicBase(app.base) + 'stories/');
+      await page.getByRole('button', { name: 'Open menu' }).click();
+      await expect(page.locator('.nav-sub').first()).toBeHidden();
+      return;
+    }
+    for (const pathname of ['', 'stories/']) {
+      await page.goto(publicBase(app.base) + pathname);
+      const nav = page.locator('#main-nav');
+      const products = nav.locator('.nav-group').filter({ has: page.getByRole('link', { name: 'Products', exact: true }) });
+      const next = nav.getByRole('link', { name: 'Integrations', exact: true });
+      const before = (await next.boundingBox()).x;
+      await products.getByRole('link', { name: 'Products', exact: true }).hover();
+      await expect(products.getByRole('link', { name: 'Products', exact: true })).toHaveCSS('font-weight', '600');
+      // Bold text does not push the next item sideways.
+      expect(Math.abs((await next.boundingBox()).x - before)).toBeLessThanOrEqual(1);
+      const sub = products.locator('.nav-sub');
+      await expect(sub).toBeVisible();
+      await expect(sub.getByRole('link')).toHaveText(['Tradey', 'Shippy', 'Roady', 'Workslip', 'Demo centre']);
+      await expect(sub.getByRole('link', { name: 'Roady' })).toHaveAttribute('href', '/demo/roady/');
+      await page.mouse.move(700, 600);
+      await expect(sub).toBeHidden();
+    }
+    // Keyboard: focus opens the list, Tab walks into it, Escape closes it and returns to the item.
+    await page.goto(publicBase(app.base) + 'stories/');
+    const stories = page.locator('#main-nav .nav-group').filter({ has: page.getByRole('link', { name: 'Stories', exact: true }) });
+    await stories.getByRole('link', { name: 'Stories', exact: true }).focus();
+    await expect(stories.locator('.nav-sub')).toBeVisible();
+    await page.keyboard.press('Tab');
+    await expect(stories.getByRole('link', { name: 'The offer' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(stories.getByRole('link', { name: 'Stories', exact: true })).toBeFocused();
+    await expect(stories.locator('.nav-sub')).toBeHidden();
+    // Items without pages under them, like Contact, get no list.
+    await expect(page.locator('#main-nav .nav-group').filter({ has: page.getByRole('link', { name: 'Contact', exact: true }) })).toHaveCount(0);
+  } finally {
+    await app.close();
+  }
+});
+
+test('The ticker keeps the focused explanation when the pointer leaves or visits another type', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'Combined pointer and keyboard behavior.');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(publicBase(app.base));
+    const ticker = page.locator('.ticker-wrap');
+    const first = ticker.locator('a[data-detail]').first();
+    const second = ticker.locator('a[data-detail]').nth(1);
+    const detail = ticker.locator('.ticker-detail');
+    await first.hover();
+    await first.focus();
+    await page.mouse.move(0, 0);
+    await expect(first).toBeFocused();
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Orders, customers and items.');
+
+    await second.hover();
+    await expect(detail).toContainText('Invoices, payments and accounts.');
+    await page.mouse.move(0, 0);
+    await expect(first).toBeFocused();
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Orders, customers and items.');
+  } finally {
+    await app.close();
+  }
+});
+
+test('The ticker keeps the hovered explanation when keyboard focus moves outside', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'Combined pointer and keyboard behavior.');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(publicBase(app.base));
+    const ticker = page.locator('.ticker-wrap');
+    const first = ticker.locator('a[data-detail]').first();
+    const second = ticker.locator('a[data-detail]').nth(1);
+    const detail = ticker.locator('.ticker-detail');
+    // Keep the next keyboard target on screen so moving focus does not scroll the pointer away.
+    await ticker.evaluate(node => window.scrollBy(0, node.getBoundingClientRect().top - 160));
+    const next = page.locator('.research-feature .button');
+    await expect(next).toBeInViewport();
+    await first.hover();
+    await second.focus();
+    await expect(detail).toContainText('Invoices, payments and accounts.');
+    await next.focus();
+    await expect(next).toBeFocused();
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Orders, customers and items.');
+    await page.mouse.move(0, 0);
+    await expect(detail).toBeHidden();
+  } finally {
+    await app.close();
+  }
+});
+
+test('Escape dismisses ticker content and returns focus from Read more', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'Combined pointer and keyboard behavior.');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(publicBase(app.base));
+    const ticker = page.locator('.ticker-wrap');
+    const first = ticker.locator('a[data-detail]').first();
+    const detail = ticker.locator('.ticker-detail');
+    await first.hover();
+    await first.focus();
+    await detail.getByRole('link', { name: /Read more/ }).focus();
+    await page.keyboard.press('Escape');
+    await expect(detail).toBeHidden();
+    await expect(first).toBeFocused();
+    await page.mouse.move(0, 0);
+    await expect(detail).toBeHidden();
+
+    await page.locator('.research-feature .button').focus();
+    await first.focus();
+    await expect(detail).toBeVisible();
   } finally {
     await app.close();
   }
