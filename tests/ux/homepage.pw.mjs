@@ -108,6 +108,22 @@ test('Product links and factual result labels stay explicit', async ({ page, con
   }
 });
 
+test('Visitors can open Guessy from the free products section', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.route('https://guessy.mrsoftware.dk/', route => route.fulfill({ body: 'Guessy' }));
+    await page.goto(publicBase(app.base));
+    const freeProducts = page.getByRole('region', { name: 'Free products' });
+    await expect(freeProducts.getByRole('heading', { name: 'Guessy' })).toBeVisible();
+    await expect(page.locator('.site-footer').getByRole('link', { name: 'Guessy' })).toHaveAttribute('href', 'https://guessy.mrsoftware.dk/');
+    await freeProducts.getByRole('link', { name: 'Play Guessy' }).click();
+    await expect(page).toHaveURL('https://guessy.mrsoftware.dk/');
+  } finally {
+    await app.close();
+  }
+});
+
 test('Homepage uses the approved visual tokens and responsive layout', async ({ page, context }) => {
   const app = await startSite();
   try {

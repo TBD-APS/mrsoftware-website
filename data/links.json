@@ -7,6 +7,12 @@
       "summary": "Software for trading, shipping and field service."
     },
     {
+      "id": "free-products",
+      "title": "Free products",
+      "href": "/#free-products",
+      "summary": "Try free software built and shared by MR Software."
+    },
+    {
       "id": "stories",
       "title": "Stories",
       "href": "/stories/",
