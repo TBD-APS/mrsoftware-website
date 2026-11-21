@@ -234,7 +234,7 @@ test('Homepage stays usable across the required viewport matrix', async ({ page,
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
-    for (const width of [320, 375, 390, 768, 900, 1024, 1440]) {
+    for (const width of [320, 375, 390, 768, 861, 900, 1024, 1440]) {
       await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
       await page.goto(publicBase(app.base));
       const layout = await page.evaluate(() => {

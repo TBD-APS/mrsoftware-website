@@ -40,6 +40,10 @@ test('every canonical company page has unique search metadata and consistent sha
     assert.equal(canonicals.length, 1, `Canonical count: ${path}`);
     assert.equal(attribute(canonicals[0], 'href'), origin + path, `Canonical: ${path}`);
     assert.equal(meta('twitter:card'), 'summary_large_image', path);
+    const icon = attribute(elements(document, 'link').find(node => attribute(node, 'rel') === 'icon'), 'href');
+    assert.ok(icon, `Favicon: ${path}`);
+    assert.equal(new URL(icon, origin).origin, origin, path);
+    assert.ok((await readFile(new URL('..' + new URL(icon, origin).pathname, import.meta.url))).length > 0, `Favicon file: ${path}`);
     const image = meta('og:image');
     assert.equal(meta('twitter:image'), image, `Sharing image: ${path}`);
     assert.equal(new URL(image).origin, origin, path);

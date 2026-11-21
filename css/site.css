@@ -669,6 +669,12 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .rows p { grid-column: 2; }
 }
 
+/* Keep the language selector and full homepage navigation inside narrow desktop headers. */
+@media (min-width: 861px) and (max-width: 1100px) {
+  .home .nav { gap: 0; }
+  .home .nav > a:not(.button), .home .nav-group > a { padding-inline: 10px; }
+}
+
 @media (max-width: 860px) {
   .nav-toggle { display: block; }
   .nav {

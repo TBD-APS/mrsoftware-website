@@ -33,10 +33,28 @@ test('the Danish entry is readable across phone, tablet and desktop widths', asy
     await prepareContext(context, app.base);
     const base = app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
     await page.goto(base + 'da/');
+    const actionContrast = await page.locator('.page-hero .hero-actions a').evaluateAll(links => {
+      const channels = value => value.match(/[\d.]+/g).map(Number);
+      const luminance = rgb => rgb.slice(0, 3).map(value => value / 255).map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4)
+        .reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
+      return links.map(link => {
+        let parent = link;
+        let background;
+        do {
+          background = channels(getComputedStyle(parent).backgroundColor);
+          parent = parent.parentElement;
+        } while (background[3] === 0 && parent);
+        const foreground = luminance(channels(getComputedStyle(link).color));
+        const behind = luminance(background);
+        return (Math.max(foreground, behind) + .05) / (Math.min(foreground, behind) + .05);
+      });
+    });
+    for (const contrast of actionContrast) expect(contrast, 'hero action text contrasts with its visible background').toBeGreaterThanOrEqual(4.5);
     for (const width of [360, 390, 768, 900, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       await page.reload();
       await expect(page.locator('h1')).toBeInViewport();
+      for (const action of await page.locator('.page-hero .hero-actions a').all()) await expect(action).toBeInViewport();
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `width ${width}`).toBeLessThanOrEqual(1);
       const language = page.getByRole('link', { name: 'English', exact: true });
       await expect(language).toBeVisible();
