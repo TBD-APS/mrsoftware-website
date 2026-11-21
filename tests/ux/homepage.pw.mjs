@@ -333,6 +333,11 @@ test('Workslip opens with its step-by-step: six steps on site, the office review
     // Boxes are filled, not outlined.
     for (const box of await flow.locator('.flow-boxes li').all()) await expect(box).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+  } finally {
+    await app.close();
+  }
+});
+
 test('The hero cycles through a shipment, an offer and a transport, and shows one still record when motion is reduced', async ({ page, context }) => {
   const app = await startSite();
   try {
