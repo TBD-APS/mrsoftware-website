@@ -102,13 +102,13 @@ for (const path of pages) {
       await expect(nav).toBeVisible();
       await expect(page.locator('main')).toHaveJSProperty('inert', true);
 
-      // Focus stays inside the open menu.
-      const stops = await nav.locator('a').count() + 1;
+      // Focus stays inside the open menu. Desktop dropdown links are not shown on a phone, so only shown links count.
+      const stops = await nav.locator('a:visible').count() + 1;
       await toggle.focus();
       for (let index = 0; index < stops; index += 1) await page.keyboard.press('Tab');
       await expect(toggle).toBeFocused();
       await page.keyboard.press('Shift+Tab');
-      await expect(nav.locator('a').last()).toBeFocused();
+      await expect(nav.locator('a:visible').last()).toBeFocused();
 
       await page.keyboard.press('Escape');
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
