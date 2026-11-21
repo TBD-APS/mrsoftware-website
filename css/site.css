@@ -317,6 +317,19 @@ a:hover > .arrow { transform: translateX(4px); }
 .statement-head .heading { max-width: none; font-size: clamp(1.625rem, 1.1rem + 1.4vw, 2.25rem); line-height: 1.25; }
 .cards { margin-top: var(--s6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
 /* MR SAAS'y sits under the three products as one raised panel, with Workslip as its live case. */
+.free-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  align-items: start;
+  gap: var(--s4);
+  margin-top: var(--s5);
+  padding: var(--s4);
+  border: 1px solid var(--hairline-light);
+  border-radius: var(--radius);
+}
+.free-products-intro p, .free-product p { margin: var(--s2) 0 0; }
+.free-product h4 { margin: 0; font: 500 var(--fs-title) / 1.1 var(--serif); }
+.free-product .button { margin-top: var(--s3); }
 .platform { margin-top: var(--s5); padding: var(--s5); display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--s5); align-items: center; background: var(--ink); color: var(--paper); border-radius: var(--radius); box-shadow: 0 24px 48px -28px rgba(20, 16, 14, .55); }
 .platform .eyebrow { color: rgba(255, 252, 247, .72); }
 .platform .heading { margin: var(--s1) 0 var(--s3); color: var(--paper); font-size: var(--fs-heading); max-width: 22ch; }
