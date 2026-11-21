@@ -90,14 +90,44 @@
         <div class="section-head" data-reveal>
           <p class="label"><span class="num">01</span> How it works</p>
           <div class="section-copy">
-            <h2 class="heading" id="how-heading">Three steps in Workslip.</h2>
+            <h2 class="heading" id="how-heading">From the job on site to the approval in the office.</h2>
+            <p class="lead">The step names in small type are the ones Workslip shows, in Danish.</p>
           </div>
         </div>
-        <ol class="rows section-body" data-reveal>
-          <li><h3>Field</h3><p>The task, photos and checks are recorded on site.</p></li>
-          <li><h3>Office</h3><p>The status is visible without calling anyone.</p></li>
-          <li><h3>Approved</h3><p>The documentation is ready when the job is signed off.</p></li>
-        </ol>
+        <div class="flowmap section-body" data-reveal>
+          <section class="flow-group is-field" aria-labelledby="flow-field">
+            <p class="flow-where">On site · the technician</p>
+            <h3 id="flow-field">The job is recorded in six steps</h3>
+            <ol class="flow-boxes">
+              <li><span class="flow-n" aria-hidden="true">1</span><b>Job details</b><small lang="da">Sagsdetaljer</small><p>Customer, work site and the fields the job needs.</p></li>
+              <li><span class="flow-n" aria-hidden="true">2</span><b>Installation types</b><small lang="da">Anlægstyper</small><p>The work that was done. It decides which checkpoints come next.</p></li>
+              <li><span class="flow-n" aria-hidden="true">3</span><b>Checkpoints</b><small lang="da">Kontrolpunkter</small><p>At least one in each relevant category, or marked as not relevant.</p></li>
+              <li><span class="flow-n" aria-hidden="true">4</span><b>Timesheets</b><small lang="da">Timesedler</small><p>Working time and expenses. A job can have several.</p></li>
+              <li><span class="flow-n" aria-hidden="true">5</span><b>Completion</b><small lang="da">Afslutning</small><p>How the work ended, including when it is not finished.</p></li>
+              <li><span class="flow-n" aria-hidden="true">6</span><b>Attestation</b><small lang="da">Attestering</small><p>A last check, then the job goes on for review.</p></li>
+            </ol>
+          </section>
+          <span class="flow-arrow" aria-hidden="true"></span>
+          <section class="flow-group is-office" aria-labelledby="flow-office">
+            <p class="flow-where">In the office</p>
+            <h3 id="flow-office">The office reviews the same record</h3>
+            <ul class="flow-boxes">
+              <li><b>In review</b><small lang="da">Til gennemsyn</small><p>Waiting for the office after attestation.</p></li>
+              <li><b>Approved</b><small lang="da">Godkendt</small><p>The office signs the job off.</p></li>
+              <li><b>Rejected</b><small lang="da">Afvist</small><p>The job is not accepted as it stands.</p></li>
+              <li><b>Reopened</b><small lang="da">Genåbnet</small><p>The job is open again for changes.</p></li>
+            </ul>
+          </section>
+          <span class="flow-arrow" aria-hidden="true"></span>
+          <section class="flow-group is-done" aria-labelledby="flow-done">
+            <p class="flow-where">Afterwards</p>
+            <h3 id="flow-done">Documentation and overview</h3>
+            <ul class="flow-boxes">
+              <li><b>Documentation ready</b><p>What the office approved is what was recorded on site.</p></li>
+              <li><b>Leader analysis</b><small lang="da">Lederanalyse</small><p>Jobs per month: approved, rejected and still open.</p></li>
+            </ul>
+          </section>
+        </div>
       </div>
     </section>
 
