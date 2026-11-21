@@ -266,7 +266,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .rotate-word.is-in { opacity: 1; transform: none; }
 .rotate-word.is-out { opacity: 0; transform: translateY(-100%); }
 @media (prefers-reduced-motion: no-preference) {
-  .rotate-word { transition: transform .6s var(--ease), opacity .4s var(--ease); }
+  .rotate-word { transition: transform .6s var(--ease); }
 }
 
 /* Large media panels: drawn scenes, never photographs of people or places. */

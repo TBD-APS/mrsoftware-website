@@ -25,6 +25,13 @@ See [sitemap ownership](sitemap.md). Existing navigation addresses still work.
 Public pages retain their existing English positioning; translated pages and
 `hreflang` require real translations and a confirmed target market.
 
+Related links are rendered into public HTML from `data/links.json` using the
+existing shared link renderer, so they are available without JavaScript and do
+not push the hero down after first paint. Saving through `npm run links` updates
+the catalogue, public module and static HTML together. After changing the renderer,
+run `npm run build:links`; the tests reject stale static links. No second list of
+link destinations is maintained.
+
 ## Lighthouse checks
 
 Install with `npm ci`, then run:
@@ -85,6 +92,22 @@ do not invent hours, reviews, photos, categories or a second location.
 Account login/verification and public profile publication remain explicit account
 actions; source checks do not prove them. No Ads campaign, paid service, analytics
 tracker or new personal-data collection is introduced by this change.
+
+### Business Profile copy for owner review
+
+This is a draft for an eligible business, not a published profile. Keep the real
+name **MR Software**. Confirm the primary category in Google's current category
+list; **Software company** is the proposed category. Hours, phone, customer-facing
+location/service area and ownership are not inferred from a registered address.
+
+Proposed English description (matching the existing website language):
+
+> MR Software develops software for trading, shipping and field service. Workslip keeps job checklists, photos, documentation and office approval together. Tradey, currently in development, is a CRM and ERP designed around food traders' workflows. Shippy's demo brings shipment bookings, documents and status together for freight forwarders. We build around the systems and working practices a business already uses. Public demos make the work easy to explore.
+
+Use original, owner-approved logo/product images. Do not present illustrated
+scenes or demo data as photographs of an office, staff, customers or completed
+customer work. Do not add opening hours or a customer-facing address until those
+facts and Business Profile eligibility are confirmed.
 
 References:
 

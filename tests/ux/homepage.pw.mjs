@@ -5,13 +5,29 @@ import { homepageJourneys } from './homepage-journeys.mjs';
 
 const publicBase = base => base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
 
+test('research and product links are available without JavaScript', async ({ browser, page }) => {
+  const app = await startSite();
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: page.viewportSize() });
+  try {
+    await prepareContext(context, app.base);
+    const noScriptPage = await context.newPage();
+    await noScriptPage.goto(publicBase(app.base));
+    const links = noScriptPage.locator('.commercial-entrypoints');
+    await expect(links.getByRole('heading', { name: 'Research and products' })).toBeVisible();
+    await expect(links.getByRole('link', { name: /^Research/ })).toHaveAttribute('href', '/research/');
+    await noScriptPage.locator('#solutions').getByRole('link', { name: 'Workslip', exact: true }).click();
+    await expect(noScriptPage).toHaveURL(/\/products\/workslip\/$/);
+    await expect(noScriptPage.locator('.commercial-entrypoints .related-link').first()).toBeVisible();
+  } finally { await context.close(); await app.close(); }
+});
+
 test('late fonts keep the hero heading and actions in place', async ({ page, context }) => {
   const app = await startSite();
   let releaseFonts;
   const fonts = new Promise(resolve => { releaseFonts = resolve; });
   try {
     await prepareContext(context, app.base);
-    await context.route('**/assets/fonts/*.woff2', async route => { await fonts; await route.continue(); });
+    await context.route('**/assets/fonts/*.woff2', async route => { await fonts; await route.fallback(); });
     await page.goto(publicBase(app.base), { waitUntil: 'domcontentloaded' });
     const positions = () => page.evaluate(() => ['#hero-heading', '.hero-row'].map(selector => {
       const box = document.querySelector(selector).getBoundingClientRect();
@@ -19,7 +35,7 @@ test('late fonts keep the hero heading and actions in place', async ({ page, con
     }));
     const before = await positions();
     releaseFonts();
-    await page.evaluate(() => document.fonts.ready);
+    await page.evaluate(async () => { await document.fonts.ready; });
     const after = await positions();
     for (let index = 0; index < before.length; index++) {
       expect(Math.abs(after[index].top - before[index].top), `element ${index} stays in place after fonts load`).toBeLessThanOrEqual(1);
@@ -330,6 +346,15 @@ test('The headline word rotates, and stays still when motion is reduced', async 
     const shown = page.locator('.rotate-word.is-in');
     await expect(shown).toHaveText('order.');
     await expect(shown).toHaveText('shipment.', { timeout: 4_000 });
+    await expect(shown).toHaveCSS('opacity', '1');
+    const duringMotion = await shown.evaluate(async word => {
+      word.classList.remove('is-in');
+      void word.offsetTop;
+      word.classList.add('is-in');
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return getComputedStyle(word).opacity;
+    });
+    expect(duringMotion).toBe('1');
     await expect(page.locator('h1')).toHaveAccessibleName('One place for every order, shipment, document and approval.');
 
     await page.emulateMedia({ reducedMotion: 'reduce' });

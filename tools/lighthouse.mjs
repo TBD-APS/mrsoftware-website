@@ -16,7 +16,10 @@ function evidence(value, depth = 0, found = { nodes: [], sources: [] }) {
   if (value.type === 'source-location' && typeof value.url === 'string') {
     try {
       const url = new URL(value.url);
-      if (['https:', 'http:'].includes(url.protocol)) found.sources.push({ host: url.hostname, file: path.posix.basename(url.pathname), line: value.line });
+      const component = url.pathname.startsWith('/cdn-cgi/challenge-platform/') ? 'cloudflare-challenge'
+        : url.pathname.startsWith('/.webmcp/') ? 'webmcp' : undefined;
+      if (['https:', 'http:'].includes(url.protocol)) found.sources.push({ host: url.hostname, file: path.posix.basename(url.pathname), line: value.line,
+        ...(component ? { component } : {}) });
     } catch { /* Inline sources do not need a URL in the stored summary. */ }
   }
   for (const child of Object.values(value)) if (typeof child === 'object') evidence(child, depth + 1, found);
