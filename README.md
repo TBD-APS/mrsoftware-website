@@ -1,5 +1,8 @@
 # mrsoftware.dk
 
+Search metadata, Lighthouse budgets and Google account setup are described in the
+[search visibility guide](docs/operations/search-visibility.md).
+
 The independent public demo/pricing app and private sales workspace have a
 [local preview and guarded release guide](docs/operations/commercial-release.md).
 Run `npm run preview:commercial` for working loopback demo, pricing and Today URLs.

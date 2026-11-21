@@ -23,7 +23,7 @@ function locations(xml) {
   return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
 }
 
-test('the sitemap serves XML containing every public catalogue place and additional page', async () => {
+test('the sitemap contains canonical company pages and excludes redirected catalogue entries', async () => {
   const response = await request('/sitemap.xml');
   assert.equal(response.status, 200);
   assert.equal(response.headers.get('Content-Type'), 'application/xml; charset=utf-8');
@@ -37,7 +37,8 @@ test('the sitemap serves XML containing every public catalogue place and additio
   for (const path of paths.filter(path => !internalPath.test(path))) {
     const canonical = new URL(path, origin);
     canonical.hash = '';
-    assert.ok(urls.includes(canonical.href), `Missing public page: ${path}`);
+    const redirected = publicCommercialEntry(new Request(canonical));
+    assert.equal(urls.includes(canonical.href), !redirected, `${redirected ? 'Redirected' : 'Missing public'} page: ${path}`);
   }
   assert.equal(urls.length, new Set(urls).size, 'Sitemap URLs must be unique');
   for (const address of urls) {
@@ -47,11 +48,7 @@ test('the sitemap serves XML containing every public catalogue place and additio
     assert.equal(url.search, '');
     assert.equal(internalPath.test(url.pathname), false, `Internal page: ${address}`);
     const entry = publicCommercialEntry(new Request(address));
-    if (entry) {
-      assert.equal(entry.status, 307);
-      assert.equal(new URL(entry.headers.get('Location')).origin, 'https://demos.mrsoftware.dk');
-      continue;
-    }
+    assert.equal(entry, null, `Sitemap entry must not redirect: ${address}`);
     const page = await stat(new URL(`..${url.pathname}index.html`, import.meta.url));
     assert.ok(page.isFile(), `Missing page file for ${address}`);
   }
@@ -67,6 +64,13 @@ test('sitemap generation follows catalogue changes while excluding internal and 
   const response = await request('/sitemap.xml', data, 'GET', 'https://preview.example.com');
   assert.equal(response.status, 200);
   assert.deepEqual(locations(await response.text()), [origin + '/new-public-page/', origin + '/another-public-page/']);
+});
+
+test('commercial redirects stay navigable but do not compete with canonical company pages in the sitemap', async () => {
+  const data = { places: [{ href: '/products/workslip/' }, { href: '/demos/' }, { href: '/demos/workslip/' }, { href: '/pricing/workslip/' }], sitemapPages: ['/research/'] };
+  const response = await request('/sitemap.xml', data);
+  assert.deepEqual(locations(await response.text()), [origin + '/products/workslip/', origin + '/research/']);
+  assert.equal(publicCommercialEntry(new Request(origin + '/demos/workslip/')).status, 307);
 });
 
 test('sitemap URL text is XML escaped', async () => {
