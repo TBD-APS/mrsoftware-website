@@ -220,9 +220,22 @@
         link.addEventListener('mouseenter', function () { show(link); });
         link.addEventListener('focus', function () { show(link); });
       });
-      wrap.addEventListener('mouseleave', hide);
-      wrap.addEventListener('focusout', function (event) { if (!wrap.contains(event.relatedTarget)) hide(); });
-      wrap.addEventListener('keydown', function (event) { if (event.key === 'Escape') hide(); });
+      wrap.addEventListener('mouseleave', function () {
+        var focused = document.activeElement;
+        if (!wrap.contains(focused)) hide();
+        else if (!detail.hidden && focused.matches('.ticker a[data-detail]')) show(focused);
+      });
+      wrap.addEventListener('focusout', function (event) {
+        if (wrap.contains(event.relatedTarget) || detail.hidden) return;
+        var hovered = wrap.querySelector('.ticker a[data-detail]:hover');
+        if (hovered) show(hovered);
+        else if (!wrap.matches(':hover')) hide();
+      });
+      wrap.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        if (active && detail.contains(document.activeElement)) active.focus();
+        hide();
+      });
     });
 
     if (window.matchMedia('(hover: hover)').matches) {
