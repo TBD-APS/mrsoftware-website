@@ -22,6 +22,7 @@
   <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/linking.css">
   <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
@@ -34,6 +35,7 @@
       <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
         <a href="/#solutions">Products</a>
+        <a href="/research/">Research</a>
         <a href="/integrations/">Integrations</a>
         <a href="/roadmap/" aria-current="page">Roadmap</a>
         <a href="/#results">Results</a>
@@ -58,6 +60,7 @@
       </div>
     </div>
     <div class="roadmap-body page-width">
+    <div data-related-from="roadmap" data-related-heading="Roadmap overview and downloads"></div>
     <section class="greeny-roadmap" aria-labelledby="greeny-showcase">
       <h2 id="greeny-showcase">Greeny</h2>
       <p>Review electricity data, preview and share ESG reports, and estimate emissions for a road leg with the factors behind the result.</p>
@@ -882,7 +885,7 @@
     <div class="footer-inner">
       <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software for trading, shipping and field service.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
       <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a></div>
-      <div class="footer-column"><h2>Resources</h2><a href="/demo/">Demo centre</a><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/research/">How we work</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
+      <div class="footer-column"><h2>Resources</h2><a href="/demo/">Demo centre</a><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/research/">Research</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
       <div class="footer-column"><h2>Company</h2><a href="/contact/">Contact us</a><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a></div>
       <nav class="footer-legal" aria-label="Legal"><h2>Legal</h2><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
     </div>
@@ -891,5 +894,6 @@
       <span>© <span class="year">2026</span> MR Software</span>
     </div>
   </footer>
+  <script type="module" src="/js/related.js"></script>
 </body>
 </html>

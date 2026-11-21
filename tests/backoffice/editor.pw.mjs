@@ -60,7 +60,7 @@ test('a page link is added, saved, and still there after reload', async ({ page 
     await expect(page).toHaveURL(/page=the-offer$/);
     await expect(page.locator('.link-editor-preview').getByRole('link', { name: /The job/ })).toHaveAttribute('href', '/stories/the-job/');
     await page.getByRole('searchbox', { name: 'Find a page' }).fill('Roadmap');
-    await page.getByRole('button', { name: 'Add Roadmap' }).click();
+    await page.getByRole('button', { name: 'Add Roadmap', exact: true }).click();
     await expect(page.getByText('Added Roadmap.')).toBeVisible();
     await page.getByRole('button', { name: 'Save links' }).click();
     await expect(page.getByText('Saved. Publish the site for readers to see these links.')).toBeVisible();
