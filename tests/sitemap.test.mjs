@@ -35,7 +35,9 @@ test('the sitemap serves XML containing every public catalogue place and additio
   assert.ok(Array.isArray(catalogue.sitemapPages) && catalogue.sitemapPages.length > 0);
   const paths = [...catalogue.places.map(place => place.href), ...catalogue.sitemapPages];
   for (const path of paths.filter(path => !internalPath.test(path))) {
-    assert.ok(urls.includes(origin + path), `Missing public page: ${path}`);
+    const canonical = new URL(path, origin);
+    canonical.hash = '';
+    assert.ok(urls.includes(canonical.href), `Missing public page: ${path}`);
   }
   assert.equal(urls.length, new Set(urls).size, 'Sitemap URLs must be unique');
   for (const address of urls) {
