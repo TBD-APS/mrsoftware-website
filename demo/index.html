@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Demo centre | MR Software</title>
-  <meta name="description" content="See MR Software's products with fictional data. Roady and Tradey open as interactive demos; read-only views of every app follow here.">
+  <title>Working features and demos | MR Software</title>
+  <meta name="description" content="Try working features from MR Software: dashboard and file exports, a job checklist, offer approval and proof of delivery. Open examples without a sign-in.">
   <link rel="canonical" href="https://mrsoftware.dk/demo/">
   <meta name="theme-color" content="#fffcf7">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MR Software">
-  <meta property="og:title" content="Demo centre | MR Software">
-  <meta property="og:description" content="See MR Software's products with fictional data.">
+  <meta property="og:title" content="Working features and demos | MR Software">
+  <meta property="og:description" content="Open a real report or try a product workflow with fictional data. See the result yourself.">
   <meta property="og:url" content="https://mrsoftware.dk/demo/">
   <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -20,6 +20,7 @@
   <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/demo-gateway.css">
+  <link rel="stylesheet" href="/css/linking.css">
   <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
 </head>
@@ -45,14 +46,84 @@
     <section class="product-hero on-dark page-hero demo-hero" aria-labelledby="demo-title">
       <div class="page-width">
         <p class="breadcrumbs"><a href="/">Home</a> · Demo centre</p>
-        <h1 id="demo-title">Explore the products.</h1>
-        <p class="lead">Every demo here uses fictional data. Nothing you do in one reaches a customer, an account or a live system, and no demo needs a sign-in or a code.</p>
+        <h1 id="demo-title">See the software at work.</h1>
+        <p class="lead">Open a real report or try a product workflow with fictional data. Pick a feature, follow the short guide and see the result yourself. No sign-in needed.</p>
+        <a class="button button-primary" href="#try-features">Choose a feature to try</a>
+      </div>
+    </section>
+
+    <section class="section feature-showcase" id="try-features" aria-label="Working features">
+      <div class="page-width">
+        <p class="eyebrow">Working features</p>
+        <article class="report-feature" id="report-example" aria-labelledby="report-feature-title">
+          <div class="feature-copy">
+            <p class="feature-kind">Published data</p>
+            <h2 id="report-feature-title">One overview. Files you can use.</h2>
+            <p>See our published roadmap as a dashboard. Download the same figures as PDF, Word, Excel, PowerPoint, CSV or SVG.</p>
+            <ol class="feature-steps">
+              <li>Open the dashboard and choose an export.</li>
+              <li>Compare the figures on screen with the file.</li>
+              <li>In Excel or PowerPoint, edit the chart.</li>
+            </ol>
+            <div class="feature-action" data-related-from="feature-reports" data-related-heading="Try the report"></div>
+          </div>
+          <figure class="report-preview">
+            <figcaption>A graph from the public roadmap</figcaption>
+            <picture>
+              <source media="(max-width: 600px)" srcset="/roadmap/report/developed-by-package-compact.svg" width="270" height="288">
+              <img src="/roadmap/report/developed-by-package.svg" alt="Developed features by package, generated from the published MR Software roadmap. The full report includes the figures in a table." width="775" height="288" loading="lazy">
+            </picture>
+            <p>The report includes its source and data version. These are published feature counts, not a measure of customer activation.</p>
+          </figure>
+        </article>
+
+        <div class="feature-demo-intro">
+          <h2>Try the work, one step at a time.</h2>
+          <p>These product examples use fictional records. Changes stay in your browser; nothing is sent, ordered or delivered. Use <strong>Reset demo</strong> to start again.</p>
+        </div>
+        <div class="working-features">
+          <article id="try-workslip" aria-labelledby="workslip-feature-title">
+            <p class="feature-kind">Workslip · Interactive demo</p>
+            <h3 id="workslip-feature-title">Record the work while it happens.</h3>
+            <p>Complete a job checklist and keep the time entry with the job.</p>
+            <ol class="feature-steps">
+              <li>Tick both installation checks.</li>
+              <li>Enter minutes and select <strong>Save time</strong>.</li>
+              <li>Reload to see your entry again.</li>
+            </ol>
+            <div class="feature-action" data-related-from="feature-workslip" data-related-heading="Try the job"></div>
+          </article>
+          <article id="try-tradey" aria-labelledby="tradey-feature-title">
+            <p class="feature-kind">Tradey · Interactive demo</p>
+            <h3 id="tradey-feature-title">Turn an approved offer into an order.</h3>
+            <p>Follow the offer into an example order with its approval recorded.</p>
+            <ol class="feature-steps">
+              <li>Open the example offer.</li>
+              <li>Select <strong>Approve offer</strong>.</li>
+              <li>See the order and its activity history.</li>
+            </ol>
+            <div class="feature-action" data-related-from="feature-tradey" data-related-heading="Try an approval"></div>
+          </article>
+          <article id="try-shippy" aria-labelledby="shippy-feature-title">
+            <p class="feature-kind">Shippy · Interactive demo</p>
+            <h3 id="shippy-feature-title">Keep proof of delivery with the shipment.</h3>
+            <p>Record who received a delivery and see the shipment's updated status.</p>
+            <ol class="feature-steps">
+              <li>Enter a fictional receiver's name.</li>
+              <li>Select <strong>Complete delivery</strong>.</li>
+              <li>See who received the example shipment.</li>
+            </ol>
+            <div class="feature-action" data-related-from="feature-shippy" data-related-heading="Try a delivery"></div>
+          </article>
+        </div>
+        <div class="feature-next" data-related-from="feature-showcase" data-related-heading="Have a workflow like this?"></div>
       </div>
     </section>
 
     <section class="section on-light" aria-labelledby="demo-list-heading">
       <div class="page-width">
-        <h2 class="visually-hidden" id="demo-list-heading">Demos</h2>
+        <h2 class="heading" id="demo-list-heading">Look inside each product.</h2>
+        <p class="demo-views-intro">Explore the read-only views for a wider look at each product's screens and workflow. The working examples above let you try individual actions.</p>
         <div class="demo-grid">
           <article>
             <img src="/images/roady-transport.webp" alt="" width="1600" height="1067" loading="lazy">
@@ -105,5 +176,6 @@
       <span>© <span class="year">2026</span> MR Software</span>
     </div>
   </footer>
+  <script type="module" src="/js/related.js"></script>
 </body>
 </html>
