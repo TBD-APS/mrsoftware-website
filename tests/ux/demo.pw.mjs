@@ -11,7 +11,7 @@ test('Open the demo centre from the homepage in one click', async ({ page, conte
     await page.goto(publicBase(app.base));
     await page.locator('.site-footer').getByRole('link', { name: 'Demo centre' }).click();
     await expect(page).toHaveURL(/\/demo\/$/);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Explore the products.');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('See the software at work.');
     await expect(page.locator('.demo-grid h2')).toHaveText(['Roady', 'Shippy', 'Tradey', 'Workslip', 'Greeny']);
     await testInfo.attach(`demo-centre-${testInfo.project.name}`, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
   } finally {
