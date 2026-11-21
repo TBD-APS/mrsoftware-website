@@ -5,6 +5,45 @@ import { homepageJourneys } from './homepage-journeys.mjs';
 
 const publicBase = base => base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
 
+test('research and product links are available without JavaScript', async ({ browser, page }) => {
+  const app = await startSite();
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: page.viewportSize() });
+  try {
+    await prepareContext(context, app.base);
+    const noScriptPage = await context.newPage();
+    await noScriptPage.goto(publicBase(app.base));
+    const links = noScriptPage.locator('.commercial-entrypoints');
+    await expect(links.getByRole('heading', { name: 'Research and products' })).toBeVisible();
+    await expect(links.getByRole('link', { name: /^Research/ })).toHaveAttribute('href', '/research/');
+    await noScriptPage.locator('#solutions').getByRole('link', { name: 'Workslip', exact: true }).click();
+    await expect(noScriptPage).toHaveURL(/\/products\/workslip\/$/);
+    await expect(noScriptPage.locator('.commercial-entrypoints .related-link').first()).toBeVisible();
+  } finally { await context.close(); await app.close(); }
+});
+
+test('late fonts keep the hero heading and actions in place', async ({ page, context }) => {
+  const app = await startSite();
+  let releaseFonts;
+  const fonts = new Promise(resolve => { releaseFonts = resolve; });
+  try {
+    await prepareContext(context, app.base);
+    await context.route('**/assets/fonts/*.woff2', async route => { await fonts; await route.fallback(); });
+    await page.goto(publicBase(app.base), { waitUntil: 'domcontentloaded' });
+    const positions = () => page.evaluate(() => ['#hero-heading', '.hero-row'].map(selector => {
+      const box = document.querySelector(selector).getBoundingClientRect();
+      return { top: box.top, height: box.height };
+    }));
+    const before = await positions();
+    releaseFonts();
+    await page.evaluate(async () => { await document.fonts.ready; });
+    const after = await positions();
+    for (let index = 0; index < before.length; index++) {
+      expect(Math.abs(after[index].top - before[index].top), `element ${index} stays in place after fonts load`).toBeLessThanOrEqual(1);
+      expect(Math.abs(after[index].height - before[index].height), `element ${index} keeps its height after fonts load`).toBeLessThanOrEqual(1);
+    }
+  } finally { releaseFonts(); await app.close(); }
+});
+
 for (const journey of homepageJourneys) {
   test(`${journey.task} (${journey.id})`, async ({ page, context }, testInfo) => {
     const app = await startSite();
@@ -195,7 +234,7 @@ test('Homepage stays usable across the required viewport matrix', async ({ page,
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
-    for (const width of [320, 375, 390, 768, 1024, 1440]) {
+    for (const width of [320, 375, 390, 768, 861, 900, 1024, 1440]) {
       await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
       await page.goto(publicBase(app.base));
       const layout = await page.evaluate(() => {
@@ -307,6 +346,15 @@ test('The headline word rotates, and stays still when motion is reduced', async 
     const shown = page.locator('.rotate-word.is-in');
     await expect(shown).toHaveText('order.');
     await expect(shown).toHaveText('shipment.', { timeout: 4_000 });
+    await expect(shown).toHaveCSS('opacity', '1');
+    const duringMotion = await shown.evaluate(async word => {
+      word.classList.remove('is-in');
+      void word.offsetTop;
+      word.classList.add('is-in');
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return getComputedStyle(word).opacity;
+    });
+    expect(duringMotion).toBe('1');
     await expect(page.locator('h1')).toHaveAccessibleName('One place for every order, shipment, document and approval.');
 
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -374,9 +422,9 @@ test('Pointing at a system type in the ticker pauses it and explains what it cov
     await expect(detail).toBeVisible();
     await expect(detail).toContainText('Bookings, schedules and tracking.');
     // The panel can be reached with the pointer and leads on to the integrations overview.
-    await detail.getByRole('link', { name: /Read more/ }).hover();
+    await detail.getByRole('link', { name: /Explore integrations/ }).hover();
     await expect(detail).toBeVisible();
-    await expect(detail.getByRole('link', { name: /Read more/ })).toHaveAttribute('href', '/integrations/#categories');
+    await expect(detail.getByRole('link', { name: /Explore integrations/ })).toHaveAttribute('href', '/integrations/#categories');
 
     // The keyboard gets the same explanation, and Escape closes it. The repeated copy is not focusable.
     await page.mouse.move(0, 0);
@@ -494,7 +542,7 @@ test('The ticker keeps the hovered explanation when keyboard focus moves outside
   }
 });
 
-test('Escape dismisses ticker content and returns focus from Read more', async ({ page, context }, testInfo) => {
+test('Escape dismisses ticker content and returns focus from Explore integrations', async ({ page, context }, testInfo) => {
   test.skip(testInfo.project.name === 'phone', 'Combined pointer and keyboard behavior.');
   const app = await startSite();
   try {
@@ -506,7 +554,7 @@ test('Escape dismisses ticker content and returns focus from Read more', async (
     const detail = ticker.locator('.ticker-detail');
     await first.hover();
     await first.focus();
-    await detail.getByRole('link', { name: /Read more/ }).focus();
+    await detail.getByRole('link', { name: /Explore integrations/ }).focus();
     await page.keyboard.press('Escape');
     await expect(detail).toBeHidden();
     await expect(first).toBeFocused();

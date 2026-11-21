@@ -1,0 +1,65 @@
+name: Search visibility
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '43 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: search-visibility-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: SEO and Lighthouse
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.23.5'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: node --test tests/seo.test.mjs tests/lighthouse.test.mjs
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: .local/seo-base
+          persist-credentials: false
+      - name: Measure the current public site
+        if: github.event_name != 'push'
+        # Production is the pre-release baseline on PRs; candidate budgets gate the change.
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
+        run: npm run seo:lighthouse -- --live
+      - name: Compare base and candidate assets
+        if: github.event_name == 'pull_request'
+        run: npm run seo:lighthouse -- --baseline-root .local/seo-base
+      - name: Measure main assets
+        if: github.event_name == 'push'
+        run: npm run seo:lighthouse
+      - name: Add measured scores to the run summary
+        if: always()
+        run: |
+          for report in .local/lighthouse/summary.md .local/lighthouse-live/summary.md; do
+            if test -f "$report"; then cat "$report" >> "$GITHUB_STEP_SUMMARY"; fi
+          done
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: lighthouse-scores
+          path: |
+            .local/lighthouse/
+            .local/lighthouse-live/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 30

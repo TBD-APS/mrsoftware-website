@@ -7,8 +7,8 @@ import { verifyTestAccess, testToken } from '../tests/ux/access-fixture.mjs';
 import { data as sampleData, graphs as sampleGraphs } from '../tests/ux/snapshot-fixture.mjs';
 import { publicCommercialEntry } from '../website-entry.mjs';
 
-export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0 } = {}) {
-  const root = fileURLToPath(new URL('../', import.meta.url));
+export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0, publicRoot } = {}) {
+  const root = path.resolve(publicRoot ?? fileURLToPath(new URL('../', import.meta.url))) + path.sep;
   const snapshotDir = process.env.DASHBOARD_SNAPSHOT_DIR;
   const data = snapshotDir ? JSON.parse(await readFile(path.join(snapshotDir, 'data.json'), 'utf8')) : sampleData;
   const graphs = snapshotDir ? JSON.parse(await readFile(path.join(snapshotDir, 'graphs.json'), 'utf8')) : sampleGraphs;
@@ -21,6 +21,14 @@ export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0 } = 
   const server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, 'http://localhost');
+      if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') {
+        const result = await handle(new Request('https://mrsoftware.dk' + url.pathname, { method: request.method }), {
+          ASSETS: { fetch: async () => new Response(await readFile(path.join(root, 'data/links.json'))) },
+        });
+        response.writeHead(result.status, Object.fromEntries(result.headers));
+        response.end(Buffer.from(await result.arrayBuffer()));
+        return;
+      }
       if (url.pathname.startsWith('/_development')) {
         const headers = new Headers();
         if (request.headers['x-test-access'] !== 'deny') headers.set('Cf-Access-Jwt-Assertion', token);

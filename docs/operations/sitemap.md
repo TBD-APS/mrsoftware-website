@@ -5,7 +5,7 @@ The company Worker serves `https://mrsoftware.dk/sitemap.xml` and
 method returns 405 with `Allow: GET, HEAD`. A `HEAD` response has no body.
 
 `dashboard/handler.mjs` builds the sitemap from `data/links.json`. It lists
-every catalogue place and every path in `sitemapPages`. The public origin is
+every canonical company page from the catalogue places and `sitemapPages`. The public origin is
 `https://mrsoftware.dk`. A path that is not a same-site page address is left
 out. These prefixes are left out of the sitemap and disallowed in robots:
 
@@ -16,7 +16,11 @@ out. These prefixes are left out of the sitemap and disallowed in robots:
 
 `/demos/` and `/pricing/`, including their product routes, are catalogue places.
 They have no `index.html` on the company site. The company Worker redirects
-them to `https://demos.mrsoftware.dk`. They stay in the sitemap.
+them to `https://demos.mrsoftware.dk`. These redirected addresses are excluded
+from the company sitemap using the same routing function as the Worker.
+The catalogue and customer-facing links keep their existing addresses.
+The demo site owns its own canonical URLs; submitting the company sitemap
+does not submit or verify that separate hostname.
 
 Robots allows `/` and points at `https://mrsoftware.dk/sitemap.xml`.
 

@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkGraph } from '../js/linking.js';
+import { publicLinkUpdates } from '../tools/prerender-links.mjs';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const contentRoot = process.env.LINKS_ROOT ?? repo;
@@ -26,11 +27,13 @@ async function writeGraph(graph) {
   const checked = checkGraph(graph);
   if (!checked.ok) throw new Error(checked.errors[0]);
   const { sitemapPages } = JSON.parse(await readFile(jsonPath(), 'utf8'));
+  const pages = await publicLinkUpdates(contentRoot, checked.graph);
   const text = `${JSON.stringify(checked.graph, null, 2)}\n`;
   await mkdir(dirname(jsonPath()), { recursive: true });
   await mkdir(dirname(modulePath()), { recursive: true });
   await writeFile(jsonPath(), `${JSON.stringify({ ...checked.graph, sitemapPages }, null, 2)}\n`);
   await writeFile(modulePath(), `export const graph = ${text};\n`);
+  for (const { file, html } of pages) await writeFile(file, html);
   return checked.graph;
 }
 

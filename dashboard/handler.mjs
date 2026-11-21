@@ -1,4 +1,5 @@
 import { escapeHtml, isPageAddress } from '../js/linking.js';
+import { publicCommercialEntry } from '../website-entry.mjs';
 
 export const prefix = '/_development/';
 const publicOrigin = 'https://mrsoftware.dk';
@@ -15,7 +16,7 @@ function sitemap(catalogue) {
     const root = path.replace(/\/$/, '').toLowerCase();
     const pathname = url.pathname.toLowerCase();
     return pathname === root || pathname.startsWith(root + '/');
-  })).map(url => url.href);
+  })).filter(url => !publicCommercialEntry(new Request(url))).map(url => url.href);
   return '<?xml version="1.0" encoding="UTF-8"?>\n'
     + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     + [...new Set(urls)].map(url => `  <url><loc>${escapeHtml(url)}</loc></url>\n`).join('')

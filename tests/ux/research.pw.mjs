@@ -56,7 +56,9 @@ test('Research opens directly from the homepage and exposes working sections and
       expect(response.headers()['content-type']).toContain('application/pdf');
       expect((await response.body()).subarray(0, 4).toString()).toBe('%PDF');
       const downloadPromise = page.waitForEvent('download', { timeout: 10_000 });
-      await page.locator(`.research-paper[href="/research/${paper}"]`).click();
+      const paperLink = page.locator(`.research-paper[href="/research/${paper}"]`);
+      await expect(paperLink).toHaveAccessibleName(/Research proposal.*PDF in Danish/);
+      await paperLink.click();
       const download = await downloadPromise;
       expect(download.suggestedFilename()).toBe(paper);
       expect(await download.failure()).toBeNull();
