@@ -31,9 +31,9 @@
   src: url(/assets/fonts/geist-variable.woff2) format("woff2");
 }
 /* Local fonts adjusted to the web fonts' metrics, so the swap does not move the layout. */
-@font-face { font-family: "Geist Fallback"; src: local("Arial"), local("Helvetica Neue"), local("Helvetica"); size-adjust: 105.6%; ascent-override: 95.1%; descent-override: 27.9%; line-gap-override: 0%; }
-@font-face { font-family: "Newsreader Fallback"; src: local("Georgia"), local("Times New Roman"); size-adjust: 94%; ascent-override: 98%; descent-override: 26%; line-gap-override: 0%; }
-@font-face { font-family: "Fragment Mono Fallback"; src: local("Menlo"), local("Consolas"), local("Courier New"); size-adjust: 98%; }
+@font-face { font-family: "Geist Fallback"; src: local("Arial"), local("Helvetica Neue"), local("Helvetica"), local("Liberation Sans"); size-adjust: 105.6%; ascent-override: 95.1%; descent-override: 27.9%; line-gap-override: 0%; }
+@font-face { font-family: "Newsreader Fallback"; src: local("Georgia"), local("Times New Roman"), local("Liberation Serif"); size-adjust: 94%; ascent-override: 98%; descent-override: 26%; line-gap-override: 0%; }
+@font-face { font-family: "Fragment Mono Fallback"; src: local("Menlo"), local("Consolas"), local("Courier New"), local("Liberation Mono"); size-adjust: 98%; }
 
 :root {
   --serif: "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;

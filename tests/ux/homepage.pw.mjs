@@ -5,6 +5,29 @@ import { homepageJourneys } from './homepage-journeys.mjs';
 
 const publicBase = base => base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
 
+test('late fonts keep the hero heading and actions in place', async ({ page, context }) => {
+  const app = await startSite();
+  let releaseFonts;
+  const fonts = new Promise(resolve => { releaseFonts = resolve; });
+  try {
+    await prepareContext(context, app.base);
+    await context.route('**/assets/fonts/*.woff2', async route => { await fonts; await route.continue(); });
+    await page.goto(publicBase(app.base), { waitUntil: 'domcontentloaded' });
+    const positions = () => page.evaluate(() => ['#hero-heading', '.hero-row'].map(selector => {
+      const box = document.querySelector(selector).getBoundingClientRect();
+      return { top: box.top, height: box.height };
+    }));
+    const before = await positions();
+    releaseFonts();
+    await page.evaluate(() => document.fonts.ready);
+    const after = await positions();
+    for (let index = 0; index < before.length; index++) {
+      expect(Math.abs(after[index].top - before[index].top), `element ${index} stays in place after fonts load`).toBeLessThanOrEqual(1);
+      expect(Math.abs(after[index].height - before[index].height), `element ${index} keeps its height after fonts load`).toBeLessThanOrEqual(1);
+    }
+  } finally { releaseFonts(); await app.close(); }
+});
+
 for (const journey of homepageJourneys) {
   test(`${journey.task} (${journey.id})`, async ({ page, context }, testInfo) => {
     const app = await startSite();
@@ -374,9 +397,9 @@ test('Pointing at a system type in the ticker pauses it and explains what it cov
     await expect(detail).toBeVisible();
     await expect(detail).toContainText('Bookings, schedules and tracking.');
     // The panel can be reached with the pointer and leads on to the integrations overview.
-    await detail.getByRole('link', { name: /Read more/ }).hover();
+    await detail.getByRole('link', { name: /Explore integrations/ }).hover();
     await expect(detail).toBeVisible();
-    await expect(detail.getByRole('link', { name: /Read more/ })).toHaveAttribute('href', '/integrations/#categories');
+    await expect(detail.getByRole('link', { name: /Explore integrations/ })).toHaveAttribute('href', '/integrations/#categories');
 
     // The keyboard gets the same explanation, and Escape closes it. The repeated copy is not focusable.
     await page.mouse.move(0, 0);
@@ -494,7 +517,7 @@ test('The ticker keeps the hovered explanation when keyboard focus moves outside
   }
 });
 
-test('Escape dismisses ticker content and returns focus from Read more', async ({ page, context }, testInfo) => {
+test('Escape dismisses ticker content and returns focus from Explore integrations', async ({ page, context }, testInfo) => {
   test.skip(testInfo.project.name === 'phone', 'Combined pointer and keyboard behavior.');
   const app = await startSite();
   try {
@@ -506,7 +529,7 @@ test('Escape dismisses ticker content and returns focus from Read more', async (
     const detail = ticker.locator('.ticker-detail');
     await first.hover();
     await first.focus();
-    await detail.getByRole('link', { name: /Read more/ }).focus();
+    await detail.getByRole('link', { name: /Explore integrations/ }).focus();
     await page.keyboard.press('Escape');
     await expect(detail).toBeHidden();
     await expect(first).toBeFocused();

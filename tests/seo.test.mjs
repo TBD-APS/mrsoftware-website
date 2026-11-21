@@ -72,6 +72,14 @@ test('the website and products identify the same publisher without invented pric
   }
 });
 
+test('homepage links describe their destination instead of generic read-more text', async () => {
+  const { document } = await page('/');
+  for (const link of elements(document, 'a')) {
+    const label = text(link).replace(/[→\s]+/g, ' ').trim();
+    assert.doesNotMatch(label, /^(read more|learn more|click here|here|more)$/i, attribute(link, 'href'));
+  }
+});
+
 test('research describes the two visible proposals and links their actual public documents', async () => {
   const { document, structured } = await page('/research/');
   const collection = structured.find(item => item['@type'] === 'CollectionPage');

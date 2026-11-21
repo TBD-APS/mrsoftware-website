@@ -126,7 +126,9 @@ test('The social image and the organization data are in place', async ({ page, c
   try {
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
-    const data = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+    const structured = (await page.locator('script[type="application/ld+json"]').allTextContents())
+      .flatMap(source => { const data = JSON.parse(source); return data['@graph'] ?? [data]; });
+    const data = structured.find(item => item['@type'] === 'Organization');
     expect(data['@type']).toBe('Organization');
     expect(data.name).toBe('MR Software');
     expect(data.email).toBe('wp@mrsoftware.dk');

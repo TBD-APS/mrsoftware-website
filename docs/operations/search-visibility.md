@@ -54,7 +54,8 @@ Candidate budgets still block the job. Main is checked as source after merge;
 that does not prove deployment. A weekly Monday run and manual runs check the
 public production site and fail if its budgets are missed.
 
-Scores, FCP, LCP, Speed Index, TBT, CLS and failed audit identifiers are retained
+Scores, FCP, LCP, Speed Index, TBT, CLS, failed audit identifiers, public DOM selectors
+and source filenames (without query strings or full URLs) are retained
 as selected summaries under `.local/lighthouse*/` and in the Actions artifact.
 Raw Lighthouse JSON, request headers, cookies, source snippets and traces are
 not persisted or printed. These are lab measurements. They do not establish

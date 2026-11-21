@@ -29,3 +29,15 @@ test('stored summaries exclude request headers, cookies, source snippets, full U
   const output = JSON.stringify(summarize(input));
   assert.doesNotMatch(output, /do-not-copy|example\.invalid|headers|snippet|trace/);
 });
+
+test('failures retain selectors and query-free source identity for diagnosis', () => {
+  const input = result();
+  input.audits.example = { score: 0, title: 'Example failure', details: { items: [
+    { node: { type: 'node', selector: '.hero .lead', snippet: 'do-not-copy' } },
+    { sourceLocation: { type: 'source-location', url: 'https://static.example.test/script.js?example=do-not-copy', line: 7 } },
+  ] } };
+  const report = summarize(input);
+  assert.deepEqual(report.failedAudits[0].nodes, ['.hero .lead']);
+  assert.deepEqual(report.failedAudits[0].sources, [{ host: 'static.example.test', file: 'script.js', line: 7 }]);
+  assert.doesNotMatch(JSON.stringify(report), /do-not-copy|https:|snippet/);
+});

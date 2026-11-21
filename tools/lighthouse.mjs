@@ -10,6 +10,19 @@ export const budgets = { performance: 0.90, accessibility: 1, 'best-practices': 
 const pages = ['/', '/products/workslip/', '/research/'];
 const metrics = ['first-contentful-paint', 'largest-contentful-paint', 'speed-index', 'total-blocking-time', 'cumulative-layout-shift'];
 
+function evidence(value, depth = 0, found = { nodes: [], sources: [] }) {
+  if (!value || typeof value !== 'object' || depth > 6) return found;
+  if (value.type === 'node' && typeof value.selector === 'string') found.nodes.push(value.selector);
+  if (value.type === 'source-location' && typeof value.url === 'string') {
+    try {
+      const url = new URL(value.url);
+      if (['https:', 'http:'].includes(url.protocol)) found.sources.push({ host: url.hostname, file: path.posix.basename(url.pathname), line: value.line });
+    } catch { /* Inline sources do not need a URL in the stored summary. */ }
+  }
+  for (const child of Object.values(value)) if (typeof child === 'object') evidence(child, depth + 1, found);
+  return found;
+}
+
 export function summarize(result) {
   if (result.runtimeError) throw new Error('Lighthouse did not complete; no valid score is available.');
   const scores = Object.fromEntries(Object.keys(budgets).map(category => {
@@ -23,7 +36,12 @@ export function summarize(result) {
     scores,
     metrics: Object.fromEntries(metrics.map(id => [id, result.audits?.[id]?.numericValue ?? null])),
     failedAudits: Object.entries(result.audits ?? {}).filter(([, audit]) => typeof audit.score === 'number' && audit.score < 1)
-      .map(([id, audit]) => ({ id, title: audit.title, score: audit.score })),
+      .map(([id, audit]) => {
+        const details = evidence(audit.details);
+        return { id, title: audit.title, score: audit.score,
+          ...(details.nodes.length ? { nodes: [...new Set(details.nodes)] } : {}),
+          ...(details.sources.length ? { sources: details.sources } : {}) };
+      }),
   };
 }
 
