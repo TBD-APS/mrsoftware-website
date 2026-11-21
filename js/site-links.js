@@ -122,9 +122,15 @@ export const graph = {
     },
     {
       "id": "research",
-      "title": "How we work",
+      "title": "Research",
       "href": "/research/",
-      "summary": "The evidence, gates and research behind how MR Software builds and learns."
+      "summary": "Our own papers and projects, with methods, references and evidence limits."
+    },
+    {
+      "id": "roadmap-report",
+      "title": "Roadmap overview",
+      "href": "/roadmap/report/",
+      "summary": "Compare published feature counts and download the same overview in several formats."
     }
   ],
   "links": {
@@ -190,17 +196,16 @@ export const graph = {
     ],
     "home": [
       {
+        "id": "to:research",
+        "toId": "research"
+      },
+      {
         "id": "to:demos",
         "toId": "demos"
       },
       {
         "id": "to:prices",
         "toId": "prices"
-      },
-      {
-        "id": "to:research",
-        "toId": "research",
-        "label": "How we work"
       }
     ],
     "workslip": [
@@ -231,6 +236,20 @@ export const graph = {
       {
         "id": "to:shippy-prices",
         "toId": "shippy-prices"
+      }
+    ],
+    "roadmap": [
+      {
+        "id": "to:roadmap-report",
+        "toId": "roadmap-report",
+        "label": "View roadmap overview and reports"
+      }
+    ],
+    "roadmap-report": [
+      {
+        "id": "to:roadmap",
+        "toId": "roadmap",
+        "label": "Return to roadmap"
       }
     ]
   }
