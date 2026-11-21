@@ -131,6 +131,36 @@ export const graph = {
       "title": "Roadmap overview",
       "href": "/roadmap/report/",
       "summary": "Compare published feature counts and download the same overview in several formats."
+    },
+    {
+      "id": "feature-showcase",
+      "title": "See live features",
+      "href": "/demo/#try-features",
+      "summary": "Try report exports, a job checklist, offer approval and proof of delivery."
+    },
+    {
+      "id": "feature-reports",
+      "title": "Dashboard and file exports",
+      "href": "/demo/#report-example",
+      "summary": "A real report from the published roadmap."
+    },
+    {
+      "id": "feature-workslip",
+      "title": "Job checklist and time",
+      "href": "/demo/#try-workslip",
+      "summary": "Try recording a job with fictional data."
+    },
+    {
+      "id": "feature-tradey",
+      "title": "Offer approval",
+      "href": "/demo/#try-tradey",
+      "summary": "Try creating an example order."
+    },
+    {
+      "id": "feature-shippy",
+      "title": "Proof of delivery",
+      "href": "/demo/#try-shippy",
+      "summary": "Try recording delivery on an example shipment."
     }
   ],
   "links": {
@@ -196,6 +226,10 @@ export const graph = {
     ],
     "home": [
       {
+        "id": "to:feature-showcase",
+        "toId": "feature-showcase"
+      },
+      {
         "id": "to:research",
         "toId": "research"
       },
@@ -250,6 +284,41 @@ export const graph = {
         "id": "to:roadmap",
         "toId": "roadmap",
         "label": "Return to roadmap"
+      }
+    ],
+    "feature-showcase": [
+      {
+        "id": "to:contact",
+        "toId": "contact",
+        "label": "Talk about your workflow"
+      }
+    ],
+    "feature-reports": [
+      {
+        "id": "to:roadmap-report",
+        "toId": "roadmap-report",
+        "label": "Open the dashboard and downloads"
+      }
+    ],
+    "feature-workslip": [
+      {
+        "id": "to:workslip-demo",
+        "toId": "workslip-demo",
+        "label": "Try the job checklist"
+      }
+    ],
+    "feature-tradey": [
+      {
+        "id": "to:tradey-demo",
+        "toId": "tradey-demo",
+        "label": "Try offer approval"
+      }
+    ],
+    "feature-shippy": [
+      {
+        "id": "to:shippy-demo",
+        "toId": "shippy-demo",
+        "label": "Try proof of delivery"
       }
     ]
   }
