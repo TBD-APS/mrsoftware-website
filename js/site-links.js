@@ -1,6 +1,12 @@
 export const graph = {
   "places": [
     {
+      "id": "home-da",
+      "title": "MR Software in Danish",
+      "href": "/da/",
+      "summary": "Danish overview of the company, products and research."
+    },
+    {
       "id": "home",
       "title": "Home",
       "href": "/",

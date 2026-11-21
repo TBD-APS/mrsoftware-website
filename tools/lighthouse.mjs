@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { promisify } from 'node:util';
@@ -7,8 +7,16 @@ import { startSite } from './ux-site.mjs';
 
 const exec = promisify(execFile);
 export const budgets = { performance: 0.90, accessibility: 1, 'best-practices': 1, seo: 1 };
-const pages = ['/', '/products/workslip/', '/research/'];
+const establishedPages = ['/', '/products/workslip/', '/research/'];
 const metrics = ['first-contentful-paint', 'largest-contentful-paint', 'speed-index', 'total-blocking-time', 'cumulative-layout-shift'];
+
+export async function auditPages(baselineRoot) {
+  if (baselineRoot) {
+    try { await access(path.join(baselineRoot, 'da/index.html')); }
+    catch (error) { if (error.code === 'ENOENT') return establishedPages; throw error; }
+  }
+  return [...establishedPages, '/da/'];
+}
 
 function evidence(value, depth = 0, found = { nodes: [], sources: [] }) {
   if (!value || typeof value !== 'object' || depth > 6) return found;
@@ -58,24 +66,25 @@ async function audit(publicRoot, label, live = false) {
   const base = live ? 'https://mrsoftware.dk' : `http://127.0.0.1:${new URL(site.base).port}`;
   const reports = [];
   try {
+    const pages = await auditPages(label === 'base' ? publicRoot : undefined);
     for (const formFactor of ['mobile', 'desktop']) {
       for (const page of pages) {
         const args = [fileURLToPath(new URL('../node_modules/lighthouse/cli/index.js', import.meta.url)), base + page,
           '--quiet', '--output=json', '--output-path=stdout', '--chrome-flags=--headless --no-sandbox',
           '--only-categories=' + Object.keys(budgets).join(',')];
         if (formFactor === 'desktop') args.push('--preset=desktop');
-        let stdout;
+        let measured;
         try {
-          ({ stdout } = await exec(process.execPath, args, { timeout: 120_000, maxBuffer: 12 * 1024 * 1024,
-            env: { ...process.env, ...(process.env.UX_CHROME ? { CHROME_PATH: process.env.UX_CHROME } : {}) } }));
-        } catch (error) {
+          const { stdout } = await exec(process.execPath, args, { timeout: 120_000, maxBuffer: 12 * 1024 * 1024,
+            env: { ...process.env, ...(process.env.UX_CHROME ? { CHROME_PATH: process.env.UX_CHROME } : {}) } });
+          measured = summarize(JSON.parse(stdout));
+        } catch {
           // Do not print raw browser/CLI output or persist raw reports, traces or headers.
-          const code = typeof error.code === 'number' || /^[A-Z_]+$/.test(error.code ?? '') ? error.code : 'unknown';
-          throw new Error(`Lighthouse could not complete ${label} ${formFactor} ${page} (exit ${code}). Check Chrome availability.`);
+          measured = { error: 'Lighthouse could not complete. Check Chrome availability and the public HTTP response.', scores: {}, metrics: {}, failedAudits: [] };
         }
-        const report = { label, page, formFactor, ...summarize(JSON.parse(stdout)) };
+        const report = { label, page, formFactor, ...measured };
         reports.push(report);
-        console.log(`${label} ${formFactor} ${page}: ${Object.entries(report.scores).map(([key, value]) => `${key} ${Math.round(value * 100)}`).join(', ')}`);
+        console.log(`${label} ${formFactor} ${page}: ${report.error ?? Object.entries(report.scores).map(([key, value]) => `${key} ${Math.round(value * 100)}`).join(', ')}`);
       }
     }
   } finally { await site?.close(); }
@@ -90,9 +99,10 @@ export async function run({ baselineRoot, live = false, output = live ? '.local/
   await mkdir(output, { recursive: true });
   // Persist only selected public scores/metrics. Raw Lighthouse JSON stays in memory.
   await writeFile(path.join(output, 'summary.json'), JSON.stringify({ budgets, reports }, null, 2) + '\n');
-  const rows = reports.map(report => `| ${report.label} | ${report.formFactor} | ${report.page} | ${Object.values(report.scores).map(score => Math.round(score * 100)).join(' | ')} |`);
+  const rows = reports.map(report => `| ${report.label} | ${report.formFactor} | ${report.page} | ${Object.keys(budgets).map(key => typeof report.scores[key] === 'number' ? Math.round(report.scores[key] * 100) : 'error').join(' | ')} |`);
   await writeFile(path.join(output, 'summary.md'), '# Lighthouse lab audit\n\n' + (live ? 'Public production pages.' : 'Base and candidate public assets use the same local server, Lighthouse version and runner.') + ' One run per page/profile. Lab scores are not field Core Web Vitals or proof of Google indexing.\n\n| Source | Profile | Page | Performance | Accessibility | Best practices | SEO |\n|---|---|---|---:|---:|---:|---:|\n' + rows.join('\n') + '\n');
-  const failures = reports.filter(report => report.label !== 'base').flatMap(report => violations(report).map(message => `${report.formFactor} ${report.page}: ${message}`));
+  const failures = reports.flatMap(report => (report.error ? [report.error] : report.label === 'base' ? [] : violations(report))
+    .map(message => `${report.label} ${report.formFactor} ${report.page}: ${message}`));
   if (failures.length) throw new Error('Lighthouse budgets failed:\n' + failures.join('\n'));
   return reports;
 }

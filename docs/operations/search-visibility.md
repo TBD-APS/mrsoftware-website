@@ -22,8 +22,13 @@ an app rich result. Validate a released page in Google's Rich Results Test.
 
 The company sitemap excludes redirects to the separate commercial demo host.
 See [sitemap ownership](sitemap.md). Existing navigation addresses still work.
-Public pages retain their existing English positioning; translated pages and
-`hreflang` require real translations and a confirmed target market.
+The owner selected both Danish and international markets. The English homepage
+remains at `/`; `/da/` provides a Danish introduction, product status, research and
+direct contact. Each has its own canonical and reciprocal `en`, `da` and
+`x-default` language alternatives. The selector works without JavaScript and
+does not redirect visitors by IP or browser language. Product and research detail
+pages remain English and are labelled as such on the Danish page. They do not
+claim language alternatives until actual translations exist.
 
 Related links are rendered into public HTML from `data/links.json` using the
 existing shared link renderer, so they are available without JavaScript and do
@@ -42,12 +47,17 @@ npm run seo:lighthouse -- --baseline-root /absolute/path/to/base-checkout
 npm run seo:lighthouse -- --live
 ```
 
-The pinned Lighthouse CLI audits the homepage, Workslip and Research on mobile
-and desktop. The local comparison serves base and candidate public assets with
+The pinned Lighthouse CLI audits the English and Danish homepages, Workslip and
+Research on mobile and desktop. The local comparison serves base and candidate public assets with
 the same loopback test server, browser and Lighthouse version. It is an asset
 comparison, not a full Cloudflare deployment comparison. `--live` measures only
 the public production origin `https://mrsoftware.dk`, in a fresh browser profile.
 No login, private dashboard input, API key or deployment credential is used.
+The comparison base omits `/da/` only when that new page did not exist there.
+The candidate and production audits always require it. Before release, the live
+Danish page is expected to fail because it has not been deployed yet. Incomplete
+audits are reported as errors, retained alongside completed scores, and fail the
+gate; an incomplete base measurement also fails the comparison.
 
 The candidate budgets are performance at least 90 and accessibility, best
 practices and SEO at 100. Missing categories or browser/runtime errors fail the
@@ -88,6 +98,9 @@ are not eligible. A registered address alone does not establish a staffed custom
 location. Use only the verified real-world name, contact details, customer-facing
 hours and actual address/service area. The owner completes Google's verification;
 do not invent hours, reviews, photos, categories or a second location.
+The owner confirmed customer visits. Prepare a service-area profile and hide the
+address unless customers can actually visit a staffed location. Service areas,
+public phone and hours still need the owner's factual input before publication.
 
 Account login/verification and public profile publication remain explicit account
 actions; source checks do not prove them. No Ads campaign, paid service, analytics

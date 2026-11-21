@@ -1,8 +1,21 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { budgets, summarize, violations } from '../tools/lighthouse.mjs';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { auditPages, budgets, summarize, violations } from '../tools/lighthouse.mjs';
 
 const result = () => ({ categories: Object.fromEntries(Object.keys(budgets).map(key => [key, { score: 1 }])), audits: {} });
+
+test('the new Danish page is measured even when it did not exist in the comparison base', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'lighthouse-pages-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  assert.deepEqual(await auditPages(root), ['/', '/products/workslip/', '/research/']);
+  assert.deepEqual(await auditPages(), ['/', '/products/workslip/', '/research/', '/da/']);
+  await mkdir(join(root, 'da'));
+  await writeFile(join(root, 'da/index.html'), '<h1>Danish homepage</h1>');
+  assert.deepEqual(await auditPages(root), await auditPages());
+});
 
 test('missing categories and runtime failures cannot produce a passing Lighthouse gate', () => {
   assert.throws(() => summarize({ ...result(), runtimeError: { code: 'NO_FCP' } }), /did not complete/);

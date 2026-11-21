@@ -80,6 +80,22 @@ test('homepage links describe their destination instead of generic read-more tex
   }
 });
 
+test('English and Danish homepages have reciprocal language alternatives and their own canonical address', async () => {
+  for (const [path, language] of [['/', 'en'], ['/da/', 'da']]) {
+    const { document, structured } = await page(path);
+    assert.equal(attribute(elements(document, 'html')[0], 'lang'), language);
+    const alternatives = elements(document, 'link').filter(node => attribute(node, 'rel') === 'alternate');
+    assert.deepEqual(Object.fromEntries(alternatives.map(node => [attribute(node, 'hreflang'), attribute(node, 'href')])), {
+      en: origin + '/', da: origin + '/da/', 'x-default': origin + '/',
+    });
+    assert.equal(attribute(elements(document, 'link').find(node => attribute(node, 'rel') === 'canonical'), 'href'), origin + path);
+    const selector = elements(document, 'a').find(node => attribute(node, 'hreflang') === (language === 'en' ? 'da' : 'en'));
+    assert.equal(attribute(selector, 'href'), language === 'en' ? '/da/' : '/');
+    if (language === 'da') assert.equal(structured.find(item => item['@type'] === 'WebPage')?.inLanguage, 'da');
+  }
+  assert.ok(catalogue.places.some(place => place.href === '/da/'), 'The Danish homepage is registered for the sitemap');
+});
+
 test('research describes the two visible proposals and links their actual public documents', async () => {
   const { document, structured } = await page('/research/');
   const collection = structured.find(item => item['@type'] === 'CollectionPage');
