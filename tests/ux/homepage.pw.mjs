@@ -415,3 +415,88 @@ test('Top menu items turn bold and open their pages on hover or focus (SAS-586)'
     await app.close();
   }
 });
+
+test('The ticker keeps the focused explanation when the pointer leaves or visits another type', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'Combined pointer and keyboard behavior.');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(publicBase(app.base));
+    const ticker = page.locator('.ticker-wrap');
+    const first = ticker.locator('a[data-detail]').first();
+    const second = ticker.locator('a[data-detail]').nth(1);
+    const detail = ticker.locator('.ticker-detail');
+    await first.hover();
+    await first.focus();
+    await page.mouse.move(0, 0);
+    await expect(first).toBeFocused();
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Orders, customers and items.');
+
+    await second.hover();
+    await expect(detail).toContainText('Invoices, payments and accounts.');
+    await page.mouse.move(0, 0);
+    await expect(first).toBeFocused();
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Orders, customers and items.');
+  } finally {
+    await app.close();
+  }
+});
+
+test('The ticker keeps the hovered explanation when keyboard focus moves outside', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'Combined pointer and keyboard behavior.');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(publicBase(app.base));
+    const ticker = page.locator('.ticker-wrap');
+    const first = ticker.locator('a[data-detail]').first();
+    const second = ticker.locator('a[data-detail]').nth(1);
+    const detail = ticker.locator('.ticker-detail');
+    // Keep the next keyboard target on screen so moving focus does not scroll the pointer away.
+    await ticker.evaluate(node => window.scrollBy(0, node.getBoundingClientRect().top - 160));
+    const next = page.locator('.research-feature .button');
+    await expect(next).toBeInViewport();
+    await first.hover();
+    await second.focus();
+    await expect(detail).toContainText('Invoices, payments and accounts.');
+    await next.focus();
+    await expect(next).toBeFocused();
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Orders, customers and items.');
+    await page.mouse.move(0, 0);
+    await expect(detail).toBeHidden();
+  } finally {
+    await app.close();
+  }
+});
+
+test('Escape dismisses ticker content and returns focus from Read more', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'Combined pointer and keyboard behavior.');
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(publicBase(app.base));
+    const ticker = page.locator('.ticker-wrap');
+    const first = ticker.locator('a[data-detail]').first();
+    const detail = ticker.locator('.ticker-detail');
+    await first.hover();
+    await first.focus();
+    await detail.getByRole('link', { name: /Read more/ }).focus();
+    await page.keyboard.press('Escape');
+    await expect(detail).toBeHidden();
+    await expect(first).toBeFocused();
+    await page.mouse.move(0, 0);
+    await expect(detail).toBeHidden();
+
+    await page.locator('.research-feature .button').focus();
+    await first.focus();
+    await expect(detail).toBeVisible();
+  } finally {
+    await app.close();
+  }
+});
