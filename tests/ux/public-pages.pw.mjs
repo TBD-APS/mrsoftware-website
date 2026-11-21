@@ -59,6 +59,7 @@ for (const path of pages) {
       await expect(legal.getByRole('link', { name: 'Data deletion' })).toHaveAttribute('href', '/data-deletion/');
       await expect(page.locator('.nav .button-primary')).toHaveText('Talk to us');
       await expect(page.locator('.nav .button-primary')).toHaveAttribute('href', path ? '/contact/' : '#contact');
+      await expect(page.locator('#main-nav a[href="/research/"]')).toHaveText('Research');
 
       // One h1, and no heading level is skipped.
       const levels = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll(nodes => nodes

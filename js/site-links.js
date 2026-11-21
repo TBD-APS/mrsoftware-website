@@ -122,9 +122,9 @@ export const graph = {
     },
     {
       "id": "research",
-      "title": "How we work",
+      "title": "Research",
       "href": "/research/",
-      "summary": "The evidence, gates and research behind how MR Software builds and learns."
+      "summary": "Our own papers and projects, with methods, references and evidence limits."
     },
     {
       "id": "roadmap-report",
@@ -230,17 +230,16 @@ export const graph = {
         "toId": "feature-showcase"
       },
       {
+        "id": "to:research",
+        "toId": "research"
+      },
+      {
         "id": "to:demos",
         "toId": "demos"
       },
       {
         "id": "to:prices",
         "toId": "prices"
-      },
-      {
-        "id": "to:research",
-        "toId": "research",
-        "label": "How we work"
       }
     ],
     "workslip": [
