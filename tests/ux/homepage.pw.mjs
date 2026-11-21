@@ -354,3 +354,48 @@ test('Pointing at a system type in the ticker pauses it and explains what it cov
     await app.close();
   }
 });
+
+test('Top menu items turn bold and open their pages on hover or focus (SAS-586)', async ({ page, context }, testInfo) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    if (testInfo.project.name === 'phone') {
+      // The phone menu stays a flat list: the dropdowns are not shown and cannot be tabbed into.
+      await page.goto(publicBase(app.base) + 'stories/');
+      await page.getByRole('button', { name: 'Open menu' }).click();
+      await expect(page.locator('.nav-sub').first()).toBeHidden();
+      return;
+    }
+    for (const pathname of ['', 'stories/']) {
+      await page.goto(publicBase(app.base) + pathname);
+      const nav = page.locator('#main-nav');
+      const products = nav.locator('.nav-group').filter({ has: page.getByRole('link', { name: 'Products', exact: true }) });
+      const next = nav.getByRole('link', { name: 'Integrations', exact: true });
+      const before = (await next.boundingBox()).x;
+      await products.getByRole('link', { name: 'Products', exact: true }).hover();
+      await expect(products.getByRole('link', { name: 'Products', exact: true })).toHaveCSS('font-weight', '600');
+      // Bold text does not push the next item sideways.
+      expect(Math.abs((await next.boundingBox()).x - before)).toBeLessThanOrEqual(1);
+      const sub = products.locator('.nav-sub');
+      await expect(sub).toBeVisible();
+      await expect(sub.getByRole('link')).toHaveText(['Tradey', 'Shippy', 'Roady', 'Workslip', 'Demo centre']);
+      await expect(sub.getByRole('link', { name: 'Roady' })).toHaveAttribute('href', '/demo/roady/');
+      await page.mouse.move(700, 600);
+      await expect(sub).toBeHidden();
+    }
+    // Keyboard: focus opens the list, Tab walks into it, Escape closes it and returns to the item.
+    await page.goto(publicBase(app.base) + 'stories/');
+    const stories = page.locator('#main-nav .nav-group').filter({ has: page.getByRole('link', { name: 'Stories', exact: true }) });
+    await stories.getByRole('link', { name: 'Stories', exact: true }).focus();
+    await expect(stories.locator('.nav-sub')).toBeVisible();
+    await page.keyboard.press('Tab');
+    await expect(stories.getByRole('link', { name: 'The offer' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(stories.getByRole('link', { name: 'Stories', exact: true })).toBeFocused();
+    await expect(stories.locator('.nav-sub')).toBeHidden();
+    // Items without pages under them, like Contact, get no list.
+    await expect(page.locator('#main-nav .nav-group').filter({ has: page.getByRole('link', { name: 'Contact', exact: true }) })).toHaveCount(0);
+  } finally {
+    await app.close();
+  }
+});
