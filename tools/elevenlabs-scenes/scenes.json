@@ -1,0 +1,32 @@
+[
+  {
+    "name": "shippy-timeline",
+    "request": {
+      "model_id": "gpt-image-2.5-flare",
+      "aspect_ratio": "16:9",
+      "resolution": "2K",
+      "quality": "high",
+      "prompt": "Flat editorial illustration with fine vertical paper-grain texture, muted warm palette: cream background, deep ink black, burgundy accent, desaturated slate blue and ochre. A container port at dusk seen from the side. Left to right like a timeline: a booking office, stacked containers, a ship at the quay, a road trailer leaving. A thin line runs above the scene with four small round markers, the third filled burgundy. Calm, uncluttered, wide margins. No text, no letters, no numbers, no logos, no faces."
+    }
+  },
+  {
+    "name": "tradey-timeline",
+    "request": {
+      "model_id": "gpt-image-2.5-flare",
+      "aspect_ratio": "16:9",
+      "resolution": "2K",
+      "quality": "high",
+      "prompt": "Flat editorial illustration with fine vertical paper-grain texture, muted warm palette: cream background, deep ink black, burgundy accent, desaturated slate blue and ochre. A food trade seen from the side, left to right like a timeline: a phone with chat bubbles, a cold store with stacked fish crates, a person at a desk checking a paper, a refrigerated truck leaving. A thin line runs above the scene with four small round markers, the third filled burgundy. Calm, uncluttered, wide margins. No text, no letters, no numbers, no logos, no faces."
+    }
+  },
+  {
+    "name": "workslip-timeline",
+    "request": {
+      "model_id": "gpt-image-2.5-flare",
+      "aspect_ratio": "16:9",
+      "resolution": "2K",
+      "quality": "high",
+      "prompt": "Flat editorial illustration with fine vertical paper-grain texture, muted warm palette: cream background, deep ink black, burgundy accent, desaturated slate blue and ochre. Field service seen from the side, left to right like a timeline: a service van outside a house, a technician's tablet with a checklist and a camera, an office desk with a screen, a filed folder. A thin line runs above the scene with four small round markers, the last filled burgundy. Calm, uncluttered, wide margins. No text, no letters, no numbers, no logos, no faces."
+    }
+  }
+]
