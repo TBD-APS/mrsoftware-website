@@ -6,6 +6,7 @@ import { chromium } from 'playwright';
 import { parseFragment } from 'parse5';
 import { roadmapReport } from './roadmap-report.mjs';
 import { verifyContentModule } from './verify-content-module.mjs';
+import { danishRoadmapReport, danishRenderedRoadmap, danishRoadmapCsv, danishOfficeExport } from './roadmap-report-locale.mjs';
 
 function findElement(node, attribute, value) {
   if (node?.attrs?.some(item => item.name === attribute && item.value === value)) return node;
@@ -15,7 +16,8 @@ function findElement(node, attribute, value) {
   }
 }
 
-export async function buildRoadmapReports() {
+export async function buildRoadmapReports({ locales = ['en', 'da'] } = {}) {
+  if (!locales.length || locales.some(locale => !['en', 'da'].includes(locale)) || new Set(locales).size !== locales.length) throw Error('Expected unique supported report locales');
   const root = fileURLToPath(new URL('..', import.meta.url));
   const admission = await verifyContentModule(root);
   const [{ renderReport, toCsv, sha256, moduleInfo }, { exportXlsx, exportPptx, exportDocx }, { exportPdf, renderChartImages }] = await Promise.all([
@@ -27,43 +29,60 @@ export async function buildRoadmapReports() {
   ]);
   const at = execFileSync('git', ['log', '-1', '--format=%cI', '--', 'roadmap/index.html'], { cwd: root, encoding: 'utf8' }).trim();
   const report = roadmapReport(source, { at });
-  const downloads = [['pdf', 'PDF'], ['docx', 'Word'], ['xlsx', 'Excel'], ['pptx', 'PowerPoint'], ['csv', 'CSV data'], ['html', 'Web page (HTML)']].map(([extension, label]) => ({ label, href: `/roadmap/report/roadmap.${extension}` }));
-  for (const chart of report.blocks.filter(block => block.type === 'chart')) downloads.push({ label: `${chart.measure === 'developed' ? 'Developed' : 'Pipeline'} graph (SVG)`, href: `/roadmap/report/${chart.id}.svg` });
-  const rendered = await renderReport(report, { downloads });
-  const standalone = await renderReport(report);
-  if (standalone.hash !== rendered.hash) throw Error('Standalone report must use the same snapshot');
-  const files = new Map([
-    ['index.html', template.replace('<!-- content:styles -->', () => `<style>${rendered.css}</style>`).replace('<!-- content:report -->', () => rendered.fragment)],
-    ['roadmap.html', standalone.html], ['roadmap.csv', toCsv(rendered.report.datasets.products)], ['snapshot.json', rendered.json],
-  ]);
-  for (const chart of rendered.charts) if (chart.svg) files.set(`${chart.id}.svg`, chart.svg);
-  // Reuse the renderer's existing phone layout, preserving its exact SVG bytes.
-  const tree = parseFragment(rendered.fragment, { sourceCodeLocationInfo: true });
-  const graph = findElement(tree, 'aria-labelledby', 'content-developed-by-package');
-  const phone = findElement(graph, 'class', 'content-small');
-  const location = phone?.childNodes?.find(node => node.tagName === 'svg')?.sourceCodeLocation;
-  if (!location) throw Error('The shared report must provide its responsive roadmap graph');
-  files.set('developed-by-package-compact.svg', rendered.fragment.slice(location.startOffset, location.endOffset));
   const browser = await chromium.launch({ ...(process.env.UX_CHROME ? { executablePath: process.env.UX_CHROME } : { channel: 'chrome' }), headless: true });
+  const results = {};
   try {
-    const context = await browser.newContext();
-    await context.route('**/*', route => route.abort());
-    const page = await context.newPage();
-    const images = await renderChartImages(rendered, { page });
-    files.set('roadmap.pdf', (await exportPdf(rendered, { page })).bytes);
-    files.set('roadmap.docx', (await exportDocx(rendered, { images })).bytes);
-    files.set('roadmap.xlsx', (await exportXlsx(rendered)).bytes);
-    files.set('roadmap.pptx', (await exportPptx(rendered, { images })).bytes);
+    for (const locale of locales) {
+      const danish = locale === 'da', directory = join(root, danish ? 'da/roadmap/report' : 'roadmap/report');
+      const current = danish ? danishRoadmapReport(report) : report;
+      const downloads = [['pdf', 'PDF'], ['docx', 'Word'], ['xlsx', 'Excel'], ['pptx', 'PowerPoint'], ['csv', 'CSV data'], ['html', 'Web page (HTML)']].map(([extension, label]) => ({ label, href: `/roadmap/report/roadmap.${extension}` }));
+      for (const chart of report.blocks.filter(block => block.type === 'chart')) downloads.push({ label: `${chart.measure === 'developed' ? 'Developed' : 'Pipeline'} graph (SVG)`, href: `/roadmap/report/${chart.id}.svg` });
+      if (danish) for (const download of downloads) {
+        download.href = '/da' + download.href;
+        download.label = ({ 'CSV data': 'CSV-data', 'Web page (HTML)': 'Webside (HTML)', 'Developed graph (SVG)': 'Graf over udviklede funktioner (SVG)', 'Pipeline graph (SVG)': 'Graf over funktioner på vej (SVG)' })[download.label] ?? download.label;
+      }
+      const localize = danish ? danishRenderedRoadmap : value => value;
+      const rendered = localize(await renderReport(current, { downloads }));
+      const standalone = localize(await renderReport(current));
+      if (standalone.hash !== rendered.hash) throw Error('Standalone report must use the same snapshot');
+      const files = new Map([
+        ['index.html', template.replace('<!-- content:styles -->', () => `<style>${rendered.css}</style>`).replace('<!-- content:report -->', () => rendered.fragment)],
+        ['roadmap.html', standalone.html], ['roadmap.csv', danish ? danishRoadmapCsv(rendered.report.datasets.products, toCsv) : toCsv(rendered.report.datasets.products)], ['snapshot.json', rendered.json],
+      ]);
+      for (const chart of rendered.charts) if (chart.svg) files.set(`${chart.id}.svg`, chart.svg);
+      // Reuse the renderer's existing phone layout, preserving its exact SVG bytes.
+      const tree = parseFragment(rendered.fragment, { sourceCodeLocationInfo: true });
+      const graph = findElement(tree, 'aria-labelledby', 'content-developed-by-package');
+      const phone = findElement(graph, 'class', 'content-small');
+      const location = phone?.childNodes?.find(node => node.tagName === 'svg')?.sourceCodeLocation;
+      if (!location) throw Error('The shared report must provide its responsive roadmap graph');
+      files.set('developed-by-package-compact.svg', rendered.fragment.slice(location.startOffset, location.endOffset));
+      const context = await browser.newContext();
+      try {
+        await context.route('**/*', route => route.abort());
+        const page = await context.newPage();
+        const images = await renderChartImages(rendered, { page });
+        const exports = [
+          ['pdf', await exportPdf(danish ? standalone : rendered, { page })], ['docx', await exportDocx(rendered, { images })],
+          ['xlsx', await exportXlsx(rendered)], ['pptx', await exportPptx(rendered, { images })],
+        ];
+        for (const [kind, result] of exports) {
+          if (result.snapshotHash !== rendered.hash) throw Error('Export snapshot differs from rendered report');
+          files.set(`roadmap.${kind}`, danish && kind !== 'pdf' ? danishOfficeExport(result.bytes, kind) : result.bytes);
+        }
+      } finally { await context.close(); }
+      await rm(directory, { recursive: true, force: true }); await mkdir(directory, { recursive: true });
+      for (const [name, bytes] of files) await writeFile(join(directory, name), bytes);
+      await writeFile(join(directory, 'export-receipt.json'), JSON.stringify({
+        schemaVersion: 1, module: moduleInfo, snapshotHash: rendered.hash, source: rendered.report.source,
+        metrics: rendered.metrics,
+        ...(danish ? { hostPresentation: { adapter: 'roadmap-report-da-v1', locale: 'da-DK', adaptedOffice: ['roadmap.docx', 'roadmap.xlsx', 'roadmap.pptx'] } } : {}),
+        files: Object.fromEntries([...files].map(([name, bytes]) => [name, { sha256: sha256(bytes), bytes: Buffer.byteLength(bytes) }])),
+      }, null, 2) + '\n');
+      results[locale] = { snapshot: rendered.hash, metrics: rendered.metrics, directory };
+    }
   } finally { await browser.close(); }
-  const directory = join(root, 'roadmap/report');
-  await rm(directory, { recursive: true, force: true }); await mkdir(directory, { recursive: true });
-  for (const [name, bytes] of files) await writeFile(join(directory, name), bytes);
-  await writeFile(join(directory, 'export-receipt.json'), JSON.stringify({
-    schemaVersion: 1, module: moduleInfo, snapshotHash: rendered.hash, source: rendered.report.source,
-    metrics: rendered.metrics,
-    files: Object.fromEntries([...files].map(([name, bytes]) => [name, { sha256: sha256(bytes), bytes: Buffer.byteLength(bytes) }])),
-  }, null, 2) + '\n');
-  return { snapshot: rendered.hash, metrics: rendered.metrics, directory };
+  return { ...(results.en ?? results.da), locales: results };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

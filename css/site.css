@@ -918,7 +918,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .integration-preview :is(th, td) { border-bottom: 1px solid var(--hairline-light); padding: 8px 4px; vertical-align: middle; }
 .integration-preview th { font-weight: 600; }
 .integration-preview td label { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; cursor: pointer; }
-.integration-preview input { margin: 0; accent-color: var(--example-color); }
+.integration-preview input { margin: 0; font-size: 16px; accent-color: var(--example-color); }
 .integration-preview tr:last-child td:last-child { color: var(--warn); }
 .integration-result { margin: var(--s2) 0 0; font-size: .875rem; font-weight: 600; }
 .integration-mail { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px var(--s2); margin: 0; font-size: .875rem; }

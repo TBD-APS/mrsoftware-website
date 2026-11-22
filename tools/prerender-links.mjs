@@ -50,6 +50,8 @@ export async function publicLinkUpdates(root, graph) {
   for (const href of [...checked.graph.places.map(place => place.href), ...sitemapPages]) {
     if (!href.startsWith('/') || href.startsWith('//')) continue;
     const path = new URL(href, 'https://mrsoftware.dk').pathname;
+    // Danish pages are generated from their complete English source after this step.
+    if (path.startsWith('/da/')) continue;
     if (path.endsWith('/')) files.add(resolve(directory, `.${path}`, 'index.html'));
   }
   const updates = [];

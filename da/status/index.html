@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Systemstatus | MR Software</title>
+  <meta name="description" content="Aktuel status for mrsoftware.dk og de tjenester, vi driver, kontrolleret direkte fra denne side.">
+  <link rel="canonical" href="https://mrsoftware.dk/da/status/">
+  <meta name="theme-color" content="#fffcf7">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Systemstatus | MR Software">
+  <meta property="og:description" content="Aktuel status for mrsoftware.dk og de tjenester, vi driver, kontrolleret direkte fra denne side.">
+  <meta property="og:url" content="https://mrsoftware.dk/da/status/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. Ét sted til alle ordrer, forsendelser og dokumenter.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Systemstatus | MR Software">
+  <meta name="twitter:description" content="Aktuel status for mrsoftware.dk og de tjenester, vi driver, kontrolleret direkte fra denne side.">
+  <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/site-locale.da.js" defer></script>
+  <script src="/js/site.js" defer></script>
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/status/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/status/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/status/">
+  <meta property="og:locale" content="da_DK">
+</head>
+<body>
+  <a class="skip-link" href="#main">Gå til indhold</a>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/da/" aria-label="MR Software – forside"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/status/" lang="en" hreflang="en">English</a>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Åbn menu" data-label-open="Åbn menu" data-label-close="Luk menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Hovednavigation">
+        <a href="/da/#solutions">Use cases</a>
+        <a href="/da/research/">Forskning</a>
+        <a href="/da/integrations/">Integrationer</a>
+        <a href="/da/#results">Resultater</a>
+        <a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed</a>
+        <a href="/da/contact/">Kontakt</a>
+        <a class="button button-primary" href="/da/contact/">Tal med os</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="page-hero on-dark">
+      <div class="page-width">
+      <p class="label">MR Software</p>
+      <h1>Systemstatus</h1>
+      <p class="lead">
+        Denne side sender forespørgsler til vores tjenester direkte fra din browser og viser, om de svarer. Hver tjeneste skal svare med HTTP 200 og en JSON-besked, der identificerer tjenesten, ikke blot en generisk side. Data opdateres hvert 60. sekund.
+      </p>
+      </div>
+    </div>
+    <div class="page-body page-width">
+    <div class="note" id="last-check">Venter på den første kontrol…</div>
+
+    <div class="note">Offentlige planer og beslutningen om open source på sigt findes på <a href="/da/roadmap/">siden med udviklingsplanen →</a></div>
+
+    <div class="stat-grid" id="services"></div>
+
+    <section>
+      <h2>Overvågede tjenester</h2>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Tabel"><table>
+        <thead>
+          <tr><th>Tjeneste</th><th>Slutpunkt</th><th>Hvad det beviser</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>mrsoftware.dk</td><td><code>/ping.json</code></td><td>Websitet svarer med en kort hostingstatus.</td></tr>
+          <tr><td>saassy.mrsoftware.dk</td><td><code>/ping</code> og <code>/api/saassy/health</code></td><td>Produktionsfrontenden til MR SAAS'y er oppe; driftskontrollen melder <em>ready</em> for model, kaldsgrænse og Cloudflare OAuth.</td></tr>
+          <tr><td>dev.mrsoftware.dk</td><td><code>/ping</code></td><td>Udviklingsinstansen af Control Center svarer.</td></tr>
+          <tr><td>www.mrsoftware.dk</td><td><code>/</code></td><td>Det statiske GitHub Pages-website (Workslip) svarer. En vært uden dynamisk driftskontrol.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <div class="note warn">
+      Status her er et øjebliksbillede fra din browser. Se formelle målinger i valideringsdokumentationen under <a href="/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi os selv</a>.
+    </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/da/" aria-label="MR Software – forside"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software til handel, fragt og service i marken.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column" data-link-list-from="use-cases" data-link-list-heading="Use cases"><h2>Use cases</h2><a href="/da/products/tradey/">Tradey</a><a href="/da/products/shippy/">Shippy</a><a href="/da/demo/roady/">Roady</a><a href="/da/products/producey/">Producey</a></div>
+      <div class="footer-column"><h2>Ressourcer</h2><a href="https://guessy.mrsoftware.dk/">Guessy</a><a href="/da/demo/">Democenter</a><a href="/da/stories/">Historier</a><a href="/da/integrations/">Integrationer</a><a href="/da/roadmap/">Planer</a><a href="/da/research/">Forskning</a><a href="/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi</a></div>
+      <div class="footer-column"><h2>Virksomhed</h2><a href="/da/contact/">Kontakt os</a><a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed</a><a href="/da/status/">Systemstatus</a></div>
+      <nav class="footer-legal" aria-label="Juridisk"><h2>Juridisk</h2><a href="/da/privacy-policy/">Privatlivspolitik</a><a href="/da/terms-of-service/">Vilkår</a><a href="/da/data-deletion/">Sletning af data</a></nav>
+    </div>
+    <div class="footer-bottom">
+      <span>MR software I/S · CVR DK46743091 · Aarhus</span>
+      <span>© <span class="year">2026</span> MR Software</span>
+    </div>
+  </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var SERVICES = [
+    { id: 'mrsoftware', name: 'mrsoftware.dk', probe: '/ping.json', self: true },
+    { id: 'saassy', name: 'saassy.mrsoftware.dk', probe: 'https://saassy.mrsoftware.dk/ping', health: 'https://saassy.mrsoftware.dk/api/saassy/health' },
+    { id: 'dev', name: 'dev.mrsoftware.dk', probe: 'https://dev.mrsoftware.dk/ping' },
+    { id: 'www', name: 'www.mrsoftware.dk', probe: 'https://www.mrsoftware.dk/', static: true }
+  ];
+  var container = document.getElementById('services');
+  var lastCheck = document.getElementById('last-check');
+
+  function render(id, label, status, detail) {
+    var el = document.getElementById('svc-' + id);
+    el.querySelector('.value').textContent = status === 'ok' ? 'OK' : (status === 'warn' ? 'Warning' : 'Down');
+    el.querySelector('.value').className = 'value ' + status;
+    el.querySelector('.label').textContent = label + ': ' + detail;
+  }
+
+  function check() {
+    container.innerHTML = '';
+    var okServices = 0;
+    var total = SERVICES.length;
+    var settled = 0;
+
+    SERVICES.forEach(function (svc) {
+      var tile = document.createElement('div');
+      tile.className = 'stat';
+      tile.id = 'svc-' + svc.id;
+      tile.innerHTML = '<div class="value warn">…</div><div class="label">' + svc.name + '</div>';
+      container.appendChild(tile);
+
+      var checks = [];
+      if (svc.probe) checks.push({ name: 'probe', url: svc.probe, self: svc.probe.charAt(0) === '/' });
+      if (svc.health) checks.push({ name: 'health', url: svc.health, self: false });
+      if (!checks.length) {
+        render(svc.id, svc.name, 'ok', 'static host, not pinged');
+        okServices += 1;
+        settled += 1;
+        return;
+      }
+
+      Promise.all(checks.map(function (c) {
+        return fetch(c.url, c.self ? { cache: 'no-store' } : { mode: 'cors', cache: 'no-store' })
+          .then(function (r) { return r.status === 200 ? { ok: true, text: c.name + ' HTTP 200' } : { ok: false, text: c.name + ' HTTP ' + r.status }; })
+          .catch(function () { return { ok: false, text: c.name + ' unreachable' }; });
+      })).then(function (results) {
+        var ok = results.every(function (r) { return r.ok; });
+        render(svc.id, svc.name, ok ? 'ok' : 'bad', results.map(function (r) { return r.text; }).join(' · '));
+        if (ok) okServices += 1;
+        settled += 1;
+        if (settled === total) {
+          lastCheck.textContent = 'Last check: ' + new Date().toLocaleTimeString('en-GB') + '. ' + okServices + '/' + total + ' services responded correctly.';
+          lastCheck.className = 'note ' + (okServices === total ? 'ok' : 'bad');
+        }
+      });
+    });
+  }
+
+  check();
+  setInterval(check, 60000);
+});
+</script>
+</body>
+</html>

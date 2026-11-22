@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Udviklingsplan | MR Software</title>
+  <meta name="description" content="Se de funktioner, MR Software har udviklet, og hvad der er planlagt eller under udvikling på tværs af vores produkter.">
+  <link rel="canonical" href="https://mrsoftware.dk/da/roadmap/">
+  <meta name="theme-color" content="#fffcf7">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Udviklingsplan | MR Software">
+  <meta property="og:description" content="Se de funktioner, MR Software har udviklet, og hvad der er planlagt eller under udvikling på tværs af vores produkter.">
+  <meta property="og:url" content="https://mrsoftware.dk/da/roadmap/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. Ét sted til alle ordrer, forsendelser og dokumenter.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Udviklingsplan | MR Software">
+  <meta name="twitter:description" content="Se de funktioner, MR Software har udviklet, og hvad der er planlagt eller under udvikling på tværs af vores produkter.">
+  <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/linking.css">
+  <script src="/js/site-locale.da.js" defer></script>
+  <script src="/js/site.js" defer></script>
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/roadmap/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/roadmap/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/roadmap/">
+  <meta property="og:locale" content="da_DK">
+</head>
+<body>
+  <a class="skip-link" href="#main">Gå til indhold</a>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/da/" aria-label="MR Software – forside"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/roadmap/" lang="en" hreflang="en">English</a>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Åbn menu" data-label-open="Åbn menu" data-label-close="Luk menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Hovednavigation">
+        <a href="/da/#solutions">Use cases</a>
+        <a href="/da/research/">Forskning</a>
+        <a href="/da/integrations/">Integrationer</a>
+        <a href="/da/roadmap/" aria-current="page">Planer</a>
+        <a href="/da/#results">Resultater</a>
+        <a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed</a>
+        <a href="/da/contact/">Kontakt</a>
+        <a class="button button-primary" href="/da/contact/">Tal med os</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="page-hero on-light roadmap-hero">
+      <div class="page-width">
+        <h1>Produktroadmap</h1>
+        <p class="lead">Se, hvad der er udviklet, under udvikling eller planlagt for hver pakke.</p>
+        <p class="roadmap-note">Udviklede funktioner er implementeret. Tilgængeligheden varierer efter produkt og opsætning.</p>
+        <nav class="roadmap-jumps" aria-label="Sektioner i roadmap">
+          <a href="#greeny-showcase">Udforsk Greeny</a>
+          <a href="#boney-modules">Udforsk genanvendelige Boney-moduler</a>
+          <a href="#roadmap-packages">Gennemse produktroadmappet</a>
+        </nav>
+      </div>
+    </div>
+    <div class="roadmap-body page-width">
+    <!-- public-package-nav:start -->
+    <nav class="roadmap-packages" aria-label="Pakker">
+      <ul>
+        <li><a href="#package-authy"><span>Authy</span>
+          <span class="roadmap-count">5 udviklet · 0 på vej</span></a></li>
+        <li><a href="#package-boney"><span>Boney</span>
+          <span class="roadmap-count">31 udviklet · 2 på vej</span></a></li>
+        <li><a href="#package-greeny"><span>Greeny</span>
+          <span class="roadmap-count">4 udviklet · 2 på vej</span></a></li>
+        <li><a href="#package-mr-saassy"><span>MR SAAS’y</span>
+          <span class="roadmap-count">7 udviklet · 6 på vej</span></a></li>
+        <li><a href="#package-roady"><span>Roady</span>
+          <span class="roadmap-count">5 udviklet · 5 på vej</span></a></li>
+        <li><a href="#package-shippy"><span>Shippy</span>
+          <span class="roadmap-count">13 udviklet · 4 på vej</span></a></li>
+        <li><a href="#package-tradey"><span>Tradey</span>
+          <span class="roadmap-count">6 udviklet · 0 på vej</span></a></li>
+        <li><a href="#package-zavn"><span>Zavn</span>
+          <span class="roadmap-count">6 udviklet · 1 på vej</span></a></li>
+      </ul>
+    </nav>
+    <!-- public-package-nav:end -->
+    <div data-related-from="roadmap" data-related-heading="Roadmapoverblik og downloads"><section class="related-links" aria-labelledby="related-roadmap"><h2 id="related-roadmap">Roadmapoverblik og downloads</h2><ul><li><a class="related-link" href="/da/roadmap/report/"><span class="related-link-title">Se roadmapoverblik og rapporter</span><span class="related-link-summary">Sammenlign offentliggjorte antal funktioner, og download det samme overblik i flere formater.</span></a></li></ul></section></div>
+    <section class="greeny-roadmap" aria-labelledby="greeny-showcase">
+      <h2 id="greeny-showcase">Greeny</h2>
+      <p>Gennemgå elforbrugsdata, forhåndsvis og del ESG-rapporter, og estimer udledningen for en vejstrækning med faktorerne bag resultatet.</p>
+      <div class="greeny-roadmap-links">
+        <a class="button button-primary" href="/da/integrations/#greeny-example">Prøv eksemplet på fragtudledning</a>
+        <a class="greeny-text-link" href="#package-greeny">Se Greenys roadmap</a>
+      </div>
+    </section>
+
+    <section class="boney-showcase" aria-labelledby="boney-modules">
+      <h2 id="boney-modules">Genanvendelige Boney-moduler</h2>
+      <p class="boney-showcase-intro">Brug de samme byggesten på tværs af produkter, fra login og kundeportaler til forsendelsessporing. Teams vælger versionsstyrede .NET- eller JavaScript-pakker og konfigurerer adgang, lagring og udbydere til deres produkt.</p>
+      <p class="boney-showcase-examples"><a href="/da/integrations/#examples">Prøv Excel- og Outlook-eksemplerne</a></p>
+      <ul class="boney-modules">
+        <li id="boney-module-starter">
+          <h3><a href="#boney-product-starter">Produktstartpakke og adgang</a></h3>
+          <p>Start et React- og ASP.NET-produkt med en fælles appramme, Authy-login og adgangskontrol på organisationsniveau.</p>
+          <p class="boney-package-names"><code>Boney.ProductStarter</code> <code>Boney.App</code> <code>@mr-software/product-ui</code></p>
+        </li>
+        <li id="boney-module-portal">
+          <h3><a href="#boney-customer-portal">Kundeportaler</a></h3>
+          <p>Giv kunderne et sted at følge deres poster, dokumenter og beskeder med adgang styret af værtsproduktet.</p>
+          <p class="boney-package-names"><code>Boney.CustomerPortal</code> <code>@mr-software/product-ui</code></p>
+        </li>
+        <li id="boney-module-contacts">
+          <h3><a href="#boney-crm">Kontakter og samtaler</a></h3>
+          <p>Administrer virksomheder og kontakter, gennemgå importer, og gem svar og kommunikationshistorik på den rigtige post.</p>
+          <p class="boney-package-names"><code>Boney.Crm</code> <code>Boney.Thread</code> <code>Boney.Comms</code> <code>Boney.Comms.Outlook</code></p>
+        </li>
+        <li id="boney-module-documents">
+          <h3><a href="#boney-document-intake">Dokumentmodtagelse og gennemgang</a></h3>
+          <p>Bevar originaldokumentet, valider udtrukne felter, og giv dem, der gennemgår materialet, dokumentation til deres beslutninger.</p>
+          <p class="boney-package-names"><code>Boney.Documents</code></p>
+        </li>
+        <li id="boney-module-planning">
+          <h3><a href="#boney-transport-planning">Transport- og leveringsplanlægning</a></h3>
+          <p>Brug fælles transportmodeller til at planlægge køretøjsbesøg, kontrollere kapacitet og følge delvis opfyldelse.</p>
+          <p class="boney-package-names"><code>Boney.Transport</code> <code>Boney.Planning</code> <code>Boney.Fulfilment</code></p>
+        </li>
+        <li id="boney-module-tracking">
+          <h3><a href="#boney-shipment-tracking">Forsendelsessporing og kort</a></h3>
+          <p>Saml transportøropdateringer i en fælles forsendelseshistorik, og vis ruter og stop på et kort.</p>
+          <p class="boney-package-names"><code>MrSoftware.Shipping</code> <code>Boney.Transport.Shipping</code> <code>@mrsoftware/maps</code></p>
+        </li>
+        <li id="boney-module-workflows">
+          <h3><a href="#boney-business-workflows">Arbejdsgange og produktværktøjer til virksomheder</a></h3>
+          <p>Tilbyd skabeloner til virksomheder, og forbind godkendte værktøjer til produktets eksisterende login og rettigheder.</p>
+          <p class="boney-package-names"><code>Boney.Workflows</code> <code>Boney.Mcp</code></p>
+        </li>
+        <li id="boney-module-delivery">
+          <h3><a href="#boney-release-toolkit">Release- og browserkontroller</a></h3>
+          <p>Test brugerrejser på computer og telefon, og knyt releasedokumentation til den præcise kildekoderevision.</p>
+          <p class="boney-package-names"><code>Boney.Deploy</code> <code>@mr-software/ux-gate</code></p>
+        </li>
+      </ul>
+      <div class="boney-adoption" aria-labelledby="boney-adoption-title">
+        <h3 id="boney-adoption-title">Her bruger vi Boney</h3>
+        <ul>
+          <li><a href="#package-tradey">Tradey</a><span>Fælles login, transport og forsendelsessporing.</span></li>
+          <li><a href="#package-mr-saassy">MR SAAS’y</a><span>Transportplanlægningspakker og browserkontroller.</span></li>
+          <li><a href="#package-roady">Roady</a><span>Produktstartpakken, transportmodeller og kort.</span></li>
+        </ul>
+      </div>
+      <a class="boney-showcase-detail" href="#package-boney">Se hele Boneys roadmap</a>
+    </section>
+
+    <div id="roadmap-packages">
+    <!-- public-features:start -->
+    <section class="roadmap-section" aria-labelledby="package-authy">
+      <h2 id="package-authy">Authy</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="authy-single-sign-in">
+          <div>
+            <h3>Fælles login</h3>
+            <p>Lad registrerede produkter overlade login til Authy og bruge den bekræftede identitet, når brugeren vender tilbage.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="authy-organization-roles">
+          <div>
+            <h3>Organisations- og afdelingsroller</h3>
+            <p>Tildel fælles roller på organisations- eller afdelingsniveau for de deltagende produkter.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="authy-current-access">
+          <div>
+            <h3>Aktuel adgang og tilbagekaldelse</h3>
+            <p>Lad et produkt kontrollere, om en bruger, der er logget ind, stadig har adgang, når vedkommende sender en beskyttet anmodning.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="authy-email-codes">
+          <div>
+            <h3>Login med e-mailkode</h3>
+            <p>Tilbyd login med e-mailkode til produkter, hvor det udtrykkeligt er aktiveret, og bind sessionen til det produkt.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="authy-machine-clients">
+          <div>
+            <h3>Identitet mellem produkter</h3>
+            <p>Registrer en maskinklient til en godkendt forbindelse, så to produkter kan udveksle anmodninger med afgrænset adgang.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-boney">
+      <h2 id="package-boney">Boney</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="boney-app-foundation">
+          <div>
+            <h3>Applikationsfundament</h3>
+            <p>Giv produktteams et fælles udgangspunkt for login, adgangskontrol, tenantkontekst og sundhedsendpoints.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-superadmin">
+          <div>
+            <h3>Administration af organisationer og afdelinger</h3>
+            <p>Administrer organisationer, afdelinger, brugere og roller gennem en genanvendelig administrationspakke.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-product-starter">
+          <div>
+            <h3>Produktstartpakke</h3>
+            <p>Generer en React-frontend med en ensartet applikationsramme og udtrykkeligt valgte afhængigheder.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-customer-portal">
+          <div>
+            <h3>Kundeportal</h3>
+            <p>Genbrug kundeposter, opdateringer, beskeder og dokumentoverførsel med adgang styret af værtsproduktet.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-crm">
+          <div>
+            <h3>Virksomheds- og kontaktregister</h3>
+            <p>Gem, søg og forbind virksomheder og kontakter med roller defineret af produktet og ejerskab over poster.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-crm-import">
+          <div>
+            <h3>Kontaktimport med gennemgang</h3>
+            <p>Gennemgå CSV- eller vCard-kontakter og mulige dubletter, før udvalgte poster importeres.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-record-threads">
+          <div>
+            <h3>Samtaler på poster</h3>
+            <p>Gem svar på den post, de vedrører, og kontrollér adgangen på postniveau.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-communications">
+          <div>
+            <h3>Kommunikationsregistreringer</h3>
+            <p>Knyt e-mail-, SMS-, WhatsApp- og opkaldsregistreringer til en kunde eller ordre.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-outlook">
+          <div>
+            <h3>Outlook-forbindelse</h3>
+            <p>Forbind en Outlook-postkasse, der er givet adgang til, læs beskeder inden for adgangens rammer, og gennemgå udgående mail.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-whatsapp">
+          <div>
+            <h3>WhatsApp-adapter</h3>
+            <p>Genbrug WhatsApp-beskedklienten og håndteringen af leveringsstatus med godkendelse styret af produktet.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-document-intake">
+          <div>
+            <h3>Dokumentmodtagelse og gennemgang</h3>
+            <p>Gem uploadet kildemateriale, udtrukne resultater og beslutningen fra den ansvarlige for gennemgangen samlet.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-billing">
+          <div>
+            <h3>Faktureringsindstillinger</h3>
+            <p>Administrer organisationens faktureringsoplysninger og bankoverførselsinstruktioner i et område kun for administratorer.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-accounting-reader">
+          <div>
+            <h3>Læser til regnskabsdata</h3>
+            <p>Læs fakturadata med afgrænset adgang gennem en e-conomic-adapter, der aktivt tilvælges.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-fulfilment">
+          <div>
+            <h3>Delvis opfyldelse</h3>
+            <p>Følg delmængder, og udpeg personer til at følge op på det, der fortsat udestår.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-order-handoff">
+          <div>
+            <h3>Ordreoverdragelse</h3>
+            <p>Send transportordrer til en speditør, og brug et fælles format til opdateringer, der kommer retur.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-product-events">
+          <div>
+            <h3>Hændelser mellem produkter</h3>
+            <p>Udveksl signerede hændelser, og bevar rækkefølge og leveringshistorik med den fælles indbakke og udbakke.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-transport-planning">
+          <div>
+            <h3>Transportplanlægning</h3>
+            <p>Sammenlign forslag til afhentning og levering med kapacitet og tidsvinduer til operatørens gennemgang.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-automation">
+          <div>
+            <h3>Automatiseringskørsler</h3>
+            <p>Koordiner versionsstyrede kontroller, varige resultater og godkendelsestrin gennem fælles automatiseringskontrakter.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-maps">
+          <div>
+            <h3>Ruter og kort</h3>
+            <p>Vis ruter og stop på tværs af produkter med kontrolleret adgang til valgfrie kald til kortudbydere.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-shipment-tracking">
+          <div>
+            <h3>Adaptere til forsendelsessporing</h3>
+            <p>Læs containeropdateringer gennem en valgfri sporingsadapter med et kontrolleret budget for kald.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-business-workflows">
+          <div>
+            <h3>Skabeloner til virksomhedens arbejdsgange</h3>
+            <p>Find genanvendelige skabeloner til salg, projekter, drift og rapportering i det fælles katalog.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-assistant">
+          <div>
+            <h3>Produktassistent</h3>
+            <p>Indbyg en fælles assistent, der bruger værtsproduktets kontekst og forbindelsestilladelser.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-module-access">
+          <div>
+            <h3>Moduladgang</h3>
+            <p>Lad et produkt kontrollere, om et modul er aktiveret og tilgængeligt for en organisation.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-feature-flags">
+          <div>
+            <h3>Funktionsflag</h3>
+            <p>Evaluer produktets funktionsflag, og hold valgfrie funktioner slået fra, indtil de aktiveres.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-audit-history">
+          <div>
+            <h3>Revisionsspor og posthistorik</h3>
+            <p>Verificer poster i revisionssporet, og brug en fælles visning af ændringer i poster.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-release-toolkit">
+          <div>
+            <h3>Release- og integrationskontroller</h3>
+            <p>Kør produktspecifikke leveringsadaptere og gentagelige integrationskontroller fra en fælles værktøjskasse.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-versioned-artifacts">
+          <div>
+            <h3>Versionsstyrede pakkeartefakter</h3>
+            <p>Byg uafhængigt testede .NET- og webpakker med præcise versioner og dokumenteret kildeoprindelse.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-passwordless">
+          <div>
+            <h3>Verificering uden adgangskode</h3>
+            <p>Tilbyd en genanvendelig verificeringsmotor til værtsprodukter, der udtrykkeligt aktiverer verificering uden adgangskode.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-resilient-requests">
+          <div>
+            <h3>Robuste anmodninger</h3>
+            <p>Genbrug et afgrænset antal genforsøg til understøttede anmodninger, og hold adfærden for genforsøg ensartet på tværs af produkter.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-test-data">
+          <div>
+            <h3>Gentagelige testdata</h3>
+            <p>Generer de samme testpersoner, steder og poster fra en fast startværdi.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-authenticated-tools">
+          <div>
+            <h3>Autoriserede produktværktøjer</h3>
+            <p>Stil produktværktøjer til rådighed med afgrænset adgang, og kræv bekræftelse for understøttede ændringer.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="boney-site-conversation">
+          <div>
+            <h3>Adapter til samtaler på hjemmesiden</h3>
+            <p>Forbind hjemmesideassistenter til en fælles modeladapter på serveren.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+        <li class="roadmap-feature" id="boney-remote-mission">
+          <div>
+            <h3>Fjernstart af missioner</h3>
+            <p>Sæt arbejde i kø til en navngiven desktopmission, og vis, om maskinen blev nået.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-greeny">
+      <h2 id="package-greeny">Greeny</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="greeny-report-pdfs">
+          <div>
+            <h3>Forhåndsvisninger og PDF'er af ESG-rapporter</h3>
+            <p>Forhåndsvis og eksporter en versionsstyret ESG-rapport som PDF.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="greeny-report-sharing">
+          <div>
+            <h3>Kontrolleret rapportdeling</h3>
+            <p>Hold kunderapporter private, og opret links, der udløber, når deling godkendes.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="greeny-electricity-review">
+          <div>
+            <h3>Gennemgang af dokumentation for elforbrug</h3>
+            <p>Gennemgå udtrukne totaler for elforbrug, før de bruges i en eksempelrapport.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="greeny-road-carbon">
+          <div>
+            <h3>CO₂-beregning for vejfragt</h3>
+            <p>Estimer udledningen for en vejstrækning, når afstand, last og en gennemgået faktor er angivet.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="energy-and-data-reports">
+          <div>
+            <h3>Rapporter om energi- og databesparelser</h3>
+            <p>Tilføj energi- og databesparelser til ESG-rapporter med dokumentationen bag tallene.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+        <li class="roadmap-feature" id="greeny-shipment-reports">
+          <div>
+            <h3>ESG-rapporter baseret på forsendelser</h3>
+            <p>Opret rapporter fra forsendelsesetaper, og spor hvert udledningstal tilbage til dets input og faktorer.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-mr-saassy">
+      <h2 id="package-mr-saassy">MR SAAS’y</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="saasy-operator-workspace">
+          <div>
+            <h3>Operatørens arbejdsområde</h3>
+            <p>Se missioner, repositoryarbejde og beslutninger i ét Control Center.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-action-approvals">
+          <div>
+            <h3>Godkendelseskø</h3>
+            <p>Gennemgå handlinger, der kræver en beslutning, registrer beslutningen, og bevar godkendelseshistorikken.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-agent-access">
+          <div>
+            <h3>Agenttilladelser</h3>
+            <p>Giv godkendte agenter afgrænsede tilladelser, og gennemgå adgang pr. organisation.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-audit-fleet">
+          <div>
+            <h3>Overblik over revisionsspor</h3>
+            <p>Gennemgå aktivitet i revisionssporet og privilegerede handlinger på tværs af de miljøer, en operatør må se.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-pipeline-radar">
+          <div>
+            <h3>Overvågning af build og release</h3>
+            <p>Følg udvalgte GitHub-workflows, knyt mislykkede kørsler til den relevante ændring, og følg genforsøg.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-release-evidence">
+          <div>
+            <h3>Releasedokumentation for missioner</h3>
+            <p>Knyt dokumentationen for en release til dens mission og kildeversion.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="search-with-sources">
+          <div>
+            <h3>Dokumentsøgning med kilder</h3>
+            <p>Find den relevante passage i virksomhedens dokumentation, og åbn det afsnit, den kom fra.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="connected-knowledge">
+          <div>
+            <h3>Forbundet virksomhedsviden</h3>
+            <p>Find aktuelle oplysninger, du har adgang til, på tværs af virksomhedens kilder med links til originalmaterialet.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-product-releases">
+          <div>
+            <h3>Fælles koordinering af produktreleases</h3>
+            <p>Anvend godkendelser og releaseregler på tværs af produkter, mens hvert produkt beholder sin egen deployadapter.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-module-entitlements">
+          <div>
+            <h3>Vedvarende modulrettigheder</h3>
+            <p>Hold beslutninger om moduladgang ensartede på tværs af applikation, navigation og API.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-customer-exports">
+          <div>
+            <h3>Eksport af kundedata</h3>
+            <p>Anmod om og download en dataeksport, som produktet selv står for, gennem en fælles kontrakt afgrænset til den enkelte tenant.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-combined-operations">
+          <div>
+            <h3>Overblik over clouddrift</h3>
+            <p>Se kildeunderbyggede omkostninger, maillevering, lager- og databasekapacitet i Control Center.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+        <li class="roadmap-feature" id="saasy-site-assistant">
+          <div>
+            <h3>Hjemmesideassistent</h3>
+            <p>Tilbyd en tilgængelig samtale på hjemmesiden med den fælles modeladapter.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-roady">
+      <h2 id="package-roady">Roady</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="roady-transport-overview">
+          <div>
+            <h3>Transportoverblik</h3>
+            <p>Gennemse og søg i transportposter, og åbn derefter ruten og dens registrerede hændelser.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="roady-stop-maps">
+          <div>
+            <h3>Ruter og gemte stop</h3>
+            <p>Åbn et transportkort, vælg et kendt stop, og del den valgte post via et link.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="roady-source-history">
+          <div>
+            <h3>Kilde- og rettelseshistorik</h3>
+            <p>Sammenlign registrerede hændelser med senere rettelser, mens den oprindelige dokumentation fortsat er synlig.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="roady-access-status">
+          <div>
+            <h3>Adgangsstatus for arbejdsområdet</h3>
+            <p>Se, om en session er logget ind, og om arbejdsområdet har verificeret dens aktuelle adgang.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="roady-source-check">
+          <div>
+            <h3>Kontrol af kildernes aktualitet</h3>
+            <p>Find gamle eller manglende opdateringer, og gem resultaterne af gentagelige kontroller.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="terminal-visits">
+          <div>
+            <h3>Terminalbesøg</h3>
+            <p>Følg hvert køretøj fra ankomst til afgang, og se, hvor længe det har ventet.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+        <li class="roadmap-feature" id="roady-transport-feed">
+          <div>
+            <h3>Forbindelser til transportkilder</h3>
+            <p>Forbind et godkendt feed, og bevar historikken for forsinkede, manglende og rettede hændelser.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+        <li class="roadmap-feature" id="roady-scheduled-checks">
+          <div>
+            <h3>Planlagte transportkontroller</h3>
+            <p>Kør kontroller fra SAAS’y, og bevar resultaterne gennem genforsøg og genstarter.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+        <li class="roadmap-feature" id="transport-exceptions">
+          <div>
+            <h3>Transportafvigelser</h3>
+            <p>Se forsinkelser og manglende opdateringer, udpeg nogen til at følge op, og gem en registrering af, hvordan hver afvigelse blev løst.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+        <li class="roadmap-feature" id="transport-carbon-reports">
+          <div>
+            <h3>CO₂-rapporter for transport</h3>
+            <p>Gennemgå udledning efter forsendelse, køretøj, kunde og periode med data og beregningsmetoden bag hvert tal.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-shippy">
+      <h2 id="package-shippy">Shippy</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="shippy-purchase-orders">
+          <div>
+            <h3>Indkøbsordrer og godkendelser</h3>
+            <p>Opret eller importer indkøbsordrer, og gem gennemgang, godkendelse og leveringsmilepæle på én post.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-partial-deliveries">
+          <div>
+            <h3>Delleveringer</h3>
+            <p>Fordel mængder på flere forsendelser, registrer modtagelser, og tildel opfølgning på udestående varer.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-customer-portal">
+          <div>
+            <h3>Kundearbejdsområde</h3>
+            <p>Giv kunderne et afgrænset indblik i deres ordrer, opdateringer, beskeder og dokumenter.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-document-review">
+          <div>
+            <h3>Gennemgang af indkøbsordredokumenter</h3>
+            <p>Gennemgå uploadede PDF'er, udtrukne fragtfelter og den resulterende indkøbsordrekladde før godkendelse.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shipment-links">
+          <div>
+            <h3>Links på forsendelser</h3>
+            <p>Gem en sporingsside, et kundelink eller en dokument-URL på den indkøbsordre, det tilhører.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-map-and-milestones">
+          <div>
+            <h3>Forsendelseskort og milepæle</h3>
+            <p>Åbn en gemt forsendelsesrute, og se dens registrerede milepæle og planlagte levering.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="container-tracking">
+          <div>
+            <h3>Containersporing</h3>
+            <p>Se containerstatus, lokationsopdateringer og forventede ankomster ved siden af indkøbsordren, når sporingsintegrationen er aktiveret.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shipment-carbon-qr">
+          <div>
+            <h3>CO₂-QR-koder til forsendelser</h3>
+            <p>Udskriv eller scan en QR-kode for at åbne forsendelsens CO₂-oplysninger.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-customer-directory">
+          <div>
+            <h3>Kunde- og varemodtagerregister</h3>
+            <p>Knyt ordrer til kunde-, virksomheds- og varemodtagerposter med afgrænset adgang.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-communications">
+          <div>
+            <h3>Ordrekommunikationshistorik</h3>
+            <p>Gem beskeder, dokumentation for opkald og gennemgåede svar knyttet til de relevante ordrer.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-accounting">
+          <div>
+            <h3>Regnskabs- og faktureringsvisninger</h3>
+            <p>Vis fakturadokumentation, bankoplysninger og betalingsreferencer, som der er adgang til, i kundearbejdsområdet.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-order-analytics">
+          <div>
+            <h3>Ordreanalyser</h3>
+            <p>Fordel de tilgængelige ordrer efter status, vægt og mængde pr. rute.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-product-connections">
+          <div>
+            <h3>Forbundne produkter</h3>
+            <p>Undersøg parringsstatus, fejl i hændelseslevering og afgrænset dokumentation for genopretning for forbundne ordrer.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="scanned-purchase-orders">
+          <div>
+            <h3>Indkøbsordrer fra scanninger</h3>
+            <p>Udtræk felter fra en scannet indkøbsordre, så en operatør kan gennemgå dem, før kladden gemmes.</p>
+          </div>
+          <span class="roadmap-stage">Under udvikling</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-outlook-assistant">
+          <div>
+            <h3>Outlook- og ordreassistent</h3>
+            <p>Synkroniser relevante Outlook-beskeder med ordrer, og forbered svar og opsummeringer, der kan gennemgås.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-transcripts">
+          <div>
+            <h3>Optagelser og transskriptioner</h3>
+            <p>Vedhæft en optagelse og en søgbar transskription til den indkøbsordre eller kunde, den tilhører.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+        <li class="roadmap-feature" id="shippy-customer-overview-fields">
+          <div>
+            <h3>Felter i kundeoverblikket</h3>
+            <p>Vis aftalte transportfelter i kundeoverblikket med deres kilde og seneste opdatering.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-tradey">
+      <h2 id="package-tradey">Tradey</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="tradey-product-catalogue">
+          <div>
+            <h3>Produktkatalog</h3>
+            <p>Gennemse varer og deres klassifikationer i et søgbart katalog.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-buyers-and-deals">
+          <div>
+            <h3>Indkøbere og handler</h3>
+            <p>Åbn indkøber- og handelsposter fra handelsarbejdsområdet.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-supplier-offers">
+          <div>
+            <h3>Leverandørtilbud</h3>
+            <p>Registrer leverandørtilbud, og gennemgå de oplysninger, der bruges til handelsbeslutninger.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-shipment-overview">
+          <div>
+            <h3>Forsendelsesoverblik</h3>
+            <p>Se forsendelsesmilepæle, og åbn transportkortet fra forsendelsesposten.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-container-tracking">
+          <div>
+            <h3>Containersporing</h3>
+            <p>Læs containerobservationer og forventede ankomster, når udbyderforbindelsen er aktiveret.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="tradey-whatsapp-connection">
+          <div>
+            <h3>WhatsApp-forbindelse</h3>
+            <p>Opsæt og undersøg en afgrænset WhatsApp-forbindelse til et handelsarbejdsområde.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="package-zavn">
+      <h2 id="package-zavn">Zavn</h2>
+      <ul class="roadmap-list">
+        <li class="roadmap-feature" id="zavn-inbox">
+          <div>
+            <h3>Indbakke til kliniksamtaler</h3>
+            <p>Gennemgå indgående samtaler, og se, hvilke beskeder der kræver en receptionists opmærksomhed.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-reply-drafts">
+          <div>
+            <h3>Svarudkast til receptionisten</h3>
+            <p>Forbered et svar, som klinikpersonalet kan gennemgå, før det bruges.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-transcription">
+          <div>
+            <h3>Transskriptioner og notatudkast</h3>
+            <p>Transskriber optagelser, og forbered strukturerede notater til klinikpersonalets gennemgang.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-skills">
+          <div>
+            <h3>Receptionistens færdigheder</h3>
+            <p>Gennemse, konfigurer og aktiver færdigheder til en kliniks receptionist.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-onboarding">
+          <div>
+            <h3>Opstart af klinik</h3>
+            <p>Opsæt en prøveperiode for en klinik med klinikkens oplysninger og visuelle identitet.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-support">
+          <div>
+            <h3>Klinikkens supportassistent</h3>
+            <p>Åbn support fra klinikkens dashboard, og få hjælp til arbejdsområdet.</p>
+          </div>
+          <span class="roadmap-stage">Udviklet</span>
+        </li>
+        <li class="roadmap-feature" id="zavn-mitid">
+          <div>
+            <h3>MitID-integration</h3>
+            <p>Tilføj MitID til klinikkens integrationsmuligheder.</p>
+          </div>
+          <span class="roadmap-stage">Planlagt</span>
+        </li>
+      </ul>
+    </section>
+    <!-- public-features:end -->
+    </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/da/" aria-label="MR Software – forside"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software til handel, fragt og service i marken.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column" data-link-list-from="use-cases" data-link-list-heading="Use cases"><h2>Use cases</h2><a href="/da/products/tradey/">Tradey</a><a href="/da/products/shippy/">Shippy</a><a href="/da/demo/roady/">Roady</a><a href="/da/products/producey/">Producey</a></div>
+      <div class="footer-column"><h2>Ressourcer</h2><a href="https://guessy.mrsoftware.dk/">Guessy</a><a href="/da/demo/">Democenter</a><a href="/da/stories/">Historier</a><a href="/da/integrations/">Integrationer</a><a href="/da/roadmap/">Planer</a><a href="/da/research/">Forskning</a><a href="/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi</a></div>
+      <div class="footer-column"><h2>Virksomhed</h2><a href="/da/contact/">Kontakt os</a><a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed</a><a href="/da/status/">Systemstatus</a></div>
+      <nav class="footer-legal" aria-label="Juridisk"><h2>Juridisk</h2><a href="/da/privacy-policy/">Privatlivspolitik</a><a href="/da/terms-of-service/">Vilkår</a><a href="/da/data-deletion/">Sletning af data</a></nav>
+    </div>
+    <div class="footer-bottom">
+      <span>MR software I/S · CVR DK46743091 · Aarhus</span>
+      <span>© <span class="year">2026</span> MR Software</span>
+    </div>
+  </footer>
+  <script type="module" src="/js/related.js"></script>
+</body>
+</html>

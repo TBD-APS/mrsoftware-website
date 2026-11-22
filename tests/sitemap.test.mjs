@@ -29,7 +29,7 @@ test('the sitemap contains canonical company pages and excludes redirected catal
   assert.equal(response.headers.get('Content-Type'), 'application/xml; charset=utf-8');
   const xml = await response.text();
   assert.match(xml, /^<\?xml version="1.0" encoding="UTF-8"\?>\n/);
-  assert.match(xml, /<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/);
+  assert.match(xml, /<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9" xmlns:xhtml="http:\/\/www.w3.org\/1999\/xhtml">/);
   assert.match(xml, /<\/urlset>\s*$/);
   const urls = locations(xml);
   assert.ok(Array.isArray(catalogue.sitemapPages) && catalogue.sitemapPages.length > 0);
@@ -41,6 +41,11 @@ test('the sitemap contains canonical company pages and excludes redirected catal
     assert.equal(urls.includes(canonical.href), !redirected, `${redirected ? 'Redirected' : 'Missing public'} page: ${path}`);
   }
   assert.equal(urls.length, new Set(urls).size, 'Sitemap URLs must be unique');
+  for (const row of xml.matchAll(/<url>(.*?)<\/url>/g)) {
+    const address = row[1].match(/<loc>(.*?)<\/loc>/)[1].replace('/da/', '/');
+    assert.ok(row[1].includes(`hreflang="en" href="${address}"`));
+    assert.ok(row[1].includes(`hreflang="da" href="${address.replace(origin + '/', origin + '/da/')}"`));
+  }
   for (const address of urls) {
     const url = new URL(address);
     assert.equal(url.origin, origin);
@@ -63,13 +68,13 @@ test('sitemap generation follows catalogue changes while excluding internal and 
   };
   const response = await request('/sitemap.xml', data, 'GET', 'https://preview.example.com');
   assert.equal(response.status, 200);
-  assert.deepEqual(locations(await response.text()), [origin + '/new-public-page/', origin + '/another-public-page/']);
+  assert.deepEqual(locations(await response.text()), [origin + '/new-public-page/', origin + '/da/new-public-page/', origin + '/another-public-page/', origin + '/da/another-public-page/']);
 });
 
 test('commercial redirects stay navigable but do not compete with canonical company pages in the sitemap', async () => {
   const data = { places: [{ href: '/products/workslip/' }, { href: '/demos/' }, { href: '/demos/workslip/' }, { href: '/pricing/workslip/' }], sitemapPages: ['/research/'] };
   const response = await request('/sitemap.xml', data);
-  assert.deepEqual(locations(await response.text()), [origin + '/products/workslip/', origin + '/research/']);
+  assert.deepEqual(locations(await response.text()), [origin + '/products/workslip/', origin + '/da/products/workslip/', origin + '/research/', origin + '/da/research/']);
   assert.equal(publicCommercialEntry(new Request(origin + '/demos/workslip/')).status, 307);
 });
 

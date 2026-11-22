@@ -51,7 +51,7 @@ export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0, pub
       const document = !name.includes('.') && url.pathname !== '/404.html' && ['GET', 'HEAD'].includes(request.method);
       if (document) {
         try {
-          const missing = await readFile(path.join(root, '404.html'));
+          const missing = await readFile(path.join(root, url.pathname.startsWith('/da/') ? 'da/404.html' : '404.html'));
           response.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex', 'Cache-Control': 'no-store' });
           response.end(request.method === 'HEAD' ? undefined : missing);
           return;

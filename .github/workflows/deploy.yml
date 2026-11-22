@@ -57,6 +57,8 @@ jobs:
         run: node tools/commercial-readiness.mjs
       - name: Build the public roadmap dashboard and report exports
         run: npm run build:reports
+      - name: Build and require complete public translations
+        run: npm run build:locales
       - name: Prepare the private reviewed dashboard snapshot
         run: node tools/dashboard-snapshot.mjs unpack
         env:

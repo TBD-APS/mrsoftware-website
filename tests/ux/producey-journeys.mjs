@@ -11,10 +11,10 @@ export const produceyJourneys = [
   },
   {
     id: 'find-producey-in-danish',
-    start: '/da/#produkter',
-    selector: '#produkter a[href="/products/producey/"]',
-    target: '/products/producey/',
-    heading: 'From factory stock to dispatch.',
+    start: '/da/#solutions',
+    selector: '#solutions article[aria-labelledby="producey-title"]',
+    target: '/da/products/producey/',
+    heading: 'Fra fabrikkens lager til afsendelse.',
     budget: { clicks: 1, fields: 0 },
   },
   {

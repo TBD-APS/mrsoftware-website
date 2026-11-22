@@ -95,7 +95,7 @@ test('English and Danish homepages have reciprocal language alternatives and the
     assert.equal(attribute(elements(document, 'link').find(node => attribute(node, 'rel') === 'canonical'), 'href'), origin + path);
     const selector = elements(document, 'a').find(node => attribute(node, 'hreflang') === (language === 'en' ? 'da' : 'en'));
     assert.equal(attribute(selector, 'href'), language === 'en' ? '/da/' : '/');
-    if (language === 'da') assert.equal(structured.find(item => item['@type'] === 'WebPage')?.inLanguage, 'da');
+    if (language === 'da') assert.equal(structured.find(item => ['WebPage', 'WebSite'].includes(item['@type']))?.inLanguage, 'da');
   }
   assert.ok(catalogue.places.some(place => place.href === '/da/'), 'The Danish homepage is registered for the sitemap');
 });

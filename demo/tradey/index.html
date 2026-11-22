@@ -22,6 +22,9 @@
   <link rel="stylesheet" href="/css/demo-view.css">
   <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/demo/tradey/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/demo/tradey/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/demo/tradey/">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -29,6 +32,7 @@
   <header class="site-header">
     <div class="site-header-inner">
       <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/da/demo/tradey/" lang="da" hreflang="da">Dansk</a>
       <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
         <a href="/#solutions">Use cases</a>
@@ -47,7 +51,7 @@
       <div class="page-width">
         <p class="breadcrumbs"><a href="/">Home</a> · <a href="/demo/">Demo centre</a> · Tradey</p>
         <h1 id="view-title">Tradey, read only</h1>
-        <p class="lead">Tradey is the workspace for food trading: supplier offers, a shared catalogue, supplier files and order drafts for chain buyers, where a person decides and nothing is sent by itself. This page shows Tradey's own synthetic demo company, Demo Frosthandel, in Tradey's own Danish labels. Nothing here can be clicked into action.</p>
+        <p class="lead">Tradey is the workspace for food trading: supplier offers, a shared catalogue, supplier files and order drafts for chain buyers, where a person decides and nothing is sent by itself. This page shows Tradey's own synthetic demo company, Demo Frosthandel, with labels in the selected website language. Nothing here can be clicked into action.</p>
 
         <p class="view-banner"><strong>Read-only demo</strong><span>Fictional data</span><span>Fictional prices, not a market feed</span><span>No sign-in</span></p>
 
@@ -62,26 +66,26 @@
         </nav>
 
         <section class="view-panel" id="today" aria-labelledby="today-title">
-          <h2 id="today-title">I dag</h2>
-          <p>Dine tilbud og næste opgaver.</p>
+          <h2 id="today-title">Today</h2>
+          <p>Your offers and next tasks.</p>
           <dl class="view-kpis">
-            <div><dt>Åbne tilbud</dt><dd>12</dd></div>
-            <div><dt>Ventende ordrer</dt><dd>Ukendt</dd></div>
-            <div><dt>Kendt avance</dt><dd>Ukendt</dd></div>
+            <div><dt>Open offers</dt><dd>12</dd></div>
+            <div><dt>Pending orders</dt><dd>Unknown</dd></div>
+            <div><dt>Known margin</dt><dd>Unknown</dd></div>
           </dl>
-          <p class="view-note">Tradey shows "Ukendt" (unknown), never zero or a guess, for figures it has no authoritative record of: confirmed orders and realised margin.</p>
+          <p class="view-note">Tradey shows "Unknown", never zero or a guess, for figures it has no authoritative record of: confirmed orders and realised margin.</p>
           <div class="view-columns" style="margin-top:var(--s3)">
             <div>
-              <h3>Gør nu</h3>
+              <h3>Do now</h3>
               <ul class="view-list">
-                <li>FIL · TJEK OPLYSNINGER: salmon offer file<small>The file has no validity date, so a person checks it before it becomes an offer</small></li>
-                <li>TILBUD · VÆLG NÆSTE SKRIDT: Torskefilet (syntetisk)<small>Demo Fjordfrost · 1,200 kg · gyldigt til 04.12.2026 16.00 UTC</small></li>
-                <li>TILBUD · VÆLG NÆSTE SKRIDT: Sejfilet (syntetisk)<small>Demo Havkurven · 800 kg · gyldigt til 04.12.2026 16.00 UTC</small></li>
+                <li>FILE · CHECK DETAILS: salmon offer file<small>The file has no validity date, so a person checks it before it becomes an offer</small></li>
+                <li>OFFER · CHOOSE THE NEXT STEP: Cod fillet (synthetic)<small>Demo Fjordfrost · 1,200 kg · valid until 04.12.2026 16.00 UTC</small></li>
+                <li>OFFER · CHOOSE THE NEXT STEP: Saithe fillet (synthetic)<small>Demo Havkurven · 800 kg · valid until 04.12.2026 16.00 UTC</small></li>
               </ul>
             </div>
             <div>
-              <h3>Du bestemmer</h3>
-              <p class="view-note">Dit valg gemmes til dit team. Intet bliver sendt. Der oprettes ingen ordre.</p>
+              <h3>You decide</h3>
+              <p class="view-note">Your choice is saved for your team. Nothing is sent. No order is created.</p>
             </div>
           </div>
         </section>
@@ -94,18 +98,18 @@
               <caption class="visually-hidden">Supplier offers with fictional data</caption>
               <thead><tr><th scope="col">Product</th><th scope="col">Supplier</th><th scope="col">Quantity</th><th scope="col">Price</th><th scope="col">Lot</th></tr></thead>
               <tbody>
-                <tr><td>Torskefilet (syntetisk)</td><td>Demo Fjordfrost (syntetisk)</td><td>1,200 kg</td><td>8.40 EUR/kg</td><td>DEMO-1-01</td></tr>
-                <tr><td>Lakseportioner (syntetisk)</td><td>Demo Fjordfrost (syntetisk)</td><td>800 kg</td><td>11.90 EUR/kg</td><td>DEMO-1-02</td></tr>
-                <tr><td>Pillede rejer (syntetisk)</td><td>Demo Fjordfrost (syntetisk)</td><td>800 kg</td><td>9.95 EUR/kg</td><td>DEMO-1-03</td></tr>
-                <tr><td>Blåmuslingekød (syntetisk)</td><td>Demo Fjordfrost (syntetisk)</td><td>800 kg</td><td>5.10 EUR/kg</td><td>DEMO-1-04</td></tr>
-                <tr><td>Torskefilet (syntetisk)</td><td>Demo Havkurven (syntetisk)</td><td>1,200 kg</td><td>8.40 EUR/kg</td><td>DEMO-2-01</td></tr>
-                <tr><td>Lakseportioner (syntetisk)</td><td>Demo Havkurven (syntetisk)</td><td>800 kg</td><td>11.90 EUR/kg</td><td>DEMO-2-02</td></tr>
-                <tr><td>Sejfilet (syntetisk)</td><td>Demo Havkurven (syntetisk)</td><td>800 kg</td><td>4.65 EUR/kg</td><td>DEMO-2-05</td></tr>
-                <tr><td>Fine ærter (syntetisk)</td><td>Demo Havkurven (syntetisk)</td><td>800 kg</td><td>1.65 EUR/kg</td><td>DEMO-2-06</td></tr>
-                <tr><td>Pillede rejer (syntetisk)</td><td>Demo Frysehuset (syntetisk)</td><td>800 kg</td><td>9.95 EUR/kg</td><td>DEMO-3-03</td></tr>
-                <tr><td>Fine ærter (syntetisk)</td><td>Demo Frysehuset (syntetisk)</td><td>800 kg</td><td>1.65 EUR/kg</td><td>DEMO-3-06</td></tr>
-                <tr><td>Broccolibuketter (syntetisk)</td><td>Demo Frysehuset (syntetisk)</td><td>800 kg</td><td>2.20 EUR/kg</td><td>DEMO-3-07</td></tr>
-                <tr><td>Blæksprutteringe (syntetisk)</td><td>Demo Frysehuset (syntetisk)</td><td>800 kg</td><td>6.15 EUR/kg</td><td>DEMO-3-08</td></tr>
+                <tr><td>Cod fillet (synthetic)</td><td>Demo Fjordfrost (synthetic)</td><td>1,200 kg</td><td>8.40 EUR/kg</td><td>DEMO-1-01</td></tr>
+                <tr><td>Salmon portions (synthetic)</td><td>Demo Fjordfrost (synthetic)</td><td>800 kg</td><td>11.90 EUR/kg</td><td>DEMO-1-02</td></tr>
+                <tr><td>Peeled shrimp (synthetic)</td><td>Demo Fjordfrost (synthetic)</td><td>800 kg</td><td>9.95 EUR/kg</td><td>DEMO-1-03</td></tr>
+                <tr><td>Blue mussel meat (synthetic)</td><td>Demo Fjordfrost (synthetic)</td><td>800 kg</td><td>5.10 EUR/kg</td><td>DEMO-1-04</td></tr>
+                <tr><td>Cod fillet (synthetic)</td><td>Demo Havkurven (synthetic)</td><td>1,200 kg</td><td>8.40 EUR/kg</td><td>DEMO-2-01</td></tr>
+                <tr><td>Salmon portions (synthetic)</td><td>Demo Havkurven (synthetic)</td><td>800 kg</td><td>11.90 EUR/kg</td><td>DEMO-2-02</td></tr>
+                <tr><td>Saithe fillet (synthetic)</td><td>Demo Havkurven (synthetic)</td><td>800 kg</td><td>4.65 EUR/kg</td><td>DEMO-2-05</td></tr>
+                <tr><td>Fine peas (synthetic)</td><td>Demo Havkurven (synthetic)</td><td>800 kg</td><td>1.65 EUR/kg</td><td>DEMO-2-06</td></tr>
+                <tr><td>Peeled shrimp (synthetic)</td><td>Demo Frysehuset (synthetic)</td><td>800 kg</td><td>9.95 EUR/kg</td><td>DEMO-3-03</td></tr>
+                <tr><td>Fine peas (synthetic)</td><td>Demo Frysehuset (synthetic)</td><td>800 kg</td><td>1.65 EUR/kg</td><td>DEMO-3-06</td></tr>
+                <tr><td>Broccoli florets (synthetic)</td><td>Demo Frysehuset (synthetic)</td><td>800 kg</td><td>2.20 EUR/kg</td><td>DEMO-3-07</td></tr>
+                <tr><td>Squid rings (synthetic)</td><td>Demo Frysehuset (synthetic)</td><td>800 kg</td><td>6.15 EUR/kg</td><td>DEMO-3-08</td></tr>
               </tbody>
             </table>
           </div>
@@ -119,14 +123,14 @@
               <caption class="visually-hidden">Shared products with fictional data</caption>
               <thead><tr><th scope="col">Product</th><th scope="col">Category</th><th scope="col">Packaging</th><th scope="col">Suppliers</th></tr></thead>
               <tbody>
-                <tr><td>Torskefilet (syntetisk)</td><td>fish</td><td>120–160 g, uden skind; 10 × 1 kg; frost -18 °C</td><td>2</td></tr>
-                <tr><td>Lakseportioner (syntetisk)</td><td>fish</td><td>140–160 g, med skind; 5 × 2 kg; frost -18 °C</td><td>2</td></tr>
-                <tr><td>Pillede rejer (syntetisk)</td><td>shrimp</td><td>100/200, kogte; 10 × 1 kg; frost -18 °C</td><td>2</td></tr>
-                <tr><td>Blåmuslingekød (syntetisk)</td><td>seafood</td><td>Kogt uden skal; 5 × 2 kg; frost -18 °C</td><td>1</td></tr>
-                <tr><td>Sejfilet (syntetisk)</td><td>fish</td><td>160–200 g, uden skind; 2 × 5 kg; frost -18 °C</td><td>1</td></tr>
-                <tr><td>Fine ærter (syntetisk)</td><td>vegetables</td><td>Løsfrosne; 4 × 2.5 kg; frost -18 °C</td><td>2</td></tr>
-                <tr><td>Broccolibuketter (syntetisk)</td><td>vegetables</td><td>40–60 mm, løsfrosne; 4 × 2.5 kg; frost -18 °C</td><td>1</td></tr>
-                <tr><td>Blæksprutteringe (syntetisk)</td><td>octopus</td><td>Uden panering; 10 × 1 kg; frost -18 °C</td><td>1</td></tr>
+                <tr><td>Cod fillet (synthetic)</td><td>fish</td><td>120–160 g, skinless; 10 × 1 kg; frozen -18 °C</td><td>2</td></tr>
+                <tr><td>Salmon portions (synthetic)</td><td>fish</td><td>140–160 g, skin-on; 5 × 2 kg; frozen -18 °C</td><td>2</td></tr>
+                <tr><td>Peeled shrimp (synthetic)</td><td>shrimp</td><td>100/200, cooked; 10 × 1 kg; frozen -18 °C</td><td>2</td></tr>
+                <tr><td>Blue mussel meat (synthetic)</td><td>seafood</td><td>Cooked, shell removed; 5 × 2 kg; frozen -18 °C</td><td>1</td></tr>
+                <tr><td>Saithe fillet (synthetic)</td><td>fish</td><td>160–200 g, skinless; 2 × 5 kg; frozen -18 °C</td><td>1</td></tr>
+                <tr><td>Fine peas (synthetic)</td><td>vegetables</td><td>Individually quick frozen; 4 × 2.5 kg; frozen -18 °C</td><td>2</td></tr>
+                <tr><td>Broccoli florets (synthetic)</td><td>vegetables</td><td>40–60 mm, individually quick frozen; 4 × 2.5 kg; frozen -18 °C</td><td>1</td></tr>
+                <tr><td>Squid rings (synthetic)</td><td>octopus</td><td>Unbreaded; 10 × 1 kg; frozen -18 °C</td><td>1</td></tr>
               </tbody>
             </table>
           </div>
@@ -146,7 +150,7 @@
           <h2 id="drafts-title">Order drafts</h2>
           <p>Two chain buyers each have a three-line order guide draft. Both buy the same cod product, from different suppliers. Drafts are checked against the current catalogue; nothing is sent and no order is confirmed.</p>
           <div class="view-columns">
-            <div><h3>Demo Hverdagskæden (syntetisk)</h3><ul class="view-list"><li>Torskefilet (syntetisk) · 600 kg · 8.40 EUR/kg<small>Supplier: Demo Fjordfrost (syntetisk)</small></li><li>Lakseportioner (syntetisk) · 400 kg · 11.90 EUR/kg<small>Supplier: Demo Fjordfrost (syntetisk)</small></li><li>Pillede rejer (syntetisk) · 400 kg · 9.95 EUR/kg<small>Supplier: Demo Fjordfrost (syntetisk)</small></li></ul><p class="view-note">Draft · FCA · 14 days from invoice date · nothing sent</p></div><div><h3>Demo Nabokæden (syntetisk)</h3><ul class="view-list"><li>Torskefilet (syntetisk) · 600 kg · 8.40 EUR/kg<small>Supplier: Demo Havkurven (syntetisk)</small></li><li>Sejfilet (syntetisk) · 400 kg · 4.65 EUR/kg<small>Supplier: Demo Havkurven (syntetisk)</small></li><li>Fine ærter (syntetisk) · 400 kg · 1.65 EUR/kg<small>Supplier: Demo Havkurven (syntetisk)</small></li></ul><p class="view-note">Draft · FCA · 14 days from invoice date · nothing sent</p></div>
+            <div><h3>Demo Hverdagskæden (synthetic)</h3><ul class="view-list"><li>Cod fillet (synthetic) · 600 kg · 8.40 EUR/kg<small>Supplier: Demo Fjordfrost (synthetic)</small></li><li>Salmon portions (synthetic) · 400 kg · 11.90 EUR/kg<small>Supplier: Demo Fjordfrost (synthetic)</small></li><li>Peeled shrimp (synthetic) · 400 kg · 9.95 EUR/kg<small>Supplier: Demo Fjordfrost (synthetic)</small></li></ul><p class="view-note">Draft · FCA · 14 days from invoice date · nothing sent</p></div><div><h3>Demo Nabokæden (synthetic)</h3><ul class="view-list"><li>Cod fillet (synthetic) · 600 kg · 8.40 EUR/kg<small>Supplier: Demo Havkurven (synthetic)</small></li><li>Saithe fillet (synthetic) · 400 kg · 4.65 EUR/kg<small>Supplier: Demo Havkurven (synthetic)</small></li><li>Fine peas (synthetic) · 400 kg · 1.65 EUR/kg<small>Supplier: Demo Havkurven (synthetic)</small></li></ul><p class="view-note">Draft · FCA · 14 days from invoice date · nothing sent</p></div>
           </div>
         </section>
 
