@@ -50,6 +50,7 @@ test('every public source has a complete static Danish page and reciprocal langu
       assert.ok(tree.some(node => node.tagName === 'a' && attrs(node).class?.split(' ').includes('language-switch') && attrs(node).href === other), `${file}: language switch`);
     }
     // Source identifiers and numeric table cells must survive the translation.
+    for (const script of en.filter(node => node.tagName === 'script')) assert.ok(attrs(script).src || attrs(script).type === 'application/ld+json', `${file}: keep public script labels in the shared locale catalogue`);
     const daIds = new Set(da.map(node => attrs(node).id).filter(Boolean));
     for (const id of en.map(node => attrs(node).id).filter(Boolean)) assert.ok(daIds.has(id), `${file}: lost ${id}`);
     const numericCells = tree => tree.filter(node => node.tagName === 'td').map(text).map(value => value.trim()).filter(value => /^\d+$/.test(value));
@@ -99,6 +100,8 @@ test('local links retain query and section, and shared assets and external produ
   assert.equal(localizeLink('../producey/?from=demo#availability', '/products/tradey/', pages), '/da/products/producey/?from=demo#availability');
   assert.equal(localizeLink('/assets/image.svg', '/', pages), '/assets/image.svg');
   assert.equal(localizeLink('https://greeny.mrsoftware.dk/', '/', pages), 'https://greeny.mrsoftware.dk/');
+  assert.equal(localizeLink('https://mrsoftware.dk.example.com/contact/', '/', pages), 'https://mrsoftware.dk.example.com/contact/');
+  assert.equal(localizeLink('https://MRSoftware.dk/contact/', '/', pages), 'https://mrsoftware.dk/da/contact/');
   assert.equal(localizeLink('#contact', '/', pages), '#contact');
 });
 
