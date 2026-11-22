@@ -45,6 +45,8 @@
   --paper: #fffcf7;
   --paper-raised: #f5efe6;
   --muted-on-light: #6b6560;
+  /* --muted-on-light on --rose is 4.32:1. This is 5.44:1 for small text. */
+  --muted-on-rose: #5c564f;
   --hairline-light: rgba(24, 21, 19, .12);
   --accent: #8a1c2c;
   --accent-hover: #6c1422;
@@ -791,6 +793,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .facts li { padding-top: var(--s3); border-top: 1px solid var(--ink); }
 .facts h3 { font-size: 1.375rem; line-height: 1.2; }
 .facts p { margin: var(--s1) 0 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); line-height: 1.7; }
+.band-rose .facts p { color: var(--muted-on-rose); }
 .features { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); list-style: none; }
 .feature { position: relative; padding: var(--s4) var(--s3) var(--s3); display: flex; flex-direction: column; background: #fff; border: 1px solid var(--hairline-light); border-radius: var(--radius); transition: border-color .3s var(--ease), transform .3s var(--ease); }
 .feature:hover { border-color: var(--hairline-dark-strong); transform: translateY(-2px); }
@@ -985,6 +988,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .flow-group.is-office { background: var(--paper-raised); }
 .flow-group.is-done { background: var(--ink); color: var(--paper); }
 .flow-where { margin: 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); }
+.flow-group.is-field .flow-where { color: var(--muted-on-rose); }
 .flow-group.is-done .flow-where { color: rgba(255, 252, 247, .72); }
 .flow-group h3 { margin: 6px 0 var(--s2); font-size: var(--fs-title); line-height: 1.2; }
 .flow-boxes { margin: 0; padding: 0; display: grid; gap: 8px; list-style: none; }
