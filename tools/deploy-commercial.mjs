@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
-import { verifyRelease } from './release-eligibility.mjs';
+import { verifyRelease, REPOSITORY } from './release-eligibility.mjs';
 import { commercialPreflight, commercialWorker, commercialAccount, readCommercialDeployments, UUID } from './commercial-release-config.mjs';
 import { commercialReadiness } from './commercial-readiness.mjs';
 import { waitForWorkerVersion, confirmWorkerDeployment, visibilityPause } from './cloudflare-visibility.mjs';
@@ -53,8 +53,8 @@ export async function deployCommercial(env = process.env, {
   config.assets.directory = path.resolve(root, config.assets.directory);
   for (const database of config.d1_databases) database.migrations_dir = path.resolve(root, database.migrations_dir);
   delete config.$schema;
-  const receipt = { worker: commercialWorker, repository: 'TBD-APS/mrsoftware-website', sha: env.GITHUB_SHA, pullRequest: eligibility.pullRequest,
-    runUrl: `https://github.com/TBD-APS/mrsoftware-website/actions/runs/${env.GITHUB_RUN_ID}`, attempt: env.GITHUB_RUN_ATTEMPT,
+  const receipt = { worker: commercialWorker, repository: REPOSITORY, sha: env.GITHUB_SHA, pullRequest: eligibility.pullRequest,
+    runUrl: `https://github.com/${REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}`, attempt: env.GITHUB_RUN_ATTEMPT,
     rollback: prepared.initial ? 'unavailable-initial-release' : 'previous-commercial-version', previousDeploymentId: prepared.previous?.id ?? null,
     previousVersions: prepared.previous?.versions ?? null, state: 'prepared' };
   await mkdir(path.dirname(receiptPath), { recursive: true });
