@@ -95,6 +95,25 @@ test('Video ranges handle unsatisfiable requests and changed validators without 
   }
 });
 
+test('Date-based If-Range only returns partial video when Last-Modified matches', async () => {
+  const modified = 'Sun, 22 Nov 2026 20:00:00 GMT';
+  for (const [ifRange, lastModified, expectedStatus] of [
+    [modified, modified, 206],
+    [`W/"${modified}"`, modified, 200],
+    ['Sun, 22 Nov 2026 19:00:00 GMT', modified, 200],
+    ['Sun, 22 Nov 2026 21:00:00 GMT', modified, 200],
+    [modified, null, 200],
+    ['invalid date', modified, 200],
+  ]) {
+    const response = await handle(new Request('https://mrsoftware.dk/assets/workflow/workflow.012345abcdef.mp4', { headers: { Range: 'bytes=0-1', 'If-Range': ifRange } }), {
+      ASSETS: { fetch: () => new Response('0123456789', { headers: { ETag: '"media-hash"', ...(lastModified ? { 'Last-Modified': lastModified } : {}) } }) },
+    });
+    assert.equal(response.status, expectedStatus, [ifRange, lastModified].join(' '));
+    assert.equal(await response.text(), expectedStatus === 206 ? '01' : '0123456789');
+    assert.equal(response.headers.get('Last-Modified'), lastModified);
+  }
+});
+
 test('Video cache policy leaves errors, mutable paths, unrelated files and writes unchanged', async () => {
   for (const [pathname, method, status] of [
     ['/assets/workflow/workflow.012345abcdef.mp4', 'GET', 404],

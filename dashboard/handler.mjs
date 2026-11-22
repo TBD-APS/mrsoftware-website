@@ -46,7 +46,13 @@ async function videoRange(request, response) {
   const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') ?? '');
   if (!range || (!range[1] && !range[2])) return response;
   const ifRange = request.headers.get('If-Range');
-  if (ifRange && (ifRange.startsWith('W/') || ifRange !== response.headers.get('ETag'))) return response;
+  if (ifRange) {
+    if (ifRange.startsWith('W/')) return response;
+    const date = Date.parse(ifRange);
+    const matches = ifRange.startsWith('"') ? ifRange === response.headers.get('ETag')
+      : Number.isFinite(date) && date === Date.parse(response.headers.get('Last-Modified') ?? '');
+    if (!matches) return response;
+  }
   const first = range[1] ? Number(range[1]) : null;
   const last = range[2] ? Number(range[2]) : null;
   if ((first !== null && !Number.isSafeInteger(first)) || (last !== null && !Number.isSafeInteger(last))
