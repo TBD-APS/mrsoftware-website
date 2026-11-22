@@ -19,8 +19,9 @@ export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0, pub
   const handle = createDashboardHandler({ files, verifyAccess: verifyTestAccess });
   const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png', '.pdf': 'application/pdf', '.csv': 'text/csv; charset=utf-8', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation' };
   const server = createServer(async (request, response) => {
+    let url = new URL('/not-found', 'http://localhost');
     try {
-      const url = new URL(request.url, 'http://localhost');
+      url = new URL(request.url, 'http://localhost');
       if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') {
         const result = await handle(new Request('https://mrsoftware.dk' + url.pathname, { method: request.method }), {
           ASSETS: { fetch: async () => new Response(await readFile(path.join(root, 'data/links.json'))) },
