@@ -262,7 +262,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .workflow-hero .button-primary:hover { background: var(--accent-hover); }
 .workflow-hero .button-secondary { color: var(--ink); }
 .hero-art { width: 100%; max-width: 640px; justify-self: center; }
-.hero-art img { display: block; width: 100%; height: auto; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent), linear-gradient(transparent, #000 8%, #000 92%, transparent); mask-composite: intersect; }
+.hero-art svg { display: block; width: 100%; height: auto; }
 .commercial-entrypoints { margin-top: var(--s6); }
 @media (min-width: 600px) and (max-width: 899px) {
   .hero-art { max-width: 560px; }

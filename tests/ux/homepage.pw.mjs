@@ -373,26 +373,37 @@ test('Workslip opens with its step-by-step: six steps on site, the office review
   }
 });
 
-test('The hero loads one responsive local image below 45 KB with space reserved before decoding', async ({ page, context }) => {
+test('The hero renders one scalable local illustration with its space reserved', async ({ page, context }) => {
   const app = await startSite();
+  let releaseIllustration;
+  const illustration = new Promise(resolve => { releaseIllustration = resolve; });
   try {
     await prepareContext(context, app.base);
+    await context.route('**/assets/hero/*', async route => { await illustration; await route.fallback(); });
     const responses = [];
     page.on('response', response => { if (new URL(response.url()).pathname.startsWith('/assets/hero/')) responses.push(response); });
-    await page.goto(publicBase(app.base));
-    const art = page.locator('.hero-art img');
-    await expect.poll(() => art.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+    await page.goto(publicBase(app.base), { waitUntil: 'domcontentloaded' });
+    const art = page.locator('.hero-art svg');
+    const before = await art.boundingBox();
+    releaseIllustration();
+    await expect.poll(() => art.locator('use').evaluate(use => use.getBBox().width)).toBeGreaterThan(900);
+    const after = await art.boundingBox();
+    expect(Math.abs(after.height - before.height)).toBeLessThanOrEqual(1);
+    expect(Math.abs(after.y - before.y)).toBeLessThanOrEqual(1);
     expect(responses).toHaveLength(1);
-    expect((await responses[0].body()).length).toBeLessThan(45_000);
-    const image = await art.evaluate(img => ({
-      source: new URL(img.currentSrc).pathname, width: img.width, height: img.height,
-      intrinsicWidth: img.getAttribute('width'), intrinsicHeight: img.getAttribute('height'),
+    // The local test server sends uncompressed SVG. Its compressed transfer
+    // budget is enforced in worker.test.mjs; no raster sizes need downloading.
+    expect((await responses[0].body()).length).toBeLessThan(70_000);
+    const image = await art.evaluate(svg => ({
+      source: svg.querySelector('use').getAttribute('href'),
+      width: svg.getBoundingClientRect().width, height: svg.getBoundingClientRect().height,
+      intrinsicWidth: svg.getAttribute('width'), intrinsicHeight: svg.getAttribute('height'),
     }));
-    expect(image.source).toMatch(/^\/assets\/hero\/workflow-\d+\.[a-f0-9]{12}\.webp$/);
+    expect(image.source).toMatch(/^\/assets\/hero\/workflow-vector\.[a-f0-9]{12}\.svg#illustration$/);
     expect(image.width / image.height).toBeCloseTo(1264 / 848, 1);
     expect([image.intrinsicWidth, image.intrinsicHeight]).toEqual(['1264', '848']);
     await expect(page.locator('.hero video')).toHaveCount(0);
-  } finally { await app.close(); }
+  } finally { releaseIllustration(); await app.close(); }
 });
 
 test('Pointing at a system type in the ticker pauses it and explains what it covers', async ({ page, context }, testInfo) => {

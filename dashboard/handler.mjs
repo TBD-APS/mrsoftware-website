@@ -40,7 +40,7 @@ async function publicAsset(request, env, url) {
   // The asset binding supplies Cloudflare's edge cache and ETag. Only immutable,
   // content-addressed hero files also get a long-lived browser cache.
   if (['GET', 'HEAD'].includes(request.method) && [200, 206, 304].includes(response.status)
-    && /^\/assets\/hero\/workflow-\d+\.[a-f0-9]{12}\.webp$/.test(url.pathname)) {
+    && /^\/assets\/hero\/workflow-vector\.[a-f0-9]{12}\.svg$/.test(url.pathname)) {
     const headers = new Headers(response.headers);
     headers.set('Cache-Control', 'public, max-age=31536000, immutable');
     return new Response(response.body, { status: response.status, statusText: response.statusText, headers });

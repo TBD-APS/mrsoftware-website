@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
+import { gzipSync } from 'node:zlib';
 import { createDashboardHandler } from '../dashboard/handler.mjs';
 import { verifyTestAccess, testToken } from './ux/access-fixture.mjs';
 
@@ -44,35 +45,39 @@ test('Company pages use the existing public asset binding', async () => {
 
 test('Cacheable hero filenames identify the exact encoded bytes', async () => {
   const directory = new URL('../assets/hero/', import.meta.url);
-  for (const name of (await readdir(directory)).filter(name => name.endsWith('.webp'))) {
+  const illustrations = (await readdir(directory)).filter(name => name.endsWith('.svg'));
+  assert.equal(illustrations.length, 1);
+  for (const name of illustrations) {
     const bytes = await readFile(new URL(name, directory));
     const fingerprint = createHash('sha256').update(bytes).digest('hex').slice(0, 12);
-    assert.ok(name.endsWith('.' + fingerprint + '.webp'), 'Changing image bytes requires a new cache key: ' + name);
+    assert.equal(name, 'workflow-vector.' + fingerprint + '.svg', 'Changing illustration bytes requires a new cache key');
+    assert.ok(gzipSync(bytes).length < 20_000, 'The vector illustration stays below 20 KB compressed');
+    assert.doesNotMatch(bytes.toString(), /<(?:image|script)\b/i, 'The illustration contains vector paths without embedded bitmaps or scripts');
   }
 });
 
 test('Fingerprinted hero images keep asset validators and may be cached for one year', async () => {
   for (const [method, status] of [['GET', 200], ['HEAD', 200], ['GET', 206], ['GET', 304]]) {
-    const response = await handle(new Request('https://mrsoftware.dk/assets/hero/workflow-800.012345abcdef.webp', { method }), {
+    const response = await handle(new Request('https://mrsoftware.dk/assets/hero/workflow-vector.012345abcdef.svg', { method }), {
       ASSETS: { fetch: () => new Response(method === 'HEAD' || status === 304 ? null : 'image bytes', {
-        status, headers: { 'Content-Type': 'image/webp', ETag: '"asset-hash"', 'CF-Cache-Status': 'HIT', 'Cache-Control': 'public, max-age=0, must-revalidate' },
+        status, headers: { 'Content-Type': 'image/svg+xml', ETag: '"asset-hash"', 'CF-Cache-Status': 'HIT', 'Cache-Control': 'public, max-age=0, must-revalidate' },
       }) },
     });
     assert.equal(response.status, status);
     assert.equal(response.headers.get('Cache-Control'), 'public, max-age=31536000, immutable');
     assert.equal(response.headers.get('ETag'), '"asset-hash"');
     assert.equal(response.headers.get('CF-Cache-Status'), 'HIT');
-    assert.equal(response.headers.get('Content-Type'), 'image/webp');
+    assert.equal(response.headers.get('Content-Type'), 'image/svg+xml');
     assert.equal(await response.text(), method === 'HEAD' || status === 304 ? '' : 'image bytes');
   }
 });
 
 test('Hero cache policy excludes failures, writes, mutable assets and HTML', async () => {
   for (const [pathname, method, status] of [
-    ['/assets/hero/workflow-800.012345abcdef.webp', 'GET', 404],
-    ['/assets/hero/workflow-800.012345abcdef.webp', 'GET', 500],
-    ['/assets/hero/workflow-800.012345abcdef.webp', 'POST', 200],
-    ['/assets/hero/workflow.webp', 'GET', 200],
+    ['/assets/hero/workflow-vector.012345abcdef.svg', 'GET', 404],
+    ['/assets/hero/workflow-vector.012345abcdef.svg', 'GET', 500],
+    ['/assets/hero/workflow-vector.012345abcdef.svg', 'POST', 200],
+    ['/assets/hero/workflow-vector.svg', 'GET', 200],
     ['/assets/images/brand/mr-mark.svg', 'GET', 200],
     ['/', 'GET', 200],
   ]) {
