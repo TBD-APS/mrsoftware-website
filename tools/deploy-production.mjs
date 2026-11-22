@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { pathToFileURL } from 'node:url';
-import { verifyRelease } from './release-eligibility.mjs';
+import { verifyRelease, REPOSITORY } from './release-eligibility.mjs';
 import { commercialReadiness } from './commercial-readiness.mjs';
 import { waitForWorkerVersion, confirmWorkerDeployment } from './cloudflare-visibility.mjs';
 
@@ -78,8 +78,8 @@ export async function deployProduction(env = process.env, {
   await readiness();
   const previous = (await readDeployments())[0];
   if (!previous?.id || !previous.versions?.length || !previous.versions.every(v => UUID.test(v.version_id) && Number.isFinite(v.percentage))) throw Error('A concrete rollback version is required before upload');
-  const receipt = { repository: 'TBD-APS/mrsoftware-website', sha: env.GITHUB_SHA, pullRequest: eligibility.pullRequest,
-    runUrl: `https://github.com/TBD-APS/mrsoftware-website/actions/runs/${env.GITHUB_RUN_ID}`, attempt: env.GITHUB_RUN_ATTEMPT,
+  const receipt = { repository: REPOSITORY, sha: env.GITHUB_SHA, pullRequest: eligibility.pullRequest,
+    runUrl: `https://github.com/${REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}`, attempt: env.GITHUB_RUN_ATTEMPT,
     previousDeploymentId: previous.id, previousVersions: previous.versions, state: 'prepared' };
   await mkdir(dirname(receiptPath), { recursive: true });
   const save = () => writeFile(receiptPath, JSON.stringify(receipt, null, 2), { mode: 0o600 });

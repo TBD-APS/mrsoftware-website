@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
 
-export const REPOSITORY = 'TBD-APS/mrsoftware-website';
+export const REPOSITORY = 'TBD-APS/mrsoftware.dk';
 const MERGER_ID = 31623093;
 
 async function github(path) {

@@ -13,7 +13,7 @@ Positionér MR Software som en softwarevirksomhed med dokumenterbare forretnings
 - KR-06 Kontakt: Besøgende kan starte dialog. **AC:** E-mail-CTA har korrekt mailto-adresse og emne.
 - KR-07 Navigation: Tastatur og mobil understøttes. **AC:** Menu kan åbnes/lukkes på smal skærm med opdateret aria-expanded, Escape-lukning og link-lukning.
 - KR-08 Responsive design: Design fungerer ved 320, 375, 390, 768, 1024 og 1440 CSS-pixels. **AC:** Intet vandret scroll, ingen overlap eller afskåret CTA, og touch-targets mindst ca. 44 px.
-- KR-09 Metadata: SEO-tekst matcher den nye positionering. **AC:** Dansk sidetitel, beskrivelse, viewport, korrekt heading-hierarki og skip-link.
+- KR-09 Metadata og sprog: Engelsk er standardsproget. SEO-tekst matcher sidens sprog og den nye positionering. **AC:** Engelske sider har `lang="en"`. `/da/` er den danske forside med `lang="da"` og gensidig `hreflang`. Titel, beskrivelse og hovedindhold følger sidens sprog. Et afsnit markeret `lang="da"` må indeholde en dansk oversættelse. Danske URL'er bliver stående. En 301 tilføjes kun, når en URL omdøbes. Viewport, heading-rækkefølge og skip-link bevares. Beslutning 22. november 2026 fra PR #78.
 - KR-10 Eksisterende sider: Genbrug fælles styling uden regression. **AC:** Undersider og links til sikkerhed, roadmap, driftsstatus og privatliv bevares.
 - KR-11 Priser: Ingen uverificerede priser på forsiden. **AC:** Prisafvigelse mellem webshop og prisside afklares særskilt, før priser markedsføres.
 - KR-12 Privatliv: Ingen person- eller kundehenførbare driftsmålinger offentliggøres. **AC:** Markedsføringsdata gennemgår datagodkendelse, før release.

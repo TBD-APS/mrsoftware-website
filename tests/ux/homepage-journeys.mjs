@@ -8,10 +8,10 @@ export const homepageJourneys = [
   },
   {
     id: 'find-solutions',
-    task: 'Find both solutions',
+    task: 'Find the use cases',
     budget: 1,
     target: '#solutions',
-    expectedHeading: /Three products for the trade, the shipment and the transport/,
+    expectedHeading: /Four examples of software we've built/,
   },
   {
     id: 'see-results',

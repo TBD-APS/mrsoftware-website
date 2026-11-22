@@ -24,4 +24,20 @@ test('the audit server serves selected base assets and the real public crawler r
   assert.equal((await fetch(base + '/robots.txt', { method: 'HEAD' })).status, 200);
   assert.equal((await fetch(base + '/robots.txt', { method: 'POST' })).status, 405);
   assert.equal((await fetch(base + '/.git/config')).status, 403);
+  const missing = await fetch(base + '/no-such-page');
+  assert.equal(missing.status, 404);
+  assert.equal(await missing.text(), 'Not found');
+});
+
+test('a missing company address returns the styled 404 page and the icon', async t => {
+  const site = await startSite();
+  t.after(() => site.close());
+  const base = 'http://127.0.0.1:' + new URL(site.base).port;
+  const missing = await fetch(base + '/does-not-exist');
+  assert.equal(missing.status, 404);
+  assert.equal(missing.headers.get('x-robots-tag'), 'noindex');
+  assert.match(await missing.text(), /This page is not on the site/);
+  const icon = await fetch(base + '/favicon.ico');
+  assert.equal(icon.status, 200);
+  assert.ok((await icon.arrayBuffer()).byteLength > 16);
 });
