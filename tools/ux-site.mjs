@@ -17,7 +17,7 @@ export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0, pub
   files['graphs.js'] = 'window.MR_SOFTWARE_GRAPHS = ' + JSON.stringify(graphs) + ';';
   const token = await testToken();
   const handle = createDashboardHandler({ files, verifyAccess: verifyTestAccess });
-  const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png', '.pdf': 'application/pdf', '.csv': 'text/csv; charset=utf-8', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation' };
+  const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png', '.pdf': 'application/pdf', '.csv': 'text/csv; charset=utf-8', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation' };
   const server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, 'http://localhost');
@@ -37,7 +37,6 @@ export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0, pub
         response.end(Buffer.from(await result.arrayBuffer()));
         return;
       }
-      if (url.pathname === '/favicon.ico') { response.writeHead(204); response.end(); return; }
       const entry = publicCommercialEntry(new Request('https://' + (request.headers['x-test-host'] || 'mrsoftware.dk') + url.pathname + url.search, { method: request.method }));
       if (entry) { response.writeHead(entry.status, Object.fromEntries(entry.headers)); response.end(); return; }
       const relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
@@ -46,7 +45,20 @@ export async function startSite({ roadmapHtml, host = '127.0.0.1', port = 0, pub
       const body = url.pathname === '/roadmap/' && roadmapHtml !== undefined ? roadmapHtml : await readFile(filename);
       response.writeHead(200, { 'Content-Type': types[path.extname(filename)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
       response.end(body);
-    } catch { response.writeHead(404); response.end('Not found'); }
+    } catch {
+      const name = url.pathname.slice(url.pathname.lastIndexOf('/') + 1);
+      const document = !name.includes('.') && url.pathname !== '/404.html' && ['GET', 'HEAD'].includes(request.method);
+      if (document) {
+        try {
+          const missing = await readFile(path.join(root, '404.html'));
+          response.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex', 'Cache-Control': 'no-store' });
+          response.end(request.method === 'HEAD' ? undefined : missing);
+          return;
+        } catch { /* The styled page is unavailable, so the plain 404 remains. */ }
+      }
+      response.writeHead(404);
+      response.end('Not found');
+    }
   });
   await new Promise(resolve => server.listen(port, host, resolve));
   return {
