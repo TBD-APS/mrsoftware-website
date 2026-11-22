@@ -34,6 +34,8 @@ test('records rollback evidence before deploying only the uploaded immutable ver
   const f = await fixture();
   try {
     const receipt = await deployProduction(env, f.deps);
+    assert.equal(receipt.repository, 'TBD-APS/mrsoftware.dk');
+    assert.equal(receipt.runUrl, 'https://github.com/TBD-APS/mrsoftware.dk/actions/runs/123');
     assert.equal(receipt.versionId, next);
     assert.equal(receipt.previousVersions[0].version_id, previous);
     assert.equal(receipt.state, 'verified');
