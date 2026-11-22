@@ -4,7 +4,7 @@ export const homepageJourneys = [
     task: 'Understand MR Software on arrival',
     budget: 0,
     target: null,
-    expectedHeading: /One place for every order, shipment, document and approval/,
+    expectedHeading: /Software that keeps work moving/,
   },
   {
     id: 'find-solutions',

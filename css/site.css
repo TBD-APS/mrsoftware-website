@@ -247,14 +247,29 @@ a:hover > .arrow { transform: translateX(4px); }
 .research-note { max-width: 70ch; margin-block: var(--s3); color: var(--muted-on-light); }
 
 /* Hero */
-.hero { padding-block: clamp(48px, 7vw, 96px) 0; }
+.hero { padding-block: clamp(40px, 5vw, 72px) 0; }
 .hero h1 { font-size: var(--fs-display); line-height: 1.02; letter-spacing: -.025em; }
-.hero h1 em { font-style: italic; }
-.hero-row { margin-top: var(--s4); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s3); }
-.hero .lead { margin: 0; font-size: .9375rem; color: #4d4843; }
+.hero h1 > span, .hero h1 em span { display: block; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-row { margin-top: var(--s3); display: grid; gap: var(--s4); }
+.hero .lead { margin: 0; max-width: 47ch; font-size: .9375rem; color: #4d4843; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .hero-actions .button { min-height: 48px; padding-inline: 28px; font-size: .875rem; }
-.commercial-entrypoints { margin-top: var(--s5); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: var(--s3); }
+.hero-copy { min-width: 0; }
+.workflow-hero .label { margin-bottom: var(--s3); color: var(--muted-on-light); }
+.workflow-hero .button-primary { background: var(--accent); color: var(--paper); }
+.workflow-hero .button-primary:hover { background: var(--accent-hover); }
+.workflow-hero .button-secondary { color: var(--ink); }
+.hero-art { width: 100%; max-width: 640px; justify-self: center; }
+.hero-art svg { display: block; width: 100%; height: auto; }
+.commercial-entrypoints { margin-top: var(--s6); }
+@media (min-width: 600px) and (max-width: 899px) {
+  .hero-art { max-width: 560px; }
+}
+@media (min-width: 900px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 64px); }
+}
 .commercial-entrypoints .related-links h2 { font-size: var(--fs-body); font-family: var(--sans); }
 .commercial-entrypoints .related-links ul { display: flex; flex-wrap: wrap; }
 .commercial-entrypoints .related-links li { display: flex; flex: 1 1 240px; max-width: 360px; }
@@ -264,36 +279,9 @@ a:hover > .arrow { transform: translateX(4px); }
 .commercial-entrypoints .related-link-title::after { content: " →" / ""; color: var(--accent); }
 .commercial-entrypoints .related-link-summary { color: #4d4843; font-size: .875rem; }
 
-/* Rotating word: the second line of the headline. Without script or with reduced motion the first word stays. */
-.rotate { position: relative; display: block; height: 1.12em; overflow: hidden; color: var(--accent); font-style: italic; }
-.rotate-word { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; transform: translateY(100%); }
-.rotate-word.is-in { opacity: 1; transform: none; }
-.rotate-word.is-out { opacity: 0; transform: translateY(-100%); }
-@media (prefers-reduced-motion: no-preference) {
-  .rotate-word { transition: transform .6s var(--ease); }
-}
-
 /* Large media panels: drawn scenes, never photographs of people or places. */
 .scene { position: relative; overflow: hidden; border-radius: var(--radius); background: #2a2420; }
 .scene > svg.art { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero-scene { margin-top: var(--s6); height: clamp(420px, 46vw, 660px); }
-.hero-scene .frame { position: absolute; left: 50%; bottom: clamp(24px, 4vw, 56px); width: min(720px, calc(100% - 32px)); transform: translateX(-50%); box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .55); }
-/* Hero: three demo records share one frame. Without motion only the first shows; with motion they take turns and the line runs to the current step. */
-.hero-lanes { display: grid; }
-.hero-lane { grid-area: 1 / 1; }
-.hero-lane + .hero-lane { visibility: hidden; }
-.hero-lane .lane-steps { position: relative; }
-@media (prefers-reduced-motion: no-preference) {
-  .hero-lane, .hero-lane + .hero-lane { visibility: visible; opacity: 0; animation: hero-lane 18s var(--ease) infinite; }
-  .hero-lane:nth-child(2) { animation-delay: 6s; }
-  .hero-lane:nth-child(3) { animation-delay: 12s; }
-  .hero-lane .lane-steps::after { content: ""; position: absolute; z-index: 1; top: -1px; left: 0; width: 50%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; animation: hero-run 18s var(--ease) infinite; }
-  .hero-lane:nth-child(2) .lane-steps::after { animation-delay: 6s; }
-  .hero-lane:nth-child(3) .lane-steps::after { animation-delay: 12s; }
-  .hero-frame:hover .hero-lane, .hero-frame:hover .lane-steps::after { animation-play-state: paused; }
-  @keyframes hero-lane { 0% { opacity: 0; transform: translateY(10px); } 3%, 31% { opacity: 1; transform: none; } 34%, 100% { opacity: 0; transform: translateY(-6px); } }
-  @keyframes hero-run { 0%, 4% { transform: scaleX(0); } 26%, 100% { transform: scaleX(1); } }
-}
 .scene .demo-corner { position: absolute; top: 16px; right: 16px; z-index: 2; color: #fff; border-color: rgba(255, 255, 255, .55); background: rgba(24, 21, 19, .25); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 
 /* Ticker of system kinds under the hero */
