@@ -15,10 +15,8 @@ for (const journey of produceyJourneys) {
       const control = page.locator(journey.selector);
       await control.scrollIntoViewIfNeeded();
       // The product cards open from their padding as well as their name.
-      let clicks = 0;
+      // This single action must reach the destination without another step.
       await control.click(journey.id.startsWith('find-') ? { position: { x: 8, y: 8 }, timeout: 5_000 } : {});
-      clicks += 1;
-      expect(clicks).toBeLessThanOrEqual(journey.budget.clicks);
       await expect(page).toHaveURL(origin + journey.target);
       const result = page.getByRole('heading', { name: journey.heading, exact: true });
       await expect(result).toBeInViewport();
@@ -75,8 +73,9 @@ test('Producey readiness and contact are clear on arrival', async ({ page, conte
 
 test('Producey discovery and contact work without JavaScript', async ({ browser, page }) => {
   const app = await startSite();
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: page.viewportSize() });
+  let context;
   try {
+    context = await browser.newContext({ javaScriptEnabled: false, viewport: page.viewportSize() });
     await prepareContext(context, app.base);
     const noScriptPage = await context.newPage();
     const base = publicBase(app.base);
@@ -89,5 +88,7 @@ test('Producey discovery and contact work without JavaScript', async ({ browser,
     await noScriptPage.getByRole('link', { name: 'Talk about Producey', exact: true }).click();
     await expect(noScriptPage).toHaveURL(base + 'contact/');
     await expect(noScriptPage.getByRole('link', { name: 'Email us', exact: false })).toHaveAttribute('href', /^mailto:wp@mrsoftware\.dk\?/);
-  } finally { await context.close(); await app.close(); }
+  } finally {
+    try { await context?.close(); } finally { await app.close(); }
+  }
 });
