@@ -35,7 +35,11 @@ export async function publicLinkUpdates(root, graph) {
   const checked = checkGraph(graph);
   if (!checked.ok) throw new Error(checked.errors[0]);
   const directory = resolve(root instanceof URL ? fileURLToPath(root) : root);
-  const files = new Set([resolve(directory, 'tools/roadmap-report-template.html')]);
+  // The recovery page stays out of the sitemap but shares the public catalogue.
+  const files = new Set([
+    resolve(directory, 'tools/roadmap-report-template.html'),
+    resolve(directory, '404.html'),
+  ]);
   // Demo snapshots also carry the shared footer, even when absent from the catalogue.
   const demos = await readdir(resolve(directory, 'demo'), { withFileTypes: true }).catch(error => {
     if (error.code === 'ENOENT') return [];
