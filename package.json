@@ -19,6 +19,7 @@
     "check:commercial": "node tools/commercial-readiness.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
     "@mr-software/content": "file:vendor/boney/mr-software-content-0.1.0.tgz",
     "@playwright/test": "1.63.0",
     "lighthouse": "13.6.0",
