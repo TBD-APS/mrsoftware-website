@@ -16,8 +16,12 @@
     // Desktop menu: an item with pages under it opens a small list on hover or keyboard focus.
     // Matched on the address, so it works on every page's copy of the header.
     var stories = [['The offer', '/stories/the-offer/'], ['The job', '/stories/the-job/'], ['The shipment', '/stories/the-shipment/'], ['The choices', '/stories/the-choices/']];
+    // The static footer is rendered from data/links.json, including without scripts.
+    var useCases = Array.prototype.map.call(document.querySelectorAll('.site-footer [data-link-list-from="use-cases"] a'), function (link) {
+      return [link.textContent, link.getAttribute('href')];
+    });
     var menus = {
-      '/#solutions': [['Tradey', '/products/tradey/'], ['Shippy', '/products/shippy/'], ['Roady', '/demo/roady/'], ['Workslip', '/products/workslip/'], ['Demo centre', '/demo/']],
+      '/#solutions': useCases,
       '/integrations/': [['Greeny emissions example', '/integrations/#greeny-example'], ['Excel and Outlook examples', '/integrations/#examples'], ['What we can connect', '/integrations/#categories']],
       '/roadmap/': [['Greeny', '/roadmap/#greeny-showcase'], ['Reusable Boney modules', '/roadmap/#boney-modules']],
       '/research/': [['Principles', '/research/#principles'], ['Decision gates', '/research/#decision-gates'], ['Evaluation', '/research/#evaluation'], ['Research papers', '/research/#papers']],
@@ -30,7 +34,7 @@
         link.setAttribute('data-label', link.textContent);
         var url = new URL(link.getAttribute('href'), window.location.href);
         var items = menus[url.pathname + url.hash];
-        if (!items) return;
+        if (!items || !items.length) return;
         var group = document.createElement('div');
         group.className = 'nav-group';
         link.parentNode.insertBefore(group, link);
