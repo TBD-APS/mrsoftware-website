@@ -3,9 +3,9 @@ import { publicCommercialEntry } from '../website-entry.mjs';
 
 export const origin = 'https://mrsoftware.dk';
 export const normalize = value => value.replace(/\s+/g, ' ').trim();
-const humanAttributes = new Set(['alt', 'title', 'aria-label', 'aria-description', 'aria-valuetext', 'placeholder', 'data-detail', 'data-label-open', 'data-label-close', 'data-related-heading', 'data-link-list-heading']);
+const humanAttributes = new Set(['alt', 'title', 'aria-label', 'aria-description', 'aria-valuetext', 'placeholder', 'data-detail', 'data-label-open', 'data-label-close', 'data-label-ok', 'data-label-warning', 'data-label-down', 'data-label-probe', 'data-label-health', 'data-label-unreachable', 'data-label-static', 'data-label-last-check', 'data-label-completion', 'data-related-heading', 'data-link-list-heading']);
 const humanJsonKeys = new Set(['name', 'description', 'headline', 'text', 'caption']);
-export const runtimeStrings = ['OK', 'Warning', 'Down', 'probe', 'health', 'unreachable', 'static host, not pinged', 'Last check:', 'services responded correctly.', 'tonne-km', 'See also', 'The offer', 'The job', 'The shipment', 'The choices', 'Greeny emissions example', 'Excel and Outlook examples', 'What we can connect', 'Reusable Boney modules', 'Principles', 'Decision gates', 'Evaluation', 'Research papers', 'Security and data privacy', 'How we validate', 'System status', 'Greeny', 'Sample reply approved. No email was sent.', 'contact selected for import.', 'contacts selected for import.'];
+export const runtimeStrings = ['tonne-km', 'See also', 'The offer', 'The job', 'The shipment', 'The choices', 'Greeny emissions example', 'Excel and Outlook examples', 'What we can connect', 'Reusable Boney modules', 'Principles', 'Decision gates', 'Evaluation', 'Research papers', 'Security and data privacy', 'How we validate', 'System status', 'Greeny', 'Sample reply approved. No email was sent.', 'contact selected for import.', 'contacts selected for import.'];
 const attributes = node => Object.fromEntries((node.attrs ?? []).map(item => [item.name, item.value]));
 const isMetadata = node => node.tagName === 'meta' && /description|title|image:alt|keywords/.test(attributes(node).name ?? attributes(node).property ?? '');
 const escapeText = value => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

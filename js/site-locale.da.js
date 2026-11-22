@@ -1,14 +1,5 @@
 // Generated Danish labels used by the shared public scripts.
 window.MR_SOFTWARE_TRANSLATIONS = {
-  "OK": "OK",
-  "Warning": "Advarsel",
-  "Down": "Nede",
-  "probe": "ping",
-  "health": "statuskontrol",
-  "unreachable": "kan ikke nås",
-  "static host, not pinged": "statisk vært, ikke pinget",
-  "Last check:": "Seneste kontrol:",
-  "services responded correctly.": "tjenester svarede korrekt.",
   "tonne-km": "ton-km",
   "See also": "Se også",
   "The offer": "Tilbuddet",

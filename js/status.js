@@ -1,14 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
   var danish = document.documentElement.lang === 'da';
-  var labels = window.MR_SOFTWARE_TRANSLATIONS || {};
-  var translate = function (value) { return danish ? labels[value] : value; };
+  var container = document.getElementById('services');
+  // These HTML attributes are translated by the compiler, so status results do
+  // not depend on a second script loading successfully.
+  var labelKeys = {
+    'OK': 'labelOk', 'Warning': 'labelWarning', 'Down': 'labelDown',
+    'probe': 'labelProbe', 'health': 'labelHealth', 'unreachable': 'labelUnreachable',
+    'static host, not pinged': 'labelStatic', 'Last check:': 'labelLastCheck',
+    'services responded correctly.': 'labelCompletion'
+  };
+  var translate = function (value) { return container.dataset[labelKeys[value]] || value; };
   var SERVICES = [
     { id: 'mrsoftware', name: 'mrsoftware.dk', probe: '/ping.json', self: true },
     { id: 'saassy', name: 'saassy.mrsoftware.dk', probe: 'https://saassy.mrsoftware.dk/ping', health: 'https://saassy.mrsoftware.dk/api/saassy/health' },
     { id: 'dev', name: 'dev.mrsoftware.dk', probe: 'https://dev.mrsoftware.dk/ping' },
     { id: 'www', name: 'www.mrsoftware.dk', probe: 'https://www.mrsoftware.dk/', static: true }
   ];
-  var container = document.getElementById('services');
   var lastCheck = document.getElementById('last-check');
 
   function render(id, label, status, detail) {
