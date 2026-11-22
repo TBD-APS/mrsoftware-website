@@ -24,6 +24,29 @@ function sitemap(catalogue) {
 }
 
 const contentTypes = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8' };
+
+function hasFileExtension(pathname) {
+  return pathname.slice(pathname.lastIndexOf('/') + 1).includes('.');
+}
+
+function wantsHtml(request) {
+  const accept = request.headers.get('Accept');
+  if (!accept) return true;
+  return accept.includes('text/html') || accept.includes('*/*');
+}
+
+async function publicAsset(request, env, url) {
+  const response = await env.ASSETS.fetch(request);
+  if (response.status !== 404 || !['GET', 'HEAD'].includes(request.method)) return response;
+  if (url.pathname === '/404.html' || hasFileExtension(url.pathname) || !wantsHtml(request)) return response;
+  const page = await env.ASSETS.fetch(new Request(new URL('/404.html', url.origin), { method: 'GET' }));
+  if (!page.ok) return response;
+  const headers = new Headers(page.headers);
+  headers.set('Content-Type', 'text/html; charset=utf-8');
+  headers.set('X-Robots-Tag', 'noindex');
+  headers.set('Cache-Control', 'no-store');
+  return new Response(request.method === 'HEAD' ? null : page.body, { status: 404, headers });
+}
 const privateHeaders = {
   'Cache-Control': 'private, no-store',
   'X-Content-Type-Options': 'nosniff',
@@ -49,7 +72,7 @@ export function createDashboardHandler({ files, verifyAccess }) {
         headers: { 'Content-Type': isSitemap ? 'application/xml; charset=utf-8' : 'text/plain; charset=utf-8' },
       });
     }
-    if (url.pathname !== '/_development' && !url.pathname.startsWith(prefix)) return env.ASSETS.fetch(request);
+    if (url.pathname !== '/_development' && !url.pathname.startsWith(prefix)) return publicAsset(request, env, url);
     if (url.hostname !== 'dashboard.mrsoftware.dk') return new Response('Not found', { status: 404, headers: privateHeaders });
     if (!await verifyAccess(request)) return new Response('Dashboard sign-in required. Reload the dashboard to sign in.', { status: 401, headers: privateHeaders });
     if (!['GET', 'HEAD'].includes(request.method)) return new Response('Method not allowed', { status: 405, headers: { ...privateHeaders, Allow: 'GET, HEAD' } });
