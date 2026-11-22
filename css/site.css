@@ -347,6 +347,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .card .scene { aspect-ratio: 4 / 5; }
 .card h3 { margin-top: var(--s3); font-size: var(--fs-title); line-height: 1.2; }
 .card h3 a::after { content: ""; position: absolute; inset: 0; }
+.card .text-link { position: relative; z-index: 1; }
 .card p { margin: var(--s1) 0 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); line-height: 1.6; }
 .card .status { margin: var(--s2) 0 0; }
 .card:hover .scene .float { transform: translate(-50%, -54%); }
