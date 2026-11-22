@@ -5,8 +5,8 @@ import { prepareContext } from './fixtures.mjs';
 // Journeys: arrive without a video download (0 actions), watch/pause the
 // illustration (1 action each), and play it without JavaScript (1 action).
 const entries = [
-  { path: '', heading: 'The work comes first.' },
-  { path: 'da/', heading: 'Arbejdet kommer først.' },
+  { path: '', heading: 'The work comes first.', description: /6-second animation, without sound/ },
+  { path: 'da/', heading: 'Arbejdet kommer først.', description: /6 sekunder, uden lyd/ },
 ];
 const base = app => app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
 const mediaRequests = page => {
@@ -16,6 +16,7 @@ const mediaRequests = page => {
 };
 const playControl = async video => {
   const box = await video.boundingBox();
+  expect(box, 'The video player has a rendered frame').not.toBeNull();
   await video.click({ position: { x: 32, y: box.height - 28 } });
 };
 
@@ -45,15 +46,16 @@ for (const entry of entries) {
       const after = await video.boundingBox();
       expect(Math.abs(after.height - before.height)).toBeLessThanOrEqual(1);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
-      await expect(video).toHaveAccessibleDescription(/6.second|6 sekunder/);
+      await expect(video).toHaveAccessibleDescription(entry.description);
     } finally { await app.close(); }
   });
 }
 
 test('The animation works without JavaScript and exposes a direct fallback', async ({ browser, page }) => {
   const app = await startSite();
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: page.viewportSize() });
+  let context;
   try {
+    context = await browser.newContext({ javaScriptEnabled: false, viewport: page.viewportSize() });
     await prepareContext(context, app.base);
     const noScript = await context.newPage();
     await noScript.emulateMedia({ reducedMotion: 'reduce' });
@@ -65,5 +67,8 @@ test('The animation works without JavaScript and exposes a direct fallback', asy
     await playControl(video);
     await expect.poll(() => video.evaluate(node => node.currentTime)).toBeGreaterThan(0);
     await expect(noScript.getByRole('link', { name: 'Open the animation' })).toHaveAttribute('href', await video.getAttribute('src'));
-  } finally { await context.close(); await app.close(); }
+  } finally {
+    try { await context?.close(); }
+    finally { await app.close(); }
+  }
 });
