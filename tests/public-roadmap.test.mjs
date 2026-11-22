@@ -115,6 +115,20 @@ test('fails without overwriting the last public snapshot when a state cannot be 
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 
+test('puts the package list above the showcases when the page has a nav region', () => {
+  const feature = entry('terminal-visits', 1);
+  const page = '<main>\n    <!-- public-package-nav:start -->\n    <!-- public-package-nav:end -->\n<section id="showcases"></section>\n    <!-- public-features:start -->\n    <!-- public-features:end -->\n</main>\n';
+  const html = renderRoadmap(page, [pack('roady', 'Roady', [feature])], new Map([[feature.source.issue, state('completed')]]));
+  const navAt = html.indexOf('aria-label="Packages"');
+  const showAt = html.indexOf('id="showcases"');
+  const sectionAt = html.indexOf('id="package-roady"');
+  assert.ok(navAt >= 0 && navAt < showAt && showAt < sectionAt);
+  assert.equal(html.match(/aria-label="Packages"/g).length, 1);
+  assert.equal(renderRoadmap(html, [pack('roady', 'Roady', [feature])], new Map([[feature.source.issue, state('completed')]])), html);
+  const duplicated = page.replace('<!-- public-package-nav:start -->', '<!-- public-package-nav:start -->\n<!-- public-package-nav:start -->');
+  assert.throws(() => renderRoadmap(duplicated, [], new Map()), /one public package nav region/);
+});
+
 test('refuses duplicate feature anchors and ambiguous output regions', () => {
   const one = entry('terminal-visits', 1);
   assert.throws(() => renderRoadmap(template, [pack('roady', 'Roady', [one, entry(one.id, 2)])], new Map()), /distinct URL ID/);

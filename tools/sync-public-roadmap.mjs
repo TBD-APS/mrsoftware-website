@@ -5,6 +5,8 @@ const registry = new URL('public-features.json', import.meta.url);
 const roadmap = new URL('../roadmap/index.html', import.meta.url);
 const start = '<!-- public-features:start -->';
 const end = '<!-- public-features:end -->';
+const navStart = '<!-- public-package-nav:start -->';
+const navEnd = '<!-- public-package-nav:end -->';
 const stateLabels = new Map([
   ['completed', 'Developed'],
   ['started', 'In development'],
@@ -120,23 +122,29 @@ ${rows.length
     : '      <p>No features are listed yet.</p>'}
     </section>`);
   }
-  return `    <nav class="roadmap-packages" aria-label="Packages">
+  const nav = `    <nav class="roadmap-packages" aria-label="Packages">
       <ul>
 ${links.join('\n')}
       </ul>
-    </nav>
+    </nav>`;
+  return { nav, sections: sections.join('\n\n') };
+}
 
-${sections.join('\n\n')}`;
+function replaceOnce(html, startMark, endMark, body, label) {
+  const startAt = html.indexOf(startMark);
+  const endAt = html.indexOf(endMark);
+  if (startAt < 0 || endAt < startAt || html.indexOf(startMark, startAt + 1) >= 0 || html.indexOf(endMark, endAt + 1) >= 0) {
+    throw Error(`Expected one ${label} in the roadmap page`);
+  }
+  return html.slice(0, startAt + startMark.length) + '\n' + body + '\n    ' + html.slice(endAt);
 }
 
 export function renderRoadmap(html, packages, issues) {
   collectIssueIds(packages);
-  const startAt = html.indexOf(start);
-  const endAt = html.indexOf(end);
-  if (startAt < 0 || endAt < startAt || html.indexOf(start, startAt + 1) >= 0 || html.indexOf(end, endAt + 1) >= 0) {
-    throw Error('Expected one public feature region in the roadmap page');
-  }
-  return html.slice(0, startAt + start.length) + '\n' + packageSections(packages, issues) + '\n    ' + html.slice(endAt);
+  const { nav, sections } = packageSections(packages, issues);
+  const split = html.includes(navStart);
+  const features = replaceOnce(html, start, end, split ? sections : `${nav}\n\n${sections}`, 'public feature region');
+  return split ? replaceOnce(features, navStart, navEnd, nav, 'public package nav region') : features;
 }
 
 export async function syncRoadmap({ loadIssues = fetchIssueStates, token = process.env.LINEAR_ROADMAP_TOKEN,

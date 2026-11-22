@@ -33,7 +33,12 @@ test('find the package overview, compare counts and jump to the feature list', a
     await expect(packages.getByRole('link', { name: /Boney/ })).toContainText('1 developed · 0 in the pipeline');
     const roadyLink = packages.getByRole('link', { name: /Roady/ });
     await expect(roadyLink).toContainText('0 developed · 2 in the pipeline');
-    await roadyLink.click();
+    expect(await packages.evaluate(nav => {
+      const showcase = document.getElementById('greeny-showcase');
+      return Boolean(showcase && (nav.compareDocumentPosition(showcase) & Node.DOCUMENT_POSITION_FOLLOWING));
+    })).toBe(true);
+    await roadyLink.focus();
+    await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/#package-roady$/);
     const roady = page.getByRole('region', { name: 'Roady' });
     await expect(roady.getByRole('heading', { name: 'Roady' })).toBeInViewport();
@@ -63,6 +68,9 @@ test('find reusable Boney modules and the products that use them', async ({ page
   try {
     await prepareContext(context, app.base);
     await page.goto(app.base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk') + 'roadmap/');
+    const packages = page.getByRole('navigation', { name: 'Packages' });
+    await expect(packages.getByRole('link')).toHaveCount(8);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     await page.getByRole('link', { name: 'Explore reusable Boney modules' }).click();
     await expect(page).toHaveURL(/#boney-modules$/);
     const showcase = page.getByRole('region', { name: 'Reusable Boney modules' });
