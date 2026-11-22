@@ -98,6 +98,19 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .note.warn { border-color: var(--warn); }
 .note.bad { border-color: var(--bad); }
 
+.callout {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  padding: 14px 18px;
+  margin: 20px 0;
+  font-size: .98rem;
+}
+.callout strong { color: var(--ink); }
+.callout p { margin: 0; }
+.callout p + p { margin-top: 8px; }
+
 ul, ol { padding-left: 22px; margin: 0 0 14px; }
 li { margin-bottom: 6px; }
 
