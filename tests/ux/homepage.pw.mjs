@@ -13,7 +13,7 @@ test('research and product links are available without JavaScript', async ({ bro
     const noScriptPage = await context.newPage();
     await noScriptPage.goto(publicBase(app.base));
     const links = noScriptPage.locator('.commercial-entrypoints');
-    await expect(links.getByRole('heading', { name: 'Research and products' })).toBeVisible();
+    await expect(links.getByRole('heading', { name: 'Research and use cases' })).toBeVisible();
     await expect(links.getByRole('link', { name: /^Research/ })).toHaveAttribute('href', '/research/');
     await noScriptPage.locator('#solutions').getByRole('link', { name: 'Workslip', exact: true }).click();
     await expect(noScriptPage).toHaveURL(/\/products\/workslip\/$/);
@@ -99,8 +99,8 @@ test('Product links and factual result labels stay explicit', async ({ page, con
     await expect(solutions.getByRole('link', { name: 'Tradey', exact: true })).toHaveAttribute('href', '/products/tradey/');
     await expect(solutions.getByRole('link', { name: 'Shippy', exact: true })).toHaveAttribute('href', '/products/shippy/');
     await expect(solutions.getByRole('link', { name: 'Roady', exact: true })).toHaveAttribute('href', '/demo/roady/');
-    // SAS-585: three main products, MR SAAS'y underneath with Workslip as its live case, and Integrations is not a product.
-    await expect(solutions.locator('.cards > article h3')).toHaveText(['Tradey', 'Shippy', 'Roady']);
+    // The owner selected four use cases; Workslip stays with the shared foundation below.
+    await expect(solutions.locator('.cards > article h3')).toHaveText(['Tradey', 'Shippy', 'Roady', 'Producey']);
     await expect(solutions.locator('.platform')).toContainText("MR SAAS'y");
     await expect(solutions.locator('.platform article h3')).toHaveText('Workslip');
     await expect(solutions.getByRole('link', { name: 'Integrations', exact: true })).toHaveCount(0);
@@ -147,16 +147,16 @@ test('Product links and factual result labels stay explicit', async ({ page, con
   }
 });
 
-test('Visitors can open Guessy from the free products section', async ({ page, context }) => {
+test('Visitors can open Guessy from the free tools section', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
     await page.route('https://guessy.mrsoftware.dk/', route => route.fulfill({ body: 'Guessy' }));
     await page.goto(publicBase(app.base));
-    const freeProducts = page.getByRole('region', { name: 'Free products' });
-    await expect(freeProducts.getByRole('heading', { name: 'Guessy' })).toBeVisible();
+    const freeTools = page.getByRole('region', { name: 'Free tools' });
+    await expect(freeTools.getByRole('heading', { name: 'Guessy' })).toBeVisible();
     await expect(page.locator('.site-footer').getByRole('link', { name: 'Guessy' })).toHaveAttribute('href', 'https://guessy.mrsoftware.dk/');
-    await freeProducts.getByRole('link', { name: 'Play Guessy' }).click();
+    await freeTools.getByRole('link', { name: 'Play Guessy' }).click();
     await expect(page).toHaveURL('https://guessy.mrsoftware.dk/');
   } finally {
     await app.close();
@@ -221,7 +221,7 @@ test('Mobile navigation opens, closes, and returns focus', async ({ page, contex
     await expect(toggle).toBeFocused();
 
     await toggle.click();
-    await page.getByRole('link', { name: 'Products', exact: true }).click();
+    await page.getByRole('link', { name: 'Use cases', exact: true }).click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(page).toHaveURL(/#solutions$/);
   } finally {
@@ -453,16 +453,16 @@ test('Top menu items turn bold and open their pages on hover or focus (SAS-586)'
     for (const pathname of ['', 'stories/']) {
       await page.goto(publicBase(app.base) + pathname);
       const nav = page.locator('#main-nav');
-      const products = nav.locator('.nav-group').filter({ has: page.getByRole('link', { name: 'Products', exact: true }) });
+      const products = nav.locator('.nav-group').filter({ has: page.getByRole('link', { name: 'Use cases', exact: true }) });
       const next = nav.getByRole('link', { name: 'Integrations', exact: true });
       const before = (await next.boundingBox()).x;
-      await products.getByRole('link', { name: 'Products', exact: true }).hover();
-      await expect(products.getByRole('link', { name: 'Products', exact: true })).toHaveCSS('font-weight', '600');
+      await products.getByRole('link', { name: 'Use cases', exact: true }).hover();
+      await expect(products.getByRole('link', { name: 'Use cases', exact: true })).toHaveCSS('font-weight', '600');
       // Bold text does not push the next item sideways.
       expect(Math.abs((await next.boundingBox()).x - before)).toBeLessThanOrEqual(1);
       const sub = products.locator('.nav-sub');
       await expect(sub).toBeVisible();
-      await expect(sub.getByRole('link')).toHaveText(['Tradey', 'Shippy', 'Roady', 'Workslip', 'Demo centre']);
+      await expect(sub.getByRole('link')).toHaveText(['Tradey', 'Shippy', 'Roady', 'Producey']);
       await expect(sub.getByRole('link', { name: 'Roady' })).toHaveAttribute('href', '/demo/roady/');
       await page.mouse.move(700, 600);
       await expect(sub).toBeHidden();
