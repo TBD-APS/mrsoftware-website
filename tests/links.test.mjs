@@ -12,7 +12,7 @@ test('related links are present in the checked-in HTML before scripts run', asyn
   const root = new URL('..', import.meta.url);
   assert.deepEqual(await publicLinkUpdates(root, graph), [], 'Regenerate public links with npm run build:links');
   const home = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.match(home, /id="related-home"[^>]*>Research and products<\/h2>/);
+  assert.match(home, /id="related-home"[^>]*>Research and use cases<\/h2>/);
   assert.match(home, /class="related-link" href="\/research\/"/);
 });
 
@@ -25,6 +25,34 @@ test('prerendering updates nested link content while preserving the rest of the 
   assert.ok(result.endsWith('</div><p>Keep this</p></main>'));
   assert.equal(renderLinkSlots(result, graph), result);
   assert.throws(() => renderLinkSlots('<div data-related-from="missing"></div>', graph), /Unknown related-link source/);
+});
+
+test('compact link lists use the catalogue and escape names before scripts run', () => {
+  const catalogue = {
+    places: [{ id: 'cases', title: 'Use cases', href: '/#solutions' }, { id: 'example', title: 'One & more', href: '/example/' }],
+    links: { cases: [{ id: 'to:example', toId: 'example' }] },
+  };
+  const source = '<footer><div data-link-list-from="cases" data-link-list-heading="Use cases"><p>Old links</p></div><p>Keep this</p></footer>';
+  const result = renderLinkSlots(source, catalogue);
+  assert.match(result, /<h2>Use cases<\/h2><a href="\/example\/">One &amp; more<\/a>/);
+  assert.doesNotMatch(result, /Old links/);
+  assert.ok(result.endsWith('</div><p>Keep this</p></footer>'));
+  assert.equal(renderLinkSlots(result, catalogue), result);
+});
+
+test('prerendering includes public footer lists on sitemap-only pages and demo snapshots', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'site-footer-links-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(join(root, 'data'));
+  await mkdir(join(root, 'privacy-policy'));
+  await mkdir(join(root, 'demo/snapshot'), { recursive: true });
+  const catalogue = { places: [{ id: 'home', title: 'Home', href: '/' }, { id: 'case', title: 'Case', href: '/case/' }], links: { home: [{ id: 'to:case', toId: 'case' }] } };
+  await writeFile(join(root, 'data/links.json'), JSON.stringify({ ...catalogue, sitemapPages: ['/privacy-policy/'] }));
+  await writeFile(join(root, 'privacy-policy/index.html'), '<footer data-link-list-from="home" data-link-list-heading="Use cases">Old links</footer>');
+  await writeFile(join(root, 'demo/snapshot/index.html'), '<footer data-link-list-from="home" data-link-list-heading="Use cases">Old links</footer>');
+  const updates = await publicLinkUpdates(root, catalogue);
+  assert.equal(updates.length, 2);
+  for (const update of updates) assert.match(update.html, /href="\/case\/">Case<\/a>/);
 });
 
 test('the public link module matches the catalogue', async () => {
