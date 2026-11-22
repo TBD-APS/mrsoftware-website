@@ -40,8 +40,43 @@ function wantsHtml(request) {
   return accept.includes('text/html') || accept.includes('*/*');
 }
 
+async function videoRange(request, response) {
+  // Workers Static Assets returns full files for Range requests. Safari probes
+  // the first two bytes before playback, so slice this small cached clip here.
+  const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') ?? '');
+  if (!range || (!range[1] && !range[2])) return response;
+  const ifRange = request.headers.get('If-Range');
+  if (ifRange) {
+    if (ifRange.startsWith('W/')) return response;
+    const date = Date.parse(ifRange);
+    const matches = ifRange.startsWith('"') ? ifRange === response.headers.get('ETag')
+      : Number.isFinite(date) && date === Date.parse(response.headers.get('Last-Modified') ?? '');
+    if (!matches) return response;
+  }
+  const first = range[1] ? Number(range[1]) : null;
+  const last = range[2] ? Number(range[2]) : null;
+  if ((first !== null && !Number.isSafeInteger(first)) || (last !== null && !Number.isSafeInteger(last))
+    || (first !== null && last !== null && first > last)) return response;
+  const bytes = await response.arrayBuffer();
+  const start = first ?? Math.max(0, bytes.byteLength - last);
+  const end = first === null || last === null ? bytes.byteLength - 1 : Math.min(last, bytes.byteLength - 1);
+  const headers = new Headers(response.headers);
+  headers.set('Accept-Ranges', 'bytes');
+  if (start >= bytes.byteLength || end < start) {
+    headers.set('Content-Range', `bytes */${bytes.byteLength}`);
+    headers.set('Content-Length', '0');
+    headers.set('Cache-Control', 'no-store');
+    return new Response(null, { status: 416, headers });
+  }
+  headers.set('Content-Range', `bytes ${start}-${end}/${bytes.byteLength}`);
+  headers.set('Content-Length', String(end - start + 1));
+  return new Response(bytes.slice(start, end + 1), { status: 206, headers });
+}
+
 async function publicAsset(request, env, url) {
-  const response = await env.ASSETS.fetch(request);
+  let response = await env.ASSETS.fetch(request);
+  const workflowVideo = /^\/assets\/workflow\/workflow\.[a-f0-9]{12}\.mp4$/.test(url.pathname);
+  if (workflowVideo && request.method === 'GET' && response.status === 200) response = await videoRange(request, response);
   // The asset binding supplies Cloudflare's edge cache and ETag. Only immutable,
   // content-addressed illustrations and workflow media get a long-lived browser cache.
   if (['GET', 'HEAD'].includes(request.method) && [200, 206, 304].includes(response.status)
@@ -49,6 +84,7 @@ async function publicAsset(request, env, url) {
       || /^\/assets\/workflow\/workflow\.[a-f0-9]{12}\.(?:mp4|webp)$/.test(url.pathname))) {
     const headers = new Headers(response.headers);
     headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+    if (workflowVideo) headers.set('Accept-Ranges', 'bytes');
     return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   }
   if (response.status !== 404 || !['GET', 'HEAD'].includes(request.method)) return response;
