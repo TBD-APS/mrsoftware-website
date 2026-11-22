@@ -14,12 +14,17 @@ function sitemap(catalogue) {
     return url;
   }).filter(url => !internalPaths.some(path => {
     const root = path.replace(/\/$/, '').toLowerCase();
-    const pathname = url.pathname.toLowerCase();
+    const pathname = url.pathname.toLowerCase().replace(/^\/da(?=\/)/, '');
     return pathname === root || pathname.startsWith(root + '/');
   })).filter(url => !publicCommercialEntry(new Request(url))).map(url => url.href);
+  const english = [...new Set(urls.map(address => { const url = new URL(address); url.pathname = url.pathname.replace(/^\/da(?=\/)/, ''); return url.href; }))];
   return '<?xml version="1.0" encoding="UTF-8"?>\n'
-    + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    + [...new Set(urls)].map(url => `  <url><loc>${escapeHtml(url)}</loc></url>\n`).join('')
+    + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
+    + english.map(address => {
+      const danish = new URL(address); danish.pathname = '/da' + danish.pathname;
+      const alternatives = `<xhtml:link rel="alternate" hreflang="en" href="${escapeHtml(address)}"/><xhtml:link rel="alternate" hreflang="da" href="${escapeHtml(danish.href)}"/><xhtml:link rel="alternate" hreflang="x-default" href="${escapeHtml(address)}"/>`;
+      return [address, danish.href].map(url => `  <url><loc>${escapeHtml(url)}</loc>${alternatives}</url>\n`).join('');
+    }).join('')
     + '</urlset>\n';
 }
 
@@ -47,7 +52,7 @@ async function publicAsset(request, env, url) {
   }
   if (response.status !== 404 || !['GET', 'HEAD'].includes(request.method)) return response;
   if (url.pathname === '/404.html' || hasFileExtension(url.pathname) || !wantsHtml(request)) return response;
-  const page = await env.ASSETS.fetch(new Request(new URL('/404.html', url.origin), { method: 'GET' }));
+  const page = await env.ASSETS.fetch(new Request(new URL(url.pathname.startsWith('/da/') ? '/da/404.html' : '/404.html', url.origin), { method: 'GET' }));
   if (!page.ok) return response;
   const headers = new Headers(page.headers);
   headers.set('Content-Type', 'text/html; charset=utf-8');

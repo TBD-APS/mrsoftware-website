@@ -14,7 +14,7 @@ OpenCode's plan is `~/.agent-tunnel/state/mrsoftware-readability-plan-2026-11-22
 - One child issue per pull request. Two only when they edit the same lines for one reason.
 - Do not edit `qa/`. GitHub #85 and #99 are closed, and [SAS-576](https://linear.app/workslip/issue/SAS-576/oprydning-interne-docs-og-qa-filer-ma-ikke-ligge-offentligt-i-repo-og) is still open.
 - Do not change published numbers. The homepage clocks are 3 minutes and 4.6 days. The comment above `#results` in `index.html` says not to add, round, or reword them.
-- Match the language already on the page. Do not start a Danish/English pass. [SAS-572](https://linear.app/workslip/issue/SAS-572/mrsoftwaredk-afklar-sprog-danskengelsk-og-ensret-sider-og-urler) is recorded in `docs/homepage-business-value-requirements.md` by [#89](https://github.com/TBD-APS/mrsoftware.dk/pull/89): English is the default, `/da/` stays Danish, and a URL is redirected only when it is renamed. The Danish nav still says "Use cases". Leave that wording.
+- Updated language scope, 22 November 2026: Rasmus requires the entire public company website in both English and Danish. `docs/homepage-business-value-requirements.md` KR-09 and `docs/superpowers/plans/2026-11-22-complete-website-translations.md` supersede the homepage-only interpretation below. English HTML is the layout source; the locale build generates complete Danish counterparts and rejects missing translations. Add Danish dictionary entries for any new copy. The words "Use cases" remain agreed in both languages.
 - Text first. A diagram needs the same sequence as visible text or an accessible name.
 
 ## Pull requests checked on 2026-11-22

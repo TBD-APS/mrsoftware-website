@@ -12,6 +12,7 @@ const run = args => {
 };
 run(['tools/build-commercial.mjs']);
 run(['tools/build-roadmap-reports.mjs']);
+run(['tools/build-locales.mjs']);
 run(['--test', ...(await readdir('tests')).filter(name => name.endsWith('.test.mjs')).sort().map(name => 'tests/' + name)]);
 run(['node_modules/@playwright/test/cli.js', 'test', '--config', 'tests/backoffice/playwright.config.mjs']);
 run(['node_modules/@playwright/test/cli.js', 'test']);

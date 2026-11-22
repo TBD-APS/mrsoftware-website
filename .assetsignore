@@ -26,6 +26,7 @@ qa/**
 .astro/**
 commercial/**
 docs/**
+data/locales/**
 wrangler*
 astro.*
 commercial.*

@@ -61,3 +61,14 @@ test('the checked-in 404 page and icon match the worker contract', async () => {
   assert.equal(file.subarray(0, 4).toString('hex'), '00000100');
   assert.ok(file.length > 16);
 });
+
+test('unknown Danish addresses recover in Danish with the same status and noindex boundary', async () => {
+  const files = { '/404.html': page, '/da/404.html': '<!doctype html><html lang="da"><h1>Siden findes ikke</h1></html>' };
+  const response = await request('/da/ukendt/', { files });
+  assert.equal(response.status, 404);
+  assert.equal(response.headers.get('X-Robots-Tag'), 'noindex');
+  assert.match(await response.text(), /lang="da"/);
+  const head = await request('/da/ukendt/', { method: 'HEAD', files });
+  assert.equal(head.status, 404);
+  assert.equal(await head.text(), '');
+});

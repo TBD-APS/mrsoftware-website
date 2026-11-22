@@ -22,6 +22,9 @@
   <link rel="stylesheet" href="/css/demo-view.css">
   <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/demo/workslip/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/demo/workslip/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/demo/workslip/">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -29,6 +32,7 @@
   <header class="site-header">
     <div class="site-header-inner">
       <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/da/demo/workslip/" lang="da" hreflang="da">Dansk</a>
       <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
         <a href="/#solutions">Use cases</a>
@@ -47,7 +51,7 @@
       <div class="page-width">
         <p class="breadcrumbs"><a href="/">Home</a> · <a href="/demo/">Demo centre</a> · Workslip</p>
         <h1 id="view-title">Workslip, read only</h1>
-        <p class="lead">Workslip follows a job from the field to the office: what is recorded on site is what the office sees and approves. This page shows Workslip's own screens in its Danish labels, with fictional jobs. Workslip itself is live at app.mrsoftware.dk; nothing here touches it.</p>
+        <p class="lead">Workslip follows a job from the field to the office: what is recorded on site is what the office sees and approves. This page shows Workslip's own screens with labels in the selected website language, with fictional jobs. Workslip itself is live at app.mrsoftware.dk; nothing here touches it.</p>
 
         <p class="view-banner"><strong>Read-only demo</strong><span>Fictional data</span><span>No sign-in</span><span>Not connected to the live app</span></p>
 
@@ -61,66 +65,66 @@
         </nav>
 
         <section class="view-panel" id="jobs" aria-labelledby="jobs-title">
-          <h2 id="jobs-title">Sagsoversigt</h2>
-          <p>Every job carries one status: Aktiv while it is worked on, Til gennemsyn when the office reviews it, then Godkendt or Afvist. An approved job can be Genåbnet.</p>
+          <h2 id="jobs-title">Job overview</h2>
+          <p>Every job carries one status: Active while it is worked on, Under review when the office reviews it, then Approved or Rejected. An approved job can be Reopened.</p>
           <dl class="view-kpis">
-            <div><dt>Aktiv</dt><dd>3</dd></div>
-            <div><dt>Til gennemsyn</dt><dd>1</dd></div>
-            <div><dt>Godkendt</dt><dd>1</dd></div>
-            <div><dt>Genåbnet</dt><dd>1</dd></div>
+            <div><dt>Active</dt><dd>3</dd></div>
+            <div><dt>Under review</dt><dd>1</dd></div>
+            <div><dt>Approved</dt><dd>1</dd></div>
+            <div><dt>Reopened</dt><dd>1</dd></div>
           </dl>
           <div class="view-table-wrap" style="margin-top:var(--s3)">
             <table class="view-table">
               <caption class="visually-hidden">Jobs with fictional data</caption>
-              <thead><tr><th scope="col">Sag</th><th scope="col">Opgave</th><th scope="col">Type</th><th scope="col">Status</th></tr></thead>
+              <thead><tr><th scope="col">Job</th><th scope="col">Task</th><th scope="col">Type</th><th scope="col">Status</th></tr></thead>
               <tbody>
-                <tr><td>J-1046</td><td>Roof inspection</td><td>Diverse</td><td><span class="view-status ">Aktiv</span></td></tr>
-                <tr><td>J-1045</td><td>Window replacement</td><td>Diverse</td><td><span class="view-status ">Aktiv</span></td></tr>
-                <tr><td>J-1044</td><td>Electrical inspection</td><td>Diverse</td><td><span class="view-status ">Aktiv</span></td></tr>
-                <tr><td>J-1043</td><td>Bathroom renovation, stage 2</td><td>Vand</td><td><span class="view-status is-warn">Til gennemsyn</span></td></tr>
-                <tr><td>J-1042</td><td>Heat pump service</td><td>Varme</td><td><span class="view-status is-done">Godkendt</span></td></tr>
-                <tr><td>J-1041</td><td>Ventilation service</td><td>Ventilation</td><td><span class="view-status ">Genåbnet</span></td></tr>
+                <tr><td>J-1046</td><td>Roof inspection</td><td>Miscellaneous</td><td><span class="view-status ">Active</span></td></tr>
+                <tr><td>J-1045</td><td>Window replacement</td><td>Miscellaneous</td><td><span class="view-status ">Active</span></td></tr>
+                <tr><td>J-1044</td><td>Electrical inspection</td><td>Miscellaneous</td><td><span class="view-status ">Active</span></td></tr>
+                <tr><td>J-1043</td><td>Bathroom renovation, stage 2</td><td>Water</td><td><span class="view-status is-warn">Under review</span></td></tr>
+                <tr><td>J-1042</td><td>Heat pump service</td><td>Heating</td><td><span class="view-status is-done">Approved</span></td></tr>
+                <tr><td>J-1041</td><td>Ventilation service</td><td>Ventilation</td><td><span class="view-status ">Reopened</span></td></tr>
               </tbody>
             </table>
           </div>
         </section>
 
         <section class="view-panel" id="create-job" aria-labelledby="create-title">
-          <h2 id="create-title">Opret sag</h2>
+          <h2 id="create-title">Create a job</h2>
           <p>The technician records a job on site in six steps. Only the control points that fit the chosen installation type are shown.</p>
-          <ol class="view-rail" aria-label="Opret sag steps">
-            <li class="is-done"><b>Start med de vigtigste oplysninger</b></li>
-            <li class="is-done"><b>Vælg det arbejde, du har udført</b></li>
-            <li class="is-done"><b>Gennemgå de relevante kontrolpunkter</b></li>
-            <li class="is-done"><b>Registrér tid og eventuelle udlæg</b></li>
-            <li class="is-done"><b>Fortæl hvordan arbejdet blev afsluttet</b></li>
-            <li class="is-done"><b>Tjek sagen én sidste gang</b></li>
+          <ol class="view-rail" aria-label="Create a job steps">
+            <li class="is-done"><b>Start with the key details</b></li>
+            <li class="is-done"><b>Select the work you performed</b></li>
+            <li class="is-done"><b>Go through the relevant checkpoints</b></li>
+            <li class="is-done"><b>Record time and any expenses</b></li>
+            <li class="is-done"><b>Describe how the work was completed</b></li>
+            <li class="is-done"><b>Check the job one last time</b></li>
           </ol>
         </section>
 
         <section class="view-panel" id="job" aria-labelledby="job-title">
           <h2 id="job-title">J-1043 · Bathroom renovation, stage 2</h2>
-          <p>Status: Til gennemsyn. The office reviews what was recorded on site before it approves.</p>
-          <ul class="view-list" aria-label="Historik">
-            <li>Sag oprettet<small>Kontoret, 08:12</small></li>
-            <li>Kontrolpunkter gennemgået<small>På stedet, 10:40</small></li>
-            <li>6 billeder tilføjet<small>På stedet, 10:42</small></li>
-            <li>Tid registreret<small>På stedet, 11:05</small></li>
-            <li>Sendt til gennemsyn<small>Afventer kontoret</small></li>
+          <p>Status: Under review. The office reviews what was recorded on site before it approves.</p>
+          <ul class="view-list" aria-label="History">
+            <li>Job created<small>Office, 08:12</small></li>
+            <li>Checkpoints reviewed<small>On site, 10:40</small></li>
+            <li>6 photos added<small>On site, 10:42</small></li>
+            <li>Time recorded<small>On site, 11:05</small></li>
+            <li>Sent for review<small>Awaiting the office</small></li>
           </ul>
-          <p class="view-note" style="margin-top:var(--s2)"><span class="view-action">Godkend · only the office, in the live app</span></p>
+          <p class="view-note" style="margin-top:var(--s2)"><span class="view-action">Approve · only the office, in the live app</span></p>
         </section>
 
         <section class="view-panel" id="analysis" aria-labelledby="analysis-title">
-          <h2 id="analysis-title">Lederanalyse</h2>
+          <h2 id="analysis-title">Leader analysis</h2>
           <p>Jobs per month and how many were approved, rejected or are still open. The last column is the rejections per approval.</p>
           <div class="view-table-wrap">
             <table class="view-table">
               <caption class="visually-hidden">Leader analysis with fictional data</caption>
-              <thead><tr><th scope="col">Måned</th><th scope="col">Sager</th><th scope="col">Godkendt</th><th scope="col">Afvist</th><th scope="col">Åben</th><th scope="col">Afvist / godkendt</th></tr></thead>
+              <thead><tr><th scope="col">Month</th><th scope="col">Jobs</th><th scope="col">Approved</th><th scope="col">Rejected</th><th scope="col">Open</th><th scope="col">Rejected / approved</th></tr></thead>
               <tbody>
                 <tr><td>September</td><td>18</td><td>15</td><td>2</td><td>1</td><td>13 %</td></tr>
-                <tr><td>Oktober</td><td>21</td><td>17</td><td>1</td><td>3</td><td>6 %</td></tr>
+                <tr><td>October</td><td>21</td><td>17</td><td>1</td><td>3</td><td>6 %</td></tr>
                 <tr><td>November</td><td>14</td><td>8</td><td>1</td><td>5</td><td>12 %</td></tr>
               </tbody>
             </table>
