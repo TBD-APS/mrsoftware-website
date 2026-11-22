@@ -85,6 +85,18 @@
       "summary": "Factory stock, orders and dispatch. In development; warehouse workflows are planned."
     },
     {
+      "id": "roady-product",
+      "title": "Roady product",
+      "href": "/products/roady/",
+      "summary": "Vehicle transports, saved stops and events labelled observed or planned. The demo is synthetic."
+    },
+    {
+      "id": "greeny",
+      "title": "Greeny",
+      "href": "/products/greeny/",
+      "summary": "From an energy document to a report a person approves. The public demo is fictional."
+    },
+    {
       "id": "contact",
       "title": "Contact",
       "href": "/contact/",
@@ -286,6 +298,25 @@
         "id": "to:contact",
         "toId": "contact",
         "label": "Talk about your factory workflow"
+      }
+    ],
+    "roady-product": [
+      {
+        "id": "to:roady",
+        "toId": "roady",
+        "label": "Open the read-only Roady view"
+      },
+      {
+        "id": "to:contact",
+        "toId": "contact",
+        "label": "Ask for a walkthrough"
+      }
+    ],
+    "greeny": [
+      {
+        "id": "to:contact",
+        "toId": "contact",
+        "label": "Ask for a walkthrough"
       }
     ],
     "workslip": [

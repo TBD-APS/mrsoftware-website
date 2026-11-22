@@ -9,6 +9,8 @@ const pages = [
   'products/tradey/',
   'products/shippy/',
   'products/producey/',
+  'products/roady/',
+  'products/greeny/',
   'integrations/',
   'contact/',
   'demo/',
