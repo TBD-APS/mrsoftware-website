@@ -8,6 +8,7 @@ const pages = [
   'products/workslip/',
   'products/tradey/',
   'products/shippy/',
+  'products/producey/',
   'integrations/',
   'contact/',
   'demo/',
