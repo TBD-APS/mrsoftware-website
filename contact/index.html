@@ -45,8 +45,6 @@
   </header>
 
   <main id="main">
-    <!-- TODO: this project has no form backend or form service, so contact is email only. Add a short form
-         (name, email, message) once a backend is chosen. -->
     <section class="product-hero on-dark page-hero" aria-labelledby="contact-title">
       <div class="page-width">
         <p class="breadcrumbs"><a href="/">Home</a> · Contact</p>
@@ -55,6 +53,36 @@
         <div class="hero-actions">
           <a class="button button-primary" href="mailto:wp@mrsoftware.dk?subject=Conversation%20about%20software%20and%20workflows">Email us <span class="arrow" aria-hidden="true">→</span></a>
         </div>
+      </div>
+    </section>
+
+    <section class="section on-light" id="book-demo" aria-labelledby="book-demo-heading">
+      <div class="page-width book-demo">
+        <div>
+          <p class="label">Book a demo</p>
+          <h2 class="heading" id="book-demo-heading">Tell us what you want to see.</h2>
+          <p>Your name, email, company and a few lines. We reply by email. There is no payment. The email link above still works if this form cannot send.</p>
+        </div>
+        <form id="book-demo-form" class="book-demo-form" action="#book-demo" method="post">
+          <label for="book-company">Company<input id="book-company" name="company" maxlength="200" required autocomplete="organization"></label>
+          <label for="book-name">Your name<input id="book-name" name="name" maxlength="100" required autocomplete="name"></label>
+          <label for="book-email">Email<input id="book-email" name="email" type="email" maxlength="254" required autocomplete="email"></label>
+          <label for="book-product">Workspace
+            <select id="book-product" name="product" required>
+              <option value="">Choose one</option>
+              <option value="workslip">Workslip</option>
+              <option value="tradey">Tradey</option>
+              <option value="shippy">Shippy</option>
+            </select>
+          </label>
+          <label for="book-message">What would you like to see? <span>(optional)</span><textarea id="book-message" name="message" rows="4" maxlength="4000"></textarea></label>
+          <p class="book-demo-honeypot"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></p>
+          <label class="book-demo-check"><input type="checkbox" required> I agree that MR Software can use these details to answer this request.</label>
+          <p><a class="text-link" href="/privacy-policy/">Privacy policy</a></p>
+          <button class="button button-primary" type="submit">Book a demo</button>
+          <p id="book-demo-result" class="book-demo-result" role="status" tabindex="-1" hidden></p>
+          <noscript><p>This form needs JavaScript. Use the email link above.</p></noscript>
+        </form>
       </div>
     </section>
 
@@ -101,5 +129,6 @@
       <span>© <span class="year">2026</span> MR Software</span>
     </div>
   </footer>
+  <script type="module" src="/js/book-demo.js"></script>
 </body>
 </html>
