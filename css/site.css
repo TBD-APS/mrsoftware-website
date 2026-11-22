@@ -314,11 +314,12 @@ a:hover > .arrow { transform: translateX(4px); }
   @keyframes ticker { to { transform: translateX(-50%); } }
 }
 
-/* Platform statement and the three product cards */
+/* Four use cases and the shared software foundation */
 .statement-head { max-width: 980px; margin-inline: auto; text-align: center; }
 .statement-head .heading { max-width: none; font-size: clamp(1.625rem, 1.1rem + 1.4vw, 2.25rem); line-height: 1.25; }
 .cards { margin-top: var(--s6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
-/* MR SAAS'y sits under the three products as one raised panel, with Workslip as its live case. */
+.use-case-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--s5); }
+/* Workslip remains the live example of the shared foundation. */
 .free-products {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
@@ -348,6 +349,10 @@ a:hover > .arrow { transform: translateX(4px); }
 .card .status { margin: var(--s2) 0 0; }
 .card:hover .scene .float { transform: translate(-50%, -54%); }
 .card :focus-visible { outline-offset: 6px; }
+.use-case-cards .scene { aspect-ratio: 16 / 10; }
+.use-case-flow { display: grid; align-content: center; gap: var(--s3); padding: var(--s4); background: var(--paper-raised); border: 1px solid var(--hairline-light); }
+.use-case-flow ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); margin: 0; padding: 0; list-style: none; }
+.use-case-flow li { padding: var(--s2); border: 1px solid var(--hairline-light); border-radius: var(--radius); background: var(--paper); font-family: var(--mono); font-size: var(--fs-small); }
 
 /* Floating interface cards inside a scene */
 .float {
@@ -613,7 +618,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .page-body .research-paper .paper-format { margin-bottom: var(--s2); font-family: var(--mono); font-size: var(--fs-small); }
 .paper-download { display: inline-flex; align-items: center; gap: var(--s1); min-height: 44px; margin-top: var(--s2); color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
 .danish-home .hero-actions { margin-top: var(--s4); }
-.page-body .danish-products { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
+.page-body .danish-products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
 .page-body .product-summary { color: var(--ink); text-decoration: none; }
 .page-body .product-summary h3 { color: var(--accent); font-family: var(--serif); font-size: 1.75rem; }
 .page-body .product-summary .label { margin-bottom: var(--s2); font-family: var(--mono); font-size: var(--fs-small); }
