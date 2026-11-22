@@ -45,6 +45,8 @@
   --paper: #fffcf7;
   --paper-raised: #f5efe6;
   --muted-on-light: #6b6560;
+  /* --muted-on-light on --rose is 4.32:1. This is 5.44:1 for small text. */
+  --muted-on-rose: #5c564f;
   --hairline-light: rgba(24, 21, 19, .12);
   --accent: #8a1c2c;
   --accent-hover: #6c1422;
@@ -314,11 +316,12 @@ a:hover > .arrow { transform: translateX(4px); }
   @keyframes ticker { to { transform: translateX(-50%); } }
 }
 
-/* Platform statement and the three product cards */
+/* Four use cases and the shared software foundation */
 .statement-head { max-width: 980px; margin-inline: auto; text-align: center; }
 .statement-head .heading { max-width: none; font-size: clamp(1.625rem, 1.1rem + 1.4vw, 2.25rem); line-height: 1.25; }
 .cards { margin-top: var(--s6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
-/* MR SAAS'y sits under the three products as one raised panel, with Workslip as its live case. */
+.use-case-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--s5); }
+/* Workslip remains the live example of the shared foundation. */
 .free-products {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
@@ -348,6 +351,10 @@ a:hover > .arrow { transform: translateX(4px); }
 .card .status { margin: var(--s2) 0 0; }
 .card:hover .scene .float { transform: translate(-50%, -54%); }
 .card :focus-visible { outline-offset: 6px; }
+.use-case-cards .scene { aspect-ratio: 16 / 10; }
+.use-case-flow { display: grid; align-content: center; gap: var(--s3); padding: var(--s4); background: var(--paper-raised); border: 1px solid var(--hairline-light); }
+.use-case-flow ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); margin: 0; padding: 0; list-style: none; }
+.use-case-flow li { padding: var(--s2); border: 1px solid var(--hairline-light); border-radius: var(--radius); background: var(--paper); font-family: var(--mono); font-size: var(--fs-small); }
 
 /* Floating interface cards inside a scene */
 .float {
@@ -613,7 +620,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .page-body .research-paper .paper-format { margin-bottom: var(--s2); font-family: var(--mono); font-size: var(--fs-small); }
 .paper-download { display: inline-flex; align-items: center; gap: var(--s1); min-height: 44px; margin-top: var(--s2); color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
 .danish-home .hero-actions { margin-top: var(--s4); }
-.page-body .danish-products { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
+.page-body .danish-products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
 .page-body .product-summary { color: var(--ink); text-decoration: none; }
 .page-body .product-summary h3 { color: var(--accent); font-family: var(--serif); font-size: 1.75rem; }
 .page-body .product-summary .label { margin-bottom: var(--s2); font-family: var(--mono); font-size: var(--fs-small); }
@@ -786,6 +793,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .facts li { padding-top: var(--s3); border-top: 1px solid var(--ink); }
 .facts h3 { font-size: 1.375rem; line-height: 1.2; }
 .facts p { margin: var(--s1) 0 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); line-height: 1.7; }
+.band-rose .facts p { color: var(--muted-on-rose); }
 .features { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); list-style: none; }
 .feature { position: relative; padding: var(--s4) var(--s3) var(--s3); display: flex; flex-direction: column; background: #fff; border: 1px solid var(--hairline-light); border-radius: var(--radius); transition: border-color .3s var(--ease), transform .3s var(--ease); }
 .feature:hover { border-color: var(--hairline-dark-strong); transform: translateY(-2px); }
@@ -980,6 +988,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .flow-group.is-office { background: var(--paper-raised); }
 .flow-group.is-done { background: var(--ink); color: var(--paper); }
 .flow-where { margin: 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); }
+.flow-group.is-field .flow-where { color: var(--muted-on-rose); }
 .flow-group.is-done .flow-where { color: rgba(255, 252, 247, .72); }
 .flow-group h3 { margin: 6px 0 var(--s2); font-size: var(--fs-title); line-height: 1.2; }
 .flow-boxes { margin: 0; padding: 0; display: grid; gap: 8px; list-style: none; }

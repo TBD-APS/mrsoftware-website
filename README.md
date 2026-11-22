@@ -10,32 +10,50 @@ Production release remains a separate approved action. The company sitemap
 and robots file are described in
 [docs/operations/sitemap.md](docs/operations/sitemap.md).
 
-Statisk virksomhedssite for MR Software — sikkerhed, dataprivatliv og en åben
-selvvalideringsartefakt.
+Company site for MR Software. Public pages are static HTML. A Cloudflare Worker
+serves the sitemap, robots file and the Access-protected development views.
+The public demos and the sales workspace are a separate Worker.
 
-## Indhold
+## Pages
 
-- `/` — Forside
-- `/foodtrader/` — Det offentlige om foodtrader
-- `/privacy-policy/` — Privatlivspolitik for foodtrader
-- `/terms-of-service/` — Vilkår for foodtrader
-- `/data-deletion/` — Vejledning til sletning af foodtrader-data
-- `/sikkerhed-og-dataprivatliv/` — Sikkerhed og dataprivatliv
-- `/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/` — Selvvalideringsartefakten
-  (testlandskab, CI-gates, dækning, kendte huller, tidsstempel)
+- `/` — English homepage. `/da/` — Danish homepage
+- `/products/workslip/`, `/products/tradey/`, `/products/shippy/`, `/products/producey/`
+- `/stories/`, `/stories/the-offer/`, `/stories/the-job/`, `/stories/the-shipment/`, `/stories/the-choices/`
+- `/roadmap/` and `/roadmap/report/`
+- `/contact/`
+- `/integrations/`
+- `/status/`
+- `/demo/` and the read-only views `/demo/workslip/`, `/demo/tradey/`, `/demo/shippy/`, `/demo/roady/`, `/demo/greeny/`
+- `/research/`
+- `/foodtrader/`, `/privacy-policy/`, `/terms-of-service/`, `/data-deletion/`
+- `/sikkerhed-og-dataprivatliv/` and `/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/`
+- `/sitemap.xml` and `/robots.txt`, served by the Worker from `data/links.json`
+- `/demos/` and `/pricing/` redirect to the demo host
 
-## Lokal udvikling
+## Folders
+
+- `backoffice/` — local link editor. It is not part of the public upload.
+- `dashboard/` — development views on dashboard.mrsoftware.dk, behind Cloudflare Access.
+- `commercial/` — public demos and the sales workspace. Releasing them is a separate action.
+- `tools/` — build, test and release scripts.
+- `tests/` — Node and Playwright checks.
+- `docs/` — internal notes. `.assetsignore` keeps them off the public site.
+
+## Local development
+
+```sh
+npm ci
+npm test
+npm run dev
+```
+
+`npm test` builds the commercial app and the roadmap report, then runs the Node
+tests and the Playwright gates. `npm run dev` serves the company site locally.
 
 ElevenLabs webhooks use the shared Boney module at
 `/api/webhooks/elevenlabs`. The receiver accepts events only with its private D1
 inbox, signing secret and exact module version configured. See
 [activation and storage](docs/elevenlabs-webhooks.md).
-
-Åbn filerne i en lokal HTTP-server, f.eks.
-
-```sh
-npx serve .
-```
 
 ## Deployment
 

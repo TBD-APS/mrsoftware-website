@@ -8,6 +8,7 @@ const pages = [
   'products/workslip/',
   'products/tradey/',
   'products/shippy/',
+  'products/producey/',
   'integrations/',
   'contact/',
   'demo/',
@@ -60,6 +61,10 @@ for (const path of pages) {
       await expect(page.locator('.nav .button-primary')).toHaveText('Talk to us');
       await expect(page.locator('.nav .button-primary')).toHaveAttribute('href', path ? '/contact/' : '#contact');
       await expect(page.locator('#main-nav a[href="/research/"]')).toHaveText('Research');
+      await expect(page.locator('#main-nav').getByRole('link', { name: 'Use cases', exact: true, includeHidden: true })).toHaveAttribute('href', path ? '/#solutions' : '#solutions');
+      const cases = page.locator('.site-footer [data-link-list-from="use-cases"]');
+      await expect(cases.getByRole('heading', { name: 'Use cases', exact: true })).toBeVisible();
+      await expect(cases.getByRole('link')).toHaveText(['Tradey', 'Shippy', 'Roady', 'Producey']);
 
       // One h1, and no heading level is skipped.
       const levels = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll(nodes => nodes
