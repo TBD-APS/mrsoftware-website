@@ -52,7 +52,7 @@ test('the checked-in 404 page and icon match the worker contract', async () => {
   const html = await readFile(new URL('../404.html', import.meta.url), 'utf8');
   assert.match(html, /name="robots" content="noindex"/);
   assert.match(html, /href="\/"/);
-  assert.match(html, /href="\/products\/workslip\/"/);
+  assert.match(html, /href="\/#solutions"/);
   const catalogue = await readFile(new URL('../data/links.json', import.meta.url), 'utf8');
   assert.equal(catalogue.includes('/404'), false);
   const wrangler = await readFile(new URL('../wrangler.jsonc', import.meta.url), 'utf8');
