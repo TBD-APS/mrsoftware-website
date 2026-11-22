@@ -58,7 +58,7 @@ test('the website and products identify the same publisher without invented pric
   const company = home.structured.find(item => item['@type'] === 'Organization');
   assert.equal(company['@id'], organization);
   assert.equal(home.structured.find(item => item['@type'] === 'WebSite')?.publisher?.['@id'], organization);
-  for (const product of ['workslip', 'tradey', 'shippy', 'producey']) {
+  for (const product of ['workslip', 'tradey', 'shippy', 'producey', 'roady', 'greeny']) {
     const path = `/products/${product}/`;
     const { title, meta, structured } = await page(path);
     assert.ok(title.length > `${product} | MR Software`.length + 10, `Explain the product in its title: ${product}`);
