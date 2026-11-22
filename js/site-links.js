@@ -4,7 +4,7 @@ export const graph = {
       "id": "home-da",
       "title": "MR Software in Danish",
       "href": "/da/",
-      "summary": "Danish overview of the company, products and research."
+      "summary": "Danish overview of the company, use cases and research."
     },
     {
       "id": "home",
@@ -13,8 +13,14 @@ export const graph = {
       "summary": "Software for trading, shipping and field service."
     },
     {
+      "id": "use-cases",
+      "title": "Use cases",
+      "href": "/#solutions",
+      "summary": "Four examples of software we've built around real work."
+    },
+    {
       "id": "free-products",
-      "title": "Free products",
+      "title": "Free tools",
       "href": "/#free-products",
       "summary": "Try free software built and shared by MR Software."
     },
@@ -67,6 +73,18 @@ export const graph = {
       "summary": "A shipment kept together for an independent forwarder."
     },
     {
+      "id": "roady",
+      "title": "Roady",
+      "href": "/demo/roady/",
+      "summary": "Vehicle transports, saved stops and events labelled with their source. Read-only demo."
+    },
+    {
+      "id": "producey",
+      "title": "Producey",
+      "href": "/products/producey/",
+      "summary": "Factory stock, orders and dispatch. In development; warehouse workflows are planned."
+    },
+    {
       "id": "contact",
       "title": "Contact",
       "href": "/contact/",
@@ -76,7 +94,7 @@ export const graph = {
       "id": "integrations",
       "title": "Integrations",
       "href": "/integrations/",
-      "summary": "The systems the products sit beside."
+      "summary": "The systems our software sits beside."
     },
     {
       "id": "roadmap",
@@ -254,6 +272,13 @@ export const graph = {
         "toId": "prices"
       }
     ],
+    "producey": [
+      {
+        "id": "to:contact",
+        "toId": "contact",
+        "label": "Talk about your factory workflow"
+      }
+    ],
     "workslip": [
       {
         "id": "to:workslip-demo",
@@ -332,7 +357,24 @@ export const graph = {
         "toId": "shippy-demo",
         "label": "Try proof of delivery"
       }
+    ],
+    "use-cases": [
+      {
+        "id": "to:tradey",
+        "toId": "tradey"
+      },
+      {
+        "id": "to:shippy",
+        "toId": "shippy"
+      },
+      {
+        "id": "to:roady",
+        "toId": "roady"
+      },
+      {
+        "id": "to:producey",
+        "toId": "producey"
+      }
     ]
   }
-}
-;
+};
