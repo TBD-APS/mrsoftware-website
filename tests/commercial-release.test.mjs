@@ -138,6 +138,7 @@ test('initial commercial release is explicit and never borrows the company rollb
   const deploy = await implementation('deployCommercial');
   const f = await commercialFixture(t);
   const receipt = await deploy(releaseEnv, f.deps);
+  assert.equal(receipt.repository, 'TBD-APS/mrsoftware.dk');
   assert.equal(f.writes.length, 1);
   assert.equal(f.writes[0][0], 'deploy');
   assert.equal(receipt.rollback, 'unavailable-initial-release');

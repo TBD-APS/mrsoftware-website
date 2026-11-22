@@ -17,6 +17,17 @@ function api(pr = pull(), head = sha) {
 test('accepts the exact current main commit merged by Rasmus', async () => {
   assert.deepEqual(await verifyRelease(context, api()), { repository: REPOSITORY, sha, pullRequest: 12, mergerId: 31623093 });
 });
+test('accepts owner-merged evidence from the renamed repository without relying on redirects', async () => {
+  const renamedRepository = 'TBD-APS/mrsoftware.dk';
+  const pr = pull();
+  pr.base.repo.full_name = renamedRepository;
+  const request = api(pr);
+  const result = await verifyRelease({ ...context, repository: renamedRepository }, path => {
+    assert.ok(path.startsWith('/repos/TBD-APS/mrsoftware.dk/'), 'evidence must use the canonical repository endpoint');
+    return request(path);
+  });
+  assert.deepEqual(result, { repository: renamedRepository, sha, pullRequest: 12, mergerId: 31623093 });
+});
 for (const [name, patch] of Object.entries({ branch: { ref: 'refs/heads/topic' }, repository: { repository: 'someone/other' }, sha: { sha: '../main' }, event: { event: 'pull_request' } })) {
   test(`refuses an invalid ${name} before making API requests`, async () => {
     await assert.rejects(verifyRelease({ ...context, ...patch }, async () => { assert.fail('must not request API'); }));

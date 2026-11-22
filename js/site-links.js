@@ -67,6 +67,12 @@ export const graph = {
       "summary": "A shipment kept together for an independent forwarder."
     },
     {
+      "id": "producey",
+      "title": "Producey",
+      "href": "/products/producey/",
+      "summary": "Factory stock, orders and dispatch. In development; warehouse workflows are planned."
+    },
+    {
       "id": "contact",
       "title": "Contact",
       "href": "/contact/",
@@ -252,6 +258,13 @@ export const graph = {
       {
         "id": "to:prices",
         "toId": "prices"
+      }
+    ],
+    "producey": [
+      {
+        "id": "to:contact",
+        "toId": "contact",
+        "label": "Talk about your factory workflow"
       }
     ],
     "workslip": [
