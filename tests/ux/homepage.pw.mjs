@@ -338,32 +338,19 @@ test('Header and footer carry the one-piece MR Software logo', async ({ page, co
   }
 });
 
-test('The headline word rotates, and stays still when motion is reduced', async ({ page, context }) => {
+test('The hero keeps its message and actions visible without waiting for media or motion', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
-    await page.goto(publicBase(app.base));
-    const shown = page.locator('.rotate-word.is-in');
-    await expect(shown).toHaveText('order.');
-    await expect(shown).toHaveText('shipment.', { timeout: 4_000 });
-    await expect(shown).toHaveCSS('opacity', '1');
-    const duringMotion = await shown.evaluate(async word => {
-      word.classList.remove('is-in');
-      void word.offsetTop;
-      word.classList.add('is-in');
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      return getComputedStyle(word).opacity;
-    });
-    expect(duringMotion).toBe('1');
-    await expect(page.locator('h1')).toHaveAccessibleName('One place for every order, shipment, document and approval.');
-
+    await context.route('**/assets/hero/*', route => route.abort());
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.reload();
-    await page.waitForTimeout(3_000);
-    await expect(page.locator('.rotate-word.is-in')).toHaveText('order.');
-  } finally {
-    await app.close();
-  }
+    await page.goto(publicBase(app.base));
+    await expect(page.locator('#hero-heading')).toHaveAccessibleName('Software that keeps work moving.');
+    await expect(page.locator('.hero-actions').getByRole('link', { name: 'Explore our work' })).toBeInViewport();
+    await page.locator('.hero-actions').getByRole('link', { name: 'Explore our work' }).click();
+    await expect(page).toHaveURL(/#solutions$/);
+    await expect(page.locator('#solutions-heading')).toBeInViewport();
+  } finally { await app.close(); }
 });
 
 test('Workslip opens with its step-by-step: six steps on site, the office review, then documentation (SAS-588)', async ({ page, context }) => {
@@ -386,25 +373,26 @@ test('Workslip opens with its step-by-step: six steps on site, the office review
   }
 });
 
-test('The hero cycles through a shipment, an offer and a transport, and shows one still record when motion is reduced', async ({ page, context }) => {
+test('The hero loads one responsive local image below 45 KB with space reserved before decoding', async ({ page, context }) => {
   const app = await startSite();
   try {
     await prepareContext(context, app.base);
+    const responses = [];
+    page.on('response', response => { if (new URL(response.url()).pathname.startsWith('/assets/hero/')) responses.push(response); });
     await page.goto(publicBase(app.base));
-    const lanes = page.locator('.hero-lane');
-    await expect(lanes.locator('.frame-bar strong')).toHaveText(['Shippy · Shipment', 'Tradey · Offer', 'Roady · Transport']);
-    await expect(page.locator('.hero-frame')).toHaveAttribute('aria-label', /demo data.*Shippy.*Tradey.*Roady/i);
-    // The offer takes its turn after the shipment.
-    await expect.poll(() => lanes.nth(1).evaluate(node => Number(getComputedStyle(node).opacity)), { timeout: 9_000 }).toBeGreaterThan(0.9);
-
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.reload();
-    await page.waitForTimeout(1_000);
-    expect(await lanes.evaluateAll(nodes => nodes.map(node => getComputedStyle(node).visibility))).toEqual(['visible', 'hidden', 'hidden']);
-    expect(await lanes.first().evaluate(node => getComputedStyle(node).animationName)).toBe('none');
-  } finally {
-    await app.close();
-  }
+    const art = page.locator('.hero-art img');
+    await expect.poll(() => art.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+    expect(responses).toHaveLength(1);
+    expect((await responses[0].body()).length).toBeLessThan(45_000);
+    const image = await art.evaluate(img => ({
+      source: new URL(img.currentSrc).pathname, width: img.width, height: img.height,
+      intrinsicWidth: img.getAttribute('width'), intrinsicHeight: img.getAttribute('height'),
+    }));
+    expect(image.source).toMatch(/^\/assets\/hero\/workflow-\d+\.[a-f0-9]{12}\.webp$/);
+    expect(image.width / image.height).toBeCloseTo(1264 / 848, 1);
+    expect([image.intrinsicWidth, image.intrinsicHeight]).toEqual(['1264', '848']);
+    await expect(page.locator('.hero video')).toHaveCount(0);
+  } finally { await app.close(); }
 });
 
 test('Pointing at a system type in the ticker pauses it and explains what it covers', async ({ page, context }, testInfo) => {

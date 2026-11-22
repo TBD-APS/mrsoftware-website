@@ -37,6 +37,14 @@ function wantsHtml(request) {
 
 async function publicAsset(request, env, url) {
   const response = await env.ASSETS.fetch(request);
+  // The asset binding supplies Cloudflare's edge cache and ETag. Only immutable,
+  // content-addressed hero files also get a long-lived browser cache.
+  if (['GET', 'HEAD'].includes(request.method) && [200, 206, 304].includes(response.status)
+    && /^\/assets\/hero\/workflow-\d+\.[a-f0-9]{12}\.webp$/.test(url.pathname)) {
+    const headers = new Headers(response.headers);
+    headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  }
   if (response.status !== 404 || !['GET', 'HEAD'].includes(request.method)) return response;
   if (url.pathname === '/404.html' || hasFileExtension(url.pathname) || !wantsHtml(request)) return response;
   const page = await env.ASSETS.fetch(new Request(new URL('/404.html', url.origin), { method: 'GET' }));
