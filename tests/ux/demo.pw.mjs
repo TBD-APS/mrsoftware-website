@@ -106,10 +106,10 @@ test('See Tradey read-only: its own demo company, offers, catalogue, files and d
     // The figures agree with Tradey's seed: 3 suppliers x 4 products = 12 offers over 8 shared products.
     await expect(page.locator('#offers tbody tr')).toHaveCount(12);
     await expect(page.locator('#catalogue tbody tr')).toHaveCount(8);
-    await expect(page.locator('#today .view-kpis')).toContainText('Åbne tilbud12');
+    await expect(page.locator('#today .view-kpis')).toContainText('Open offers12');
     // Unknown stays unknown, never zero.
-    await expect(page.locator('#today .view-kpis dd').filter({ hasText: 'Ukendt' })).toHaveCount(2);
-    await expect(page.locator('#order-drafts h3')).toHaveText(['Demo Hverdagskæden (syntetisk)', 'Demo Nabokæden (syntetisk)']);
+    await expect(page.locator('#today .view-kpis dd').filter({ hasText: 'Unknown' })).toHaveCount(2);
+    await expect(page.locator('#order-drafts h3')).toHaveText(['Demo Hverdagskæden (synthetic)', 'Demo Nabokæden (synthetic)']);
 
     await expect(page.locator('main form, main button, main input')).toHaveCount(0);
     expect(await page.locator('script:not([src="/js/site.js"])').count()).toBe(0);
@@ -137,8 +137,8 @@ test('See Workslip read-only: job statuses, the six creation steps and the leade
     // Status counts agree with the job table.
     const rows = page.locator('#jobs tbody tr');
     await expect(rows).toHaveCount(6);
-    await expect(rows.filter({ hasText: 'Aktiv' })).toHaveCount(3);
-    await expect(page.locator('#jobs .view-kpis')).toContainText('Aktiv3');
+    await expect(rows.filter({ hasText: 'Active' })).toHaveCount(3);
+    await expect(page.locator('#jobs .view-kpis')).toContainText('Active3');
     await expect(page.locator('#create-job .view-rail li')).toHaveCount(6);
     // Each month's approved, rejected and open jobs add up to its total.
     for (const row of await page.locator('#analysis tbody tr').all()) {
@@ -219,8 +219,8 @@ test('See Greeny read-only: baseline figures, the document a person approves, th
     const suggestions = (await page.locator('#group tbody tr td:nth-child(4)').allTextContents()).map(Number);
     expect(suggestions.reduce((a, b) => a + b, 0)).toBe(350000);
     await expect(page.locator('#group .view-note')).toContainText('350,000 kWh');
-    await expect(page.locator('#group .view-kpis')).toContainText('Godkendt elforbrugIngen endnu');
-    await expect(page.locator('#group .view-kpis')).toContainText('CO₂Ikke beregnet');
+    await expect(page.locator('#group .view-kpis')).toContainText('Approved electricity consumptionNone yet');
+    await expect(page.locator('#group .view-kpis')).toContainText('CO₂Not calculated');
     await expect(page.locator('#report tbody tr')).toHaveCount(8);
 
     await expect(page.locator('main form, main button, main input')).toHaveCount(0);

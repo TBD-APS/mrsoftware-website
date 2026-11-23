@@ -79,10 +79,28 @@ export const graph = {
       "summary": "Vehicle transports, saved stops and events labelled with their source. Read-only demo."
     },
     {
+      "id": "dansk-auto-logik",
+      "title": "Dansk Auto Logik",
+      "href": "/cases/dansk-auto-logik/",
+      "summary": "A pilot for vehicle transports. The sample is synthetic, and a person accepts a plan before it is applied."
+    },
+    {
       "id": "producey",
       "title": "Producey",
       "href": "/products/producey/",
       "summary": "Factory stock, orders and dispatch. In development; warehouse workflows are planned."
+    },
+    {
+      "id": "roady-product",
+      "title": "Roady product",
+      "href": "/products/roady/",
+      "summary": "Vehicle transports, saved stops and events labelled observed or planned. The demo is synthetic."
+    },
+    {
+      "id": "greeny",
+      "title": "Greeny",
+      "href": "/products/greeny/",
+      "summary": "From an energy document to a report a person approves. The public demo is fictional."
     },
     {
       "id": "contact",
@@ -279,6 +297,25 @@ export const graph = {
         "label": "Talk about your factory workflow"
       }
     ],
+    "roady-product": [
+      {
+        "id": "to:roady",
+        "toId": "roady",
+        "label": "Open the read-only Roady view"
+      },
+      {
+        "id": "to:contact",
+        "toId": "contact",
+        "label": "Ask for a walkthrough"
+      }
+    ],
+    "greeny": [
+      {
+        "id": "to:contact",
+        "toId": "contact",
+        "label": "Ask for a walkthrough"
+      }
+    ],
     "workslip": [
       {
         "id": "to:workslip-demo",
@@ -356,6 +393,16 @@ export const graph = {
         "id": "to:shippy-demo",
         "toId": "shippy-demo",
         "label": "Try proof of delivery"
+      }
+    ],
+    "dansk-auto-logik": [
+      {
+        "id": "to:roady",
+        "toId": "roady"
+      },
+      {
+        "id": "to:contact",
+        "toId": "contact"
       }
     ],
     "use-cases": [

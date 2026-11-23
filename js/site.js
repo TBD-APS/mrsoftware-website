@@ -9,6 +9,17 @@
   }
 
   ready(function () {
+    var danish = document.documentElement.lang === 'da';
+    var labels = window.MR_SOFTWARE_TRANSLATIONS || {};
+    var translate = function (value) { return danish ? labels[value] || value : value; };
+    var localizedAddress = function (value) { return danish && value.indexOf('/da/') !== 0 ? '/da' + value : value; };
+    var languageSwitch = document.querySelector('.language-switch');
+    if (languageSwitch) {
+      var languageAddress = languageSwitch.getAttribute('href');
+      var keepSection = function () { languageSwitch.setAttribute('href', languageAddress + window.location.hash); };
+      keepSection();
+      window.addEventListener('hashchange', keepSection);
+    }
     var header = document.querySelector('.site-header');
     var toggle = document.querySelector('.nav-toggle');
     var nav = document.querySelector('.nav');
@@ -33,7 +44,7 @@
       Array.prototype.forEach.call(nav.querySelectorAll(':scope > a:not(.button)'), function (link) {
         link.setAttribute('data-label', link.textContent);
         var url = new URL(link.getAttribute('href'), window.location.href);
-        var items = menus[url.pathname + url.hash];
+        var items = menus[(danish ? url.pathname.replace(/^\/da(?=\/)/, '') : url.pathname) + url.hash];
         if (!items || !items.length) return;
         var group = document.createElement('div');
         group.className = 'nav-group';
@@ -45,8 +56,8 @@
         items.forEach(function (item) {
           var entry = document.createElement('li');
           var sub = document.createElement('a');
-          sub.href = item[1];
-          sub.textContent = item[0];
+          sub.href = localizedAddress(item[1]);
+          sub.textContent = translate(item[0]);
           entry.appendChild(sub);
           list.appendChild(entry);
         });
@@ -176,25 +187,6 @@
         event.preventDefault();
         select(tabs[(next + tabs.length) % tabs.length], true);
       });
-    });
-
-    // Rotating word: one word at a time, paused while the tab is hidden and off under reduced motion.
-    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    document.querySelectorAll('.rotate').forEach(function (box) {
-      var words = box.querySelectorAll('.rotate-word');
-      if (still || words.length < 2) return;
-      var at = 0;
-      setInterval(function () {
-        if (document.hidden) return;
-        var out = words[at];
-        at = (at + 1) % words.length;
-        var next = words[at];
-        out.classList.remove('is-in');
-        out.classList.add('is-out');
-        next.classList.remove('is-out');
-        next.classList.add('is-in');
-        setTimeout(function () { out.classList.remove('is-out'); }, 700);
-      }, 2400);
     });
 
     // Ticker: hovering or focusing a system type pauses the strip and shows what it covers, with a link onward.

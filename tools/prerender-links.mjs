@@ -35,7 +35,11 @@ export async function publicLinkUpdates(root, graph) {
   const checked = checkGraph(graph);
   if (!checked.ok) throw new Error(checked.errors[0]);
   const directory = resolve(root instanceof URL ? fileURLToPath(root) : root);
-  const files = new Set([resolve(directory, 'tools/roadmap-report-template.html')]);
+  // The recovery page stays out of the sitemap but shares the public catalogue.
+  const files = new Set([
+    resolve(directory, 'tools/roadmap-report-template.html'),
+    resolve(directory, '404.html'),
+  ]);
   // Demo snapshots also carry the shared footer, even when absent from the catalogue.
   const demos = await readdir(resolve(directory, 'demo'), { withFileTypes: true }).catch(error => {
     if (error.code === 'ENOENT') return [];
@@ -46,6 +50,8 @@ export async function publicLinkUpdates(root, graph) {
   for (const href of [...checked.graph.places.map(place => place.href), ...sitemapPages]) {
     if (!href.startsWith('/') || href.startsWith('//')) continue;
     const path = new URL(href, 'https://mrsoftware.dk').pathname;
+    // Danish pages are generated from their complete English source after this step.
+    if (path.startsWith('/da/')) continue;
     if (path.endsWith('/')) files.add(resolve(directory, `.${path}`, 'index.html'));
   }
   const updates = [];

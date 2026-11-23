@@ -22,6 +22,9 @@
   <link rel="stylesheet" href="/css/demo-view.css">
   <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/demo/greeny/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/demo/greeny/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/demo/greeny/">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -29,6 +32,7 @@
   <header class="site-header">
     <div class="site-header-inner">
       <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/da/demo/greeny/" lang="da" hreflang="da">Dansk</a>
       <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
         <a href="/#solutions">Use cases</a>
@@ -47,7 +51,7 @@
       <div class="page-width">
         <p class="breadcrumbs"><a href="/">Home</a> · <a href="/demo/">Demo centre</a> · Greeny</p>
         <h1 id="view-title">Greeny, read only</h1>
-        <p class="lead">Greeny takes a company from its first energy document to an ESG report it can share. This page shows its five sections for the fictional company Demo ApS, using the figures from Greeny's own demo. App labels are in Danish, as in the product. Nothing here can be clicked into action.</p>
+        <p class="lead">Greeny takes a company from its first energy document to an ESG report it can share. This page shows its five sections for the fictional company Demo ApS, using the figures from Greeny's own demo. Labels follow the selected website language. Nothing here can be clicked into action.</p>
 
         <p class="view-banner"><strong>Read-only demo</strong><span>Fictional data</span><span>Reporting year 2025</span><span>Not an audited report</span><span>No sign-in</span></p>
 
@@ -62,37 +66,37 @@
         </nav>
 
         <section class="view-panel" id="overview" aria-labelledby="overview-title">
-          <h2 id="overview-title">Dit ESG-overblik</h2>
+          <h2 id="overview-title">Your ESG overview</h2>
           <p>Demo ApS before any document is approved. Every figure is the demo baseline and says so.</p>
           <dl class="view-kpis">
-            <div><dt>Elektricitet</dt><dd>186 MWh</dd></div>
-            <div><dt>Drivhusgasser</dt><dd>54 t CO₂e</dd></div>
-            <div><dt>Medarbejdere</dt><dd>24</dd></div>
-            <div><dt>Affald</dt><dd>14,6 ton</dd></div>
+            <div><dt>Electricity</dt><dd>186 MWh</dd></div>
+            <div><dt>Greenhouse gases</dt><dd>54 t CO₂e</dd></div>
+            <div><dt>Employees</dt><dd>24</dd></div>
+            <div><dt>Waste</dt><dd>14,6 tonnes</dd></div>
           </dl>
           <div class="view-columns" style="margin-top:var(--s3)">
             <div>
-              <h3>Et blik på energien · 260 MWh</h3>
+              <h3>Energy at a glance · 260 MWh</h3>
               <ul class="view-bars" aria-label="Energy use 2025 in MWh">
-                <li>Elektricitet<i style="width:100%"></i><span>186</span></li>
-                <li>Fjernvarme<i style="width:40%"></i><span>74</span></li>
+                <li>Electricity<i style="width:100%"></i><span>186</span></li>
+                <li>District heating<i style="width:40%"></i><span>74</span></li>
               </ul>
-              <p class="view-note">Drivhusgasser is Scope 1 (33 t) plus Scope 2 location-based (21 t).</p>
+              <p class="view-note">Greenhouse gases are Scope 1 (33 t) plus Scope 2 location-based (21 t).</p>
             </div>
             <div>
-              <h3>Din vej til en rapport · 0 af 4</h3>
+              <h3>Your path to a report · 0 of 4</h3>
               <ol class="view-rail" aria-label="Steps to a report">
-                <li class="is-current"><b>Tilføj et energibilag</b><span>A figure starts with a source</span></li>
-                <li><b>Kontrollér og godkend</b><span>You decide what goes in</span></li>
-                <li><b>Åbn og hent rapporten</b><span>See the figures in the report</span></li>
-                <li><b>Del en godkendt version</b><span>A link that expires</span></li>
+                <li class="is-current"><b>Add an energy document</b><span>A figure starts with a source</span></li>
+                <li><b>Check and approve</b><span>You decide what goes in</span></li>
+                <li><b>Open and download the report</b><span>See the figures in the report</span></li>
+                <li><b>Share an approved version</b><span>A link that expires</span></li>
               </ol>
             </div>
           </div>
         </section>
 
         <section class="view-panel" id="evidence" aria-labelledby="evidence-title">
-          <h2 id="evidence-title">Bilag &amp; kilder</h2>
+          <h2 id="evidence-title">Documents &amp; sources</h2>
           <p>The demo document Demo-ApS_elforbrug_2025.csv, read in the browser. The original never leaves the browser; only an approved total is sent.</p>
           <div class="view-columns">
             <div>
@@ -100,7 +104,7 @@
               <div class="view-table-wrap">
                 <table class="view-table" style="min-width:0">
                   <caption class="visually-hidden">Monthly electricity in the demo document</caption>
-                  <thead><tr><th scope="col">Periode</th><th scope="col">kWh</th></tr></thead>
+                  <thead><tr><th scope="col">Period</th><th scope="col">kWh</th></tr></thead>
                   <tbody>
                     <tr><td>2025-01</td><td>20000</td></tr>
                     <tr><td>2025-02</td><td>18500</td></tr>
@@ -119,34 +123,34 @@
               </div>
             </div>
             <div>
-              <h3>Et forslag. Din beslutning.</h3>
+              <h3>A suggestion. Your decision.</h3>
               <ul class="view-list">
-                <li><span class="view-status">Lokalt aflæst forslag</span><small>12 månedsrækker for 2025 er lagt sammen. Kontrollér totalen før godkendelse.</small></li>
-                <li>Elektricitet · hele 2025: 198,000 kWh<small>Replaces the demo baseline of 186,000 kWh. It is not added on top.</small></li>
+                <li><span class="view-status">Locally extracted suggestion</span><small>12 monthly rows for 2025 have been added together. Check the total before approval.</small></li>
+                <li>Electricity · all of 2025: 198,000 kWh<small>Replaces the demo baseline of 186,000 kWh. It is not added on top.</small></li>
                 <li>A person confirms the original covers all of 2025 in kWh<small>Without that confirmation nothing is approved</small></li>
                 <li>After approval the report shows 198 MWh<small>CO₂ figures are not recalculated from the document, and the report says so</small></li>
               </ul>
-              <p><span class="view-action">Godkend og opdatér rapport · disabled in this view</span></p>
+              <p><span class="view-action">Approve and update report · disabled in this view</span></p>
             </div>
           </div>
         </section>
 
         <section class="view-panel" id="report" aria-labelledby="report-title">
-          <h2 id="report-title">Din rapport · VSME 2025</h2>
+          <h2 id="report-title">Your report · VSME 2025</h2>
           <p>The public Demo ApS report, version 1: selected points from the VSME basic module for one company. Demo figures, not an audited account.</p>
           <div class="view-table-wrap">
             <table class="view-table">
               <caption class="visually-hidden">Demo ApS VSME disclosures</caption>
-              <thead><tr><th scope="col">Punkt</th><th scope="col">Emne</th><th scope="col">Tal</th></tr></thead>
+              <thead><tr><th scope="col">Item</th><th scope="col">Topic</th><th scope="col">Figures</th></tr></thead>
               <tbody>
-                <tr><td>B1</td><td>Grundlag</td><td>Demo ApS · 1. jan – 31. dec 2025 · ét selskab · Danmark</td></tr>
-                <tr><td>B3</td><td>Energi og drivhusgasser</td><td>El 186 MWh · fjernvarme 74 MWh · diesel 12.400 liter · Scope 1 33 t · Scope 2 lokationsbaseret 21 t, markedsbaseret 9 t CO2e</td></tr>
-                <tr><td>B6</td><td>Vand</td><td>840 m³</td></tr>
-                <tr><td>B7</td><td>Affald</td><td>14,6 ton i alt · 9,1 ton til genanvendelse</td></tr>
-                <tr><td>B8</td><td>Medarbejdere</td><td>24 ansatte · 11 kvinder, 13 mænd · 21 fuldtid, 3 deltid</td></tr>
-                <tr><td>B9</td><td>Ulykker</td><td>1 med fravær · 0 dødsfald · 18 fraværsdage</td></tr>
-                <tr><td>B10</td><td>Aflønning og uddannelse</td><td>100 % overenskomst · 12 timer uddannelse pr. ansat</td></tr>
-                <tr><td>B11</td><td>Korruption og bestikkelse</td><td>0 domme · 0 kr. bøder</td></tr>
+                <tr><td>B1</td><td>Basis</td><td>Demo ApS · 1 Jan – 31 Dec 2025 · one company · Denmark</td></tr>
+                <tr><td>B3</td><td>Energy and greenhouse gases</td><td>Electricity 186 MWh · district heating 74 MWh · diesel 12.400 litres · Scope 1 33 t · Scope 2 location-based 21 t, market-based 9 t CO2e</td></tr>
+                <tr><td>B6</td><td>Water</td><td>840 m³</td></tr>
+                <tr><td>B7</td><td>Waste</td><td>14,6 tonnes in total · 9,1 tonnes for recycling</td></tr>
+                <tr><td>B8</td><td>Employees</td><td>24 employees · 11 women, 13 men · 21 full-time, 3 part-time</td></tr>
+                <tr><td>B9</td><td>Accidents</td><td>1 involving absence · 0 fatalities · 18 days of absence</td></tr>
+                <tr><td>B10</td><td>Pay and training</td><td>100 % collective agreement coverage · 12 hours of training per employee</td></tr>
+                <tr><td>B11</td><td>Corruption and bribery</td><td>0 convictions · 0 kr. in fines</td></tr>
               </tbody>
             </table>
           </div>
@@ -156,28 +160,28 @@
               <p class="view-note">The PDF is generated from the same report version. In the workspace it unlocks once the electricity figure is approved.</p>
             </div>
             <div>
-              <h3>Del med omtanke</h3>
+              <h3>Share with care</h3>
               <p class="view-note">Sharing needs its own approval. A share link is unguessable, tied to one report and expires. A new approval creates a new version and invalidates earlier links.</p>
             </div>
           </div>
         </section>
 
         <section class="view-panel" id="group" aria-labelledby="group-title">
-          <h2 id="group-title">Koncern · Demo Holding ApS</h2>
+          <h2 id="group-title">Group · Demo Holding ApS</h2>
           <p>A holding company with three wholly owned subsidiaries. Only approved values count toward the subtotal; suggestions never do. Greeny does not calculate CO₂ for the group.</p>
           <dl class="view-kpis">
-            <div><dt>Godkendt elforbrug</dt><dd>Ingen endnu</dd></div>
-            <div><dt>Godkendte selskaber</dt><dd>0 af 3</dd></div>
-            <div><dt>CO₂</dt><dd>Ikke beregnet</dd></div>
+            <div><dt>Approved electricity consumption</dt><dd>None yet</dd></div>
+            <div><dt>Approved companies</dt><dd>0 of 3</dd></div>
+            <div><dt>CO₂</dt><dd>Not calculated</dd></div>
           </dl>
           <div class="view-table-wrap" style="margin-top:var(--s3)">
             <table class="view-table">
               <caption class="visually-hidden">Subsidiaries and their suggested electricity</caption>
-              <thead><tr><th scope="col">Selskab</th><th scope="col">Ejerandel</th><th scope="col">Kilde</th><th scope="col">Forslag, kWh</th><th scope="col">Status</th></tr></thead>
+              <thead><tr><th scope="col">Company</th><th scope="col">Ownership share</th><th scope="col">Source</th><th scope="col">Suggestion, kWh</th><th scope="col">Status</th></tr></thead>
               <tbody>
-                <tr><td>Demo Subsidiary A ApS</td><td>100 %</td><td>demo-electricity-a-2025</td><td>198000</td><td><span class="view-status is-warn">Mangler godkendelse</span></td></tr>
-                <tr><td>Demo Subsidiary B ApS</td><td>100 %</td><td>demo-electricity-b-2025</td><td>102000</td><td><span class="view-status is-warn">Mangler godkendelse</span></td></tr>
-                <tr><td>Demo Subsidiary C ApS</td><td>100 %</td><td>demo-electricity-c-2025</td><td>50000</td><td><span class="view-status is-warn">Mangler godkendelse</span></td></tr>
+                <tr><td>Demo Subsidiary A ApS</td><td>100 %</td><td>demo-electricity-a-2025</td><td>198000</td><td><span class="view-status is-warn">Awaiting approval</span></td></tr>
+                <tr><td>Demo Subsidiary B ApS</td><td>100 %</td><td>demo-electricity-b-2025</td><td>102000</td><td><span class="view-status is-warn">Awaiting approval</span></td></tr>
+                <tr><td>Demo Subsidiary C ApS</td><td>100 %</td><td>demo-electricity-c-2025</td><td>50000</td><td><span class="view-status is-warn">Awaiting approval</span></td></tr>
               </tbody>
             </table>
           </div>
@@ -185,13 +189,13 @@
         </section>
 
         <section class="view-panel" id="next-steps" aria-labelledby="next-steps-title">
-          <h2 id="next-steps-title">Næste skridt</h2>
+          <h2 id="next-steps-title">Next steps</h2>
           <p>Four concrete actions. Each shows exactly what is missing.</p>
           <ul class="view-list">
-            <li>01 · Tilføj et energibilag<small>Use the demo document or attach a file for local checking</small></li>
-            <li>02 · Kontrollér og godkend<small>A suggested value only enters the report after a person approves it</small></li>
-            <li>03 · Åbn og hent rapporten<small>Preview and PDF of the approved version</small></li>
-            <li>04 · Del en godkendt version<small>The shared PDF shows only the approved Demo ApS version</small></li>
+            <li>01 · Add an energy document<small>Use the demo document or attach a file for local checking</small></li>
+            <li>02 · Check and approve<small>A suggested value only enters the report after a person approves it</small></li>
+            <li>03 · Open and download the report<small>Preview and PDF of the approved version</small></li>
+            <li>04 · Share an approved version<small>The shared PDF shows only the approved Demo ApS version</small></li>
           </ul>
         </section>
 

@@ -5,7 +5,7 @@ import { useCaseJourneys } from './use-case-journeys.mjs';
 
 const entries = [
   { name: 'English', start: '/#solutions', cards: '#solutions .use-case-cards > article', overview: '#solutions .use-case-overview' },
-  { name: 'Danish', start: '/da/#produkter', cards: '#produkter .product-summary', overview: '#produkter' },
+  { name: 'Danish', start: '/da/#solutions', cards: '#solutions .use-case-cards > article', overview: '#solutions .use-case-overview' },
 ];
 
 for (const entry of entries) {
@@ -19,8 +19,8 @@ for (const entry of entries) {
         const cards = page.locator(entry.cards);
         await expect(cards.locator('h3')).toHaveText(useCaseJourneys.map(item => item.name));
         const card = cards.filter({ has: page.getByRole('link', { name: journey.name, exact: true }) });
-        // Danish cards are links themselves; English cards stretch their name link.
-        const control = entry.name === 'Danish' ? cards.filter({ hasText: journey.name }) : card;
+        const control = card;
+        const target = entry.name === 'Danish' ? '/da' + journey.target : journey.target;
         await control.scrollIntoViewIfNeeded();
         if (journey.id === 'tradey') {
           await expect(page.locator(entry.overview)).toBeVisible();
@@ -33,11 +33,11 @@ for (const entry of entries) {
         }
         // One real action must reach the case without an intermediate step.
         await control.click({ position: { x: 8, y: 8 } });
-        await expect(page).toHaveURL(origin + journey.target);
-        const heading = page.getByRole('heading', { name: journey.heading, exact: true });
+        await expect(page).toHaveURL(origin + target);
+        const heading = page.getByRole('heading', { name: entry.name === 'Danish' ? journey.danishHeading : journey.heading, exact: true });
         await expect(heading).toBeInViewport();
         await page.reload();
-        await expect(page).toHaveURL(origin + journey.target);
+        await expect(page).toHaveURL(origin + target);
         await expect(heading).toBeInViewport();
         await page.goBack();
         await expect(page).toHaveURL(origin + entry.start);

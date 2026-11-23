@@ -58,7 +58,7 @@ test('the website and products identify the same publisher without invented pric
   const company = home.structured.find(item => item['@type'] === 'Organization');
   assert.equal(company['@id'], organization);
   assert.equal(home.structured.find(item => item['@type'] === 'WebSite')?.publisher?.['@id'], organization);
-  for (const product of ['workslip', 'tradey', 'shippy', 'producey']) {
+  for (const product of ['workslip', 'tradey', 'shippy', 'producey', 'roady', 'greeny']) {
     const path = `/products/${product}/`;
     const { title, meta, structured } = await page(path);
     assert.ok(title.length > `${product} | MR Software`.length + 10, `Explain the product in its title: ${product}`);
@@ -95,7 +95,7 @@ test('English and Danish homepages have reciprocal language alternatives and the
     assert.equal(attribute(elements(document, 'link').find(node => attribute(node, 'rel') === 'canonical'), 'href'), origin + path);
     const selector = elements(document, 'a').find(node => attribute(node, 'hreflang') === (language === 'en' ? 'da' : 'en'));
     assert.equal(attribute(selector, 'href'), language === 'en' ? '/da/' : '/');
-    if (language === 'da') assert.equal(structured.find(item => item['@type'] === 'WebPage')?.inLanguage, 'da');
+    if (language === 'da') assert.equal(structured.find(item => ['WebPage', 'WebSite'].includes(item['@type']))?.inLanguage, 'da');
   }
   assert.ok(catalogue.places.some(place => place.href === '/da/'), 'The Danish homepage is registered for the sitemap');
 });

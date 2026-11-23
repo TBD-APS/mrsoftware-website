@@ -40,7 +40,7 @@ test('compact link lists use the catalogue and escape names before scripts run',
   assert.equal(renderLinkSlots(result, catalogue), result);
 });
 
-test('prerendering includes public footer lists on sitemap-only pages and demo snapshots', async t => {
+test('prerendering includes public footer lists on the 404 page, sitemap-only pages and demo snapshots', async t => {
   const root = await mkdtemp(join(tmpdir(), 'site-footer-links-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   await mkdir(join(root, 'data'));
@@ -48,10 +48,11 @@ test('prerendering includes public footer lists on sitemap-only pages and demo s
   await mkdir(join(root, 'demo/snapshot'), { recursive: true });
   const catalogue = { places: [{ id: 'home', title: 'Home', href: '/' }, { id: 'case', title: 'Case', href: '/case/' }], links: { home: [{ id: 'to:case', toId: 'case' }] } };
   await writeFile(join(root, 'data/links.json'), JSON.stringify({ ...catalogue, sitemapPages: ['/privacy-policy/'] }));
+  await writeFile(join(root, '404.html'), '<footer data-link-list-from="home" data-link-list-heading="Use cases">Old links</footer>');
   await writeFile(join(root, 'privacy-policy/index.html'), '<footer data-link-list-from="home" data-link-list-heading="Use cases">Old links</footer>');
   await writeFile(join(root, 'demo/snapshot/index.html'), '<footer data-link-list-from="home" data-link-list-heading="Use cases">Old links</footer>');
   const updates = await publicLinkUpdates(root, catalogue);
-  assert.equal(updates.length, 2);
+  assert.equal(updates.length, 3);
   for (const update of updates) assert.match(update.html, /href="\/case\/">Case<\/a>/);
 });
 

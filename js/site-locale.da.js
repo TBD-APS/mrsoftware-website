@@ -1,0 +1,24 @@
+// Generated Danish labels used by the shared public scripts.
+window.MR_SOFTWARE_TRANSLATIONS = {
+  "tonne-km": "ton-km",
+  "See also": "Se også",
+  "The offer": "Tilbuddet",
+  "The job": "Opgaven",
+  "The shipment": "Forsendelsen",
+  "The choices": "Valgene",
+  "Greeny emissions example": "Greeny-eksempel på udledning",
+  "Excel and Outlook examples": "Eksempler med Excel og Outlook",
+  "What we can connect": "Det kan vi forbinde",
+  "Reusable Boney modules": "Genanvendelige Boney-moduler",
+  "Principles": "Principper",
+  "Decision gates": "Beslutningsporte",
+  "Evaluation": "Evaluering",
+  "Research papers": "Forskningsartikler",
+  "Security and data privacy": "Sikkerhed og dataprivatliv",
+  "How we validate": "Sådan validerer vi",
+  "System status": "Systemstatus",
+  "Greeny": "Greeny",
+  "Sample reply approved. No email was sent.": "Eksempelsvar godkendt. Ingen mail blev sendt.",
+  "contact selected for import.": "kontakt valgt til import.",
+  "contacts selected for import.": "kontakter valgt til import."
+};
