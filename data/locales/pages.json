@@ -5,6 +5,11 @@
     "da": "/da/404.html"
   },
   {
+    "source": "cases/dansk-auto-logik/index.html",
+    "en": "/cases/dansk-auto-logik/",
+    "da": "/da/cases/dansk-auto-logik/"
+  },
+  {
     "source": "contact/index.html",
     "en": "/contact/",
     "da": "/da/contact/"
