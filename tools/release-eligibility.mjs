@@ -2,6 +2,43 @@ import { pathToFileURL } from 'node:url';
 
 export const REPOSITORY = 'TBD-APS/mrsoftware.dk';
 const MERGER_ID = 31623093;
+const SHA = /^[a-f0-9]{40}$/;
+const positiveInteger = value => Number.isSafeInteger(value) && value > 0;
+
+function ownerMerged(pr) {
+  return pr?.merged === true && !!pr.merged_at && SHA.test(pr.merge_commit_sha ?? '')
+    && pr.base?.repo?.full_name === REPOSITORY && pr.merged_by?.id === MERGER_ID;
+}
+
+async function ownerMergedStack(pr, base, request) {
+  const membership = pr.stack;
+  if (!membership || membership.base?.ref !== 'main' || !positiveInteger(membership.id)
+    || !positiveInteger(membership.number) || !positiveInteger(membership.size)
+    || membership.size < 2 || membership.size > 100 || membership.position !== membership.size) return false;
+  const stack = await request(`${base}/stacks/${membership.number}`);
+  if (stack?.id !== membership.id || stack.number !== membership.number || stack.base?.ref !== 'main'
+    || stack.open !== false || !Array.isArray(stack.pull_requests)
+    || stack.pull_requests.length !== membership.size) return false;
+  const numbers = stack.pull_requests.map(member => member?.number);
+  if (numbers.some(number => !positiveInteger(number)) || new Set(numbers).size !== numbers.length
+    || numbers.at(-1) !== pr.number) return false;
+  let previous;
+  for (const [index, number] of numbers.entries()) {
+    const member = number === pr.number ? pr : await request(`${base}/pulls/${number}`);
+    const entry = member?.stack;
+    if (member?.number !== number || !ownerMerged(member) || member.head?.repo?.full_name !== REPOSITORY
+      || typeof member.head?.ref !== 'string' || !member.head.ref || member.base.ref !== (previous?.head.ref ?? 'main')
+      || entry?.id !== membership.id || entry.number !== membership.number || entry.base?.ref !== 'main'
+      || entry.size !== membership.size || entry.position !== index + 1) return false;
+    if (previous && previous.merge_commit_sha !== member.merge_commit_sha) {
+      const comparison = await request(`${base}/compare/${previous.merge_commit_sha}...${member.merge_commit_sha}`);
+      if (comparison?.status !== 'ahead' || comparison.base_commit?.sha !== previous.merge_commit_sha
+        || comparison.merge_base_commit?.sha !== previous.merge_commit_sha) return false;
+    }
+    previous = member;
+  }
+  return true;
+}
 
 async function github(path) {
   if (!process.env.GH_TOKEN) throw Error('A read-only GitHub token is required to verify the release');
@@ -29,13 +66,17 @@ export async function verifyRelease(context = {
   await requireCurrentMain();
   const associated = await request(`${base}/commits/${sha}/pulls?per_page=100`);
   if (!Array.isArray(associated) || !associated.length || associated.length >= 100) throw Error('Complete merged PR evidence is required');
-  const matches = [];
+  const candidates = [];
   for (const number of new Set(associated.map(p => p.number))) {
     if (!Number.isSafeInteger(number) || number < 1) throw Error('Invalid PR association evidence');
     const pr = await request(`${base}/pulls/${number}`);
-    if (pr?.number === number && pr.merged === true && pr.merged_at && pr.merge_commit_sha === sha && pr.base?.ref === 'main' && pr.base?.repo?.full_name === REPOSITORY && pr.merged_by?.id === MERGER_ID) {
-      matches.push(pr.number);
-    }
+    if (pr?.number === number && ownerMerged(pr) && pr.merge_commit_sha === sha) candidates.push(pr);
+  }
+  // Native stack merges keep the upper PR's intermediate base branch. Corroborate
+  // GitHub's main-targeting stack, every owner merge and its commit ancestry.
+  const matches = candidates.filter(pr => pr.base.ref === 'main').map(pr => pr.number);
+  if (!matches.length) for (const pr of candidates) {
+    if (await ownerMergedStack(pr, base, request)) matches.push(pr.number);
   }
   if (matches.length !== 1) throw Error('The exact release commit must come from one PR merged by Rasmus');
   await requireCurrentMain();
