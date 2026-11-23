@@ -16,6 +16,7 @@ const pages = [
   'demo/',
   'demo/greeny/',
   'demo/roady/',
+  'cases/dansk-auto-logik/',
   'demo/shippy/',
   'demo/tradey/',
   'demo/workslip/',

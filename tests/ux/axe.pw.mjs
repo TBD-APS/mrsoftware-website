@@ -7,7 +7,7 @@ import { prepareContext } from './fixtures.mjs';
 // Lighthouse already measures category scores, including accessibility, in the
 // search-visibility workflow. This check fails the pull-request suite on WCAG
 // 2.0/2.1 A and AA violations. Phone repeats the same markup, so it runs on desktop.
-const pages = ['', 'da/', 'products/workslip/', 'products/tradey/', 'products/shippy/', 'products/producey/', 'contact/'];
+const pages = ['', 'da/', 'products/workslip/', 'products/tradey/', 'products/shippy/', 'products/producey/', 'contact/', 'cases/dansk-auto-logik/'];
 const publicBase = base => base.replace('dashboard.mrsoftware.dk', 'mrsoftware.dk');
 
 function described(violations) {

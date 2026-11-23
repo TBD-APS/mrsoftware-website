@@ -79,6 +79,12 @@ export const graph = {
       "summary": "Vehicle transports, saved stops and events labelled with their source. Read-only demo."
     },
     {
+      "id": "dansk-auto-logik",
+      "title": "Dansk Auto Logik",
+      "href": "/cases/dansk-auto-logik/",
+      "summary": "A pilot for vehicle transports. The sample is synthetic, and a person accepts a plan before it is applied."
+    },
+    {
       "id": "producey",
       "title": "Producey",
       "href": "/products/producey/",
@@ -387,6 +393,16 @@ export const graph = {
         "id": "to:shippy-demo",
         "toId": "shippy-demo",
         "label": "Try proof of delivery"
+      }
+    ],
+    "dansk-auto-logik": [
+      {
+        "id": "to:roady",
+        "toId": "roady"
+      },
+      {
+        "id": "to:contact",
+        "toId": "contact"
       }
     ],
     "use-cases": [
