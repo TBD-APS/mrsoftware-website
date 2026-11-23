@@ -78,9 +78,11 @@ async function publicAsset(request, env, url) {
   const workflowVideo = /^\/assets\/workflow\/workflow\.[a-f0-9]{12}\.mp4$/.test(url.pathname);
   if (workflowVideo && request.method === 'GET' && response.status === 200) response = await videoRange(request, response);
   // The asset binding supplies Cloudflare's edge cache and ETag. Only immutable,
-  // content-addressed illustrations and workflow media get a long-lived browser cache.
+  // content-addressed hero images, homepage fonts and workflow media get a long-lived browser cache.
   if (['GET', 'HEAD'].includes(request.method) && [200, 206, 304].includes(response.status)
     && (/^\/assets\/hero\/workflow-vector\.[a-f0-9]{12}\.svg$/.test(url.pathname)
+      || /^\/assets\/hero\/workflow-photo\.(?:632|790|1264)\.[a-f0-9]{12}\.(?:avif|webp)$/.test(url.pathname)
+      || /^\/assets\/fonts\/newsreader-home\.(?:normal|italic)\.[a-f0-9]{12}\.woff2$/.test(url.pathname)
       || /^\/assets\/workflow\/workflow\.[a-f0-9]{12}\.(?:mp4|webp)$/.test(url.pathname))) {
     const headers = new Headers(response.headers);
     headers.set('Cache-Control', 'public, max-age=31536000, immutable');
