@@ -22,6 +22,7 @@
   <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/status.css">
   <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
   <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/status/">
@@ -65,19 +66,23 @@
 
     <div class="note">Public plans and the decision on open source over time are on the <a href="/roadmap/">roadmap page →</a></div>
 
-    <div class="stat-grid" id="services"></div>
+    <div class="stat-grid" id="services"
+      data-label-ok="OK" data-label-warning="Warning" data-label-down="Down"
+      data-label-probe="probe" data-label-health="health" data-label-unreachable="unreachable"
+      data-label-static="static host, not pinged" data-label-last-check="Last check:"
+      data-label-completion="services responded correctly."></div>
 
     <section>
       <h2>Monitored services</h2>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
-        <thead>
-          <tr><th>Service</th><th>Endpoint</th><th>What it proves</th></tr>
+      <div class="table-wrap status-services-wrap" tabindex="0" role="region" aria-label="Monitored services"><table class="status-services" role="table">
+        <thead role="rowgroup">
+          <tr role="row"><th scope="col" role="columnheader">Service</th><th scope="col" role="columnheader">Endpoint</th><th scope="col" role="columnheader">What it proves</th></tr>
         </thead>
-        <tbody>
-          <tr><td>mrsoftware.dk</td><td><code>/ping.json</code></td><td>The website responds with a compact hosting status.</td></tr>
-          <tr><td>saassy.mrsoftware.dk</td><td><code>/ping</code> and <code>/api/saassy/health</code></td><td>The MR SAAS'y production front end is up; health reports <em>ready</em> for model, rate limit and Cloudflare OAuth.</td></tr>
-          <tr><td>dev.mrsoftware.dk</td><td><code>/ping</code></td><td>The dev instance of Control Center responds.</td></tr>
-          <tr><td>www.mrsoftware.dk</td><td><code>/</code></td><td>The static GitHub Pages site (Workslip) responds. A host without a dynamic health check.</td></tr>
+        <tbody role="rowgroup">
+          <tr role="row"><td role="cell"><span class="status-field-label" aria-hidden="true">Service</span>mrsoftware.dk</td><td role="cell"><span class="status-field-label" aria-hidden="true">Endpoint</span><code>/ping.json</code></td><td role="cell"><span class="status-field-label" aria-hidden="true">What it proves</span>The website responds with a compact hosting status.</td></tr>
+          <tr role="row"><td role="cell"><span class="status-field-label" aria-hidden="true">Service</span>saassy.mrsoftware.dk</td><td role="cell"><span class="status-field-label" aria-hidden="true">Endpoint</span><code>/ping</code> and <code>/api/saassy/health</code></td><td role="cell"><span class="status-field-label" aria-hidden="true">What it proves</span>The MR SAAS'y production front end is up; health reports <em>ready</em> for model, rate limit and Cloudflare OAuth.</td></tr>
+          <tr role="row"><td role="cell"><span class="status-field-label" aria-hidden="true">Service</span>dev.mrsoftware.dk</td><td role="cell"><span class="status-field-label" aria-hidden="true">Endpoint</span><code>/ping</code></td><td role="cell"><span class="status-field-label" aria-hidden="true">What it proves</span>The dev instance of Control Center responds.</td></tr>
+          <tr role="row"><td role="cell"><span class="status-field-label" aria-hidden="true">Service</span>www.mrsoftware.dk</td><td role="cell"><span class="status-field-label" aria-hidden="true">Endpoint</span><code>/</code></td><td role="cell"><span class="status-field-label" aria-hidden="true">What it proves</span>The static GitHub Pages site (Workslip) responds. A host without a dynamic health check.</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -103,67 +108,6 @@
     </div>
   </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  var SERVICES = [
-    { id: 'mrsoftware', name: 'mrsoftware.dk', probe: '/ping.json', self: true },
-    { id: 'saassy', name: 'saassy.mrsoftware.dk', probe: 'https://saassy.mrsoftware.dk/ping', health: 'https://saassy.mrsoftware.dk/api/saassy/health' },
-    { id: 'dev', name: 'dev.mrsoftware.dk', probe: 'https://dev.mrsoftware.dk/ping' },
-    { id: 'www', name: 'www.mrsoftware.dk', probe: 'https://www.mrsoftware.dk/', static: true }
-  ];
-  var container = document.getElementById('services');
-  var lastCheck = document.getElementById('last-check');
-
-  function render(id, label, status, detail) {
-    var el = document.getElementById('svc-' + id);
-    el.querySelector('.value').textContent = status === 'ok' ? 'OK' : (status === 'warn' ? 'Warning' : 'Down');
-    el.querySelector('.value').className = 'value ' + status;
-    el.querySelector('.label').textContent = label + ': ' + detail;
-  }
-
-  function check() {
-    container.innerHTML = '';
-    var okServices = 0;
-    var total = SERVICES.length;
-    var settled = 0;
-
-    SERVICES.forEach(function (svc) {
-      var tile = document.createElement('div');
-      tile.className = 'stat';
-      tile.id = 'svc-' + svc.id;
-      tile.innerHTML = '<div class="value warn">…</div><div class="label">' + svc.name + '</div>';
-      container.appendChild(tile);
-
-      var checks = [];
-      if (svc.probe) checks.push({ name: 'probe', url: svc.probe, self: svc.probe.charAt(0) === '/' });
-      if (svc.health) checks.push({ name: 'health', url: svc.health, self: false });
-      if (!checks.length) {
-        render(svc.id, svc.name, 'ok', 'static host, not pinged');
-        okServices += 1;
-        settled += 1;
-        return;
-      }
-
-      Promise.all(checks.map(function (c) {
-        return fetch(c.url, c.self ? { cache: 'no-store' } : { mode: 'cors', cache: 'no-store' })
-          .then(function (r) { return r.status === 200 ? { ok: true, text: c.name + ' HTTP 200' } : { ok: false, text: c.name + ' HTTP ' + r.status }; })
-          .catch(function () { return { ok: false, text: c.name + ' unreachable' }; });
-      })).then(function (results) {
-        var ok = results.every(function (r) { return r.ok; });
-        render(svc.id, svc.name, ok ? 'ok' : 'bad', results.map(function (r) { return r.text; }).join(' · '));
-        if (ok) okServices += 1;
-        settled += 1;
-        if (settled === total) {
-          lastCheck.textContent = 'Last check: ' + new Date().toLocaleTimeString('en-GB') + '. ' + okServices + '/' + total + ' services responded correctly.';
-          lastCheck.className = 'note ' + (okServices === total ? 'ok' : 'bad');
-        }
-      });
-    });
-  }
-
-  check();
-  setInterval(check, 60000);
-});
-</script>
+<script src="/js/status.js" defer></script>
 </body>
 </html>

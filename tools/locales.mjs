@@ -3,7 +3,7 @@ import { publicCommercialEntry } from '../website-entry.mjs';
 
 export const origin = 'https://mrsoftware.dk';
 export const normalize = value => value.replace(/\s+/g, ' ').trim();
-const humanAttributes = new Set(['alt', 'title', 'aria-label', 'aria-description', 'aria-valuetext', 'placeholder', 'data-detail', 'data-label-open', 'data-label-close', 'data-related-heading', 'data-link-list-heading']);
+const humanAttributes = new Set(['alt', 'title', 'aria-label', 'aria-description', 'aria-valuetext', 'placeholder', 'data-detail', 'data-label-open', 'data-label-close', 'data-label-ok', 'data-label-warning', 'data-label-down', 'data-label-probe', 'data-label-health', 'data-label-unreachable', 'data-label-static', 'data-label-last-check', 'data-label-completion', 'data-related-heading', 'data-link-list-heading']);
 const humanJsonKeys = new Set(['name', 'description', 'headline', 'text', 'caption']);
 export const runtimeStrings = ['tonne-km', 'See also', 'The offer', 'The job', 'The shipment', 'The choices', 'Greeny emissions example', 'Excel and Outlook examples', 'What we can connect', 'Reusable Boney modules', 'Principles', 'Decision gates', 'Evaluation', 'Research papers', 'Security and data privacy', 'How we validate', 'System status', 'Greeny', 'Sample reply approved. No email was sent.', 'contact selected for import.', 'contacts selected for import.'];
 const attributes = node => Object.fromEntries((node.attrs ?? []).map(item => [item.name, item.value]));
@@ -29,7 +29,7 @@ export function localizeLink(value, path, pages) {
     const redirect = publicCommercialEntry(new Request(url));
     if (redirect) return redirect.headers.get('Location');
   }
-  return value.startsWith(origin) ? url.href : url.pathname + url.search + url.hash;
+  return /^https?:/i.test(value) ? url.href : url.pathname + url.search + url.hash;
 }
 
 export function htmlStrings(source) {
@@ -144,7 +144,7 @@ export function translateHtml(source, { dictionary, path, pages, heading }) {
     }
     if (typeof value !== 'string') return value;
     if (humanJsonKeys.has(key)) return translate(value);
-    if (value.startsWith(origin) && !value.endsWith('#organization')) return localizeLink(value, path, pages);
+    if (/^https?:/i.test(value) && new URL(value).origin === origin && !value.endsWith('#organization')) return localizeLink(value, path, pages);
     return value;
   }
   function visit(node, skip = false) {
