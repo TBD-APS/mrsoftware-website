@@ -80,6 +80,12 @@ export const graph = {
       "summary": "Transport af køretøjer, gemte stop og hændelser mærket med deres kilde. Demo med kun læseadgang."
     },
     {
+      "id": "dansk-auto-logik",
+      "title": "Dansk Auto Logik",
+      "href": "/da/cases/dansk-auto-logik/",
+      "summary": "En pilot til køretøjstransporter. Eksemplet er syntetisk, og en person accepterer en plan, før den anvendes."
+    },
+    {
       "id": "producey",
       "title": "Producey",
       "href": "/da/products/producey/",
@@ -388,6 +394,16 @@ export const graph = {
         "id": "to:shippy-demo",
         "toId": "shippy-demo",
         "label": "Prøv leveringskvittering (engelsk)"
+      }
+    ],
+    "dansk-auto-logik": [
+      {
+        "id": "to:roady",
+        "toId": "roady"
+      },
+      {
+        "id": "to:contact",
+        "toId": "contact"
       }
     ],
     "use-cases": [
