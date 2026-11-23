@@ -102,8 +102,8 @@
       </div>
 
       <h3>.NET (xUnit)</h3>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Tabel"><table>
-        <thead><tr><th>Projekt</th><th>Tests</th><th>Kan springes over</th><th>Dækker</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label=".NET-testprojekter (xUnit)"><table>
+        <thead><tr><th scope="col">Projekt</th><th scope="col" class="num">Tests</th><th scope="col" class="num">Kan springes over</th><th scope="col">Dækker</th></tr></thead>
         <tbody>
           <tr><td>Contracts</td><td class="num">37</td><td class="num">0</td><td>Kontrakter og funktionsevne</td></tr>
           <tr><td>ControlCenter</td><td class="num">356</td><td class="num">1</td><td>Web/API-adfærd</td></tr>
@@ -124,8 +124,8 @@
     <section id="ci-gates">
       <h2>Kontroller ved hver eneste ændring</h2>
       <p>Hver pull request skal bestå følgende kontroller, før den kan sammenflettes (håndhæves af kodearkivets beskyttelse):</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Tabel"><table>
-        <thead><tr><th>Kontrollér</th><th>Hvad den opdager</th><th>Status</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Kontroller, som hver pull request skal bestå"><table>
+        <thead><tr><th scope="col">Kontrollér</th><th scope="col">Hvad den opdager</th><th scope="col">Status</th></tr></thead>
         <tbody>
           <tr><td>Analyze (C#)</td><td>Statisk analyse af .NET-kode</td><td><span class="badge ok">GRØN</span></td></tr>
           <tr><td>Analyze (TypeScript/JS, Python)</td><td>Statisk analyse af web- og scriptkode</td><td><span class="badge ok">GRØN</span></td></tr>
@@ -144,8 +144,8 @@
       <h2>Beskyttelse af kodearkiv og miljøer</h2>
       <p>Main-branchen er beskyttet af et regelsæt (“MR SAAS'y main protection”, id
       <code>21150004</code>), der løbende afstemmes af en idempotent afstemningsproces:</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Tabel"><table>
-        <thead><tr><th>Regel</th><th>Værdi</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Regelsæt for main-branchen"><table>
+        <thead><tr><th scope="col">Regel</th><th scope="col">Værdi</th></tr></thead>
         <tbody>
           <tr><td>Metode til sammenfletning</td><td>Kun squash</td></tr>
           <tr><td>Påkrævede kontroller</td><td>Alle ovenstående grønne på seneste head</td></tr>
@@ -154,8 +154,8 @@
         </tbody>
       </table></div>
       <p>Udrulning går gennem beskyttede miljøer med trinvise ventetider før godkendelse:</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Tabel"><table>
-        <thead><tr><th>Miljø</th><th>Ventetid før godkendelse</th><th>Branchpolitik</th><th>Risiko</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Beskyttede udrulningsmiljøer"><table>
+        <thead><tr><th scope="col">Miljø</th><th scope="col">Ventetid før godkendelse</th><th scope="col">Branchpolitik</th><th scope="col">Risiko</th></tr></thead>
         <tbody>
           <tr><td><code>live-low</code></td><td>0 min.</td><td>Beskyttet</td><td>Lav risiko</td></tr>
           <tr><td><code>live-medium</code></td><td>10 min.</td><td>Beskyttet</td><td>Middel risiko</td></tr>
@@ -169,8 +169,8 @@
     <section id="daekning">
       <h2>Kodedækning</h2>
       <p>Dækningen måles i CI (seneste fulde rapport) og giver et ærligt billede: Kernen er godt dækket, mens nye eller tynde lag ligger lavere. Minimumskravet håndhæves af regelsættet (35 %).</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Tabel"><table>
-        <thead><tr><th>Område</th><th>Linjer</th><th>Forgreninger</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Kodedækning pr. område"><table>
+        <thead><tr><th scope="col">Område</th><th scope="col" class="num">Linjer</th><th scope="col" class="num">Forgreninger</th></tr></thead>
         <tbody>
           <tr><td>ControlCenter + Core + Contracts</td><td class="num">54.2 %</td><td class="num">37.0 %</td></tr>
           <tr><td>Core + Contracts (kernen)</td><td class="num">76.6 %</td><td class="num">59.7 %</td></tr>
@@ -196,8 +196,8 @@
     <section id="webstatus">
       <h2>Webflader: hvad der testes og hvorfor</h2>
       <p>Vi forpligter os til at måle hver webflade. Status pr. 12-09-2026:</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Tabel"><table>
-        <thead><tr><th>Flade</th><th>Testdækning</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Testdækning pr. webflade"><table>
+        <thead><tr><th scope="col">Flade</th><th scope="col">Testdækning</th></tr></thead>
         <tbody>
           <tr><td>Missioner, handlinger, fejlsvar, pull requests, fakturering</td><td><span class="badge ok">Sidetests</span></td></tr>
           <tr><td>Funktionsflag (nye i 2026)</td><td><span class="badge ok">6 tests</span>: afgrænsning, rettigheder til at slå til og fra, nyttelast</td></tr>

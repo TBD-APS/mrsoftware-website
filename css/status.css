@@ -7,5 +7,8 @@
   .status-services tbody { display: grid; gap: var(--s3); }
   .status-services tbody > tr { display: block; padding: var(--s3); border: 1px solid var(--hairline-light); border-radius: var(--radius); }
   .status-services td { display: block; padding: var(--s2) 0; border: 0; overflow-wrap: anywhere; }
+  /* The card's own padding frames the first and last field. */
+  .status-services td:first-child { padding-top: 0; }
+  .status-services td:last-child { padding-bottom: 0; }
   .status-field-label { display: block; margin-bottom: .25em; font-weight: 600; }
 }
