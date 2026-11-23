@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 import { startSite } from '../../tools/ux-site.mjs';
 import { prepareContext } from './fixtures.mjs';
 import { homepageJourneys } from './homepage-journeys.mjs';
@@ -182,7 +183,7 @@ test('Homepage uses the approved visual tokens and responsive layout', async ({ 
         bodyBackground: getComputedStyle(document.body).backgroundColor,
         primaryBackground: getComputedStyle(document.querySelector('.button-primary')).backgroundColor,
         integrationsBackground: getComputedStyle(document.querySelector('#integrations')).backgroundColor,
-        fontLoaded: document.fonts.check('500 16px Geist') && document.fonts.check('400 42px Newsreader') && document.fonts.check('13px "Fragment Mono"'),
+        fontLoaded: document.fonts.check('500 16px Geist') && document.fonts.check('400 42px "Newsreader Home"') && document.fonts.check('500 42px "Newsreader Home"') && document.fonts.check('italic 400 42px "Newsreader Home"') && document.fonts.check('13px "Fragment Mono"'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       };
     });
@@ -373,37 +374,62 @@ test('Workslip opens with its step-by-step: six steps on site, the office review
   }
 });
 
-test('The hero renders one scalable local illustration with its space reserved', async ({ page, context }) => {
+for (const density of [1, 2]) test.describe(`Photographic hero on a ${density}x display`, () => {
+  test.use({ deviceScaleFactor: density });
+  for (const format of ['avif', 'webp']) test(`The hero downloads one responsive ${format} photograph with its space reserved`, async ({ page, context }) => {
+    const app = await startSite();
+    let releasePhoto;
+    const photo = new Promise(resolve => { releasePhoto = resolve; });
+    try {
+      await prepareContext(context, app.base);
+      if (format === 'webp') {
+        // Emulate a browser without AVIF support through native source selection.
+        const html = (await readFile(new URL('../../index.html', import.meta.url), 'utf8')).replaceAll('image/avif', 'image/unsupported');
+        await context.route(publicBase(app.base), route => route.fulfill({ contentType: 'text/html', body: html }));
+      }
+      await context.route('**/assets/hero/*', async route => { await photo; await route.fallback(); });
+      const responses = [];
+      page.on('response', response => { if (new URL(response.url()).pathname.startsWith('/assets/hero/')) responses.push(response); });
+      await page.goto(publicBase(app.base), { waitUntil: 'domcontentloaded' });
+      const art = page.locator('.hero-art img');
+      await expect(art).toHaveCount(1);
+      const before = await art.boundingBox();
+      releasePhoto();
+      await expect.poll(() => art.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
+      const after = await art.boundingBox();
+      expect(Math.abs(after.height - before.height)).toBeLessThanOrEqual(1);
+      expect(Math.abs(after.y - before.y)).toBeLessThanOrEqual(1);
+      expect(responses).toHaveLength(1);
+      const image = await art.evaluate(image => ({
+        source: new URL(image.currentSrc).pathname,
+        width: image.getBoundingClientRect().width, height: image.getBoundingClientRect().height,
+        intrinsicWidth: image.getAttribute('width'), intrinsicHeight: image.getAttribute('height'),
+      }));
+      const selectedWidth = [632, 790, 1264].find(width => width >= image.width * density) ?? 1264;
+      expect(image.source).toMatch(new RegExp(`^/assets/hero/workflow-photo\\.${selectedWidth}\\.[a-f0-9]{12}\\.${format}$`));
+      const budget = format === 'avif' ? (selectedWidth <= 790 ? 30_000 : 60_000) : (selectedWidth <= 790 ? 40_000 : 100_000);
+      expect((await responses[0].body()).length).toBeLessThan(budget);
+      expect(responses[0].headers()['content-type']).toContain('image/' + format);
+      expect(image.width / image.height).toBeCloseTo(1264 / 848, 1);
+      expect([image.intrinsicWidth, image.intrinsicHeight]).toEqual(['1264', '848']);
+      await expect(art).toHaveAttribute('fetchpriority', 'high');
+      await expect(page.locator('.hero video')).toHaveCount(0);
+    } finally { releasePhoto(); await app.close(); }
+  });
+});
+
+for (const locale of ['/', '/da/']) test(`Homepage heading glyphs load without the large full fonts: ${locale}`, async ({ page, context }) => {
   const app = await startSite();
-  let releaseIllustration;
-  const illustration = new Promise(resolve => { releaseIllustration = resolve; });
   try {
     await prepareContext(context, app.base);
-    await context.route('**/assets/hero/*', async route => { await illustration; await route.fallback(); });
-    const responses = [];
-    page.on('response', response => { if (new URL(response.url()).pathname.startsWith('/assets/hero/')) responses.push(response); });
-    await page.goto(publicBase(app.base), { waitUntil: 'domcontentloaded' });
-    const art = page.locator('.hero-art svg');
-    const before = await art.boundingBox();
-    releaseIllustration();
-    await expect.poll(() => art.locator('use').evaluate(use => use.getBBox().width)).toBeGreaterThan(900);
-    const after = await art.boundingBox();
-    expect(Math.abs(after.height - before.height)).toBeLessThanOrEqual(1);
-    expect(Math.abs(after.y - before.y)).toBeLessThanOrEqual(1);
-    expect(responses).toHaveLength(1);
-    // The local test server sends uncompressed SVG. Its compressed transfer
-    // budget is enforced in worker.test.mjs; no raster sizes need downloading.
-    expect((await responses[0].body()).length).toBeLessThan(70_000);
-    const image = await art.evaluate(svg => ({
-      source: svg.querySelector('use').getAttribute('href'),
-      width: svg.getBoundingClientRect().width, height: svg.getBoundingClientRect().height,
-      intrinsicWidth: svg.getAttribute('width'), intrinsicHeight: svg.getAttribute('height'),
-    }));
-    expect(image.source).toMatch(/^\/assets\/hero\/workflow-vector\.[a-f0-9]{12}\.svg#illustration$/);
-    expect(image.width / image.height).toBeCloseTo(1264 / 848, 1);
-    expect([image.intrinsicWidth, image.intrinsicHeight]).toEqual(['1264', '848']);
-    await expect(page.locator('.hero video')).toHaveCount(0);
-  } finally { releaseIllustration(); await app.close(); }
+    const fonts = [];
+    page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/assets/fonts/')) fonts.push(new URL(request.url()).pathname); });
+    await page.goto(publicBase(app.base) + locale.slice(1));
+    await page.evaluate(async () => { await document.fonts.ready; });
+    expect(fonts.filter(path => /newsreader-home\.(?:normal|italic)\.[a-f0-9]{12}\.woff2$/.test(path))).toHaveLength(2);
+    expect(fonts).not.toContain('/assets/fonts/newsreader.woff2');
+    expect(fonts).not.toContain('/assets/fonts/newsreader-italic.woff2');
+  } finally { await app.close(); }
 });
 
 test('Pointing at a system type in the ticker pauses it and explains what it covers', async ({ page, context }, testInfo) => {

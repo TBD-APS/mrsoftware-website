@@ -23,6 +23,22 @@
   font-display: swap;
   src: url(/assets/fonts/fragment-mono.woff2) format("woff2");
 }
+/* Homepage subsets retain the weights in use and variable optical sizing.
+   Other characters can use the complete Newsreader family. */
+@font-face {
+  font-family: "Newsreader Home";
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(/assets/fonts/newsreader-home.normal.3f866ac9f047.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Newsreader Home";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/assets/fonts/newsreader-home.italic.e55c91a10992.woff2) format("woff2");
+}
 @font-face {
   font-family: "Geist";
   font-style: normal;
@@ -247,6 +263,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .research-note { max-width: 70ch; margin-block: var(--s3); color: var(--muted-on-light); }
 
 /* Hero */
+.home { --serif: "Newsreader Home", "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif; }
 .hero { padding-block: clamp(40px, 5vw, 72px) 0; }
 .hero h1 { font-size: var(--fs-display); line-height: 1.02; letter-spacing: -.025em; }
 .hero h1 > span, .hero h1 em span { display: block; }
@@ -262,7 +279,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .workflow-hero .button-primary:hover { background: var(--accent-hover); }
 .workflow-hero .button-secondary { color: var(--ink); }
 .hero-art { width: 100%; max-width: 640px; justify-self: center; }
-.hero-art svg { display: block; width: 100%; height: auto; }
+.hero-art img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
 .commercial-entrypoints { margin-top: var(--s6); }
 @media (min-width: 600px) and (max-width: 899px) {
   .hero-art { max-width: 560px; }
