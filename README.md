@@ -63,6 +63,12 @@ Do not deploy from local Wrangler. The Action checks GitHub's merged-PR evidence
 against the exact current `main` SHA and Rasmus's immutable account ID; direct
 pushes, another merger, missing evidence and stale revisions are refused.
 
+Native stacked PRs retain each PR's intermediate base branch after an atomic
+merge. The release guard also accepts the top of a complete, closed stack that
+GitHub records as targeting `main`. It verifies every member's repository,
+Rasmus's merger ID, ordered branch membership and merge-commit ancestry. Missing
+or inconsistent stack evidence is refused. See [GitHub's stack API](https://docs.github.com/en/rest/pulls/stacks).
+
 Before merging the first release PR, configure the `mrsoftware-production`
 environment to allow only the `main` branch, and apply the reviewed main-branch
 protections. Put `CLOUDFLARE_API_TOKEN` and the numbered private snapshot parts

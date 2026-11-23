@@ -56,18 +56,67 @@ test('Cacheable hero filenames identify the exact encoded bytes', async () => {
   }
 });
 
-test('Fingerprinted hero images keep asset validators and may be cached for one year', async () => {
+test('Responsive hero photographs have content-addressed filenames and small transfer sizes', async () => {
+  const directory = new URL('../assets/hero/', import.meta.url);
+  const photos = (await readdir(directory)).filter(name => /\.(?:avif|webp)$/.test(name));
+  assert.equal(photos.length, 6, 'Provide three responsive widths in AVIF and WebP');
+  for (const format of ['avif', 'webp']) for (const width of [632, 790, 1264]) {
+    const name = photos.find(name => name.startsWith('workflow-photo.' + width + '.') && name.endsWith('.' + format));
+    assert.ok(name, `Missing ${format} photograph width ${width}`);
+    const bytes = await readFile(new URL(name, directory));
+    const fingerprint = createHash('sha256').update(bytes).digest('hex').slice(0, 12);
+    assert.equal(name, `workflow-photo.${width}.${fingerprint}.${format}`, 'Changing photo bytes requires a new cache key');
+    if (format === 'webp') {
+      assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
+      assert.equal(bytes.toString('ascii', 8, 12), 'WEBP');
+    } else {
+      assert.equal(bytes.toString('ascii', 4, 8), 'ftyp');
+      assert.ok(bytes.subarray(8, 32).includes(Buffer.from('avif')));
+    }
+    const budget = format === 'avif' ? (width <= 790 ? 30_000 : 60_000) : (width <= 790 ? 40_000 : 100_000);
+    assert.ok(bytes.length < budget, 'Keep each responsive photo within its transfer budget');
+  }
+});
+
+test('Homepage heading fonts keep content-addressed cache keys and a combined 100 KB budget', async () => {
+  const directory = new URL('../assets/fonts/', import.meta.url);
+  const fonts = (await readdir(directory)).filter(name => name.startsWith('newsreader-home.'));
+  assert.equal(fonts.length, 2);
+  let total = 0;
+  for (const style of ['normal', 'italic']) {
+    const name = fonts.find(name => name.startsWith(`newsreader-home.${style}.`));
+    assert.ok(name);
+    const bytes = await readFile(new URL(name, directory));
+    const fingerprint = createHash('sha256').update(bytes).digest('hex').slice(0, 12);
+    assert.equal(name, `newsreader-home.${style}.${fingerprint}.woff2`);
+    assert.equal(bytes.toString('ascii', 0, 4), 'wOF2');
+    total += bytes.length;
+  }
+  assert.ok(total < 100_000, 'The photographic hero must not compete with the original 280 KB heading fonts');
+});
+
+for (const [pathname, contentType] of [
+  ['/assets/hero/workflow-vector.012345abcdef.svg', 'image/svg+xml'],
+  ['/assets/hero/workflow-photo.632.012345abcdef.webp', 'image/webp'],
+  ['/assets/hero/workflow-photo.790.012345abcdef.webp', 'image/webp'],
+  ['/assets/hero/workflow-photo.1264.012345abcdef.webp', 'image/webp'],
+  ['/assets/hero/workflow-photo.632.012345abcdef.avif', 'image/avif'],
+  ['/assets/hero/workflow-photo.790.012345abcdef.avif', 'image/avif'],
+  ['/assets/hero/workflow-photo.1264.012345abcdef.avif', 'image/avif'],
+  ['/assets/fonts/newsreader-home.normal.012345abcdef.woff2', 'font/woff2'],
+  ['/assets/fonts/newsreader-home.italic.012345abcdef.woff2', 'font/woff2'],
+]) test('Fingerprinted hero assets preserve validators and one-year caching: ' + pathname, async () => {
   for (const [method, status] of [['GET', 200], ['HEAD', 200], ['GET', 206], ['GET', 304]]) {
-    const response = await handle(new Request('https://mrsoftware.dk/assets/hero/workflow-vector.012345abcdef.svg', { method }), {
+    const response = await handle(new Request('https://mrsoftware.dk' + pathname, { method }), {
       ASSETS: { fetch: () => new Response(method === 'HEAD' || status === 304 ? null : 'image bytes', {
-        status, headers: { 'Content-Type': 'image/svg+xml', ETag: '"asset-hash"', 'CF-Cache-Status': 'HIT', 'Cache-Control': 'public, max-age=0, must-revalidate' },
+        status, headers: { 'Content-Type': contentType, ETag: '"asset-hash"', 'CF-Cache-Status': 'HIT', 'Cache-Control': 'public, max-age=0, must-revalidate' },
       }) },
     });
     assert.equal(response.status, status);
     assert.equal(response.headers.get('Cache-Control'), 'public, max-age=31536000, immutable');
     assert.equal(response.headers.get('ETag'), '"asset-hash"');
     assert.equal(response.headers.get('CF-Cache-Status'), 'HIT');
-    assert.equal(response.headers.get('Content-Type'), 'image/svg+xml');
+    assert.equal(response.headers.get('Content-Type'), contentType);
     assert.equal(await response.text(), method === 'HEAD' || status === 304 ? '' : 'image bytes');
   }
 });
@@ -78,6 +127,17 @@ test('Hero cache policy excludes failures, writes, mutable assets and HTML', asy
     ['/assets/hero/workflow-vector.012345abcdef.svg', 'GET', 500],
     ['/assets/hero/workflow-vector.012345abcdef.svg', 'POST', 200],
     ['/assets/hero/workflow-vector.svg', 'GET', 200],
+    ['/assets/hero/workflow-photo.632.012345abcdef.webp', 'GET', 404],
+    ['/assets/hero/workflow-photo.1264.012345abcdef.webp', 'GET', 500],
+    ['/assets/hero/workflow-photo.632.012345abcdef.webp', 'POST', 200],
+    ['/assets/hero/workflow-photo.632.webp', 'GET', 200],
+    ['/assets/hero/workflow-photo.900.012345abcdef.webp', 'GET', 200],
+    ['/assets/hero/workflow-photo.790.012345abcdef.avif', 'GET', 404],
+    ['/assets/hero/workflow-photo.790.012345abcdef.avif', 'POST', 200],
+    ['/assets/hero/workflow-photo.790.avif', 'GET', 200],
+    ['/assets/fonts/newsreader-home.normal.012345abcdef.woff2', 'GET', 500],
+    ['/assets/fonts/newsreader-home.normal.woff2', 'GET', 200],
+    ['/assets/fonts/newsreader.woff2', 'GET', 200],
     ['/assets/images/brand/mr-mark.svg', 'GET', 200],
     ['/', 'GET', 200],
   ]) {
