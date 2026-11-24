@@ -28,7 +28,7 @@ test('scrape posts one v2 request with the key, markdown and links, Danish locat
   assert.equal(page.url, home);
   assert.equal(page.statusCode, 200);
   assert.match(page.markdown, /Apacta/);
-  assert.ok(page.links.includes('https://www.lund-toemrer.dk/om-os'));
+  assert.equal(page.links[0], 'https://www.lund-toemrer.dk/om-os');
   assert.equal(page.metadata.title, 'Lund Tømrer ApS');
   assert.equal(page.extraCredits, 0);
 });

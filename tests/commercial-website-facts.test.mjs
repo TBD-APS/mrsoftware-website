@@ -18,8 +18,7 @@ test('safeWebsite turns a CVR website into its homepage and refuses the rest', (
     'https://www.facebook.com/lund', 'linkedin.com/company/x', 'https://shop.krak.dk/', 'https://lund-toemrer.dk:8443/']) {
     assert.equal(safeWebsite(value), null, String(value));
   }
-  assert.ok(excludedDomains.includes('linkedin.com'));
-  assert.equal(excludedDomains.length, 13);
+  assert.deepEqual(excludedDomains, ['linkedin.com', 'facebook.com', 'instagram.com', 'youtube.com', 'google.com', 'krak.dk', 'degulesider.dk', 'proff.dk', 'cvrapi.dk', 'virk.dk', 'jobindex.dk', 'trustpilot.dk', 'wikipedia.org']);
 });
 
 test('pickPages takes the first about and jobs link on the same host', () => {
