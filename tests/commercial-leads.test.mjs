@@ -92,3 +92,24 @@ test('detail returns one scored lead, and 404 for unknown, protected or excluded
   assert.equal((await harness.call('GET', '/api/backoffice/leads/12345678')).status, 400, 'product is required');
   assert.equal((await harness.call('GET', '/api/backoffice/leads/12345678?product=workslip', undefined, { omitHeaders: ['Cf-Access-Jwt-Assertion'] })).status, 401);
 });
+
+test('lead searches do not crowd the workspace activity or mark it truncated', async t => {
+  const harness = await createCommercialHarness(t);
+  const store = createStore(harness.db);
+  const customer = await store.createCustomer({ name: 'Lund Services', contacts: [], notes: '' }, owner);
+  for (let index = 0; index < 101; index += 1) await store.recordLeadSearch({ product: 'workslip', count: 0 }, owner);
+  const state = await harness.call('GET', '/api/backoffice/state');
+  assert.equal(state.body.truncated, false);
+  assert.ok(state.body.events.some(event => event.recordId === customer.id));
+  assert.ok(!state.body.events.some(event => event.recordType === 'leadSearch'));
+});
+
+test('search returns the register total and uses only usable companies', async t => {
+  const harness = await createCommercialHarness(t);
+  const response = await harness.call('GET', searchPath);
+  assert.equal(response.body.total, 5);
+  const loose = () => ({ search: async () => ({ total: 1, companies: [{ cvr: '12345678', name: 'Loose ApS', active: true }] }), company: async () => ({ cvr: '12345678', name: 'Loose ApS', active: true }) });
+  const strict = await createCommercialHarness(t, { cvrClient: loose });
+  assert.deepEqual((await strict.call('GET', searchPath)).body.results, []);
+  assert.equal((await strict.call('GET', '/api/backoffice/leads/12345678?product=workslip')).status, 404);
+});

@@ -17,10 +17,11 @@ export const employeeBands = [
 
 // Limited-liability forms only. Anything else, including sole proprietorships and other
 // businesses carried in a person's own name, is left out.
-// CVR virksomhedsformkode → short form. Only codes confirmed in the CVR form table are listed;
-// the search filters on these codes and the client checks the short form again.
-export const allowedCompanyForms = ['A/S', 'APS', 'IVS', 'K/S'];
-export const allowedCompanyFormCodes = { 60: 'A/S', 80: 'APS', 81: 'IVS', 40: 'K/S' };
+// CVR virksomhedsformkode → short form. Only codes confirmed in the CVR form table are listed.
+// The search filters on these codes and the client checks the code again on every hit.
+// K/S is left out: its general partner can be a person with unlimited liability.
+export const allowedCompanyForms = ['A/S', 'APS', 'IVS'];
+export const allowedCompanyFormCodes = { 60: 'A/S', 80: 'APS', 81: 'IVS' };
 
 export const leadPresets = {
   workslip: {

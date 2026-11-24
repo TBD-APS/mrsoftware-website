@@ -4,6 +4,7 @@ import { HttpError, cvrNumber, readJson, recordId, validateCatalog, validateCust
 import { cvrClientFromEnv } from './cvr.mjs';
 import { municipalityCodes } from './lead-scoring.mjs';
 import { byScore, toLead, usableCompany } from './leads.mjs';
+import { leadPresets } from '../shared/lead-presets.mjs';
 
 const productionIdentity = accessVerifier();
 const notFound = () => { throw new HttpError(404, 'Page or record was not found.'); };
@@ -97,13 +98,14 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
         if (path === '/api/backoffice/leads') {
           if (request.method !== 'GET') methodNotAllowed();
           const search = validateLeadSearch(url.searchParams);
-          const companies = await cvrClient(env).search({ codes: search.codes, municipalityCodes: municipalityCodes(search.regions, search.municipalities), sizes: search.sizes, limit: 100 });
+          const found = await cvrClient(env).search({ codes: search.codes, municipalityCodes: municipalityCodes(search.regions, search.municipalities), sizes: search.sizes, limit: 100, preset: leadPresets[search.product] });
+          const companies = found.companies.filter(usableCompany);
           const store = createStore(env.DB);
           const saved = await store.customersByCvr(companies.map(company => company.cvr));
           const today = isoToday();
           const results = companies.map(company => toLead(company, search.product, saved.get(company.cvr), today)).sort(byScore);
           await store.recordLeadSearch({ ...search, count: results.length }, actor);
-          return json({ results, search });
+          return json({ results, search, total: found.total });
         }
 
         const leadDetail = /^\/api\/backoffice\/leads\/(\d{8})$/.exec(path);

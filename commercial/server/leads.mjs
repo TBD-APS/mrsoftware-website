@@ -1,5 +1,6 @@
 import { leadPresets } from '../shared/lead-presets.mjs';
 import { scoreLead } from './lead-scoring.mjs';
+export { usableCompany } from './cvr.mjs';
 
 export const linkedinSearchUrl = name => `https://www.linkedin.com/search/results/companies/?keywords=${encodeURIComponent(name)}`;
 
@@ -9,4 +10,3 @@ export function toLead({ allowedForm, ...company }, product, customerId, today) 
 }
 
 export const byScore = (a, b) => b.score - a.score || a.name.localeCompare(b.name, 'da');
-export const usableCompany = company => Boolean(company) && !company.protected && company.active && company.allowedForm !== false;

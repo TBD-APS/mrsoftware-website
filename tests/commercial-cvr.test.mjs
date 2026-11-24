@@ -15,12 +15,12 @@ function fixtureFetch(name, calls = []) {
 
 test('search maps the fixture and keeps only fitting, active, unprotected limited companies', async () => {
   const client = createCvrClient({ endpoint, username: 'synthetic-user', password: 'synthetic-secret', fetch: fixtureFetch('search-workslip.json') });
-  const companies = await client.search({ codes: ['43'], municipalityCodes: ['751'], sizes: [], limit: 100 });
+  const { companies } = await client.search({ codes: ['43'], municipalityCodes: ['751'], sizes: [], limit: 100 });
   assert.deepEqual(companies.map(company => company.cvr), ['12345678', '23456789']);
   assert.deepEqual(companies[0], {
     cvr: '12345678', name: 'Lund Tømrer ApS', industryCode: '433200', industryText: 'Tømrerforretninger', secondaryCodes: [],
     companyForm: 'APS', employees: 'ANTAL_10_19', address: 'Søndergade 1', postcode: '8000', city: 'Aarhus C', municipalityCode: '751',
-    founded: '2014-03-01', website: 'www.lund-toemrer.dk', phone: '', email: '', protected: false, active: true,
+    founded: '2014-03-01', website: 'www.lund-toemrer.dk', phone: '', email: '', protected: false, active: true, allowedForm: true,
   });
   assert.equal(companies[1].employees, 'ANTAL_20_49', 'quarterly band is the fallback');
   assert.deepEqual(companies[1].secondaryCodes, ['412000']);
@@ -38,8 +38,7 @@ test('the query excludes protected companies and non-allowlisted forms and caps 
   const body = buildSearchQuery({ codes: ['43'], municipalityCodes: ['751'], sizes: ['ANTAL_10_19'], limit: 100 });
   const text = JSON.stringify(body);
   assert.equal(body.size, 100);
-  assert.match(text, /"must_not":\[\{"term":\{"Vrvirksomhed\.reklamebeskyttet":true\}\}\]/);
-  assert.match(text, /"Vrvirksomhed\.virksomhedMetadata\.nyesteVirksomhedsform\.virksomhedsformkode":\[40,60,80,81\]/);
+  assert.match(text, /"Vrvirksomhed\.virksomhedMetadata\.nyesteVirksomhedsform\.virksomhedsformkode":\[60,80,81\]/);
   assert.match(text, /"prefix":\{"Vrvirksomhed\.virksomhedMetadata\.nyesteHovedbranche\.branchekode":"43"\}/);
   assert.match(text, /"prefix":\{"Vrvirksomhed\.virksomhedMetadata\.nyesteBibranche1\.branchekode":"43"\}/);
   assert.match(text, /ANTAL_10_19/);
@@ -90,4 +89,71 @@ test('company() returns protected companies so the caller can explain the refusa
   const fetch = async () => Response.json({ hits: { total: 1, hits: [hits[2]] } });
   const company = await createCvrClient({ endpoint, username: 'u', password: 'p', fetch }).company('34567890');
   assert.equal(company.protected, true);
+});
+
+// Final review fixes.
+const hitsOf = async () => JSON.parse(await fixture('search-workslip.json')).hits.hits;
+const clientFor = (hits, total = hits.length, status = 200) => createCvrClient({ endpoint, username: 'u', password: 'p', fetch: async () => new Response(JSON.stringify({ hits: { total, hits } }), { status }) });
+const withCompany = (hit, change) => { const copy = structuredClone(hit); change(copy._source.Vrvirksomhed); return copy; };
+
+test('the query ranks by the score points and filters on an explicit unprotected flag', () => {
+  const body = buildSearchQuery({ codes: ['43'], municipalityCodes: [], sizes: [], limit: 100, preset: { sweetSpot: ['ANTAL_10_19'], adjacent: ['ANTAL_2_4'] } });
+  const text = JSON.stringify(body);
+  assert.match(text, /"filter":\[\{"term":\{"Vrvirksomhed\.reklamebeskyttet":false\}\}/);
+  assert.doesNotMatch(text, /must_not/);
+  assert.match(text, /\{"prefix":\{"Vrvirksomhed\.virksomhedMetadata\.nyesteHovedbranche\.branchekode":\{"value":"43","boost":45\}\}\}/);
+  assert.match(text, /\{"prefix":\{"Vrvirksomhed\.virksomhedMetadata\.nyesteBibranche1\.branchekode":\{"value":"43","boost":20\}\}\}/);
+  assert.match(text, /"query":"ANTAL_10_19","boost":30/);
+  assert.match(text, /"query":"ANTAL_2_4","boost":15/);
+  assert.match(text, /stiftelsesDato":\{"lte":"now-2y\/d","boost":15\}/);
+});
+
+test('K/S is not an allowed company form', () => {
+  assert.match(JSON.stringify(buildSearchQuery({ codes: ['43'], municipalityCodes: [], sizes: [], limit: 1 })), /virksomhedsformkode":\[60,80,81\]/);
+});
+
+test('search reports the register total next to the companies', async () => {
+  const result = await clientFor(await hitsOf(), 4321).search({ codes: ['43'], municipalityCodes: [], sizes: [], limit: 100 });
+  assert.equal(result.total, 4321);
+  assert.deepEqual(result.companies.map(company => company.cvr), ['12345678', '23456789']);
+  assert.equal((await clientFor(await hitsOf(), { value: 77, relation: 'gte' }).search({ codes: ['43'], municipalityCodes: [], sizes: [], limit: 100 })).total, 77);
+});
+
+test('a company without an explicit unprotected flag is never used', async () => {
+  const [lund] = await hitsOf();
+  for (const flag of [undefined, null, 'false']) {
+    const hit = withCompany(lund, company => { if (flag === undefined) delete company.reklamebeskyttet; else company.reklamebeskyttet = flag; });
+    assert.deepEqual((await clientFor([hit]).search({ codes: ['43'], municipalityCodes: [], sizes: [], limit: 100 })).companies, [], String(flag));
+    assert.equal((await clientFor([hit]).company('12345678')).protected, true, String(flag));
+  }
+});
+
+test('search drops companies whose shown size or municipality is outside the request', async () => {
+  const [lund] = await hitsOf();
+  const lagging = withCompany(lund, company => {
+    company.virksomhedMetadata.nyesteErstMaanedsbeskaeftigelse.intervalKodeAntalAnsatte = 'ANTAL_50_99';
+    company.virksomhedMetadata.nyesteAarsbeskaeftigelse = { intervalKodeAntalAnsatte: 'ANTAL_10_19' };
+  });
+  assert.deepEqual((await clientFor([lagging]).search({ codes: ['43'], municipalityCodes: [], sizes: ['ANTAL_10_19'], limit: 100 })).companies, []);
+  assert.deepEqual((await clientFor([lund]).search({ codes: ['43'], municipalityCodes: ['101'], sizes: [], limit: 100 })).companies, []);
+});
+
+test('an answer in the wrong shape is a 502, not an empty list', async () => {
+  await assert.rejects(clientFor([{ foo: 1 }, { _source: { other: {} } }]).search({ codes: ['43'], municipalityCodes: [], sizes: [], limit: 100 }), error => error.status === 502);
+  const [lund, holm] = await hitsOf();
+  const noNumber = withCompany(lund, company => { delete company.cvrNummer; });
+  const result = await clientFor([noNumber, holm]).search({ codes: ['43'], municipalityCodes: [], sizes: [], limit: 100 });
+  assert.deepEqual(result.companies.map(company => company.cvr), ['23456789']);
+});
+
+test('a refused CVR login reads as not connected', async () => {
+  for (const status of [401, 403]) {
+    await assert.rejects(clientFor([], 0, status).search({ codes: ['43'], municipalityCodes: [], sizes: [], limit: 1 }), error => error.status === 503 && error.message === 'Company search is not connected yet.');
+  }
+});
+
+test('form codes are matched as own keys only', async () => {
+  const [lund] = await hitsOf();
+  const odd = withCompany(lund, company => { company.virksomhedMetadata.nyesteVirksomhedsform.virksomhedsformkode = 'toString'; });
+  assert.equal((await clientFor([odd]).company('12345678')).allowedForm, false);
 });

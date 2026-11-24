@@ -68,7 +68,9 @@ export function createStore(db) {
   async function state() {
     // One batch gives a consistent workspace snapshot as well as bounded reads.
     const collections = Object.keys(tables);
-    const results = await db.batch([...collections.map(kind => db.prepare(`SELECT document FROM ${tables[kind]} ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(stateLimit + 1)), catalogStatement()]);
+    // Audit-only events (lead searches) never count toward the workspace activity window.
+    const auditOnly = kind => kind === 'events' ? "WHERE json_extract(document, '$.recordType') IS NOT 'leadSearch' " : '';
+    const results = await db.batch([...collections.map(kind => db.prepare(`SELECT document FROM ${tables[kind]} ${auditOnly(kind)}ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(stateLimit + 1)), catalogStatement()]);
     const output = { truncated: false };
     for (const [index, kind] of collections.entries()) {
       const rows = results[index].results;
