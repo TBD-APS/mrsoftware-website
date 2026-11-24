@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkGraph } from '../js/linking.js';
 import { publicLinkUpdates } from '../tools/prerender-links.mjs';
+import { readSiteContent, mergeHomepageCta, applyHomepageCtaHtml } from '../tools/render-content.mjs';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const contentRoot = process.env.LINKS_ROOT ?? repo;
@@ -13,6 +14,14 @@ function jsonPath() {
 
 function modulePath() {
   return join(contentRoot, 'js/site-links.js');
+}
+
+function siteContentPath() {
+  return join(contentRoot, 'data/site-content.json');
+}
+
+function indexPath() {
+  return join(contentRoot, 'index.html');
 }
 
 async function readGraph() {
@@ -37,13 +46,40 @@ async function writeGraph(graph) {
   return checked.graph;
 }
 
+async function readSiteContentJson() {
+  const raw = await readFile(siteContentPath(), 'utf8');
+  const data = JSON.parse(raw);
+  return {
+    homepageCta: mergeHomepageCta(data),
+    raw: data,
+  };
+}
+
+async function writeSiteContentJson(patch) {
+  const existing = await readSiteContent(contentRoot);
+  const next = {
+    ...existing,
+    homepageCta: {
+      ...(existing.homepageCta ?? {}),
+      ...patch,
+    },
+  };
+  await mkdir(dirname(siteContentPath()), { recursive: true });
+  await writeFile(siteContentPath(), `${JSON.stringify(next, null, 2)}\n`);
+  const cta = mergeHomepageCta(next);
+  const html = await readFile(indexPath(), 'utf8');
+  const rendered = applyHomepageCtaHtml(html, cta);
+  if (rendered !== html) await writeFile(indexPath(), rendered);
+  return { homepageCta: cta };
+}
+
 function readBody(request) {
   return new Promise((resolve, reject) => {
     const chunks = [];
     let size = 0;
     request.on('data', chunk => {
       size += chunk.length;
-      if (size > 100_000) reject(new Error('The link file is too large.'));
+      if (size > 100_000) reject(new Error('The request body is too large.'));
       else chunks.push(chunk);
     });
     request.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
@@ -65,23 +101,38 @@ function linksApi() {
       });
       server.middlewares.use(async (request, response, next) => {
         const url = new URL(request.url ?? '/', 'http://127.0.0.1');
-        if (url.pathname !== '/api/links') {
-          next();
-          return;
-        }
         try {
-          if (request.method === 'GET') {
-            send(response, 200, JSON.stringify(await readGraph()), 'application/json; charset=utf-8');
+          if (url.pathname === '/api/links') {
+            if (request.method === 'GET') {
+              send(response, 200, JSON.stringify(await readGraph()), 'application/json; charset=utf-8');
+              return;
+            }
+            if (request.method === 'POST') {
+              const graph = await writeGraph(JSON.parse(await readBody(request)));
+              send(response, 200, JSON.stringify(graph), 'application/json; charset=utf-8');
+              return;
+            }
+            send(response, 405, 'Method not allowed', 'text/plain; charset=utf-8');
             return;
           }
-          if (request.method === 'POST') {
-            const graph = await writeGraph(JSON.parse(await readBody(request)));
-            send(response, 200, JSON.stringify(graph), 'application/json; charset=utf-8');
+          if (url.pathname === '/api/site-content') {
+            if (request.method === 'GET') {
+              const data = await readSiteContentJson();
+              send(response, 200, JSON.stringify(data.homepageCta), 'application/json; charset=utf-8');
+              return;
+            }
+            if (request.method === 'POST') {
+              const patch = JSON.parse(await readBody(request));
+              const data = await writeSiteContentJson(patch);
+              send(response, 200, JSON.stringify(data.homepageCta), 'application/json; charset=utf-8');
+              return;
+            }
+            send(response, 405, 'Method not allowed', 'text/plain; charset=utf-8');
             return;
           }
-          send(response, 405, 'Method not allowed', 'text/plain; charset=utf-8');
+          next();
         } catch (error) {
-          send(response, 400, error.message || 'The links were not saved.', 'text/plain; charset=utf-8');
+          send(response, 400, error.message || 'Request failed.', 'text/plain; charset=utf-8');
         }
       });
     },

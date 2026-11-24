@@ -1,0 +1,11 @@
+{
+  "homepageCta": {
+    "eyebrow": "Ready when you are",
+    "heading": "Stop chasing updates in inboxes and spreadsheets.",
+    "lead": "Tell us where work gets stuck — we’ll show you the simplest way to put orders, shipments, and approvals in one place.",
+    "primaryLabel": "Book a short conversation →",
+    "primaryHref": "mailto:wp@mrsoftware.dk?subject=Let%E2%80%99s%20fix%20a%20workflow",
+    "secondaryLabel": "Try the demos",
+    "secondaryHref": "/demo/"
+  }
+}
