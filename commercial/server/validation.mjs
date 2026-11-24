@@ -1,3 +1,7 @@
+import { employeeBands } from '../shared/lead-presets.mjs';
+import { municipalities, regions } from '../shared/municipalities.mjs';
+import { leadPresets } from '../shared/lead-presets.mjs';
+
 export class HttpError extends Error {
   constructor(status, message) {
     super(message);
@@ -58,6 +62,44 @@ function date(value, label) {
   const parsed = new Date(`${value}T00:00:00.000Z`);
   if (!Number.isFinite(parsed.valueOf()) || parsed.toISOString().slice(0, 10) !== value) invalid(`${label} must be a valid YYYY-MM-DD date.`);
   return value;
+}
+
+const bandCodes = new Set(employeeBands.map(band => band.code));
+const regionCodes = new Set(regions.map(region => region.code));
+const municipalityCodeSet = new Set(municipalities.map(entry => entry.code));
+
+export function cvrNumber(value) {
+  if (typeof value !== 'string' || !/^\d{8}$/.test(value)) invalid('CVR number must have 8 digits.');
+  return value;
+}
+
+function csvList(params, key) {
+  const raw = params.get(key);
+  if (raw === null || raw.trim() === '') return [];
+  if (raw.length > 1000) invalid('The lead search link has invalid fields.');
+  return [...new Set(raw.split(',').map(part => part.trim()).filter(Boolean))];
+}
+
+export function validateLeadSearch(params) {
+  const keys = ['product', 'codes', 'regions', 'municipalities', 'sizes'];
+  for (const key of params.keys()) if (!keys.includes(key) || params.getAll(key).length !== 1) invalid('The lead search link has invalid fields.');
+  const product = oneOf(params.get('product'), products, 'Product');
+  const given = csvList(params, 'codes');
+  const codes = given.length ? given : [...leadPresets[product].codes];
+  if (codes.length > 30 || codes.some(code => !/^\d{2,6}$/.test(code))) invalid('Industry codes must be 2 to 6 digits.');
+  const chosenRegions = csvList(params, 'regions');
+  if (chosenRegions.some(code => !regionCodes.has(code))) invalid('Region is invalid.');
+  const chosenMunicipalities = csvList(params, 'municipalities');
+  if (chosenMunicipalities.some(code => !municipalityCodeSet.has(code))) invalid('Municipality is invalid.');
+  if (!chosenRegions.length && !chosenMunicipalities.length) invalid('Choose at least one region or municipality.');
+  const sizes = csvList(params, 'sizes');
+  if (sizes.some(size => !bandCodes.has(size))) invalid('Company size is invalid.');
+  return { product, codes, regions: chosenRegions, municipalities: chosenMunicipalities, sizes };
+}
+
+export function validateLeadProduct(params) {
+  for (const key of params.keys()) if (key !== 'product' || params.getAll(key).length !== 1) invalid('The lead link has invalid fields.');
+  return oneOf(params.get('product'), products, 'Product');
 }
 
 export function validateTodayQuery(params) {

@@ -1,6 +1,9 @@
 import { accessVerifier, identitySettings, validIdentity } from './identity.mjs';
 import { createStore } from './store.mjs';
-import { HttpError, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateOpportunity, validateQuote, validateQuoteUpdate, validateTodayQuery } from './validation.mjs';
+import { HttpError, cvrNumber, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateLeadProduct, validateLeadSearch, validateOpportunity, validateQuote, validateQuoteUpdate, validateTodayQuery } from './validation.mjs';
+import { cvrClientFromEnv } from './cvr.mjs';
+import { municipalityCodes } from './lead-scoring.mjs';
+import { byScore, toLead, usableCompany } from './leads.mjs';
 
 const productionIdentity = accessVerifier();
 const notFound = () => { throw new HttpError(404, 'Page or record was not found.'); };
@@ -26,7 +29,9 @@ function requireJsonWrite(request, url) {
   if (request.headers.get('Origin') !== url.origin || contentType !== 'application/json' || request.headers.get('X-Requested-With') !== 'MRSoftware') throw new HttpError(403, 'Use a same-origin JSON request to save changes.');
 }
 
-export function createApplication({ verifyIdentity = productionIdentity } = {}) {
+const isoToday = () => new Date().toISOString().slice(0, 10);
+
+export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv } = {}) {
   return {
     async fetch(request, env = {}) {
       try {
@@ -87,6 +92,29 @@ export function createApplication({ verifyIdentity = productionIdentity } = {}) 
           requireJsonWrite(request, url);
           const input = validateCatalog(await readJson(request));
           return json({ catalog: await createStore(env.DB).updateCatalog(input, actor) });
+        }
+
+        if (path === '/api/backoffice/leads') {
+          if (request.method !== 'GET') methodNotAllowed();
+          const search = validateLeadSearch(url.searchParams);
+          const companies = await cvrClient(env).search({ codes: search.codes, municipalityCodes: municipalityCodes(search.regions, search.municipalities), sizes: search.sizes, limit: 100 });
+          const store = createStore(env.DB);
+          const saved = await store.customersByCvr(companies.map(company => company.cvr));
+          const today = isoToday();
+          const results = companies.map(company => toLead(company, search.product, saved.get(company.cvr), today)).sort(byScore);
+          await store.recordLeadSearch({ ...search, count: results.length }, actor);
+          return json({ results, search });
+        }
+
+        const leadDetail = /^\/api\/backoffice\/leads\/(\d{8})$/.exec(path);
+        if (leadDetail) {
+          if (request.method !== 'GET') methodNotAllowed();
+          const product = validateLeadProduct(url.searchParams);
+          const cvr = cvrNumber(leadDetail[1]);
+          const company = await cvrClient(env).company(cvr);
+          if (!usableCompany(company)) throw new HttpError(404, 'Company was not found in the register.');
+          const saved = await createStore(env.DB).customersByCvr([cvr]);
+          return json({ lead: toLead(company, product, saved.get(cvr), isoToday()) });
         }
 
         const records = /^\/api\/backoffice\/(customers|opportunities|quotes)(?:\/([^/]+))?$/.exec(path);
