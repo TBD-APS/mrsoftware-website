@@ -7,7 +7,7 @@ const queueLimit = 25;
 const initialJson = JSON.stringify(initialCatalog);
 const parseRow = row => row ? JSON.parse(row.document) : null;
 const record = (input, now = new Date().toISOString()) => ({ ...input, id: crypto.randomUUID(), revision: 1, createdAt: now, updatedAt: now });
-const event = (actor, recordType, recordId, operation, now) => record({ actor, recordType, recordId, operation }, now);
+const event = (actor, recordType, recordId, operation, now, details) => record({ actor, recordType, recordId, operation, ...(details ? { details } : {}) }, now);
 const notFound = () => { throw new HttpError(404, 'Record was not found.'); };
 const conflict = () => { throw new HttpError(409, 'This record has changed. Reload it before saving.'); };
 
@@ -68,7 +68,9 @@ export function createStore(db) {
   async function state() {
     // One batch gives a consistent workspace snapshot as well as bounded reads.
     const collections = Object.keys(tables);
-    const results = await db.batch([...collections.map(kind => db.prepare(`SELECT document FROM ${tables[kind]} ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(stateLimit + 1)), catalogStatement()]);
+    // Audit-only events (lead searches) never count toward the workspace activity window.
+    const auditOnly = kind => kind === 'events' ? "WHERE json_extract(document, '$.recordType') IS NOT 'leadSearch' " : '';
+    const results = await db.batch([...collections.map(kind => db.prepare(`SELECT document FROM ${tables[kind]} ${auditOnly(kind)}ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(stateLimit + 1)), catalogStatement()]);
     const output = { truncated: false };
     for (const [index, kind] of collections.entries()) {
       const rows = results[index].results;
@@ -219,5 +221,16 @@ export function createStore(db) {
     return { created: results[1].results.length === 1, receipt: receipt(saved) };
   }
 
-  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry };
+  async function customersByCvr(cvrs) {
+    if (!cvrs.length) return new Map();
+    const { results } = await db.prepare("SELECT id, json_extract(document, '$.cvr') AS cvr FROM sales_customers WHERE json_extract(document, '$.cvr') IN (SELECT value FROM json_each(?))").bind(JSON.stringify(cvrs)).all();
+    return new Map(results.map(row => [row.cvr, row.id]));
+  }
+
+  async function recordLeadSearch(details, actor) {
+    const now = new Date().toISOString();
+    await insertEvent(db, event(actor, 'leadSearch', crypto.randomUUID(), 'searched', now, details)).run();
+  }
+
+  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry, customersByCvr, recordLeadSearch };
 }
