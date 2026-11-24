@@ -68,8 +68,8 @@ export function createStore(db) {
   async function state() {
     // One batch gives a consistent workspace snapshot as well as bounded reads.
     const collections = Object.keys(tables);
-    // Audit-only events (lead searches) never count toward the workspace activity window.
-    const auditOnly = kind => kind === 'events' ? "WHERE json_extract(document, '$.recordType') IS NOT 'leadSearch' " : '';
+    // Audit-only events (lead searches, downloads) never count toward the workspace activity window.
+    const auditOnly = kind => kind === 'events' ? "WHERE json_extract(document, '$.recordType') NOT IN ('leadSearch', 'export') " : '';
     const results = await db.batch([...collections.map(kind => db.prepare(`SELECT document FROM ${tables[kind]} ${auditOnly(kind)}ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(stateLimit + 1)), catalogStatement()]);
     const output = { truncated: false };
     for (const [index, kind] of collections.entries()) {
@@ -253,10 +253,22 @@ export function createStore(db) {
     return new Map(results.map(row => [row.cvr, row.id]));
   }
 
+  // Bounded full lists for downloads, newest first.
+  const exportLimit = 5000;
+  async function exportRows(kind) {
+    const { results } = await db.prepare(`SELECT document FROM ${tables[kind]} ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(exportLimit).all();
+    return results.map(parseRow);
+  }
+
+  async function recordExport(details, actor) {
+    const now = new Date().toISOString();
+    await insertEvent(db, event(actor, 'export', crypto.randomUUID(), 'downloaded', now, details)).run();
+  }
+
   async function recordLeadSearch(details, actor) {
     const now = new Date().toISOString();
     await insertEvent(db, event(actor, 'leadSearch', crypto.randomUUID(), 'searched', now, details)).run();
   }
 
-  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry, customersByCvr, recordLeadSearch, saveLead };
+  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry, customersByCvr, recordLeadSearch, saveLead, exportRows, recordExport };
 }

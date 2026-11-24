@@ -488,3 +488,29 @@ test('a company without a website shows no website button and no stray text', as
   await expect(holm.locator('.lead-actions')).toHaveText(/^Save as lead\s*Find on LinkedIn$/);
   await expect(holm.getByRole('link', { name: /website/i })).toHaveCount(0);
 });
+
+test('Leads, Customers and Sales download a CSV file, and a failed download is shown on the page', async ({ page }) => {
+  const { fixtureCvrClient } = await import('../helpers/cvr-fixture.mjs');
+  const { HttpError } = await import('../../commercial/server/validation.mjs');
+  let searches = 0;
+  const flaky = env => { const client = fixtureCvrClient()(env); return { ...client, search: async params => { searches += 1; if (searches > 2) throw new HttpError(502, 'The company register did not answer. Try again in a moment.'); return client.search(params); } }; };
+  const site = await startCommercialSite({ cvrClient: flaky });
+  try {
+    await page.goto(leadsRoute(site));
+    await ready(page);
+    const button = page.getByRole('button', { name: 'Download CSV' });
+    const [file] = await Promise.all([page.waitForEvent('download'), button.click()]);
+    expect(file.suggestedFilename()).toBe(`leads-${new Date().toISOString().slice(0, 10)}.csv`);
+    await expect(button).toBeEnabled();
+    await button.click();
+    await expect(page.getByRole('alert')).toContainText('The company register did not answer. Try again in a moment.');
+    await expect(button).toBeEnabled();
+    await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+    for (const [view, name] of [['customers', 'customers'], ['sales', 'opportunities']]) {
+      await page.goto(site.privateBase + 'backoffice/?view=' + view);
+      await ready(page);
+      const [saved] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Download CSV' }).click()]);
+      expect(saved.suggestedFilename()).toBe(`${name}-${new Date().toISOString().slice(0, 10)}.csv`);
+    }
+  } finally { await site.close(); }
+});

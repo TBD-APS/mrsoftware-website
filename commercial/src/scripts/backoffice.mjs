@@ -25,6 +25,38 @@ moreToggle?.addEventListener('click', () => {
 });
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && moreToggle && !moreMenu.hidden) { closeMore(); moreToggle.focus(); } });
 
+// Downloads go through fetch so a failed download, or an expired sign-in, is shown on the page
+// instead of disappearing into the browser's download list. The button is busy until it ends.
+function downloadButton(path) {
+  const status = el('p', { className: 'download-error', role: 'alert', hidden: true });
+  const button = el('button', { type: 'button', className: 'button secondary' }, 'Download CSV');
+  const signIn = 'Could not download the file. Reload the page to sign in again, then try again.';
+  button.addEventListener('click', async () => {
+    status.hidden = true; status.replaceChildren();
+    button.disabled = true; button.setAttribute('aria-busy', 'true');
+    try {
+      let response;
+      try { response = await fetch(path, { credentials: 'same-origin', signal: AbortSignal.timeout(30_000) }); }
+      catch { throw new ApiError(signIn); }
+      if (!response.ok) {
+        let message = 'Could not download the file. Please try again.';
+        try { const body = await response.json(); if (typeof body.error === 'string') message = body.error; } catch { /* keep the plain message */ }
+        throw new ApiError(message, response.status);
+      }
+      if (!(response.headers.get('Content-Type') ?? '').startsWith('text/csv')) throw new ApiError(signIn);
+      const name = /filename="([^"]+)"/.exec(response.headers.get('Content-Disposition') ?? '')?.[1] ?? 'download.csv';
+      const url = URL.createObjectURL(await response.blob());
+      const save = el('a', { href: url, download: name, hidden: true });
+      document.body.append(save); save.click(); save.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    } catch (error) {
+      if ([401, 403].includes(error.status)) { showError(error); return; }
+      status.append(error.message); status.hidden = false;
+    } finally { button.disabled = false; button.removeAttribute('aria-busy'); }
+  });
+  return el('span', { className: 'download' }, button, status);
+}
+
 function navigate(url) {
   if (url === location.pathname + location.search) return;
   history.pushState(null, '', url);
@@ -144,13 +176,13 @@ async function load() {
         actions = [link('New customer', 'customer-new', {}, 'button primary')]; content = [todayView(data, params)]; break;
       case 'leads':
         title = 'Find leads'; description = 'Companies from the Danish company register that fit a product. Companies that do not want marketing are never shown.';
-        content = [leadSearchForm(params, navigate), leadsView(leads, leadsError, product, saveLead, () => load())]; break;
+        content = [leadSearchForm(params, navigate), leadsView(leads, leadsError, product, saveLead, () => load(), downloadButton('/api/backoffice/leads.csv?' + leadQuery(params)))]; break;
       case 'lead':
         title = lead.name; description = 'From the Danish company register. Nothing is saved until you save it as a lead.';
         content = leadView(lead, product, saveLead); break;
       case 'customers':
         title = 'Customers'; description = 'Companies, contacts and the work you are discussing.';
-        actions = [link('New customer', 'customer-new', {}, 'button primary')]; content = customersView(state, navigate); break;
+        actions = [link('New customer', 'customer-new', {}, 'button primary'), downloadButton('/api/backoffice/customers.csv')]; content = customersView(state, navigate); break;
       case 'customer-new':
       case 'customer-edit':
         title = item ? 'Edit customer' : 'New customer';
@@ -161,7 +193,7 @@ async function load() {
         content = customerView(item, state); break;
       case 'sales':
         title = 'Sales'; description = 'Keep each opportunity moving with a clear next step.';
-        actions = [link('New opportunity', 'opportunity-new', {}, 'button primary')]; content = salesView(state, navigate); break;
+        actions = [link('New opportunity', 'opportunity-new', {}, 'button primary'), downloadButton('/api/backoffice/opportunities.csv')]; content = salesView(state, navigate); break;
       case 'opportunity-new':
       case 'opportunity-edit':
         title = item ? 'Edit opportunity' : 'New opportunity';
