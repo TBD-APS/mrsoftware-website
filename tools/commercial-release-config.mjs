@@ -7,7 +7,8 @@ export const commercialWorker = 'mrsoftware-commercial';
 export const commercialAccount = '9dd0c66615faab3122f01b14ebe3bbdd';
 export const UUID = /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/;
 const root = fileURLToPath(new URL('../', import.meta.url));
-const tables = ['sales_catalog', 'sales_customers', 'sales_events', 'sales_enquiries', 'sales_enquiry_limits', 'sales_opportunities', 'sales_quotes'];
+// Every table from commercial/migrations (0001 sales, 0002 website checks); a release stops until all exist.
+const tables = ['sales_catalog', 'sales_customers', 'sales_events', 'sales_enquiries', 'sales_enquiry_limits', 'sales_opportunities', 'sales_quotes', 'sales_website_checks', 'sales_firecrawl_usage'];
 
 export function commercialSettings(env) {
   const value = name => (env[name] ?? '').trim();
@@ -51,7 +52,7 @@ export async function commercialPreflight(env = process.env, { request = fetch }
   const database = await read(`${base}/d1/database/${settings.databaseId}`);
   if (database.uuid !== settings.databaseId || database.name !== 'mrsoftware-sales') throw Error('The approved dedicated sales database is required');
   const schema = await read(`${base}/d1/database/${settings.databaseId}/query`, { query: `SELECT name FROM sqlite_schema WHERE type = 'table' AND name IN (${tables.map(name => `'${name}'`).join(', ')})` });
-  if (!Array.isArray(schema) || schema.length !== 1 || schema[0].success !== true || !Array.isArray(schema[0].results) || tables.some(name => !schema[0].results.some(row => row.name === name))) throw Error('Apply the approved sales migration before releasing');
+  if (!Array.isArray(schema) || schema.length !== 1 || schema[0].success !== true || !Array.isArray(schema[0].results) || tables.some(name => !schema[0].results.some(row => row.name === name))) throw Error('Apply the approved sales migrations (commercial/migrations) before releasing');
   const application = await read(`${base}/access/apps/${settings.applicationId}`);
   if (application.id !== settings.applicationId || application.type !== 'self_hosted' || application.domain !== 'backoffice.mrsoftware.dk' || application.aud !== settings.audience) throw Error('The dedicated backoffice Access application does not match release settings');
   const policies = await read(`${base}/access/apps/${settings.applicationId}/policies`);
