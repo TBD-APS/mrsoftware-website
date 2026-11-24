@@ -83,3 +83,50 @@ test('a page link is added, saved, and still there after reload', async ({ page 
 function assertHas(graph, fromId, toId) {
   if (!graph.links[fromId].some(link => link.toId === toId)) throw new Error(`${fromId} does not link to ${toId}`);
 }
+
+test('homepage content saves, survives reload and rejects an older tab without losing newer edits', async ({ page, context }, info) => {
+  const root = await mkdtemp(join(tmpdir(), 'site-cta-'));
+  await mkdir(join(root, 'data'));
+  for (const file of ['data/links.json', 'data/site-content.json', 'index.html']) {
+    await writeFile(join(root, file), await readFile(new URL(file, repo)));
+  }
+  const { child, ready } = await start(root);
+  try {
+    const base = await ready;
+    await page.goto(base);
+    await expect(page.getByLabel('Heading', { exact: true })).toBeVisible();
+    const olderTab = await context.newPage();
+    await olderTab.goto(base);
+    await expect(olderTab.getByLabel('Heading', { exact: true })).toBeVisible();
+    await page.getByLabel('Heading', { exact: true }).fill('Keep the newest heading');
+    await page.getByRole('button', { name: 'Save homepage CTA' }).click();
+    await expect(page.getByText('Saved. Homepage CTA updated in index.html.')).toBeVisible();
+    const savedScreenshot = info.outputPath('cta-saved.png');
+    await page.locator('section').first().screenshot({ path: savedScreenshot });
+    await info.attach('Saved homepage content', { path: savedScreenshot, contentType: 'image/png' });
+    await olderTab.getByLabel('Heading', { exact: true }).fill('Stale heading');
+    await olderTab.getByRole('button', { name: 'Save homepage CTA' }).click();
+    await expect(olderTab.getByText('Someone else changed this content. Reload the page before saving again.')).toBeVisible();
+    await expect(olderTab.getByRole('button', { name: 'Save homepage CTA' })).toBeEnabled();
+    const conflictScreenshot = info.outputPath('cta-conflict.png');
+    await olderTab.locator('section').first().screenshot({ path: conflictScreenshot });
+    await info.attach('Older edit rejected', { path: conflictScreenshot, contentType: 'image/png' });
+    await olderTab.reload();
+    await expect(olderTab.getByLabel('Heading', { exact: true })).toHaveValue('Keep the newest heading');
+    await olderTab.getByLabel('Primary button href (mailto or URL)', { exact: true }).fill('javascript:alert(1)');
+    await olderTab.getByRole('button', { name: 'Save homepage CTA' }).click();
+    await expect(olderTab.getByText('Use a page link, https, http, mailto or tel URL for each button.')).toBeVisible();
+    await expect(olderTab.getByRole('button', { name: 'Save homepage CTA' })).toBeEnabled();
+    const saved = JSON.parse(await readFile(join(root, 'data/site-content.json'), 'utf8'));
+    expect(saved.homepageCta.heading).toBe('Keep the newest heading');
+    expect(saved.homepageCta.primaryHref).toMatch(/^mailto:/);
+    expect(await readFile(join(root, 'index.html'), 'utf8')).toContain('Keep the newest heading');
+    await olderTab.close();
+    await page.route('**/api/site-content', route => route.fulfill({ status: 503, body: 'Unavailable' }));
+    await page.reload();
+    await expect(page.getByRole('alert')).toHaveText('Homepage content could not be loaded.');
+    await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+  } finally {
+    try { process.kill(-child.pid, 'SIGTERM'); } catch { child.kill('SIGTERM'); }
+  }
+});
