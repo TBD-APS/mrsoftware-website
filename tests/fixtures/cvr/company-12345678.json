@@ -1,0 +1,87 @@
+{
+ "took": 3,
+ "timed_out": false,
+ "hits": {
+  "total": 1,
+  "max_score": 1.0,
+  "hits": [
+   {
+    "_index": "cvr-v-synthetic",
+    "_type": "_doc",
+    "_id": "12345678",
+    "_source": {
+     "Vrvirksomhed": {
+      "cvrNummer": 12345678,
+      "reklamebeskyttet": false,
+      "virksomhedMetadata": {
+       "nyesteNavn": {
+        "navn": "Lund Tømrer ApS",
+        "periode": {
+         "gyldigFra": "2014-03-01",
+         "gyldigTil": null
+        }
+       },
+       "nyesteHovedbranche": {
+        "branchekode": "433200",
+        "branchetekst": "Tømrerforretninger"
+       },
+       "nyesteBibranche1": null,
+       "nyesteBibranche2": null,
+       "nyesteBibranche3": null,
+       "nyesteVirksomhedsform": {
+        "virksomhedsformkode": 80,
+        "kortBeskrivelse": "APS",
+        "langBeskrivelse": "APS"
+       },
+       "nyesteBeliggenhedsadresse": {
+        "vejnavn": "Søndergade",
+        "husnummerFra": 1,
+        "bogstavFra": null,
+        "etage": null,
+        "sidedoer": null,
+        "postnummer": 8000,
+        "postdistrikt": "Aarhus C",
+        "landekode": "DK",
+        "kommune": {
+         "kommuneKode": 751,
+         "kommuneNavn": "AARHUS"
+        }
+       },
+       "nyesteErstMaanedsbeskaeftigelse": {
+        "aar": 2026,
+        "maaned": 9,
+        "antalAnsatte": null,
+        "intervalKodeAntalAnsatte": "ANTAL_10_19"
+       },
+       "nyesteKvartalsbeskaeftigelse": null,
+       "nyesteAarsbeskaeftigelse": null,
+       "stiftelsesDato": "2014-03-01",
+       "sammensatStatus": "Aktiv"
+      },
+      "telefonNummer": [
+       {
+        "kontaktoplysning": "+45 11111111",
+        "hemmelig": true,
+        "periode": {
+         "gyldigFra": "2020-01-01",
+         "gyldigTil": null
+        }
+       }
+      ],
+      "elektroniskPost": [],
+      "hjemmeside": [
+       {
+        "kontaktoplysning": "www.lund-toemrer.dk",
+        "hemmelig": false,
+        "periode": {
+         "gyldigFra": "2020-01-01",
+         "gyldigTil": null
+        }
+       }
+      ]
+     }
+    }
+   }
+  ]
+ }
+}

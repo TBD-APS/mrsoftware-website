@@ -1,0 +1,344 @@
+{
+ "took": 3,
+ "timed_out": false,
+ "hits": {
+  "total": 5,
+  "max_score": 1.0,
+  "hits": [
+   {
+    "_index": "cvr-v-synthetic",
+    "_type": "_doc",
+    "_id": "12345678",
+    "_source": {
+     "Vrvirksomhed": {
+      "cvrNummer": 12345678,
+      "reklamebeskyttet": false,
+      "virksomhedMetadata": {
+       "nyesteNavn": {
+        "navn": "Lund Tømrer ApS",
+        "periode": {
+         "gyldigFra": "2014-03-01",
+         "gyldigTil": null
+        }
+       },
+       "nyesteHovedbranche": {
+        "branchekode": "433200",
+        "branchetekst": "Tømrerforretninger"
+       },
+       "nyesteBibranche1": null,
+       "nyesteBibranche2": null,
+       "nyesteBibranche3": null,
+       "nyesteVirksomhedsform": {
+        "virksomhedsformkode": 80,
+        "kortBeskrivelse": "APS",
+        "langBeskrivelse": "APS"
+       },
+       "nyesteBeliggenhedsadresse": {
+        "vejnavn": "Søndergade",
+        "husnummerFra": 1,
+        "bogstavFra": null,
+        "etage": null,
+        "sidedoer": null,
+        "postnummer": 8000,
+        "postdistrikt": "Aarhus C",
+        "landekode": "DK",
+        "kommune": {
+         "kommuneKode": 751,
+         "kommuneNavn": "AARHUS"
+        }
+       },
+       "nyesteErstMaanedsbeskaeftigelse": {
+        "aar": 2026,
+        "maaned": 9,
+        "antalAnsatte": null,
+        "intervalKodeAntalAnsatte": "ANTAL_10_19"
+       },
+       "nyesteKvartalsbeskaeftigelse": null,
+       "nyesteAarsbeskaeftigelse": null,
+       "stiftelsesDato": "2014-03-01",
+       "sammensatStatus": "Aktiv"
+      },
+      "telefonNummer": [
+       {
+        "kontaktoplysning": "+45 11111111",
+        "hemmelig": true,
+        "periode": {
+         "gyldigFra": "2020-01-01",
+         "gyldigTil": null
+        }
+       }
+      ],
+      "elektroniskPost": [],
+      "hjemmeside": [
+       {
+        "kontaktoplysning": "www.lund-toemrer.dk",
+        "hemmelig": false,
+        "periode": {
+         "gyldigFra": "2020-01-01",
+         "gyldigTil": null
+        }
+       }
+      ]
+     }
+    }
+   },
+   {
+    "_index": "cvr-v-synthetic",
+    "_type": "_doc",
+    "_id": "23456789",
+    "_source": {
+     "Vrvirksomhed": {
+      "cvrNummer": 23456789,
+      "reklamebeskyttet": false,
+      "virksomhedMetadata": {
+       "nyesteNavn": {
+        "navn": "Holm Byg A/S",
+        "periode": {
+         "gyldigFra": "2008-05-12",
+         "gyldigTil": null
+        }
+       },
+       "nyesteHovedbranche": {
+        "branchekode": "702200",
+        "branchetekst": "Virksomhedsrådgivning og anden rådgivning om driftsledelse"
+       },
+       "nyesteBibranche1": {
+        "branchekode": "412000",
+        "branchetekst": "Opførelse af bygninger"
+       },
+       "nyesteBibranche2": null,
+       "nyesteBibranche3": null,
+       "nyesteVirksomhedsform": {
+        "virksomhedsformkode": 60,
+        "kortBeskrivelse": "A/S",
+        "langBeskrivelse": "A/S"
+       },
+       "nyesteBeliggenhedsadresse": {
+        "vejnavn": "Randersvej",
+        "husnummerFra": 40,
+        "bogstavFra": null,
+        "etage": null,
+        "sidedoer": null,
+        "postnummer": 8200,
+        "postdistrikt": "Aarhus N",
+        "landekode": "DK",
+        "kommune": {
+         "kommuneKode": 751,
+         "kommuneNavn": "AARHUS"
+        }
+       },
+       "nyesteErstMaanedsbeskaeftigelse": null,
+       "nyesteKvartalsbeskaeftigelse": {
+        "aar": 2026,
+        "kvartal": 2,
+        "antalAnsatte": null,
+        "intervalKodeAntalAnsatte": "ANTAL_20_49"
+       },
+       "nyesteAarsbeskaeftigelse": null,
+       "stiftelsesDato": "2008-05-12",
+       "sammensatStatus": "Aktiv"
+      },
+      "telefonNummer": [
+       {
+        "kontaktoplysning": "+45 22222222",
+        "hemmelig": false,
+        "periode": {
+         "gyldigFra": "2020-01-01",
+         "gyldigTil": null
+        }
+       }
+      ],
+      "elektroniskPost": [
+       {
+        "kontaktoplysning": "kontakt@holm-byg.example",
+        "hemmelig": false,
+        "periode": {
+         "gyldigFra": "2020-01-01",
+         "gyldigTil": null
+        }
+       }
+      ],
+      "hjemmeside": []
+     }
+    }
+   },
+   {
+    "_index": "cvr-v-synthetic",
+    "_type": "_doc",
+    "_id": "34567890",
+    "_source": {
+     "Vrvirksomhed": {
+      "cvrNummer": 34567890,
+      "reklamebeskyttet": true,
+      "virksomhedMetadata": {
+       "nyesteNavn": {
+        "navn": "Reklamefri Byg ApS",
+        "periode": {
+         "gyldigFra": "2015-01-01",
+         "gyldigTil": null
+        }
+       },
+       "nyesteHovedbranche": {
+        "branchekode": "412000",
+        "branchetekst": "Opførelse af bygninger"
+       },
+       "nyesteBibranche1": null,
+       "nyesteBibranche2": null,
+       "nyesteBibranche3": null,
+       "nyesteVirksomhedsform": {
+        "virksomhedsformkode": 80,
+        "kortBeskrivelse": "APS",
+        "langBeskrivelse": "APS"
+       },
+       "nyesteBeliggenhedsadresse": {
+        "vejnavn": "Vestergade",
+        "husnummerFra": 3,
+        "bogstavFra": null,
+        "etage": null,
+        "sidedoer": null,
+        "postnummer": 8000,
+        "postdistrikt": "Aarhus C",
+        "landekode": "DK",
+        "kommune": {
+         "kommuneKode": 751,
+         "kommuneNavn": "AARHUS"
+        }
+       },
+       "nyesteErstMaanedsbeskaeftigelse": {
+        "aar": 2026,
+        "maaned": 9,
+        "antalAnsatte": null,
+        "intervalKodeAntalAnsatte": "ANTAL_5_9"
+       },
+       "nyesteKvartalsbeskaeftigelse": null,
+       "nyesteAarsbeskaeftigelse": null,
+       "stiftelsesDato": "2015-01-01",
+       "sammensatStatus": "Aktiv"
+      },
+      "telefonNummer": [],
+      "elektroniskPost": [],
+      "hjemmeside": []
+     }
+    }
+   },
+   {
+    "_index": "cvr-v-synthetic",
+    "_type": "_doc",
+    "_id": "45678901",
+    "_source": {
+     "Vrvirksomhed": {
+      "cvrNummer": 45678901,
+      "reklamebeskyttet": false,
+      "virksomhedMetadata": {
+       "nyesteNavn": {
+        "navn": "Jens Hansen Murer",
+        "periode": {
+         "gyldigFra": "2001-01-01",
+         "gyldigTil": null
+        }
+       },
+       "nyesteHovedbranche": {
+        "branchekode": "433200",
+        "branchetekst": "Tømrerforretninger"
+       },
+       "nyesteBibranche1": null,
+       "nyesteBibranche2": null,
+       "nyesteBibranche3": null,
+       "nyesteVirksomhedsform": {
+        "virksomhedsformkode": 10,
+        "kortBeskrivelse": "ENK",
+        "langBeskrivelse": "ENK"
+       },
+       "nyesteBeliggenhedsadresse": {
+        "vejnavn": "Østergade",
+        "husnummerFra": 9,
+        "bogstavFra": null,
+        "etage": null,
+        "sidedoer": null,
+        "postnummer": 8000,
+        "postdistrikt": "Aarhus C",
+        "landekode": "DK",
+        "kommune": {
+         "kommuneKode": 751,
+         "kommuneNavn": "AARHUS"
+        }
+       },
+       "nyesteErstMaanedsbeskaeftigelse": {
+        "aar": 2026,
+        "maaned": 9,
+        "antalAnsatte": null,
+        "intervalKodeAntalAnsatte": "ANTAL_2_4"
+       },
+       "nyesteKvartalsbeskaeftigelse": null,
+       "nyesteAarsbeskaeftigelse": null,
+       "stiftelsesDato": "2001-01-01",
+       "sammensatStatus": "Aktiv"
+      },
+      "telefonNummer": [],
+      "elektroniskPost": [],
+      "hjemmeside": []
+     }
+    }
+   },
+   {
+    "_index": "cvr-v-synthetic",
+    "_type": "_doc",
+    "_id": "56789012",
+    "_source": {
+     "Vrvirksomhed": {
+      "cvrNummer": 56789012,
+      "reklamebeskyttet": false,
+      "virksomhedMetadata": {
+       "nyesteNavn": {
+        "navn": "Lukket Byg ApS",
+        "periode": {
+         "gyldigFra": "2010-01-01",
+         "gyldigTil": null
+        }
+       },
+       "nyesteHovedbranche": {
+        "branchekode": "412000",
+        "branchetekst": "Opførelse af bygninger"
+       },
+       "nyesteBibranche1": null,
+       "nyesteBibranche2": null,
+       "nyesteBibranche3": null,
+       "nyesteVirksomhedsform": {
+        "virksomhedsformkode": 80,
+        "kortBeskrivelse": "APS",
+        "langBeskrivelse": "APS"
+       },
+       "nyesteBeliggenhedsadresse": {
+        "vejnavn": "Nørregade",
+        "husnummerFra": 5,
+        "bogstavFra": null,
+        "etage": null,
+        "sidedoer": null,
+        "postnummer": 8000,
+        "postdistrikt": "Aarhus C",
+        "landekode": "DK",
+        "kommune": {
+         "kommuneKode": 751,
+         "kommuneNavn": "AARHUS"
+        }
+       },
+       "nyesteErstMaanedsbeskaeftigelse": {
+        "aar": 2026,
+        "maaned": 9,
+        "antalAnsatte": null,
+        "intervalKodeAntalAnsatte": "ANTAL_5_9"
+       },
+       "nyesteKvartalsbeskaeftigelse": null,
+       "nyesteAarsbeskaeftigelse": null,
+       "stiftelsesDato": "2010-01-01",
+       "sammensatStatus": "Ophørt"
+      },
+      "telefonNummer": [],
+      "elektroniskPost": [],
+      "hjemmeside": []
+     }
+    }
+   }
+  ]
+ }
+}
