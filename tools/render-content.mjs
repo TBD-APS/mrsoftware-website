@@ -21,6 +21,11 @@ const DEFAULTS = {
     secondaryLabel: 'Contact details',
     secondaryHref: '/contact/',
   },
+  homepageStories: {
+    eyebrow: 'Stories',
+    heading: 'Four working days, and the choices behind them.',
+    lead: 'A buyer in a chat. A job on site. A shipment already on the road. The software is built for that day.',
+  },
 };
 
 export function mergeHomepageCta(data) {
@@ -31,6 +36,11 @@ export function mergeHomepageCta(data) {
 export function mergeHomepageContact(data) {
   const src = data?.homepageContact ?? {};
   return { ...DEFAULTS.homepageContact, ...src };
+}
+
+export function mergeHomepageStories(data) {
+  const src = data?.homepageStories ?? {};
+  return { ...DEFAULTS.homepageStories, ...src };
 }
 
 export function renderHomepageCtaBlock(cta) {
@@ -67,6 +77,36 @@ export function renderHomepageContactBlock(c) {
     </section>`;
 }
 
+export function renderHomepageStoriesBlock(s) {
+  return `<section class="section" id="stories" aria-labelledby="stories-heading">
+      <div class="page-width">
+        <div data-reveal>
+          <p class="eyebrow">${escapeHtml(s.eyebrow)}</p>
+          <h2 class="heading" id="stories-heading">${escapeHtml(s.heading)}</h2>
+          <p class="lead">${escapeHtml(s.lead)}</p>
+        </div>
+        <div class="uses" data-reveal>
+          <article class="use">
+            <h3><a href="/stories/the-offer/">The offer</a></h3>
+            <p>The buyer asks in the chat they already use. The offer is drafted there, and a person approves it before it is sent.</p>
+          </article>
+          <article class="use">
+            <h3><a href="/stories/the-job/">The job</a></h3>
+            <p>The checklist, the photos and the approval stay with the job. The office sees what was recorded on site.</p>
+          </article>
+          <article class="use">
+            <h3><a href="/stories/the-shipment/">The shipment</a></h3>
+            <p>Booking, documents, customs and status stay with the shipment. Nobody rebuilds it from an inbox.</p>
+          </article>
+          <article class="use">
+            <h3><a href="/stories/the-choices/">The choices</a></h3>
+            <p>Why the software sits where the work already is, and why a person still approves what leaves the building.</p>
+          </article>
+        </div>
+      </div>
+    </section>`;
+}
+
 function escapeHtml(str) {
   return String(str)
     .replaceAll('&', '&amp;')
@@ -83,6 +123,8 @@ const CTA_START = '<!-- CTA:homepage:start -->';
 const CTA_END = '<!-- CTA:homepage:end -->';
 const CONTACT_START = '<!-- CONTENT:homepageContact:start -->';
 const CONTACT_END = '<!-- CONTENT:homepageContact:end -->';
+const STORIES_START = '<!-- CONTENT:homepageStories:start -->';
+const STORIES_END = '<!-- CONTENT:homepageStories:end -->';
 
 export function applyHomepageCtaHtml(html, cta) {
   const block = `${CTA_START}\n${renderHomepageCtaBlock(cta)}\n    ${CTA_END}`;
@@ -102,6 +144,15 @@ export function applyHomepageContactHtml(html, c) {
   return html.replace(re, block);
 }
 
+export function applyHomepageStoriesHtml(html, s) {
+  const block = `${STORIES_START}\n${renderHomepageStoriesBlock(s)}\n    ${STORIES_END}`;
+  const re = new RegExp(`${escapeRegExp(STORIES_START)}[\\s\\S]*?${escapeRegExp(STORIES_END)}`, 'm');
+  if (!re.test(html)) {
+    throw new Error('Homepage stories markers not found in index.html.');
+  }
+  return html.replace(re, block);
+}
+
 function escapeRegExp(s) {
   return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -112,7 +163,7 @@ export async function readSiteContent(root) {
     const raw = await readFile(file, 'utf8');
     return JSON.parse(raw);
   } catch (e) {
-    if (e.code === 'ENOENT') return { homepageCta: { ...DEFAULTS.homepageCta }, homepageContact: { ...DEFAULTS.homepageContact } };
+    if (e.code === 'ENOENT') return { homepageCta: { ...DEFAULTS.homepageCta }, homepageContact: { ...DEFAULTS.homepageContact }, homepageStories: { ...DEFAULTS.homepageStories } };
     throw e;
   }
 }
@@ -121,25 +172,25 @@ export function mergeAllContent(data) {
   return {
     homepageCta: mergeHomepageCta(data),
     homepageContact: mergeHomepageContact(data),
+    homepageStories: mergeHomepageStories(data),
   };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const root = new URL('..', import.meta.url);
   const data = await readSiteContent(root);
-  const { homepageCta, homepageContact } = mergeAllContent(data);
+  const { homepageCta, homepageContact, homepageStories } = mergeAllContent(data);
   const indexPath = resolve(fileURLToPath(root), 'index.html');
   let html = await readFile(indexPath, 'utf8');
-  const next1 = applyHomepageCtaHtml(html, homepageCta);
-  html = next1;
-  const next2 = applyHomepageContactHtml(html, homepageContact);
-  if (next2 !== (await readFile(indexPath, 'utf8'))) {
-    await writeFile(indexPath, next2);
+  html = applyHomepageCtaHtml(html, homepageCta);
+  html = applyHomepageContactHtml(html, homepageContact);
+  html = applyHomepageStoriesHtml(html, homepageStories);
+  const after = await readFile(indexPath, 'utf8');
+  if (html !== after) {
+    await writeFile(indexPath, html);
     console.log('Updated homepage content from data/site-content.json');
   } else {
-    // still write if CTA changed only
-    const afterCta = await readFile(indexPath, 'utf8');
-    if (afterCta !== next2) await writeFile(indexPath, next2);
+    await writeFile(indexPath, html);
     console.log('Homepage content render complete.');
   }
 }

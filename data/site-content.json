@@ -16,5 +16,10 @@
     "primaryHref": "mailto:wp@mrsoftware.dk?subject=Conversation%20about%20software%20and%20workflows",
     "secondaryLabel": "Contact details",
     "secondaryHref": "/contact/"
+  },
+  "homepageStories": {
+    "eyebrow": "Stories",
+    "heading": "Four working days, and the choices behind them.",
+    "lead": "A buyer in a chat. A job on site. A shipment already on the road. The software is built for that day."
   }
 }

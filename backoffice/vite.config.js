@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkGraph } from '../js/linking.js';
 import { publicLinkUpdates } from '../tools/prerender-links.mjs';
-import { readSiteContent, mergeHomepageCta, mergeHomepageContact, applyHomepageCtaHtml, applyHomepageContactHtml } from '../tools/render-content.mjs';
+import { readSiteContent, mergeHomepageCta, mergeHomepageContact, mergeHomepageStories, applyHomepageCtaHtml, applyHomepageContactHtml, applyHomepageStoriesHtml } from '../tools/render-content.mjs';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const contentRoot = process.env.LINKS_ROOT ?? repo;
@@ -51,6 +51,7 @@ async function readSiteContentJson() {
   return {
     homepageCta: mergeHomepageCta(data),
     homepageContact: mergeHomepageContact(data),
+    homepageStories: mergeHomepageStories(data),
     raw: data,
   };
 }
@@ -67,17 +68,21 @@ async function writeSiteContentJson(patch) {
     if (patch.homepageContact && typeof patch.homepageContact === 'object') {
       next.homepageContact = { ...(existing.homepageContact ?? {}), ...patch.homepageContact };
     }
+    if (patch.homepageStories && typeof patch.homepageStories === 'object') {
+      next.homepageStories = { ...(existing.homepageStories ?? {}), ...patch.homepageStories };
+    }
   }
   await mkdir(dirname(siteContentPath()), { recursive: true });
   await writeFile(siteContentPath(), `${JSON.stringify(next, null, 2)}\n`);
   const cta = mergeHomepageCta(next);
   const contact = mergeHomepageContact(next);
+  const stories = mergeHomepageStories(next);
   let html = await readFile(indexPath(), 'utf8');
-  const r1 = applyHomepageCtaHtml(html, cta);
-  html = r1;
-  const r2 = applyHomepageContactHtml(html, contact);
-  if (r2 !== html) await writeFile(indexPath(), r2);
-  return { homepageCta: cta, homepageContact: contact };
+  html = applyHomepageCtaHtml(html, cta);
+  html = applyHomepageContactHtml(html, contact);
+  html = applyHomepageStoriesHtml(html, stories);
+  await writeFile(indexPath(), html);
+  return { homepageCta: cta, homepageContact: contact, homepageStories: stories };
 }
 
 function readBody(request) {

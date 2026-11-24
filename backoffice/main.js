@@ -134,6 +134,12 @@ function App() {
           h('label', null, 'Secondary button label', h('input', { value: content.homepageContact?.secondaryLabel ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, secondaryLabel: e.target.value } }), style: { width: '100%' } })),
           h('label', null, 'Secondary href', h('input', { value: content.homepageContact?.secondaryHref ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, secondaryHref: e.target.value } }), style: { width: '100%' } }))
         ),
+        h('fieldset', { style: { border: '1px solid #ccc', padding: '1rem' } },
+          h('legend', null, 'Stories section'),
+          h('label', null, 'Eyebrow', h('input', { value: content.homepageStories?.eyebrow ?? '', onChange: e => setContent({ ...content, homepageStories: { ...content.homepageStories, eyebrow: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Heading', h('input', { value: content.homepageStories?.heading ?? '', onChange: e => setContent({ ...content, homepageStories: { ...content.homepageStories, heading: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Lead text', h('textarea', { value: content.homepageStories?.lead ?? '', onChange: e => setContent({ ...content, homepageStories: { ...content.homepageStories, lead: e.target.value } }), rows: 3, style: { width: '100%' } }))
+        ),
         h('div', null,
           h('button', { type: 'button', onClick: saveContent, disabled: contentBusy, 'aria-busy': contentBusy ? 'true' : undefined }, 'Save homepage content'),
           h('p', { 'aria-live': 'polite' }, contentStatus))
