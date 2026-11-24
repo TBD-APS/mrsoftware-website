@@ -20,13 +20,16 @@ export function mergeHomepageCta(data) {
 }
 
 export function renderHomepageCtaBlock(cta) {
+  const label = String(cta.primaryLabel ?? '');
+  const hasArrow = label.includes('→');
+  const labelHtml = escapeHtml(label);
   return `<section class="section band-rose" id="get-started-cta" aria-labelledby="get-started-cta-heading">
       <div class="page-width" data-reveal>
         <p class="eyebrow">${escapeHtml(cta.eyebrow)}</p>
         <h2 class="heading" id="get-started-cta-heading">${escapeHtml(cta.heading)}</h2>
         <p class="lead">${escapeHtml(cta.lead)}</p>
         <div class="hero-actions contact-actions" style="margin-top: var(--s4);">
-          <a class="button button-primary" href="${escapeAttr(cta.primaryHref)}">${escapeHtml(cta.primaryLabel)} <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button button-primary" href="${escapeAttr(cta.primaryHref)}">${labelHtml}${hasArrow ? '' : ' <span class="arrow" aria-hidden="true">→</span>'}</a>
           <a class="button button-secondary" href="${escapeAttr(cta.secondaryHref)}">${escapeHtml(cta.secondaryLabel)}</a>
         </div>
       </div>
