@@ -83,10 +83,54 @@ test('Mutations reject wrong origins, non-JSON and missing request markers befor
       const denied = await h.call('POST', path, body, options);
       assert.equal(denied.status, 403, JSON.stringify(options));
       assert.equal(typeof denied.body.error, 'string');
+      assert.equal(denied.headers.get('Access-Control-Allow-Origin'), null);
+      assert.equal(denied.headers.get('Cross-Origin-Resource-Policy'), 'same-origin');
       noStore(denied);
     }
   }
   assert.equal(await h.count('sales_customers'), 0);
+});
+
+test('the company site can post one enquiry and no other route', async t => {
+  const h = await createCommercialHarness(t);
+  const company = { Origin: 'https://mrsoftware.dk' };
+  const bare = await h.request('OPTIONS', '/api/enquiries');
+  assert.equal(bare.status, 405);
+  assert.equal(bare.headers.get('Access-Control-Allow-Origin'), null);
+  for (const headers of [
+    { Origin: 'https://attacker.example', 'Access-Control-Request-Method': 'POST' },
+    { Origin: 'https://mrsoftware.dk.attacker.example', 'Access-Control-Request-Method': 'POST' },
+    { Origin: 'http://mrsoftware.dk', 'Access-Control-Request-Method': 'POST' },
+    { Origin: 'https://mrsoftware.dk', 'Access-Control-Request-Method': 'GET' },
+    { Origin: 'https://mrsoftware.dk' },
+  ]) {
+    const denied = await h.request('OPTIONS', '/api/enquiries', undefined, { headers });
+    assert.equal(denied.status, 405, JSON.stringify(headers));
+    assert.equal(denied.headers.get('Access-Control-Allow-Origin'), null, JSON.stringify(headers));
+  }
+  const preflight = await h.request('OPTIONS', '/api/enquiries', undefined, { headers: { ...company, 'Access-Control-Request-Method': 'POST' } });
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get('Access-Control-Allow-Origin'), 'https://mrsoftware.dk');
+  assert.equal(preflight.headers.get('Access-Control-Allow-Methods'), 'POST');
+  assert.equal(preflight.headers.get('Access-Control-Allow-Headers'), 'Content-Type, X-Requested-With');
+  assert.equal(preflight.headers.get('Vary'), 'Origin');
+  assert.equal(preflight.headers.get('Cross-Origin-Resource-Policy'), null);
+  const backoffice = await h.call('POST', '/api/backoffice/customers', customerInput, { headers: company });
+  assert.equal(backoffice.status, 403);
+  assert.equal(backoffice.headers.get('Access-Control-Allow-Origin'), null);
+  assert.equal(backoffice.headers.get('Cross-Origin-Resource-Policy'), 'same-origin');
+  const created = await h.call('POST', '/api/enquiries', enquiryInput(), { headers: company });
+  assert.equal(created.status, 201);
+  assert.equal(created.body.received, true);
+  assert.equal(created.headers.get('Access-Control-Allow-Origin'), 'https://mrsoftware.dk');
+  assert.equal(created.headers.get('Vary'), 'Origin');
+  assert.equal(created.headers.get('Cross-Origin-Resource-Policy'), null);
+  noStore(created);
+  const invalid = await h.call('POST', '/api/enquiries', enquiryInput({ product: 'greeny' }), { headers: company });
+  assert.equal(invalid.status, 400);
+  assert.equal(invalid.headers.get('Access-Control-Allow-Origin'), 'https://mrsoftware.dk');
+  assert.equal(invalid.headers.get('Cross-Origin-Resource-Policy'), null);
+  assert.equal(await h.count('sales_customers'), 1);
 });
 
 test('Customers and opportunities persist with server ids, revisions and protected actor events', async t => {

@@ -1,4 +1,5 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkGraph } from '../js/linking.js';
@@ -51,12 +52,22 @@ async function readSiteContentJson() {
   const data = JSON.parse(raw);
   return {
     homepageCta: mergeHomepageCta(data),
-    raw: data,
+    version: contentVersion(data),
   };
 }
 
-async function writeSiteContentJson(patch) {
+function contentVersion(data) {
+  return `"${createHash('sha256').update(JSON.stringify(mergeHomepageCta(data))).digest('hex')}"`;
+}
+
+async function writeSiteContentJson(patch, version) {
   const existing = await readSiteContent(contentRoot);
+  if (!version) {
+    throw Object.assign(new Error('Reload the page before saving your changes.'), { status: 428 });
+  }
+  if (version !== contentVersion(existing)) {
+    throw Object.assign(new Error('Someone else changed this content. Reload the page before saving again.'), { status: 412 });
+  }
   const next = {
     ...existing,
     homepageCta: {
@@ -64,13 +75,13 @@ async function writeSiteContentJson(patch) {
       ...patch,
     },
   };
-  await mkdir(dirname(siteContentPath()), { recursive: true });
-  await writeFile(siteContentPath(), `${JSON.stringify(next, null, 2)}\n`);
   const cta = mergeHomepageCta(next);
   const html = await readFile(indexPath(), 'utf8');
   const rendered = applyHomepageCtaHtml(html, cta);
+  await mkdir(dirname(siteContentPath()), { recursive: true });
+  await writeFile(siteContentPath(), `${JSON.stringify(next, null, 2)}\n`);
   if (rendered !== html) await writeFile(indexPath(), rendered);
-  return { homepageCta: cta };
+  return { homepageCta: cta, version: contentVersion(next) };
 }
 
 function readBody(request) {
@@ -87,11 +98,12 @@ function readBody(request) {
   });
 }
 
-function send(response, status, body, type) {
-  response.writeHead(status, { 'content-type': type, 'cache-control': 'no-store' }).end(body);
+function send(response, status, body, type, headers = {}) {
+  response.writeHead(status, { 'content-type': type, 'cache-control': 'no-store', ...headers }).end(body);
 }
 
 function linksApi() {
+  let contentWrite = Promise.resolve();
   return {
     name: 'links-api',
     configureServer(server) {
@@ -118,13 +130,24 @@ function linksApi() {
           if (url.pathname === '/api/site-content') {
             if (request.method === 'GET') {
               const data = await readSiteContentJson();
-              send(response, 200, JSON.stringify(data.homepageCta), 'application/json; charset=utf-8');
+              send(response, 200, JSON.stringify(data.homepageCta), 'application/json; charset=utf-8', { etag: data.version });
               return;
             }
             if (request.method === 'POST') {
+              const origin = request.headers.origin;
+              if (origin && origin !== `http://${request.headers.host}`) {
+                send(response, 403, 'Save homepage content from this editor only.', 'text/plain; charset=utf-8');
+                return;
+              }
+              if (request.headers['content-type']?.split(';')[0].trim().toLowerCase() !== 'application/json') {
+                send(response, 415, 'Send homepage content as JSON.', 'text/plain; charset=utf-8');
+                return;
+              }
               const patch = JSON.parse(await readBody(request));
-              const data = await writeSiteContentJson(patch);
-              send(response, 200, JSON.stringify(data.homepageCta), 'application/json; charset=utf-8');
+              const pending = contentWrite.then(() => writeSiteContentJson(patch, request.headers['if-match']));
+              contentWrite = pending.catch(() => {});
+              const data = await pending;
+              send(response, 200, JSON.stringify(data.homepageCta), 'application/json; charset=utf-8', { etag: data.version });
               return;
             }
             send(response, 405, 'Method not allowed', 'text/plain; charset=utf-8');
@@ -132,7 +155,7 @@ function linksApi() {
           }
           next();
         } catch (error) {
-          send(response, 400, error.message || 'Request failed.', 'text/plain; charset=utf-8');
+          send(response, error.status ?? 400, error.message || 'Request failed.', 'text/plain; charset=utf-8');
         }
       });
     },

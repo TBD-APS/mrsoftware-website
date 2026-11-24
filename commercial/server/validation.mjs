@@ -1,3 +1,6 @@
+import { employeeBands, leadPresets } from '../shared/lead-presets.mjs';
+import { municipalities, regions } from '../shared/municipalities.mjs';
+
 export class HttpError extends Error {
   constructor(status, message) {
     super(message);
@@ -6,11 +9,12 @@ export class HttpError extends Error {
 }
 
 const products = ['workslip', 'tradey', 'shippy'];
-const stages = ['enquiry', 'contacted', 'demo', 'quote', 'won', 'lost'];
+const stages = ['lead', 'enquiry', 'contacted', 'demo', 'quote', 'won', 'lost'];
 const statuses = ['draft', 'sent', 'accepted', 'declined', 'expired'];
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const packagePattern = /^[a-z][a-z0-9-]{0,63}$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const isEmail = value => typeof value === 'string' && value.length <= 254 && emailPattern.test(value);
 const invalid = message => { throw new HttpError(400, message); };
 
 function object(value, keys, label = 'Request') {
@@ -58,6 +62,50 @@ function date(value, label) {
   const parsed = new Date(`${value}T00:00:00.000Z`);
   if (!Number.isFinite(parsed.valueOf()) || parsed.toISOString().slice(0, 10) !== value) invalid(`${label} must be a valid YYYY-MM-DD date.`);
   return value;
+}
+
+const bandCodes = new Set(employeeBands.map(band => band.code));
+const regionCodes = new Set(regions.map(region => region.code));
+const municipalityCodeSet = new Set(municipalities.map(entry => entry.code));
+
+export function cvrNumber(value) {
+  if (typeof value !== 'string' || !/^\d{8}$/.test(value)) invalid('CVR number must have 8 digits.');
+  return value;
+}
+
+function csvList(params, key) {
+  const raw = params.get(key);
+  if (raw === null || raw.trim() === '') return [];
+  if (raw.length > 1000) invalid('The lead search link has invalid fields.');
+  return [...new Set(raw.split(',').map(part => part.trim()).filter(Boolean))];
+}
+
+export function validateLeadSearch(params) {
+  const keys = ['product', 'codes', 'regions', 'municipalities', 'sizes'];
+  for (const key of params.keys()) if (!keys.includes(key) || params.getAll(key).length !== 1) invalid('The lead search link has invalid fields.');
+  const product = oneOf(params.get('product'), products, 'Product');
+  const given = csvList(params, 'codes');
+  const codes = given.length ? given : [...leadPresets[product].codes];
+  if (codes.length > 30 || codes.some(code => !/^\d{2,6}$/.test(code))) invalid('Industry codes must be 2 to 6 digits.');
+  const chosenRegions = csvList(params, 'regions');
+  if (chosenRegions.some(code => !regionCodes.has(code))) invalid('Region is invalid.');
+  const chosenMunicipalities = csvList(params, 'municipalities');
+  if (chosenMunicipalities.some(code => !municipalityCodeSet.has(code))) invalid('Municipality is invalid.');
+  if (!chosenRegions.length && !chosenMunicipalities.length) invalid('Choose at least one region or municipality.');
+  const sizes = csvList(params, 'sizes');
+  if (sizes.some(size => !bandCodes.has(size))) invalid('Company size is invalid.');
+  return { product, codes, regions: chosenRegions, municipalities: chosenMunicipalities, sizes };
+}
+
+export function validateLeadSave(data) {
+  object(data, ['cvr', 'product', 'nextFollowUp']);
+  if (data.nextFollowUp === undefined) invalid('Next follow-up must be a valid YYYY-MM-DD date.');
+  return { cvr: cvrNumber(data.cvr), product: oneOf(data.product, products, 'Product'), nextFollowUp: date(data.nextFollowUp, 'Next follow-up') };
+}
+
+export function validateLeadProduct(params) {
+  for (const key of params.keys()) if (key !== 'product' || params.getAll(key).length !== 1) invalid('The lead link has invalid fields.');
+  return oneOf(params.get('product'), products, 'Product');
 }
 
 export function validateTodayQuery(params) {
@@ -120,8 +168,10 @@ export async function readJson(request) {
   }
 }
 
+// A CVR number is set only by saving a lead. An edit may carry it unchanged; the store
+// refuses a different one.
 export function validateCustomer(data, update = false) {
-  object(data, ['name', 'contacts', 'notes', ...(update ? ['revision'] : [])]);
+  object(data, ['name', 'contacts', 'notes', ...(update ? ['revision', 'cvr'] : [])]);
   const result = {
     name: text(data.name, 'Company name', 200, 1),
     contacts: list(data.contacts, 'Contacts', 20).map(contact => {
@@ -132,6 +182,7 @@ export function validateCustomer(data, update = false) {
     }),
     notes: text(data.notes, 'Notes', 4000),
   };
+  if (update && data.cvr !== undefined && data.cvr !== null) result.cvr = cvrNumber(data.cvr);
   return update ? { ...result, revision: revision(data.revision) } : result;
 }
 

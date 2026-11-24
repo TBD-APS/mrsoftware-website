@@ -21,6 +21,7 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [cta, setCta] = useState(null);
+  const [ctaVersion, setCtaVersion] = useState('');
   const [ctaStatus, setCtaStatus] = useState('');
   const [ctaBusy, setCtaBusy] = useState(false);
 
@@ -45,6 +46,7 @@ function App() {
       const next = await response.json();
       if (gone) return;
       setCta(next);
+      setCtaVersion(response.headers.get('etag'));
     }).catch(reason => {
       if (!gone) setCtaStatus(reason.message || 'Homepage content could not be loaded.');
     });
@@ -95,12 +97,13 @@ function App() {
     try {
       const result = await fetch('/api/site-content', {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json', 'if-match': ctaVersion },
         body: JSON.stringify(cta),
       });
       const message = await result.text();
       if (!result.ok) throw new Error(message);
       setCta(JSON.parse(message));
+      setCtaVersion(result.headers.get('etag'));
       setCtaStatus('Saved. Homepage CTA updated in index.html.');
     } catch (reason) {
       setCtaStatus(reason.message || 'Homepage CTA was not saved.');
@@ -124,7 +127,7 @@ function App() {
         h('div', null,
           h('button', { type: 'button', onClick: saveCta, disabled: ctaBusy, 'aria-busy': ctaBusy ? 'true' : undefined }, 'Save homepage CTA'),
           h('p', { 'aria-live': 'polite' }, ctaStatus))
-      ) : h('p', { 'aria-busy': 'true' }, 'Loading homepage CTA…')),
+      ) : h('p', { 'aria-busy': ctaStatus ? undefined : 'true', role: ctaStatus ? 'alert' : undefined }, ctaStatus || 'Loading homepage CTA…')),
     h('h2', null, 'Link graph (related links)'),
     h('nav', { className: 'link-pages', 'aria-label': 'Pages' }, graph.places.map(place => h('a', {
       key: place.id,

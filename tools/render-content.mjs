@@ -20,6 +20,16 @@ export function mergeHomepageCta(data) {
 }
 
 export function renderHomepageCtaBlock(cta) {
+  for (const field of ['primaryHref', 'secondaryHref']) {
+    const href = cta[field];
+    if (typeof href !== 'string' || !href.trim() || /[\u0000-\u001f\u007f]/.test(href)) {
+      throw new Error('Use a page link, https, http, mailto or tel URL for each button.');
+    }
+    const url = new URL(href, 'https://mrsoftware.dk');
+    if (!['http:', 'https:', 'mailto:', 'tel:'].includes(url.protocol)) {
+      throw new Error('Use a page link, https, http, mailto or tel URL for each button.');
+    }
+  }
   return `<section class="section band-rose" id="get-started-cta" aria-labelledby="get-started-cta-heading">
       <div class="page-width" data-reveal>
         <p class="eyebrow">${escapeHtml(cta.eyebrow)}</p>
@@ -55,7 +65,7 @@ export function applyHomepageCtaHtml(html, cta) {
   if (!re.test(html)) {
     throw new Error('Homepage CTA markers not found in index.html. Add <!-- CTA:homepage:start --> and <!-- CTA:homepage:end --> around the CTA section.');
   }
-  return html.replace(re, block);
+  return html.replace(re, () => block);
 }
 
 function escapeRegExp(s) {

@@ -209,6 +209,12 @@ export const graph = {
       "title": "Proof of delivery",
       "href": "/demo/#try-shippy",
       "summary": "Try recording delivery on an example shipment."
+    },
+    {
+      "id": "product-pricing",
+      "title": "To be agreed",
+      "href": "/pricing/",
+      "summary": "Scope and terms are agreed for your project."
     }
   ],
   "links": {
@@ -307,6 +313,10 @@ export const graph = {
         "id": "to:contact",
         "toId": "contact",
         "label": "Ask for a walkthrough"
+      },
+      {
+        "id": "to:product-pricing",
+        "toId": "product-pricing"
       }
     ],
     "greeny": [
@@ -323,7 +333,8 @@ export const graph = {
       },
       {
         "id": "to:workslip-prices",
-        "toId": "workslip-prices"
+        "toId": "workslip-prices",
+        "label": "To be agreed"
       }
     ],
     "tradey": [
@@ -333,7 +344,8 @@ export const graph = {
       },
       {
         "id": "to:tradey-prices",
-        "toId": "tradey-prices"
+        "toId": "tradey-prices",
+        "label": "To be agreed"
       }
     ],
     "shippy": [
@@ -343,7 +355,8 @@ export const graph = {
       },
       {
         "id": "to:shippy-prices",
-        "toId": "shippy-prices"
+        "toId": "shippy-prices",
+        "label": "To be agreed"
       }
     ],
     "roadmap": [

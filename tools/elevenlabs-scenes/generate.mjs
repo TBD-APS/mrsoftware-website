@@ -24,6 +24,8 @@ for (const scene of scenes) {
   }
   if (result.status !== 'completed') { console.error(scene.name, JSON.stringify(result)); process.exitCode = 1; continue; }
   const image = await fetch(result.content_url);
+  // An error page from the signed URL must not be saved as the scene.
+  if (!image.ok) { console.error(scene.name, 'download failed', image.status, result.id); process.exitCode = 1; continue; }
   await writeFile(`${out}/${scene.name}.png`, Buffer.from(await image.arrayBuffer()));
   console.log(scene.name, result.id, result.content_mime_type);
 }
