@@ -280,15 +280,7 @@ a:hover > .arrow { transform: translateX(4px); }
 .workflow-hero .button-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); box-shadow: 0 8px 24px rgba(138, 28, 44, .32); }
 .workflow-hero .button-secondary:hover { box-shadow: 0 6px 18px rgba(24, 21, 19, .12); }
 .workflow-hero .button-secondary { color: var(--ink); }
-.hero-art { width: 100%; max-width: 640px; justify-self: center; }
-.hero-art img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
 .commercial-entrypoints { margin-top: var(--s6); }
-@media (min-width: 600px) and (max-width: 899px) {
-  .hero-art { max-width: 560px; }
-}
-@media (min-width: 900px) {
-  .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 64px); }
-}
 .commercial-entrypoints .related-links h2 { font-size: var(--fs-body); font-family: var(--sans); }
 .commercial-entrypoints .related-links ul { display: flex; flex-wrap: wrap; }
 .commercial-entrypoints .related-links li { display: flex; flex: 1 1 240px; max-width: 360px; }
@@ -574,7 +566,7 @@ a:hover > .arrow { transform: translateX(4px); }
 
 /* Contact */
 .contact-grid { margin-top: var(--s6); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s3); row-gap: var(--s5); }
-.contact-grid h3, .contact-locations h3 { margin-bottom: var(--s2); padding-top: var(--s3); font-size: var(--fs-title); border-top: 1px solid var(--hairline-light); }
+.contact-grid h3 { margin-bottom: var(--s2); padding-top: var(--s3); font-size: var(--fs-title); border-top: 1px solid var(--hairline-light); }
 .contact-grid ul, .contact-grid dl { margin: 0; padding: 0; list-style: none; }
 .contact-grid li, .contact-grid dl div { padding: 10px 0; color: var(--muted-on-light); font-family: var(--mono); font-size: .875rem; }
 .contact-grid dl div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--s2); }
@@ -590,9 +582,6 @@ a:hover > .arrow { transform: translateX(4px); }
 .book-demo-check input { width: 24px; height: 24px; min-height: 24px; margin-top: 2px; }
 .book-demo-honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .book-demo-result { margin: 0; color: var(--ink); }
-.contact-locations { margin-top: var(--s6); }
-.contact-map { display: block; width: 100%; height: 560px; border: 1px solid var(--hairline-light); border-radius: var(--radius); background: var(--paper-raised); }
-.contact-map-link { margin-top: var(--s1); }
 
 /* Footer */
 .site-footer { padding: var(--s6) var(--gutter) var(--s3); overflow: hidden; color: var(--ink); background: var(--paper); border-top: 1px solid var(--hairline-light); font-size: .8125rem; }
@@ -757,8 +746,6 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   :root { --gutter: 16px; }
   .hero-row { align-items: flex-start; }
   .hero-actions, .hero-actions .button, .contact-actions .button { flex: 1 1 100%; }
-  .hero-scene { height: 520px; }
-  .hero-scene .frame { bottom: 16px; }
   .ticker li { font-size: 1.125rem; }
   .cards { grid-template-columns: 1fr; }
   .platform .platform-case .scene { aspect-ratio: 4 / 3; }

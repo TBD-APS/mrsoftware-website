@@ -250,37 +250,22 @@ test('Homepage stays usable across the required viewport matrix', async ({ page,
       expect(layout.overflow, `${width}px has no horizontal overflow`).toBeLessThanOrEqual(1);
       expect(layout.h1Width, `${width}px shows the page title`).toBeGreaterThan(0);
       expect(layout.primaryHeight, `${width}px keeps the primary target usable`).toBeGreaterThanOrEqual(44);
-      await page.goto(publicBase(app.base) + 'contact/');
-      const map = await page.locator('#locations iframe').boundingBox();
-      expect(map.width, `${width}px gives the location finder usable width`).toBeGreaterThanOrEqual(272);
-      expect(map.height, `${width}px reserves space for the location finder`).toBeGreaterThanOrEqual(560);
-      expect(map.x + map.width, `${width}px keeps the location finder inside the page`).toBeLessThanOrEqual(width);
     }
   } finally {
     await app.close();
   }
 });
 
-test('Contact keeps email and a direct location link when the external map is unavailable', async ({ page, context }, testInfo) => {
+test('Contact shows email and address without an external map', async ({ page, context }, testInfo) => {
   const app = await startSite();
   try {
-    // The isolated context blocks external services; verify the fallback without Google availability.
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base) + 'contact/');
     const contact = page.locator('#main');
-    const map = contact.locator('iframe');
-    await expect(map).toBeVisible();
-    await expect(map).toHaveAccessibleName('MR Software locations and directions');
-    await expect(map).toHaveAttribute('loading', 'lazy');
+    await expect(contact.locator('iframe')).toHaveCount(0);
     await expect(contact.getByRole('link', { name: 'wp@mrsoftware.dk', exact: true })).toHaveAttribute('href', 'mailto:wp@mrsoftware.dk');
-    const locationLink = contact.getByRole('link', { name: 'Open location finder' });
-    await expect(locationLink).toHaveAttribute('href', await map.getAttribute('src'));
-    await expect(locationLink).toHaveAttribute('target', '_blank');
-    await locationLink.scrollIntoViewIfNeeded();
-    await expect(locationLink).toBeVisible();
-    const target = await locationLink.boundingBox();
-    expect(target.height).toBeGreaterThanOrEqual(44);
-    await testInfo.attach('contact-locations-fallback-' + testInfo.project.name, { body: await contact.screenshot(), contentType: 'image/png' });
+    await expect(contact.getByText('8000 Aarhus C, Denmark')).toBeVisible();
+    await testInfo.attach('contact-' + testInfo.project.name, { body: await contact.screenshot(), contentType: 'image/png' });
   } finally {
     await app.close();
   }
@@ -374,48 +359,18 @@ test('Workslip opens with its step-by-step: six steps on site, the office review
   }
 });
 
-for (const density of [1, 2]) test.describe(`Photographic hero on a ${density}x display`, () => {
-  test.use({ deviceScaleFactor: density });
-  for (const format of ['avif', 'webp']) test(`The hero downloads one responsive ${format} photograph with its space reserved`, async ({ page, context }) => {
-    const app = await startSite();
-    let releasePhoto;
-    const photo = new Promise(resolve => { releasePhoto = resolve; });
-    try {
-      await prepareContext(context, app.base);
-      if (format === 'webp') {
-        // Emulate a browser without AVIF support through native source selection.
-        const html = (await readFile(new URL('../../index.html', import.meta.url), 'utf8')).replaceAll('image/avif', 'image/unsupported');
-        await context.route(publicBase(app.base), route => route.fulfill({ contentType: 'text/html', body: html }));
-      }
-      await context.route('**/assets/hero/*', async route => { await photo; await route.fallback(); });
-      const responses = [];
-      page.on('response', response => { if (new URL(response.url()).pathname.startsWith('/assets/hero/')) responses.push(response); });
-      await page.goto(publicBase(app.base), { waitUntil: 'domcontentloaded' });
-      const art = page.locator('.hero-art img');
-      await expect(art).toHaveCount(1);
-      const before = await art.boundingBox();
-      releasePhoto();
-      await expect.poll(() => art.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
-      const after = await art.boundingBox();
-      expect(Math.abs(after.height - before.height)).toBeLessThanOrEqual(1);
-      expect(Math.abs(after.y - before.y)).toBeLessThanOrEqual(1);
-      expect(responses).toHaveLength(1);
-      const image = await art.evaluate(image => ({
-        source: new URL(image.currentSrc).pathname,
-        width: image.getBoundingClientRect().width, height: image.getBoundingClientRect().height,
-        intrinsicWidth: image.getAttribute('width'), intrinsicHeight: image.getAttribute('height'),
-      }));
-      const selectedWidth = [632, 790, 1264].find(width => width >= image.width * density) ?? 1264;
-      expect(image.source).toMatch(new RegExp(`^/assets/hero/workflow-photo\\.${selectedWidth}\\.[a-f0-9]{12}\\.${format}$`));
-      const budget = format === 'avif' ? (selectedWidth <= 790 ? 30_000 : 60_000) : (selectedWidth <= 790 ? 40_000 : 100_000);
-      expect((await responses[0].body()).length).toBeLessThan(budget);
-      expect(responses[0].headers()['content-type']).toContain('image/' + format);
-      expect(image.width / image.height).toBeCloseTo(1264 / 848, 1);
-      expect([image.intrinsicWidth, image.intrinsicHeight]).toEqual(['1264', '848']);
-      await expect(art).toHaveAttribute('fetchpriority', 'high');
-      await expect(page.locator('.hero video')).toHaveCount(0);
-    } finally { releasePhoto(); await app.close(); }
-  });
+test('The homepage hero has no photograph', async ({ page, context }) => {
+  const app = await startSite();
+  try {
+    await prepareContext(context, app.base);
+    for (const locale of ['', 'da/']) {
+      await page.goto(publicBase(app.base) + locale);
+      await expect(page.locator('.hero img, .hero picture, .hero video')).toHaveCount(0);
+      await expect(page.locator('#hero-heading')).toBeVisible();
+    }
+  } finally {
+    await app.close();
+  }
 });
 
 for (const locale of ['/', '/da/']) test(`Homepage heading glyphs load without the large full fonts: ${locale}`, async ({ page, context }) => {
