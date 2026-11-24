@@ -7,5 +7,14 @@
     "primaryHref": "mailto:wp@mrsoftware.dk?subject=Let%E2%80%99s%20fix%20a%20workflow",
     "secondaryLabel": "Try the demos",
     "secondaryHref": "/demo/"
+  },
+  "homepageContact": {
+    "eyebrow": "Get started",
+    "heading": "Tell us where the work gets stuck.",
+    "lead": "Write a few lines about the workflow. We reply by email and tell you whether software is the right fix.",
+    "primaryLabel": "Email us →",
+    "primaryHref": "mailto:wp@mrsoftware.dk?subject=Conversation%20about%20software%20and%20workflows",
+    "secondaryLabel": "Contact details",
+    "secondaryHref": "/contact/"
   }
 }

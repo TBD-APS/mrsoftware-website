@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkGraph } from '../js/linking.js';
 import { publicLinkUpdates } from '../tools/prerender-links.mjs';
-import { readSiteContent, mergeHomepageCta, applyHomepageCtaHtml } from '../tools/render-content.mjs';
+import { readSiteContent, mergeHomepageCta, mergeHomepageContact, applyHomepageCtaHtml, applyHomepageContactHtml } from '../tools/render-content.mjs';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const contentRoot = process.env.LINKS_ROOT ?? repo;
@@ -47,10 +47,10 @@ async function writeGraph(graph) {
 }
 
 async function readSiteContentJson() {
-  const raw = await readFile(siteContentPath(), 'utf8');
-  const data = JSON.parse(raw);
+  const data = await readSiteContent(contentRoot);
   return {
     homepageCta: mergeHomepageCta(data),
+    homepageContact: mergeHomepageContact(data),
     raw: data,
   };
 }
@@ -59,18 +59,25 @@ async function writeSiteContentJson(patch) {
   const existing = await readSiteContent(contentRoot);
   const next = {
     ...existing,
-    homepageCta: {
-      ...(existing.homepageCta ?? {}),
-      ...patch,
-    },
   };
+  if (patch && typeof patch === 'object') {
+    if (patch.homepageCta && typeof patch.homepageCta === 'object') {
+      next.homepageCta = { ...(existing.homepageCta ?? {}), ...patch.homepageCta };
+    }
+    if (patch.homepageContact && typeof patch.homepageContact === 'object') {
+      next.homepageContact = { ...(existing.homepageContact ?? {}), ...patch.homepageContact };
+    }
+  }
   await mkdir(dirname(siteContentPath()), { recursive: true });
   await writeFile(siteContentPath(), `${JSON.stringify(next, null, 2)}\n`);
   const cta = mergeHomepageCta(next);
-  const html = await readFile(indexPath(), 'utf8');
-  const rendered = applyHomepageCtaHtml(html, cta);
-  if (rendered !== html) await writeFile(indexPath(), rendered);
-  return { homepageCta: cta };
+  const contact = mergeHomepageContact(next);
+  let html = await readFile(indexPath(), 'utf8');
+  const r1 = applyHomepageCtaHtml(html, cta);
+  html = r1;
+  const r2 = applyHomepageContactHtml(html, contact);
+  if (r2 !== html) await writeFile(indexPath(), r2);
+  return { homepageCta: cta, homepageContact: contact };
 }
 
 function readBody(request) {

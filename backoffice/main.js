@@ -20,9 +20,9 @@ function App() {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [cta, setCta] = useState(null);
-  const [ctaStatus, setCtaStatus] = useState('');
-  const [ctaBusy, setCtaBusy] = useState(false);
+  const [content, setContent] = useState(null);
+  const [contentStatus, setContentStatus] = useState('');
+  const [contentBusy, setContentBusy] = useState(false);
 
   useEffect(() => {
     let gone = false;
@@ -44,9 +44,9 @@ function App() {
       if (!response.ok) throw new Error('Homepage content could not be loaded.');
       const next = await response.json();
       if (gone) return;
-      setCta(next);
+      setContent(next);
     }).catch(reason => {
-      if (!gone) setCtaStatus(reason.message || 'Homepage content could not be loaded.');
+      if (!gone) setContentStatus(reason.message || 'Homepage content could not be loaded.');
     });
     return () => { gone = true; };
   }, []);
@@ -88,43 +88,56 @@ function App() {
     }
   }
 
-  async function saveCta() {
-    if (!cta) return;
-    setCtaBusy(true);
-    setCtaStatus('Saving homepage CTA.');
+  async function saveContent() {
+    if (!content) return;
+    setContentBusy(true);
+    setContentStatus('Saving homepage content.');
     try {
       const result = await fetch('/api/site-content', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(cta),
+        body: JSON.stringify(content),
       });
       const message = await result.text();
       if (!result.ok) throw new Error(message);
-      setCta(JSON.parse(message));
-      setCtaStatus('Saved. Homepage CTA updated in index.html.');
+      setContent(JSON.parse(message));
+      setContentStatus('Saved. Homepage sections updated in index.html.');
     } catch (reason) {
-      setCtaStatus(reason.message || 'Homepage CTA was not saved.');
+      setContentStatus(reason.message || 'Homepage content was not saved.');
     } finally {
-      setCtaBusy(false);
+      setContentBusy(false);
     }
   }
 
   return h('div', null,
     h('section', { style: { marginBottom: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid #ddd' } },
-      h('h2', null, 'Homepage CTA (new section)'),
-      h('p', { style: { maxWidth: '60ch' } }, 'Edits the “Ready when you are” section on the homepage. Saved to data/site-content.json and written into index.html by the backoffice.'),
-      cta ? h('div', { style: { display: 'grid', gap: '0.75rem', maxWidth: '60rem' } },
-        h('label', null, 'Eyebrow', h('input', { value: cta.eyebrow, onChange: e => setCta({ ...cta, eyebrow: e.target.value }), style: { width: '100%' } })),
-        h('label', null, 'Heading', h('input', { value: cta.heading, onChange: e => setCta({ ...cta, heading: e.target.value }), style: { width: '100%' } })),
-        h('label', null, 'Lead text', h('textarea', { value: cta.lead, onChange: e => setCta({ ...cta, lead: e.target.value }), rows: 3, style: { width: '100%' } })),
-        h('label', null, 'Primary button label', h('input', { value: cta.primaryLabel, onChange: e => setCta({ ...cta, primaryLabel: e.target.value }), style: { width: '100%' } })),
-        h('label', null, 'Primary button href (mailto or URL)', h('input', { value: cta.primaryHref, onChange: e => setCta({ ...cta, primaryHref: e.target.value }), style: { width: '100%' } })),
-        h('label', null, 'Secondary button label', h('input', { value: cta.secondaryLabel, onChange: e => setCta({ ...cta, secondaryLabel: e.target.value }), style: { width: '100%' } })),
-        h('label', null, 'Secondary button href', h('input', { value: cta.secondaryHref, onChange: e => setCta({ ...cta, secondaryHref: e.target.value }), style: { width: '100%' } })),
+      h('h2', null, 'Homepage content (editable)'),
+      h('p', { style: { maxWidth: '60ch' } }, 'Saves to data/site-content.json and updates index.html via backoffice render scripts.'),
+      content ? h('div', { style: { display: 'grid', gap: '1.5rem', maxWidth: '60rem' } },
+        h('fieldset', { style: { border: '1px solid #ccc', padding: '1rem' } },
+          h('legend', null, 'CTA section (“Ready when you are”)'),
+          h('label', null, 'Eyebrow', h('input', { value: content.homepageCta?.eyebrow ?? '', onChange: e => setContent({ ...content, homepageCta: { ...content.homepageCta, eyebrow: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Heading', h('input', { value: content.homepageCta?.heading ?? '', onChange: e => setContent({ ...content, homepageCta: { ...content.homepageCta, heading: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Lead text', h('textarea', { value: content.homepageCta?.lead ?? '', onChange: e => setContent({ ...content, homepageCta: { ...content.homepageCta, lead: e.target.value } }), rows: 3, style: { width: '100%' } })),
+          h('label', null, 'Primary button label', h('input', { value: content.homepageCta?.primaryLabel ?? '', onChange: e => setContent({ ...content, homepageCta: { ...content.homepageCta, primaryLabel: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Primary href', h('input', { value: content.homepageCta?.primaryHref ?? '', onChange: e => setContent({ ...content, homepageCta: { ...content.homepageCta, primaryHref: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Secondary button label', h('input', { value: content.homepageCta?.secondaryLabel ?? '', onChange: e => setContent({ ...content, homepageCta: { ...content.homepageCta, secondaryLabel: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Secondary href', h('input', { value: content.homepageCta?.secondaryHref ?? '', onChange: e => setContent({ ...content, homepageCta: { ...content.homepageCta, secondaryHref: e.target.value } }), style: { width: '100%' } }))
+        ),
+        h('fieldset', { style: { border: '1px solid #ccc', padding: '1rem' } },
+          h('legend', null, 'Contact section (“Get started”)'),
+          h('label', null, 'Eyebrow', h('input', { value: content.homepageContact?.eyebrow ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, eyebrow: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Heading', h('input', { value: content.homepageContact?.heading ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, heading: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Lead text', h('textarea', { value: content.homepageContact?.lead ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, lead: e.target.value } }), rows: 3, style: { width: '100%' } })),
+          h('label', null, 'Primary button label', h('input', { value: content.homepageContact?.primaryLabel ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, primaryLabel: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Primary href (mailto)', h('input', { value: content.homepageContact?.primaryHref ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, primaryHref: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Secondary button label', h('input', { value: content.homepageContact?.secondaryLabel ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, secondaryLabel: e.target.value } }), style: { width: '100%' } })),
+          h('label', null, 'Secondary href', h('input', { value: content.homepageContact?.secondaryHref ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, secondaryHref: e.target.value } }), style: { width: '100%' } }))
+        ),
         h('div', null,
-          h('button', { type: 'button', onClick: saveCta, disabled: ctaBusy, 'aria-busy': ctaBusy ? 'true' : undefined }, 'Save homepage CTA'),
-          h('p', { 'aria-live': 'polite' }, ctaStatus))
-      ) : h('p', { 'aria-busy': 'true' }, 'Loading homepage CTA…')),
+          h('button', { type: 'button', onClick: saveContent, disabled: contentBusy, 'aria-busy': contentBusy ? 'true' : undefined }, 'Save homepage content'),
+          h('p', { 'aria-live': 'polite' }, contentStatus))
+      ) : h('p', { 'aria-busy': 'true' }, 'Loading homepage content…')),
     h('h2', null, 'Link graph (related links)'),
     h('nav', { className: 'link-pages', 'aria-label': 'Pages' }, graph.places.map(place => h('a', {
       key: place.id,
