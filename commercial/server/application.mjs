@@ -1,6 +1,6 @@
 import { accessVerifier, identitySettings, validIdentity } from './identity.mjs';
 import { createStore } from './store.mjs';
-import { HttpError, cvrNumber, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateLeadProduct, validateLeadSearch, validateOpportunity, validateQuote, validateQuoteUpdate, validateTodayQuery } from './validation.mjs';
+import { HttpError, cvrNumber, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateLeadProduct, validateLeadSave, validateLeadSearch, validateOpportunity, validateQuote, validateQuoteUpdate, validateTodayQuery } from './validation.mjs';
 import { cvrClientFromEnv } from './cvr.mjs';
 import { municipalityCodes } from './lead-scoring.mjs';
 import { byScore, toLead, usableCompany } from './leads.mjs';
@@ -126,6 +126,20 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           requireJsonWrite(request, url);
           const input = validateCatalog(await readJson(request));
           return json({ catalog: await createStore(env.DB).updateCatalog(input, actor) });
+        }
+
+        if (path === '/api/backoffice/leads' && request.method === 'POST') {
+          requireJsonWrite(request, url);
+          const input = validateLeadSave(await readJson(request));
+          // CVR is asked again right before saving; protection wins over every other check.
+          const company = await cvrClient(env).company(input.cvr);
+          if (!company) throw new HttpError(404, 'Company was not found in the register.');
+          if (company.protected !== false) throw new HttpError(409, 'This company has asked not to receive marketing in CVR. Nothing was saved.');
+          if (company.active !== true) throw new HttpError(409, 'This company is no longer active in CVR. Nothing was saved.');
+          if (company.allowedForm !== true) throw new HttpError(409, 'This company form is not included in the lead finder. Nothing was saved.');
+          const today = isoToday();
+          const result = await createStore(env.DB).saveLead({ lead: toLead(company, input.product, null, today), product: input.product, nextFollowUp: input.nextFollowUp, today }, actor);
+          return json(result, result.created ? 201 : 200);
         }
 
         if (path === '/api/backoffice/leads') {

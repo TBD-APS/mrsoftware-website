@@ -1,6 +1,5 @@
-import { employeeBands } from '../shared/lead-presets.mjs';
+import { employeeBands, leadPresets } from '../shared/lead-presets.mjs';
 import { municipalities, regions } from '../shared/municipalities.mjs';
-import { leadPresets } from '../shared/lead-presets.mjs';
 
 export class HttpError extends Error {
   constructor(status, message) {
@@ -10,11 +9,12 @@ export class HttpError extends Error {
 }
 
 const products = ['workslip', 'tradey', 'shippy'];
-const stages = ['enquiry', 'contacted', 'demo', 'quote', 'won', 'lost'];
+const stages = ['lead', 'enquiry', 'contacted', 'demo', 'quote', 'won', 'lost'];
 const statuses = ['draft', 'sent', 'accepted', 'declined', 'expired'];
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const packagePattern = /^[a-z][a-z0-9-]{0,63}$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const isEmail = value => typeof value === 'string' && value.length <= 254 && emailPattern.test(value);
 const invalid = message => { throw new HttpError(400, message); };
 
 function object(value, keys, label = 'Request') {
@@ -97,6 +97,12 @@ export function validateLeadSearch(params) {
   return { product, codes, regions: chosenRegions, municipalities: chosenMunicipalities, sizes };
 }
 
+export function validateLeadSave(data) {
+  object(data, ['cvr', 'product', 'nextFollowUp']);
+  if (data.nextFollowUp === undefined) invalid('Next follow-up must be a valid YYYY-MM-DD date.');
+  return { cvr: cvrNumber(data.cvr), product: oneOf(data.product, products, 'Product'), nextFollowUp: date(data.nextFollowUp, 'Next follow-up') };
+}
+
 export function validateLeadProduct(params) {
   for (const key of params.keys()) if (key !== 'product' || params.getAll(key).length !== 1) invalid('The lead link has invalid fields.');
   return oneOf(params.get('product'), products, 'Product');
@@ -162,8 +168,10 @@ export async function readJson(request) {
   }
 }
 
+// A CVR number is set only by saving a lead. An edit may carry it unchanged; the store
+// refuses a different one.
 export function validateCustomer(data, update = false) {
-  object(data, ['name', 'contacts', 'notes', ...(update ? ['revision'] : [])]);
+  object(data, ['name', 'contacts', 'notes', ...(update ? ['revision', 'cvr'] : [])]);
   const result = {
     name: text(data.name, 'Company name', 200, 1),
     contacts: list(data.contacts, 'Contacts', 20).map(contact => {
@@ -174,6 +182,7 @@ export function validateCustomer(data, update = false) {
     }),
     notes: text(data.notes, 'Notes', 4000),
   };
+  if (update && data.cvr !== undefined && data.cvr !== null) result.cvr = cvrNumber(data.cvr);
   return update ? { ...result, revision: revision(data.revision) } : result;
 }
 

@@ -113,3 +113,104 @@ test('search returns the register total and uses only usable companies', async t
   assert.deepEqual((await strict.call('GET', searchPath)).body.results, []);
   assert.equal((await strict.call('GET', '/api/backoffice/leads/12345678?product=workslip')).status, 404);
 });
+
+// Task 4: save as lead.
+const saveBody = (overrides = {}) => ({ cvr: '23456789', product: 'workslip', nextFollowUp: '2030-11-20', ...overrides });
+const customersWithCvr = async (harness, cvr) => (await harness.db.prepare("SELECT count(*) AS count FROM sales_customers WHERE json_extract(document, '$.cvr') = ?").bind(cvr).first()).count;
+
+test('saving a lead creates the customer and a lead opportunity due on the chosen date', async t => {
+  const harness = await createCommercialHarness(t);
+  const saved = await harness.call('POST', '/api/backoffice/leads', saveBody());
+  assert.equal(saved.status, 201);
+  assert.equal(saved.body.created, true);
+  const { customer, opportunity } = saved.body;
+  assert.equal(customer.name, 'Holm Byg A/S');
+  assert.equal(customer.cvr, '23456789');
+  assert.deepEqual(customer.contacts, [{ name: '', email: 'kontakt@holm-byg.example', phone: '+45 22222222' }]);
+  assert.match(customer.notes, /^Found with the lead finder on \d{4}-\d{2}-\d{2}\. Reason: Virksomhedsrådgivning og anden rådgivning om driftsledelse \(702200\), 20–49 employees, Aarhus N, founded 2008, phone listed$/);
+  assert.deepEqual([opportunity.customerId, opportunity.title, opportunity.product, opportunity.stage, opportunity.nextFollowUp, opportunity.notes], [customer.id, 'Workslip lead', 'workslip', 'lead', '2030-11-20', '']);
+  const today = await harness.call('GET', '/api/backoffice/today?date=2030-11-20');
+  assert.ok(today.body.followUps.items.some(item => item.id === opportunity.id));
+  const types = (await harness.db.prepare('SELECT document FROM sales_events').all()).results.map(row => JSON.parse(row.document)).map(event => `${event.recordType}:${event.operation}`);
+  assert.deepEqual(types.sort(), ['customer:created', 'opportunity:created']);
+  const search = await harness.call('GET', searchPath);
+  assert.equal(search.body.results.find(lead => lead.cvr === '23456789').customerId, customer.id);
+});
+
+test('a company without public contact details is saved without a contact', async t => {
+  const harness = await createCommercialHarness(t);
+  const saved = await harness.call('POST', '/api/backoffice/leads', saveBody({ cvr: '12345678' }));
+  assert.equal(saved.status, 201);
+  assert.deepEqual(saved.body.customer.contacts, []);
+});
+
+test('two concurrent saves for one CVR number give one customer', async t => {
+  const harness = await createCommercialHarness(t);
+  const [a, b] = await Promise.all([harness.call('POST', '/api/backoffice/leads', saveBody()), harness.call('POST', '/api/backoffice/leads', saveBody())]);
+  assert.deepEqual([a.status, b.status].sort(), [200, 201]);
+  const second = a.status === 200 ? a.body : b.body;
+  assert.equal(second.created, false);
+  assert.equal(second.opportunity, null);
+  assert.equal(await customersWithCvr(harness, '23456789'), 1);
+  assert.equal(await harness.count('sales_opportunities'), 1);
+});
+
+test('a company that is protected, inactive or another form at save time is refused and nothing is written', async t => {
+  const hits = (await import('./fixtures/cvr/search-workslip.json', { with: { type: 'json' } })).default.hits.hits;
+  const holm = hits[1];
+  const variant = change => { const copy = structuredClone(holm); change(copy._source.Vrvirksomhed); return copy; };
+  const cases = [
+    [variant(company => { company.reklamebeskyttet = true; }), 409, 'This company has asked not to receive marketing in CVR. Nothing was saved.'],
+    [variant(company => { company.virksomhedMetadata.sammensatStatus = 'Ophørt'; }), 409, 'This company is no longer active in CVR. Nothing was saved.'],
+    [variant(company => { company.virksomhedMetadata.nyesteVirksomhedsform.virksomhedsformkode = 10; }), 409, 'This company form is not included in the lead finder. Nothing was saved.'],
+  ];
+  const { fixtureCvrClient } = await import('./helpers/cvr-fixture.mjs');
+  for (const [hit, status, message] of cases) {
+    const harness = await createCommercialHarness(t, { cvrClient: fixtureCvrClient(new Map([['23456789', hit]])) });
+    const response = await harness.call('POST', '/api/backoffice/leads', saveBody());
+    assert.equal(response.status, status, message);
+    assert.equal(response.body.error, message);
+    assert.equal(await harness.count('sales_customers'), 0);
+    assert.equal(await harness.count('sales_events'), 0);
+  }
+  const harness = await createCommercialHarness(t);
+  const unknown = await harness.call('POST', '/api/backoffice/leads', saveBody({ cvr: '99999999' }));
+  assert.equal(unknown.status, 404);
+  const failing = await createCommercialHarness(t, { cvrClient: () => ({ search: async () => ({ companies: [], total: 0 }), company: async () => { throw new HttpError(502, 'The company register did not answer. Try again in a moment.'); } }) });
+  assert.equal((await failing.call('POST', '/api/backoffice/leads', saveBody())).status, 502);
+  assert.equal(await failing.count('sales_customers'), 0);
+});
+
+test('saving validates the body and needs a same-origin JSON write', async t => {
+  const harness = await createCommercialHarness(t);
+  for (const body of [saveBody({ cvr: '123' }), saveBody({ product: 'roady' }), saveBody({ nextFollowUp: '2030-02-30' }), { ...saveBody(), extra: 1 }, { cvr: '23456789', product: 'workslip' }]) {
+    assert.equal((await harness.call('POST', '/api/backoffice/leads', body)).status, 400, JSON.stringify(body));
+  }
+  assert.equal((await harness.call('POST', '/api/backoffice/leads', saveBody(), { headers: { 'X-Requested-With': 'other' } })).status, 403);
+  assert.equal(await harness.count('sales_customers'), 0);
+});
+
+test('editing the customer keeps its CVR number, which cannot be changed', async t => {
+  const harness = await createCommercialHarness(t);
+  const { customer } = (await harness.call('POST', '/api/backoffice/leads', saveBody())).body;
+  const edit = overrides => harness.call('PUT', `/api/backoffice/customers/${customer.id}`, { name: 'Holm Byg A/S', contacts: [], notes: 'Called.', revision: customer.revision, ...overrides });
+  const withoutCvr = await edit({});
+  assert.equal(withoutCvr.status, 200);
+  assert.equal(withoutCvr.body.item.cvr, '23456789');
+  const same = await edit({ cvr: '23456789', revision: withoutCvr.body.item.revision });
+  assert.equal(same.status, 200);
+  assert.equal(same.body.item.cvr, '23456789');
+  const changed = await edit({ cvr: '12345678', revision: same.body.item.revision });
+  assert.equal(changed.status, 400);
+  assert.equal(changed.body.error, 'CVR number cannot be changed.');
+  assert.equal((await harness.call('POST', '/api/backoffice/customers', { name: 'Manual ApS', contacts: [], notes: '', cvr: '34567890' })).status, 400, 'manual customers cannot claim a CVR number');
+});
+
+test('the lead stage is accepted on opportunities', async t => {
+  const harness = await createCommercialHarness(t);
+  const { opportunity } = (await harness.call('POST', '/api/backoffice/leads', saveBody())).body;
+  const moved = await harness.call('PUT', `/api/backoffice/opportunities/${opportunity.id}`, { customerId: opportunity.customerId, title: opportunity.title, product: 'workslip', stage: 'contacted', nextFollowUp: null, notes: '', revision: opportunity.revision });
+  assert.equal(moved.status, 200);
+  const back = await harness.call('PUT', `/api/backoffice/opportunities/${opportunity.id}`, { customerId: opportunity.customerId, title: opportunity.title, product: 'workslip', stage: 'lead', nextFollowUp: '2030-11-21', notes: '', revision: moved.body.item.revision });
+  assert.equal(back.status, 200);
+});

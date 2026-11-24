@@ -1,7 +1,7 @@
 import { el, action, link, formField, addField, minorUnits, amountOptions, productName, dayString, money } from './dom.mjs';
 
 export const products = ['workslip', 'tradey', 'shippy'];
-export const stages = ['enquiry', 'contacted', 'demo', 'quote', 'won', 'lost'];
+export const stages = ['lead', 'enquiry', 'contacted', 'demo', 'quote', 'won', 'lost'];
 export const statuses = ['draft', 'sent', 'accepted', 'declined', 'expired'];
 const choices = values => values.map(value => [value, value[0].toUpperCase() + value.slice(1)]);
 function formShell(item, submitName, cancelView, cancelParams) {
@@ -21,6 +21,7 @@ export function customerForm(item, onSave) {
   const shell = formShell(item, 'Save customer', item ? 'customer' : 'customers', item && { id: item.id });
   const form = shell.form;
   const name = addField(form, 'company', 'Company name', item?.name ?? '', { required: true, maxlength: 200, autocomplete: 'organization' });
+  if (item?.cvr) form.append(el('p', { className: 'field-help' }, 'CVR number ' + item.cvr + ' (from the company register, cannot be changed)'));
   const contactArea = el('div', { className: 'contact-list' });
   const contacts = [];
   function addContact(contact = {}) {
@@ -42,7 +43,7 @@ export function customerForm(item, onSave) {
   form.append(contactArea, add);
   for (const contact of item?.contacts?.length ? item.contacts : [{}]) addContact(contact);
   const notes = addField(form, 'notes', 'Private notes', item?.notes ?? '', { type: 'textarea', maxlength: 4000, help: 'For your team. These notes never appear on a printed quote.' });
-  return wire(shell, onSave, () => ({ name: name.value, contacts: contacts.filter(c => !c.removed).map(c => ({ name: c.fields[0].input.value, email: c.fields[1].input.value, phone: c.fields[2].input.value })).filter(c => c.name.trim() || c.email.trim() || c.phone.trim()), notes: notes.value, ...(item ? { revision: Number(form.elements.revision.value) } : {}) }));
+  return wire(shell, onSave, () => ({ name: name.value, contacts: contacts.filter(c => !c.removed).map(c => ({ name: c.fields[0].input.value, email: c.fields[1].input.value, phone: c.fields[2].input.value })).filter(c => c.name.trim() || c.email.trim() || c.phone.trim()), notes: notes.value, ...(item?.cvr ? { cvr: item.cvr } : {}), ...(item ? { revision: Number(form.elements.revision.value) } : {}) }));
 }
 export function opportunityForm(item, state, selectedCustomer, onSave) {
   const shell = formShell(item, 'Save opportunity', item ? 'opportunity' : selectedCustomer ? 'customer' : 'sales', item ? { id: item.id } : selectedCustomer ? { id: selectedCustomer } : undefined);
