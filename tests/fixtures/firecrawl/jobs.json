@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "data": {
+    "markdown": "# Job\n\nVi søger en tømrersvend til opgaver i Østjylland.",
+    "links": [
+      "https://www.lund-toemrer.dk/"
+    ],
+    "metadata": {
+      "language": "da",
+      "sourceURL": "https://www.lund-toemrer.dk/job/toemrer",
+      "url": "https://www.lund-toemrer.dk/job/toemrer",
+      "statusCode": 200,
+      "contentType": "text/html",
+      "title": "Job · Lund Tømrer ApS"
+    }
+  }
+}
