@@ -26,8 +26,11 @@ export async function productionCommercial(t, { allowedEmails = 'owner@example.t
   const mf = new Miniflare(convertV4MiniflareOptions({ rootPath: path.join(directory, 'bundle'), compatibilityDate: workerOptions.compatibilityDate, assets: workerOptions.assets, scriptPath: path.join(directory, 'bundle', script), modules: true, bindings: settings, outboundService, d1Databases: ['DB'] }));
   t.after(() => mf.dispose());
   const db = await mf.getD1Database('DB');
-  const sql = await readFile(path.join(root, 'commercial/migrations/0001_sales.sql'), 'utf8');
-  await db.batch(sql.split(';').map(s => s.trim()).filter(Boolean).map(s => db.prepare(s)));
+  const migrations = path.join(root, 'commercial/migrations');
+  for (const file of (await readdir(migrations)).filter(name => name.endsWith('.sql')).sort()) {
+    const sql = (await readFile(path.join(migrations, file), 'utf8')).replace(/^--.*$/gm, '');
+    await db.batch(sql.split(';').map(s => s.trim()).filter(Boolean).map(s => db.prepare(s)));
+  }
   const token = (claims = {}) => {
     const now = Math.floor(Date.now() / 1000);
     return new SignJWT({ iss: settings.ACCESS_ISSUER, aud: settings.ACCESS_AUDIENCE, sub: 'synthetic-owner', email: 'owner@example.test', iat: now, exp: now + 3600, ...claims }).setProtectedHeader({ alg: 'RS256', kid: jwk.kid }).sign(privateKey);

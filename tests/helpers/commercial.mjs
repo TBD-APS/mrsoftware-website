@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { createApplication } from '../../commercial/server/application.mjs';
 import { fixtureCvrClient } from './cvr-fixture.mjs';
@@ -26,9 +26,12 @@ export async function createCommercialHarness(t, { verifyIdentity = async reques
   }));
   t.after(() => mf.dispose());
   const db = await mf.getD1Database('DB');
-  const sql = await readFile(new URL('../../commercial/migrations/0001_sales.sql', import.meta.url), 'utf8');
-  const statements = sql.split(';').map(part => part.trim()).filter(Boolean);
-  if (statements.length) await db.batch(statements.map(statement => db.prepare(statement)));
+  const migrations = new URL('../../commercial/migrations/', import.meta.url);
+  for (const file of (await readdir(migrations)).filter(name => name.endsWith('.sql')).sort()) {
+    const sql = (await readFile(new URL(file, migrations), 'utf8')).replace(/^--.*$/gm, '');
+    const statements = sql.split(';').map(part => part.trim()).filter(Boolean);
+    if (statements.length) await db.batch(statements.map(statement => db.prepare(statement)));
+  }
   const app = createApplication({ verifyIdentity, cvrClient });
   const env = { ...commercialSettings, DB: db, ASSETS: { fetch: async request => new Response(`Static ${new URL(request.url).pathname}`, { headers: { 'Cache-Control': 'public, max-age=3600' } }) } };
   const request = (method, path, body, options = {}) => {
