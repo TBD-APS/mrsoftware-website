@@ -142,6 +142,28 @@ test('a sub-page that fails is recorded as not loaded and the check is still sto
   assert.deepEqual(response.body.check.pages.at(-1), { url: 'https://www.lund-toemrer.dk/job/toemrer', status: 0 });
 });
 
+test('the about and jobs pages are read at the same time', async t => {
+  const pages = firecrawlPages();
+  let open = 0, most = 0, release;
+  const gate = new Promise(resolve => { release = resolve; });
+  for (const url of ['https://www.lund-toemrer.dk/om-os', 'https://www.lund-toemrer.dk/job/toemrer']) {
+    const fixture = pages.get(url);
+    pages.set(url, async () => {
+      open += 1; most = Math.max(most, open);
+      if (open === 2) release();
+      await Promise.race([gate, new Promise(resolve => setTimeout(resolve, 500))]);
+      open -= 1;
+      return fixture;
+    });
+  }
+  const harness = await setup(t, { firecrawl: fixtureFirecrawlClient({ pages }) });
+  const response = await harness.call('POST', path('12345678'), {});
+  assert.equal(response.status, 201);
+  assert.equal(most, 2);
+  assert.equal(response.body.check.jobsPage, 'https://www.lund-toemrer.dk/job/toemrer');
+  assert.deepEqual(response.body.check.pages.map(page => page.url), [home, 'https://www.lund-toemrer.dk/om-os', 'https://www.lund-toemrer.dk/job/toemrer']);
+});
+
 test('provider costs reported by Firecrawl are counted', async t => {
   const pages = firecrawlPages();
   const homePage = structuredClone(pages.get(home));

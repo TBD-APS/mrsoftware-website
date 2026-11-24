@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createFirecrawlClient, firecrawlClientFromEnv } from '../commercial/server/firecrawl.mjs';
+import { createFirecrawlClient, firecrawlClientFromEnv, firecrawlTimeouts } from '../commercial/server/firecrawl.mjs';
 import { HttpError } from '../commercial/server/validation.mjs';
 import { fixtureFirecrawlFetch } from './helpers/firecrawl-fixture.mjs';
 
@@ -24,7 +24,7 @@ test('scrape posts one v2 request with the key, markdown and links, Danish locat
   assert.equal(call.init.method, 'POST');
   assert.equal(new Headers(call.init.headers).get('Authorization'), 'Bearer synthetic-firecrawl-key');
   assert.equal(new Headers(call.init.headers).get('Content-Type'), 'application/json');
-  assert.deepEqual(call.body, { url: home, formats: ['markdown', 'links'], onlyMainContent: false, location: { country: 'DK', languages: ['da'] } });
+  assert.deepEqual(call.body, { url: home, formats: ['markdown', 'links'], onlyMainContent: false, location: { country: 'DK', languages: ['da'] }, timeout: 18000 });
   assert.equal(page.url, home);
   assert.equal(page.statusCode, 200);
   assert.match(page.markdown, /Apacta/);
@@ -79,4 +79,10 @@ test('robots fetches robots.txt from the site itself and treats failures as no r
   assert.equal(await client(async () => { throw new Error('down'); }).robots('https://www.lund-toemrer.dk'), '');
   const hanging = (url, init) => new Promise((resolve, reject) => init.signal.addEventListener('abort', () => reject(new Error('aborted'))));
   assert.equal(await client(hanging, { robotsTimeoutMs: 10 }).robots('https://www.lund-toemrer.dk'), '');
+});
+
+test('a whole check fits well inside the 60 seconds the backoffice waits', () => {
+  // robots.txt, then the homepage, then the about and jobs pages together.
+  assert.ok(firecrawlTimeouts.robotsMs + 2 * firecrawlTimeouts.scrapeMs <= 45000);
+  assert.ok(firecrawlTimeouts.scrapeMs > 18000);
 });

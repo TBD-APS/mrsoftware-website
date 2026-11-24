@@ -29,22 +29,24 @@ export async function runWebsiteCheck({ company, firecrawl, store, cap, actor, n
     await store.addCredits(month, extra);
     throw unavailable();
   }
-  const pages = [{ ...homePage, kind: 'home' }];
+  // Credits for the about and jobs pages are reserved one by one, then both pages are read at
+  // the same time so the whole check stays inside the backoffice's wait.
   const chosen = pickPages(home, homePage.links);
+  const wanted = [];
   for (const kind of ['about', 'jobs']) {
     const url = chosen[kind];
     if (!url || !robotsAllows(robots, new URL(url).pathname)) continue;
     if (!await store.reserveCredits(month, 1, cap)) break;
     reserved += 1;
-    try {
-      const page = await firecrawl.scrape(url);
-      extra += page.extraCredits;
-      pages.push({ ...page, kind });
-    } catch {
-      // A sub-page that Firecrawl cannot read is kept as not loaded; the check still counts.
-      pages.push({ url, kind, statusCode: 0, markdown: '', metadata: {} });
-    }
+    wanted.push({ url, kind });
   }
+  const subPages = await Promise.all(wanted.map(({ url, kind }) => firecrawl.scrape(url).then(
+    page => ({ ...page, kind }),
+    // A sub-page that Firecrawl cannot read is kept as not loaded; the check still counts.
+    () => ({ url, kind, statusCode: 0, markdown: '', metadata: {}, extraCredits: 0 }),
+  )));
+  extra += subPages.reduce((sum, page) => sum + page.extraCredits, 0);
+  const pages = [{ ...homePage, kind: 'home' }, ...subPages];
   await store.addCredits(month, extra);
   return store.saveWebsiteCheck(websiteFacts({ cvr: company.cvr, pages, checkedAt: now.toISOString() }), reserved + extra, actor);
 }

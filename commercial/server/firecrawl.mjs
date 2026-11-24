@@ -5,6 +5,10 @@ import { HttpError } from './validation.mjs';
 // https://docs.firecrawl.dev/features/scrape
 
 const maxRobots = 65536;
+// A check reads robots.txt, then the homepage, then the about and jobs pages together, so its
+// worst case is robotsMs + 2 × scrapeMs: 45 s, inside the 60 s the backoffice waits. Firecrawl
+// is asked to stop 2 s before the Worker gives up on it.
+export const firecrawlTimeouts = { scrapeMs: 20000, robotsMs: 5000 };
 const notConnected = () => new HttpError(503, 'Website check is not connected yet.');
 const noCredits = () => new HttpError(429, 'Firecrawl has no credits left this month.');
 const unavailable = () => new HttpError(502, 'The website did not answer. Try again later.');
@@ -15,7 +19,7 @@ async function withTimeout(timeoutMs, work) {
   try { return await work(controller.signal); } finally { clearTimeout(timer); }
 }
 
-export function createFirecrawlClient({ apiKey, fetch = globalThis.fetch, endpoint = 'https://api.firecrawl.dev/v2', timeoutMs = 30000, robotsTimeoutMs = 5000 } = {}) {
+export function createFirecrawlClient({ apiKey, fetch = globalThis.fetch, endpoint = 'https://api.firecrawl.dev/v2', timeoutMs = firecrawlTimeouts.scrapeMs, robotsTimeoutMs = firecrawlTimeouts.robotsMs } = {}) {
   if (typeof apiKey !== 'string' || !apiKey.trim()) throw notConnected();
   const authorization = `Bearer ${apiKey.trim()}`;
 
@@ -29,7 +33,7 @@ export function createFirecrawlClient({ apiKey, fetch = globalThis.fetch, endpoi
           const response = await fetch(`${endpoint}/scrape`, {
             method: 'POST',
             headers: { Authorization: authorization, 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify({ url, formats: ['markdown', 'links'], onlyMainContent: false, location: { country: 'DK', languages: ['da'] } }),
+            body: JSON.stringify({ url, formats: ['markdown', 'links'], onlyMainContent: false, location: { country: 'DK', languages: ['da'] }, timeout: Math.max(1000, timeoutMs - 2000) }),
             signal,
           });
           if (response.status === 401 || response.status === 403) throw notConnected();
