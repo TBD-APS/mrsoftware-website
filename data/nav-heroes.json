@@ -1,0 +1,21 @@
+{
+  "integrations": {
+    "pill": "Trading and shipping",
+    "lead": "Our products exchange data with the tools around them, so an order, a shipment or a document is entered once. Tell us what you use and we confirm what is supported today."
+  },
+  "research": {
+    "label": "Our papers and projects",
+    "h1": "Research behind the software.",
+    "lead": "Our papers and projects examine how to build controlled AI and consolidate complex software. Read the proposals, methods and evidence limits, then see how they inform the way we work."
+  },
+  "roadmap": {
+    "h1": "Product roadmap",
+    "lead": "See what’s developed, in development or planned for each package.",
+    "note": "Developed features are implemented. Availability varies by product and setup."
+  },
+  "status": {
+    "label": "MR Software",
+    "h1": "System status",
+    "lead": "This page pings our services directly from your browser and shows whether they respond. Each service has to answer with HTTP 200 and a JSON message that identifies the service, not just a generic page. Data refreshes every 60 seconds."
+  }
+}

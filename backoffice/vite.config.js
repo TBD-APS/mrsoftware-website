@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { checkGraph } from '../js/linking.js';
 import { publicLinkUpdates } from '../tools/prerender-links.mjs';
 import { readSiteContent, mergeHomepageCta, mergeHomepageContact, mergeHomepageStories, applyHomepageCtaHtml, applyHomepageContactHtml, applyHomepageStoriesHtml } from '../tools/render-content.mjs';
+import { readStoriesContent, mergeStories, applyStoriesContent } from '../tools/render-stories.mjs';
+import { readNavHeroesContent, mergeNavHeroes, applyNavHeroesContent } from '../tools/render-nav-heroes.mjs';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const contentRoot = process.env.LINKS_ROOT ?? repo;
@@ -18,6 +20,14 @@ function modulePath() {
 
 function siteContentPath() {
   return join(contentRoot, 'data/site-content.json');
+}
+
+function storiesContentPath() {
+  return join(contentRoot, 'data/stories-content.json');
+}
+
+function navHeroesPath() {
+  return join(contentRoot, 'data/nav-heroes.json');
 }
 
 function indexPath() {
@@ -46,21 +56,27 @@ async function writeGraph(graph) {
   return checked.graph;
 }
 
-async function readSiteContentJson() {
+async function readAllContentJson() {
   const data = await readSiteContent(contentRoot);
+  const stories = await readStoriesContent(contentRoot);
+  const navHeroes = await readNavHeroesContent(contentRoot);
   return {
     homepageCta: mergeHomepageCta(data),
     homepageContact: mergeHomepageContact(data),
     homepageStories: mergeHomepageStories(data),
-    raw: data,
+    stories: mergeStories(stories),
+    navHeroes: mergeNavHeroes(navHeroes),
   };
 }
 
-async function writeSiteContentJson(patch) {
+async function writeAllContentJson(patch) {
   const existing = await readSiteContent(contentRoot);
-  const next = {
-    ...existing,
-  };
+  const next = { ...existing };
+  const existingStories = await readStoriesContent(contentRoot);
+  const nextStories = { ...existingStories };
+  const existingNav = await readNavHeroesContent(contentRoot);
+  const nextNav = { ...existingNav };
+
   if (patch && typeof patch === 'object') {
     if (patch.homepageCta && typeof patch.homepageCta === 'object') {
       next.homepageCta = { ...(existing.homepageCta ?? {}), ...patch.homepageCta };
@@ -71,18 +87,42 @@ async function writeSiteContentJson(patch) {
     if (patch.homepageStories && typeof patch.homepageStories === 'object') {
       next.homepageStories = { ...(existing.homepageStories ?? {}), ...patch.homepageStories };
     }
+    if (patch.stories && typeof patch.stories === 'object') {
+      for (const k of ['storiesIndex', 'theOffer', 'theJob', 'theShipment', 'theChoices']) {
+        if (patch.stories[k] && typeof patch.stories[k] === 'object') {
+          nextStories[k] = { ...(existingStories[k] ?? {}), ...patch.stories[k] };
+        }
+      }
+    }
+    if (patch.navHeroes && typeof patch.navHeroes === 'object') {
+      for (const k of ['integrations', 'research', 'roadmap', 'status']) {
+        if (patch.navHeroes[k] && typeof patch.navHeroes[k] === 'object') {
+          nextNav[k] = { ...(existingNav[k] ?? {}), ...patch.navHeroes[k] };
+        }
+      }
+    }
   }
+
   await mkdir(dirname(siteContentPath()), { recursive: true });
   await writeFile(siteContentPath(), `${JSON.stringify(next, null, 2)}\n`);
+  await mkdir(dirname(storiesContentPath()), { recursive: true });
+  await writeFile(storiesContentPath(), `${JSON.stringify(nextStories, null, 2)}\n`);
+  await mkdir(dirname(navHeroesPath()), { recursive: true });
+  await writeFile(navHeroesPath(), `${JSON.stringify(nextNav, null, 2)}\n`);
+
   const cta = mergeHomepageCta(next);
   const contact = mergeHomepageContact(next);
-  const stories = mergeHomepageStories(next);
+  const storiesHome = mergeHomepageStories(next);
   let html = await readFile(indexPath(), 'utf8');
   html = applyHomepageCtaHtml(html, cta);
   html = applyHomepageContactHtml(html, contact);
-  html = applyHomepageStoriesHtml(html, stories);
+  html = applyHomepageStoriesHtml(html, storiesHome);
   await writeFile(indexPath(), html);
-  return { homepageCta: cta, homepageContact: contact, homepageStories: stories };
+
+  await applyStoriesContent(contentRoot, nextStories);
+  await applyNavHeroesContent(contentRoot, nextNav);
+
+  return { homepageCta: cta, homepageContact: contact, homepageStories: storiesHome, stories: mergeStories(nextStories), navHeroes: mergeNavHeroes(nextNav) };
 }
 
 function readBody(request) {
@@ -129,14 +169,14 @@ function linksApi() {
           }
           if (url.pathname === '/api/site-content') {
             if (request.method === 'GET') {
-              const data = await readSiteContentJson();
-              send(response, 200, JSON.stringify(data.homepageCta), 'application/json; charset=utf-8');
+              const data = await readAllContentJson();
+              send(response, 200, JSON.stringify(data), 'application/json; charset=utf-8');
               return;
             }
             if (request.method === 'POST') {
               const patch = JSON.parse(await readBody(request));
-              const data = await writeSiteContentJson(patch);
-              send(response, 200, JSON.stringify(data.homepageCta), 'application/json; charset=utf-8');
+              const data = await writeAllContentJson(patch);
+              send(response, 200, JSON.stringify(data), 'application/json; charset=utf-8');
               return;
             }
             send(response, 405, 'Method not allowed', 'text/plain; charset=utf-8');

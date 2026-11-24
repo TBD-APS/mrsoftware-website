@@ -1,0 +1,27 @@
+{
+  "storiesIndex": {
+    "h1": "The work, told as a day.",
+    "lead": "A buyer writes. A technician is on site. A trailer is already on the road. The software is built to be there for that day, and to keep the record in one place.",
+    "label": "These are the working days the products are built for. They are not a quote from a named customer, and they are not a measured saving."
+  },
+  "theOffer": {
+    "h1": "The offer is ready before the chat goes quiet.",
+    "lead": "The buyer does not open a new system to ask for frozen fish. They write in WhatsApp. Tradey is built so that message becomes an offer, and the offer waits for a person before it is sent.",
+    "label": "A working day the product is built for. Not a quote from a named customer, and not a measured saving."
+  },
+  "theJob": {
+    "h1": "The office sees what the field already recorded.",
+    "lead": "The job is created in the morning. On site, the checklist is completed and the photos are attached. The approval waits for the office. Nothing is typed a second time to make that true.",
+    "label": "A working day the product is built for. Not a quote from a named customer, and not a measured saving."
+  },
+  "theShipment": {
+    "h1": "The shipment is not rebuilt from an inbox.",
+    "lead": "An independent forwarder books the same kind of road work every week. The confirmation, the packing list, customs and the proof of delivery belong to that shipment. Shippy keeps them there.",
+    "label": "A working day the product is built for. Not a quote from a named customer, and not a measured saving."
+  },
+  "theChoices": {
+    "h1": "We chose the place the work already lives.",
+    "lead": "The products look different because the days are different. The choices underneath are the same: one record, a person on anything that leaves the building, and a public account of how we check the software.",
+    "label": "This page is how we build. It is not a quote from a named customer, and it is not a measured saving."
+  }
+}

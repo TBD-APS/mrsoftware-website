@@ -101,7 +101,7 @@ function App() {
       const message = await result.text();
       if (!result.ok) throw new Error(message);
       setContent(JSON.parse(message));
-      setContentStatus('Saved. Homepage sections updated in index.html.');
+      setContentStatus('Saved. Updated index.html, stories/*.html, integrations/research/roadmap/status hero sections, and data/*.json.');
     } catch (reason) {
       setContentStatus(reason.message || 'Homepage content was not saved.');
     } finally {
@@ -135,13 +135,63 @@ function App() {
           h('label', null, 'Secondary href', h('input', { value: content.homepageContact?.secondaryHref ?? '', onChange: e => setContent({ ...content, homepageContact: { ...content.homepageContact, secondaryHref: e.target.value } }), style: { width: '100%' } }))
         ),
         h('fieldset', { style: { border: '1px solid #ccc', padding: '1rem' } },
-          h('legend', null, 'Stories section'),
+          h('legend', null, 'Nav heroes (Integrations / Research / Roadmap / Status) — saved to data/nav-heroes.json'),
+          h('p', { style: { maxWidth: '60ch' } }, 'Updates hero intro blocks on those four pages. Roadmap note is edited here too.'),
+          h('strong', null, 'Integrations (/integrations/)'),
+          h('label', null, 'Pill', h('input', { value: content.navHeroes?.integrations?.pill ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, integrations: { ...(content.navHeroes?.integrations ?? {}), pill: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.navHeroes?.integrations?.lead ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, integrations: { ...(content.navHeroes?.integrations ?? {}), lead: e.target.value } } }), rows: 3, style: { width: '100%' } })),
+          h('hr'),
+          h('strong', null, 'Research (/research/)'),
+          h('label', null, 'Label', h('input', { value: content.navHeroes?.research?.label ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, research: { ...(content.navHeroes?.research ?? {}), label: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'H1', h('input', { value: content.navHeroes?.research?.h1 ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, research: { ...(content.navHeroes?.research ?? {}), h1: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.navHeroes?.research?.lead ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, research: { ...(content.navHeroes?.research ?? {}), lead: e.target.value } } }), rows: 3, style: { width: '100%' } })),
+          h('hr'),
+          h('strong', null, 'Roadmap (/roadmap/)'),
+          h('label', null, 'H1', h('input', { value: content.navHeroes?.roadmap?.h1 ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, roadmap: { ...(content.navHeroes?.roadmap ?? {}), h1: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.navHeroes?.roadmap?.lead ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, roadmap: { ...(content.navHeroes?.roadmap ?? {}), lead: e.target.value } } }), rows: 3, style: { width: '100%' } })),
+          h('label', null, 'Note', h('textarea', { value: content.navHeroes?.roadmap?.note ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, roadmap: { ...(content.navHeroes?.roadmap ?? {}), note: e.target.value } } }), rows: 2, style: { width: '100%' } })),
+          h('hr'),
+          h('strong', null, 'Status (/status/)'),
+          h('label', null, 'Label', h('input', { value: content.navHeroes?.status?.label ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, status: { ...(content.navHeroes?.status ?? {}), label: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'H1', h('input', { value: content.navHeroes?.status?.h1 ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, status: { ...(content.navHeroes?.status ?? {}), h1: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.navHeroes?.status?.lead ?? '', onChange: e => setContent({ ...content, navHeroes: { ...content.navHeroes, status: { ...(content.navHeroes?.status ?? {}), lead: e.target.value } } }), rows: 4, style: { width: '100%' } }))
+        ),
+        h('fieldset', { style: { border: '1px solid #ccc', padding: '1rem' } },
+          h('legend', null, 'Stories section (homepage)'),
           h('label', null, 'Eyebrow', h('input', { value: content.homepageStories?.eyebrow ?? '', onChange: e => setContent({ ...content, homepageStories: { ...content.homepageStories, eyebrow: e.target.value } }), style: { width: '100%' } })),
           h('label', null, 'Heading', h('input', { value: content.homepageStories?.heading ?? '', onChange: e => setContent({ ...content, homepageStories: { ...content.homepageStories, heading: e.target.value } }), style: { width: '100%' } })),
           h('label', null, 'Lead text', h('textarea', { value: content.homepageStories?.lead ?? '', onChange: e => setContent({ ...content, homepageStories: { ...content.homepageStories, lead: e.target.value } }), rows: 3, style: { width: '100%' } }))
         ),
+        h('fieldset', { style: { border: '1px solid #ccc', padding: '1rem' } },
+          h('legend', null, 'Stories pages (heroes) — saved to data/stories-content.json'),
+          h('p', { style: { maxWidth: '60ch' } }, 'Edits hero sections on /stories/ and the four story pages.'),
+          h('strong', null, '/stories/ (index)'),
+          h('label', null, 'H1', h('input', { value: content.stories?.storiesIndex?.h1 ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, storiesIndex: { ...(content.stories?.storiesIndex ?? {}), h1: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.stories?.storiesIndex?.lead ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, storiesIndex: { ...(content.stories?.storiesIndex ?? {}), lead: e.target.value } } }), rows: 3, style: { width: '100%' } })),
+          h('label', null, 'Label (small text)', h('textarea', { value: content.stories?.storiesIndex?.label ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, storiesIndex: { ...(content.stories?.storiesIndex ?? {}), label: e.target.value } } }), rows: 2, style: { width: '100%' } })),
+          h('hr'),
+          h('strong', null, 'The offer (/stories/the-offer/)'),
+          h('label', null, 'H1', h('input', { value: content.stories?.theOffer?.h1 ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theOffer: { ...(content.stories?.theOffer ?? {}), h1: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.stories?.theOffer?.lead ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theOffer: { ...(content.stories?.theOffer ?? {}), lead: e.target.value } } }), rows: 3, style: { width: '100%' } })),
+          h('label', null, 'Label', h('textarea', { value: content.stories?.theOffer?.label ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theOffer: { ...(content.stories?.theOffer ?? {}), label: e.target.value } } }), rows: 2, style: { width: '100%' } })),
+          h('hr'),
+          h('strong', null, 'The job (/stories/the-job/)'),
+          h('label', null, 'H1', h('input', { value: content.stories?.theJob?.h1 ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theJob: { ...(content.stories?.theJob ?? {}), h1: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.stories?.theJob?.lead ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theJob: { ...(content.stories?.theJob ?? {}), lead: e.target.value } } }), rows: 3, style: { width: '100%' } })),
+          h('label', null, 'Label', h('textarea', { value: content.stories?.theJob?.label ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theJob: { ...(content.stories?.theJob ?? {}), label: e.target.value } } }), rows: 2, style: { width: '100%' } })),
+          h('hr'),
+          h('strong', null, 'The shipment (/stories/the-shipment/)'),
+          h('label', null, 'H1', h('input', { value: content.stories?.theShipment?.h1 ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theShipment: { ...(content.stories?.theShipment ?? {}), h1: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.stories?.theShipment?.lead ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theShipment: { ...(content.stories?.theShipment ?? {}), lead: e.target.value } } }), rows: 3, style: { width: '100%' } })),
+          h('label', null, 'Label', h('textarea', { value: content.stories?.theShipment?.label ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theShipment: { ...(content.stories?.theShipment ?? {}), label: e.target.value } } }), rows: 2, style: { width: '100%' } })),
+          h('hr'),
+          h('strong', null, 'The choices (/stories/the-choices/)'),
+          h('label', null, 'H1', h('input', { value: content.stories?.theChoices?.h1 ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theChoices: { ...(content.stories?.theChoices ?? {}), h1: e.target.value } } }), style: { width: '100%' } })),
+          h('label', null, 'Lead', h('textarea', { value: content.stories?.theChoices?.lead ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theChoices: { ...(content.stories?.theChoices ?? {}), lead: e.target.value } } }), rows: 3, style: { width: '100%' } })),
+          h('label', null, 'Label', h('textarea', { value: content.stories?.theChoices?.label ?? '', onChange: e => setContent({ ...content, stories: { ...content.stories, theChoices: { ...(content.stories?.theChoices ?? {}), label: e.target.value } } }), rows: 2, style: { width: '100%' } }))
+        ),
         h('div', null,
-          h('button', { type: 'button', onClick: saveContent, disabled: contentBusy, 'aria-busy': contentBusy ? 'true' : undefined }, 'Save homepage content'),
+          h('button', { type: 'button', onClick: saveContent, disabled: contentBusy, 'aria-busy': contentBusy ? 'true' : undefined }, 'Save content (homepage + stories + nav heroes)'),
           h('p', { 'aria-live': 'polite' }, contentStatus))
       ) : h('p', { 'aria-busy': 'true' }, 'Loading homepage content…')),
     h('h2', null, 'Link graph (related links)'),
