@@ -4,7 +4,8 @@ import { HttpError, cvrNumber, readJson, recordId, validateCatalog, validateCust
 import { cvrClientFromEnv } from './cvr.mjs';
 import { municipalityCodes } from './lead-scoring.mjs';
 import { byScore, toLead, usableCompany } from './leads.mjs';
-import { leadPresets } from '../shared/lead-presets.mjs';
+import { employeeBands, leadPresets } from '../shared/lead-presets.mjs';
+import { toCsv } from './csv.mjs';
 
 const productionIdentity = accessVerifier();
 const companyOrigin = 'https://mrsoftware.dk';
@@ -49,6 +50,19 @@ function allowCompanyEnquiry(request, response) {
 }
 
 const isoToday = () => new Date().toISOString().slice(0, 10);
+const bandLabels = new Map(employeeBands.map(band => [band.code, band.label]));
+const productLabels = { workslip: 'Workslip', tradey: 'Tradey', shippy: 'Shippy' };
+const titleCase = text => text ? text[0].toUpperCase() + text.slice(1) : '';
+
+function csvResponse(kind, body) {
+  return protectedResponse(new Response(body, { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="${kind}-${isoToday()}.csv"` } }));
+}
+
+const leadColumns = [
+  ['Company', lead => lead.name], ['CVR', lead => lead.cvr], ['Industry code', lead => lead.industryCode], ['Industry', lead => lead.industryText],
+  ['Employees', lead => bandLabels.get(lead.employees) ?? ''], ['Address', lead => lead.address], ['Postcode', lead => lead.postcode], ['City', lead => lead.city],
+  ['Website', lead => lead.website], ['Phone', lead => lead.phone], ['Score', lead => lead.score], ['Reason', lead => lead.reason], ['LinkedIn search', lead => lead.linkedinUrl],
+].map(([header, value]) => ({ header, value }));
 
 export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv } = {}) {
   return {
@@ -126,6 +140,49 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           requireJsonWrite(request, url);
           const input = validateCatalog(await readJson(request));
           return json({ catalog: await createStore(env.DB).updateCatalog(input, actor) });
+        }
+
+        // Downloads: the same data as the screens, as CSV for Excel. Each download is recorded.
+        if (path === '/api/backoffice/leads.csv') {
+          if (request.method !== 'GET') methodNotAllowed();
+          const search = validateLeadSearch(url.searchParams);
+          const found = await cvrClient(env).search({ codes: search.codes, municipalityCodes: municipalityCodes(search.regions, search.municipalities), sizes: search.sizes, limit: 100, preset: leadPresets[search.product] });
+          const store = createStore(env.DB);
+          const companies = found.companies.filter(usableCompany);
+          const saved = await store.customersByCvr(companies.map(company => company.cvr));
+          const today = isoToday();
+          const leads = companies.map(company => toLead(company, search.product, saved.get(company.cvr), today)).sort(byScore);
+          await store.recordExport({ kind: 'leads', count: leads.length }, actor);
+          return csvResponse('leads', toCsv(leadColumns, leads));
+        }
+
+        if (path === '/api/backoffice/customers.csv' || path === '/api/backoffice/opportunities.csv') {
+          if (request.method !== 'GET') methodNotAllowed();
+          const kind = path.includes('customers') ? 'customers' : 'opportunities';
+          const store = createStore(env.DB);
+          const link = (view, id) => `https://${configuredHost(env.BACKOFFICE_HOST)}/backoffice/?view=${view}&id=${id}`;
+          const customers = await store.exportRows('customers');
+          let body, count;
+          if (kind === 'customers') {
+            const names = customer => customer.contacts.map(contact => contact.name).filter(Boolean).join(', ');
+            body = toCsv([
+              ['Company', customer => customer.name], ['CVR', customer => customer.cvr ?? ''], ['Contact names', names],
+              ['Contact emails', customer => customer.contacts.map(contact => contact.email).filter(Boolean).join(', ')],
+              ['Contact phones', customer => customer.contacts.map(contact => contact.phone).filter(Boolean).join(', ')],
+              ['Notes', customer => customer.notes], ['Record link', customer => link('customer', customer.id)],
+            ].map(([header, value]) => ({ header, value })), customers);
+            count = customers.length;
+          } else {
+            const opportunities = await store.exportRows('opportunities');
+            const company = new Map(customers.map(customer => [customer.id, customer.name]));
+            body = toCsv([
+              ['Title', item => item.title], ['Company', item => company.get(item.customerId) ?? ''], ['Product', item => productLabels[item.product] ?? item.product],
+              ['Stage', item => titleCase(item.stage)], ['Next follow-up', item => item.nextFollowUp ?? ''], ['Notes', item => item.notes], ['Record link', item => link('opportunity', item.id)],
+            ].map(([header, value]) => ({ header, value })), opportunities);
+            count = opportunities.length;
+          }
+          await store.recordExport({ kind, count }, actor);
+          return csvResponse(kind, body);
         }
 
         if (path === '/api/backoffice/leads' && request.method === 'POST') {

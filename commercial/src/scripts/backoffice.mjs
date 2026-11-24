@@ -25,6 +25,9 @@ moreToggle?.addEventListener('click', () => {
 });
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && moreToggle && !moreMenu.hidden) { closeMore(); moreToggle.focus(); } });
 
+// A plain download link: the document click handler leaves links with `download` to the browser.
+const csvLink = path => el('a', { href: path, className: 'button secondary', download: '' }, 'Download CSV');
+
 function navigate(url) {
   if (url === location.pathname + location.search) return;
   history.pushState(null, '', url);
@@ -144,13 +147,13 @@ async function load() {
         actions = [link('New customer', 'customer-new', {}, 'button primary')]; content = [todayView(data, params)]; break;
       case 'leads':
         title = 'Find leads'; description = 'Companies from the Danish company register that fit a product. Companies that do not want marketing are never shown.';
-        content = [leadSearchForm(params, navigate), leadsView(leads, leadsError, product, saveLead, () => load())]; break;
+        content = [leadSearchForm(params, navigate), leadsView(leads, leadsError, product, saveLead, () => load(), leadQuery(params))]; break;
       case 'lead':
         title = lead.name; description = 'From the Danish company register. Nothing is saved until you save it as a lead.';
         content = leadView(lead, product, saveLead); break;
       case 'customers':
         title = 'Customers'; description = 'Companies, contacts and the work you are discussing.';
-        actions = [link('New customer', 'customer-new', {}, 'button primary')]; content = customersView(state, navigate); break;
+        actions = [link('New customer', 'customer-new', {}, 'button primary'), csvLink('/api/backoffice/customers.csv')]; content = customersView(state, navigate); break;
       case 'customer-new':
       case 'customer-edit':
         title = item ? 'Edit customer' : 'New customer';
@@ -161,7 +164,7 @@ async function load() {
         content = customerView(item, state); break;
       case 'sales':
         title = 'Sales'; description = 'Keep each opportunity moving with a clear next step.';
-        actions = [link('New opportunity', 'opportunity-new', {}, 'button primary')]; content = salesView(state, navigate); break;
+        actions = [link('New opportunity', 'opportunity-new', {}, 'button primary'), csvLink('/api/backoffice/opportunities.csv')]; content = salesView(state, navigate); break;
       case 'opportunity-new':
       case 'opportunity-edit':
         title = item ? 'Edit opportunity' : 'New opportunity';

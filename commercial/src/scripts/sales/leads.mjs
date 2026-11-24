@@ -103,13 +103,14 @@ function leadActions(lead, product, onSave) {
 
 const facts = lead => [`CVR ${lead.cvr}`, lead.industryText && `${lead.industryText} (${lead.industryCode})`, bandLabel.has(lead.employees) && `${bandLabel.get(lead.employees)} employees`, lead.city].filter(Boolean).join(' · ');
 
-export function leadsView(search, error, product, onSave, retry) {
+export function leadsView(search, error, product, onSave, retry, csvQuery = '') {
   if (error) return section('Results', el('div', { className: 'load-error', role: 'alert' }, el('p', {}, error.message), action('Try again', retry)));
   if (!search) return section('Results', muted('Choose a product and at least one region, then search.'));
   const { results, total } = search;
   if (!results.length) return section('Results', muted('No companies match. Try more regions or sizes.'));
   const summary = `${results.length} ${results.length === 1 ? 'company' : 'companies'}, best first.` + (Number.isFinite(total) && total > results.length ? ` About ${total} match in the register; choose sizes to see others.` : '');
-  return section('Results', muted(summary), el('div', { className: 'record-list' }, results.map(lead => el('article', { className: 'record-card lead-card', 'data-href': href('lead', { cvr: lead.cvr, product }) },
+  const download = el('a', { className: 'button secondary', href: '/api/backoffice/leads.csv?' + csvQuery, download: '' }, 'Download CSV');
+  return section('Results', el('div', { className: 'results-head' }, muted(summary), download), el('div', { className: 'record-list' }, results.map(lead => el('article', { className: 'record-card lead-card', 'data-href': href('lead', { cvr: lead.cvr, product }) },
     el('h3', {}, link(lead.name, 'lead', { cvr: lead.cvr, product })),
     el('p', { className: 'card-meta' }, facts(lead)),
     el('p', { className: 'lead-score' }, el('strong', {}, `Score ${lead.score}`), ' · ', lead.reason),

@@ -488,3 +488,18 @@ test('a company without a website shows no website button and no stray text', as
   await expect(holm.locator('.lead-actions')).toHaveText(/^Save as lead\s*Find on LinkedIn$/);
   await expect(holm.getByRole('link', { name: /website/i })).toHaveCount(0);
 });
+
+test('Leads, Customers and Sales offer a CSV download of what they show', async ({ page, app }) => {
+  await page.goto(leadsRoute(app));
+  await ready(page);
+  const leadsLink = page.getByRole('link', { name: 'Download CSV' });
+  await expect(leadsLink).toHaveAttribute('href', '/api/backoffice/leads.csv?product=workslip&regions=1082');
+  await expect(leadsLink).toHaveAttribute('download', '');
+  const response = await page.request.get(new URL(await leadsLink.getAttribute('href'), page.url()).href);
+  expect(response.headers()['content-type']).toBe('text/csv; charset=utf-8');
+  for (const [view, href] of [['customers', '/api/backoffice/customers.csv'], ['sales', '/api/backoffice/opportunities.csv']]) {
+    await page.goto(route(app, view));
+    await ready(page);
+    await expect(page.getByRole('link', { name: 'Download CSV' })).toHaveAttribute('href', href);
+  }
+});
