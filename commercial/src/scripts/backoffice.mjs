@@ -167,6 +167,9 @@ async function load() {
     }
     const saveLead = formSave('/api/backoffice/leads', 'POST', response => response.created ? href('opportunity', { id: response.opportunity.id }) : href('customer', { id: response.customer.id }),
       (data, response) => response.created ? 'Lead saved. It is in Today on ' + dateLabel(data.nextFollowUp) + '.' : 'Already in backoffice. Nothing new was saved.');
+    // A website check reads up to three pages through Firecrawl, so it may take longer than a save.
+    const checkWebsite = cvr => apiJson(`/api/backoffice/leads/${cvr}/website`, { method: 'POST', body: {}, timeoutMs: 60_000 })
+      .catch(error => { if ([401, 403].includes(error.status)) showError(error); throw error; });
     if (run !== generation) return;
     email.textContent = session.email;
     let title, description = '', actions = [], content = [], savedMessage = '';
@@ -176,10 +179,10 @@ async function load() {
         actions = [link('New customer', 'customer-new', {}, 'button primary')]; content = [todayView(data, params)]; break;
       case 'leads':
         title = 'Find leads'; description = 'Companies from the Danish company register that fit a product. Companies that do not want marketing are never shown.';
-        content = [leadSearchForm(params, navigate), leadsView(leads, leadsError, product, saveLead, () => load(), downloadButton('/api/backoffice/leads.csv?' + leadQuery(params)))]; break;
+        content = [leadSearchForm(params, navigate), leadsView(leads, leadsError, product, saveLead, () => load(), downloadButton('/api/backoffice/leads.csv?' + leadQuery(params)), checkWebsite)]; break;
       case 'lead':
         title = lead.name; description = 'From the Danish company register. Nothing is saved until you save it as a lead.';
-        content = leadView(lead, product, saveLead); break;
+        content = leadView(lead, product, saveLead, checkWebsite); break;
       case 'customers':
         title = 'Customers'; description = 'Companies, contacts and the work you are discussing.';
         actions = [link('New customer', 'customer-new', {}, 'button primary'), downloadButton('/api/backoffice/customers.csv')]; content = customersView(state, navigate); break;
