@@ -662,13 +662,29 @@ a:hover > .arrow { transform: translateX(4px); }
 .stat.ok .value, .stat .value.ok { color: var(--ok); }
 .stat.warn .value, .stat .value.warn { color: var(--warn); }
 .stat.bad .value, .stat .value.bad { color: var(--bad); }
-.table-wrap { overflow-x: auto; margin: var(--s2) 0 var(--s3); }
+/* Tables in .table-wrap: a header row set apart from the data, zebra rows, and a visible edge while
+   a table is wider than its box (a phone). The two edge shadows sit under the cells; paper covers
+   that scroll with the table hide each shadow once that end is reached. The stripes are
+   translucent so a shadow still shows through them. */
+.table-wrap {
+  overflow-x: auto;
+  margin: var(--s2) 0 var(--s3);
+  background:
+    linear-gradient(90deg, var(--paper) 40%, rgba(255, 252, 247, 0)) left / 32px 100% no-repeat local,
+    linear-gradient(270deg, var(--paper) 40%, rgba(255, 252, 247, 0)) right / 32px 100% no-repeat local,
+    linear-gradient(90deg, rgba(24, 21, 19, .26), rgba(24, 21, 19, 0)) left / 18px 100% no-repeat,
+    linear-gradient(270deg, rgba(24, 21, 19, .26), rgba(24, 21, 19, 0)) right / 18px 100% no-repeat,
+    var(--paper);
+}
 .table-wrap table { min-width: 520px; }
 table { width: 100%; border-collapse: collapse; font-size: .875rem; }
 .page-body > table, .page-body section > table { margin: var(--s2) 0 var(--s3); }
 th, td { padding: 12px 16px 12px 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--hairline-light); }
 th { color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); font-weight: 400; }
-td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.table-wrap :is(th, td) { padding: 10px 12px; }
+.table-wrap thead th { color: var(--ink); font-family: var(--sans); font-weight: 600; line-height: 1.4; vertical-align: bottom; background: rgba(24, 21, 19, .06); border-bottom: 2px solid var(--ink); }
+.table-wrap tbody tr:nth-child(even) { background: rgba(24, 21, 19, .035); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .badge { padding: 2px 10px; display: inline-block; font-family: var(--mono); font-size: var(--fs-small); white-space: nowrap; border: 1px solid currentColor; border-radius: 999px; }
 .badge.ok { color: var(--ok); }
 .badge.warn { color: var(--warn); }
