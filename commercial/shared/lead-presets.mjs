@@ -49,3 +49,11 @@ export const leadPresets = {
     source: 'https://mrsoftware.dk/products/shippy/',
   },
 };
+
+// Systems a lead's own website may name, matched as whole words by the website check. A name
+// on a company's site suggests what it uses today. William reviews these lists; change them here only.
+export const websiteSystems = {
+  workslip: ['Ordrestyring', 'Apacta', 'Minuba', 'E-Komplet', 'Intempus'],
+  tradey: ['Uniconta', 'e-conomic', 'Business Central', 'Navision', 'Visma', 'SAP Business One', 'Odoo'],
+  shippy: ['CargoWise', 'nShift', 'Consignor', 'Shipmondo', 'Webshipper'],
+};

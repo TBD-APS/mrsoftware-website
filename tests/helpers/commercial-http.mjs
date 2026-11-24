@@ -9,9 +9,9 @@ const contentTypes = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascr
 
 // Real application + real ephemeral D1. Identity substitution is confined to this
 // test helper; the production application has no test flag or header bypass.
-export async function startCommercialSite({ root = defaultRoot, verifyIdentity = async () => ({ sub: 'synthetic-owner', email: 'william@example.test' }), cvrClient, assetOverrides = new Map() } = {}) {
+export async function startCommercialSite({ root = defaultRoot, verifyIdentity = async () => ({ sub: 'synthetic-owner', email: 'william@example.test' }), cvrClient, firecrawlClient, clock, assetOverrides = new Map() } = {}) {
   const cleanup = [];
-  const harness = await createCommercialHarness({ after: callback => cleanup.push(callback) }, { verifyIdentity, ...(cvrClient ? { cvrClient } : {}) });
+  const harness = await createCommercialHarness({ after: callback => cleanup.push(callback) }, { verifyIdentity, ...(cvrClient ? { cvrClient } : {}), ...(firecrawlClient ? { firecrawlClient } : {}), ...(clock ? { clock } : {}) });
   const { app, env } = harness;
   const assets = async request => {
     const url = new URL(request.url);

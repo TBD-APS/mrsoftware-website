@@ -101,7 +101,9 @@ does not authorize them.
 ## Approved release order
 
 1. After approval, provision a dedicated **mrsoftware-sales** D1 and apply the
-   reviewed `commercial/migrations/0001_sales.sql`. Do not copy sample sales data.
+   reviewed `commercial/migrations/0001_sales.sql`, then `0002_website_checks.sql`.
+   Do not copy sample sales data. The release preflight stops until every table from
+   both migrations exists.
    Create a dedicated self-hosted Access app on the entire private hostname with
    exactly one reusable email allow policy listing every privately confirmed sales
    login. The public `wp@mrsoftware.dk` contact is not William's login. Add no other identities or
@@ -147,6 +149,21 @@ The deployed Worker also checks its own explicit allowlist on every private
 request; changing Access alone does not complete the user change. Keep existing
 users during an addition and verify both signed identities, including their
 separate audit attribution, before release.
+
+## Lead finder and website check secrets
+
+These are Worker secrets, set by Rasmus with `wrangler secret put` on
+`mrsoftware-commercial`. They survive releases because the release replaces only
+Worker vars. Until they exist, the routes that need them answer 503 with a plain
+"not connected yet" message and spend nothing.
+
+- `CVR_ENDPOINT`, `CVR_USERNAME` and `CVR_PASSWORD`: the company register for
+  Find leads. The endpoint must start with `https://`.
+- `FIRECRAWL_API_KEY`: from Key Vault `kv-mrsoftwarev2-live`, secret
+  `firecrawl-api-key`.
+- `FIRECRAWL_MONTHLY_CREDITS`: a whole number above 0 that caps the website
+  check's Firecrawl credits per calendar month (UTC). Keep it below the Firecrawl
+  plan's credits, and keep auto-recharge off in the Firecrawl account.
 
 ## Initial release and uncertainty
 

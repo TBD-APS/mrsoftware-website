@@ -68,8 +68,8 @@ export function createStore(db) {
   async function state() {
     // One batch gives a consistent workspace snapshot as well as bounded reads.
     const collections = Object.keys(tables);
-    // Audit-only events (lead searches, downloads) never count toward the workspace activity window.
-    const auditOnly = kind => kind === 'events' ? "WHERE json_extract(document, '$.recordType') NOT IN ('leadSearch', 'export') " : '';
+    // Audit-only events (lead searches, downloads, website checks) never count toward the workspace activity window.
+    const auditOnly = kind => kind === 'events' ? "WHERE json_extract(document, '$.recordType') NOT IN ('leadSearch', 'export', 'websiteCheck') " : '';
     const results = await db.batch([...collections.map(kind => db.prepare(`SELECT document FROM ${tables[kind]} ${auditOnly(kind)}ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(stateLimit + 1)), catalogStatement()]);
     const output = { truncated: false };
     for (const [index, kind] of collections.entries()) {
@@ -270,5 +270,43 @@ export function createStore(db) {
     await insertEvent(db, event(actor, 'leadSearch', crypto.randomUUID(), 'searched', now, details)).run();
   }
 
-  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry, customersByCvr, recordLeadSearch, saveLead, exportRows, recordExport };
+  // Firecrawl credits per calendar month. A reservation is one conditional upsert, so parallel
+  // checks cannot pass the cap together. The SELECT's WHERE also refuses a first reservation
+  // that is already over the cap.
+  async function reserveCredits(month, credits, cap) {
+    const result = await db.prepare(`INSERT INTO sales_firecrawl_usage (month, credits) SELECT ?1, ?2 WHERE ?2 <= ?3
+      ON CONFLICT(month) DO UPDATE SET credits = credits + excluded.credits
+      WHERE sales_firecrawl_usage.credits + excluded.credits <= ?3`).bind(month, credits, cap).run();
+    return result.meta.changes === 1;
+  }
+
+  // Provider costs that Firecrawl reports after a call; they are counted even past the cap.
+  async function addCredits(month, credits) {
+    if (!(credits > 0)) return;
+    await db.prepare(`INSERT INTO sales_firecrawl_usage (month, credits) VALUES (?1, ?2)
+      ON CONFLICT(month) DO UPDATE SET credits = credits + excluded.credits`).bind(month, credits).run();
+  }
+
+  async function creditsUsed(month) {
+    return (await db.prepare('SELECT credits FROM sales_firecrawl_usage WHERE month = ?').bind(month).first())?.credits ?? 0;
+  }
+
+  async function websiteChecks(cvrs) {
+    const unique = [...new Set(cvrs)];
+    if (!unique.length) return new Map();
+    const { results } = await db.prepare(`SELECT document FROM sales_website_checks WHERE cvr IN (${unique.map(() => '?').join(', ')})`).bind(...unique).all();
+    return new Map(results.map(parseRow).map(check => [check.cvr, check]));
+  }
+
+  async function saveWebsiteCheck(check, credits, actor) {
+    const now = new Date().toISOString();
+    await db.batch([
+      db.prepare(`INSERT INTO sales_website_checks (cvr, checked_at, document) VALUES (?1, ?2, ?3)
+        ON CONFLICT(cvr) DO UPDATE SET checked_at = excluded.checked_at, document = excluded.document`).bind(check.cvr, check.checkedAt, JSON.stringify(check)),
+      insertEvent(db, event(actor, 'websiteCheck', crypto.randomUUID(), 'checked', now, { cvr: check.cvr, credits })),
+    ]);
+    return check;
+  }
+
+  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry, customersByCvr, recordLeadSearch, saveLead, exportRows, recordExport, reserveCredits, addCredits, creditsUsed, websiteChecks, saveWebsiteCheck };
 }

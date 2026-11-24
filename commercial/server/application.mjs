@@ -2,6 +2,8 @@ import { accessVerifier, identitySettings, validIdentity } from './identity.mjs'
 import { createStore } from './store.mjs';
 import { HttpError, cvrNumber, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateLeadProduct, validateLeadSave, validateLeadSearch, validateOpportunity, validateQuote, validateQuoteUpdate, validateTodayQuery } from './validation.mjs';
 import { cvrClientFromEnv } from './cvr.mjs';
+import { firecrawlClientFromEnv } from './firecrawl.mjs';
+import { runWebsiteCheck } from './website-check.mjs';
 import { municipalityCodes } from './lead-scoring.mjs';
 import { byScore, toLead, usableCompany } from './leads.mjs';
 import { employeeBands, leadPresets } from '../shared/lead-presets.mjs';
@@ -64,7 +66,17 @@ const leadColumns = [
   ['Website', lead => lead.website], ['Phone', lead => lead.phone], ['Score', lead => lead.score], ['Reason', lead => lead.reason], ['LinkedIn search', lead => lead.linkedinUrl],
 ].map(([header, value]) => ({ header, value }));
 
-export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv } = {}) {
+const freshDays = 30;
+
+// The monthly Firecrawl cap is a Worker secret Rasmus sets; anything but a whole number above 0
+// keeps the website check off.
+function monthlyCredits(env) {
+  const cap = Number(env.FIRECRAWL_MONTHLY_CREDITS);
+  if (typeof env.FIRECRAWL_MONTHLY_CREDITS !== 'string' || !Number.isSafeInteger(cap) || cap <= 0) throw new HttpError(503, 'Website check is not connected yet.');
+  return cap;
+}
+
+export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, clock = () => new Date() } = {}) {
   return {
     async fetch(request, env = {}) {
       try {
@@ -210,7 +222,8 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           const store = createStore(env.DB);
           const saved = await store.customersByCvr(companies.map(company => company.cvr));
           const today = isoToday();
-          const results = companies.map(company => toLead(company, search.product, saved.get(company.cvr), today)).sort(byScore);
+          const checks = await store.websiteChecks(companies.map(company => company.cvr));
+          const results = companies.map(company => ({ ...toLead(company, search.product, saved.get(company.cvr), today), websiteCheck: checks.get(company.cvr) ?? null })).sort(byScore);
           await store.recordLeadSearch({ ...search, count: results.length }, actor);
           return json({ results, search, total: found.total });
         }
@@ -222,8 +235,37 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           const cvr = cvrNumber(leadDetail[1]);
           const company = await cvrClient(env).company(cvr);
           if (!usableCompany(company)) throw new HttpError(404, 'Company was not found in the register.');
-          const saved = await createStore(env.DB).customersByCvr([cvr]);
-          return json({ lead: toLead(company, product, saved.get(cvr), isoToday()) });
+          const store = createStore(env.DB);
+          const saved = await store.customersByCvr([cvr]);
+          const checks = await store.websiteChecks([cvr]);
+          return json({ lead: { ...toLead(company, product, saved.get(cvr), isoToday()), websiteCheck: checks.get(cvr) ?? null } });
+        }
+
+        // The website check reads the company's own site through Firecrawl. The URL comes only
+        // from CVR, protected companies are never checked, and a check younger than 30 days is
+        // returned without spending credits.
+        const websitePath = /^\/api\/backoffice\/leads\/(\d{8})\/website$/.exec(path);
+        if (websitePath) {
+          if (!['GET', 'POST'].includes(request.method)) methodNotAllowed();
+          const cap = monthlyCredits(env);
+          const firecrawl = firecrawlClient(env);
+          const cvr = cvrNumber(websitePath[1]);
+          const store = createStore(env.DB);
+          if (request.method === 'GET') {
+            const check = (await store.websiteChecks([cvr])).get(cvr);
+            if (!check) throw new HttpError(404, 'This website has not been checked yet.');
+            return json({ check });
+          }
+          requireJsonWrite(request, url);
+          const input = await readJson(request);
+          if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).length) throw new HttpError(400, 'The website check takes no fields.');
+          const company = await cvrClient(env).company(cvr);
+          if (!usableCompany(company)) throw new HttpError(404, 'Company was not found in the register.');
+          const now = clock();
+          const stored = (await store.websiteChecks([cvr])).get(cvr);
+          if (stored && now.getTime() - Date.parse(stored.checkedAt) < freshDays * 86400000) return json({ check: stored, spent: false });
+          const check = await runWebsiteCheck({ company, firecrawl, store, cap, actor, now });
+          return json({ check, spent: true }, 201);
         }
 
         const records = /^\/api\/backoffice\/(customers|opportunities|quotes)(?:\/([^/]+))?$/.exec(path);

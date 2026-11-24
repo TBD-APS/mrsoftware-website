@@ -1,8 +1,8 @@
 export class ApiError extends Error {
   constructor(message, status = 0) { super(message); this.status = status; }
 }
-export async function apiJson(path, { method = 'GET', body, signal } = {}) {
-  const timeout = AbortSignal.timeout(15_000);
+export async function apiJson(path, { method = 'GET', body, signal, timeoutMs = 15_000 } = {}) {
+  const timeout = AbortSignal.timeout(timeoutMs);
   let response;
   try {
     response = await fetch(path, {

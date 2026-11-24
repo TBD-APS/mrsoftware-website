@@ -489,6 +489,75 @@ test('a company without a website shows no website button and no stray text', as
   await expect(holm.getByRole('link', { name: /website/i })).toHaveCount(0);
 });
 
+const leadRoute = app => app.privateBase + 'backoffice/?view=lead&cvr=12345678&product=workslip';
+
+test('Check website on the lead page shows the facts with links, and the busy state ends', async ({ page, app }) => {
+  await page.goto(leadRoute(app));
+  await ready(page);
+  await page.getByRole('button', { name: 'Check website of Lund Tømrer ApS' }).click();
+  await expect(page.getByRole('heading', { level: 2, name: /From the website/ })).toBeVisible();
+  await expect(page.locator('main')).toContainText('Tømrer i Aarhus siden 2014. Vi bygger tage, altaner og tilbygninger.');
+  await expect(page.getByRole('link', { name: 'Mentions Apacta' })).toHaveAttribute('href', 'https://www.lund-toemrer.dk/');
+  await expect(page.getByRole('link', { name: 'Has a jobs page' })).toHaveAttribute('href', 'https://www.lund-toemrer.dk/job/toemrer');
+  await expect(page.getByRole('button', { name: /Check website/ })).toHaveCount(0);
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+  await page.reload();
+  await ready(page);
+  await expect(page.getByRole('heading', { level: 2, name: /From the website/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Check website/ })).toHaveCount(0);
+});
+
+test('Check website on a card shows one line that opens the lead', async ({ page, app }) => {
+  await page.goto(leadsRoute(app));
+  await ready(page);
+  const lund = page.locator('.lead-card', { hasText: 'Lund Tømrer ApS' });
+  await lund.getByRole('button', { name: 'Check website of Lund Tømrer ApS' }).click();
+  await expect(lund.locator('.website-facts-line')).toHaveText('Mentions Apacta · Has a jobs page');
+  expect(page.url()).toContain('view=leads');
+  await lund.getByRole('link', { name: 'Mentions Apacta · Has a jobs page' }).click();
+  await ready(page);
+  await expect(page).toHaveURL(/view=lead&cvr=12345678/);
+  await expect(page.getByRole('heading', { level: 2, name: /From the website/ })).toBeVisible();
+});
+
+test('a failed website check shows the reason and the button works again', async ({ page }) => {
+  const { firecrawlPages, fixtureFirecrawlClient } = await import('../helpers/firecrawl-fixture.mjs');
+  const pages = firecrawlPages();
+  pages.set('https://www.lund-toemrer.dk/', { success: true, data: { markdown: '', links: [], metadata: { statusCode: 503 } } });
+  const site = await startCommercialSite({ firecrawlClient: fixtureFirecrawlClient({ pages }) });
+  try {
+    await page.goto(leadRoute(site));
+    await ready(page);
+    const button = page.getByRole('button', { name: 'Check website of Lund Tømrer ApS' });
+    await button.click();
+    await expect(page.getByRole('alert')).toContainText('The website did not answer. Try again later.');
+    await expect(button).toBeEnabled();
+    await expect(button).toHaveText('Check website');
+    await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+  } finally { await site.close(); }
+});
+
+test('a check older than 30 days is shown with its date and can be checked again', async ({ page, app }) => {
+  const old = new Date(Date.now() - 40 * 86400000).toISOString();
+  const stored = { cvr: '12345678', description: 'Gammel tekst.', systems: [], jobsPage: null, pages: [{ url: 'https://www.lund-toemrer.dk/', status: 200 }], checkedAt: old };
+  await app.db.prepare('INSERT INTO sales_website_checks (cvr, checked_at, document) VALUES (?, ?, ?)').bind('12345678', old, JSON.stringify(stored)).run();
+  await page.goto(leadRoute(app));
+  await ready(page);
+  await expect(page.locator('main')).toContainText('Gammel tekst.');
+  await expect(page.locator('main')).toContainText('Nothing from our lists on the website.');
+  await page.getByRole('button', { name: 'Check again of Lund Tømrer ApS' }).click();
+  await expect(page.getByRole('link', { name: 'Mentions Apacta' })).toBeVisible();
+  await expect(page.locator('main')).not.toContainText('Gammel tekst.');
+  await expect(page.getByRole('button', { name: /Check again/ })).toHaveCount(0);
+});
+
+test('a company without a website has no Check website button', async ({ page, app }) => {
+  await page.goto(leadsRoute(app));
+  await ready(page);
+  await expect(page.locator('.lead-card', { hasText: 'Holm Byg A/S' }).getByRole('button', { name: /Check website/ })).toHaveCount(0);
+  await expect(page.locator('.lead-card', { hasText: 'Lund Tømrer ApS' }).getByRole('button', { name: /Check website/ })).toHaveCount(1);
+});
+
 test('Leads, Customers and Sales download a CSV file, and a failed download is shown on the page', async ({ page }) => {
   const { fixtureCvrClient } = await import('../helpers/cvr-fixture.mjs');
   const { HttpError } = await import('../../commercial/server/validation.mjs');

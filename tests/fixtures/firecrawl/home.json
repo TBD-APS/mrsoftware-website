@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "data": {
+    "markdown": "# Lund Tømrer ApS\n\nVi er tømrere i Aarhus. Vores mester Jens svarer altid hurtigt på mail.\n\nVi registrerer timer og opgaver i Apacta, så kunden altid kan se, hvor langt vi er.\n\n[Om os](https://www.lund-toemrer.dk/om-os) · [Job](https://www.lund-toemrer.dk/job/toemrer) · [Facebook](https://www.facebook.com/lundtoemrer)\n\nLund Tømrer ApS · Testvej 1 · 8000 Aarhus C · CVR 12345678",
+    "links": [
+      "https://www.lund-toemrer.dk/om-os",
+      "https://www.lund-toemrer.dk/job/toemrer",
+      "https://www.facebook.com/lundtoemrer",
+      "https://www.lund-toemrer.dk/"
+    ],
+    "metadata": {
+      "language": "da",
+      "sourceURL": "https://www.lund-toemrer.dk/",
+      "url": "https://www.lund-toemrer.dk/",
+      "statusCode": 200,
+      "contentType": "text/html",
+      "title": "Lund Tømrer ApS",
+      "description": "Tømrer i Aarhus siden 2014. Vi bygger tage, altaner og tilbygninger.",
+      "ogDescription": "Lund Tømrer i Aarhus."
+    }
+  }
+}

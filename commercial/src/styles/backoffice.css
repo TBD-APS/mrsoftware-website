@@ -121,6 +121,13 @@ legend { padding: 0 8px; font-size: .875rem; }
 .download { display: inline-flex; flex-direction: column; gap: 4px; max-width: 100%; }
 .download-error { margin: 0; color: var(--bad); font-size: var(--fs-small); max-width: 36ch; }
 .lead-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--s2); }
+.website-error { margin: var(--s1) 0 0; color: var(--bad); font-size: var(--fs-small); }
+.website-facts-line { margin: var(--s2) 0 0; overflow-wrap: anywhere; }
+.website-description { margin: 0 0 var(--s2); padding-left: var(--s2); border-left: 3px solid var(--line); overflow-wrap: anywhere; }
+.website-description p { margin: 0; }
+.website-links { margin: 0; padding-left: 1.2em; }
+.website-links li { padding: 4px 0; }
+.website-links a { display: inline-block; min-height: 24px; overflow-wrap: anywhere; }
 .lead-save { display: grid; gap: var(--s2); max-width: 420px; margin-top: var(--s2); cursor: auto; }
 .nav-more { display: none; position: relative; }
 .nav-more-toggle { appearance: none; background: none; border: 0; font: inherit; cursor: pointer; }

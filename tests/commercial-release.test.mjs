@@ -10,7 +10,8 @@ const applicationId = '44444444-4444-4444-8444-444444444444';
 const next = '22222222-2222-4222-8222-222222222222';
 const previous = '11111111-1111-4111-8111-111111111111';
 const releaseEnv = { GITHUB_ACTIONS: 'true', GITHUB_SHA: 'b'.repeat(40), CLOUDFLARE_ACCOUNT_ID: '9dd0c66615faab3122f01b14ebe3bbdd', CLOUDFLARE_API_TOKEN: 'synthetic-token', COMMERCIAL_D1_DATABASE_ID: databaseId, COMMERCIAL_ACCESS_APP_ID: applicationId, COMMERCIAL_ACCESS_ISSUER: 'https://release-fixture.cloudflareaccess.com', COMMERCIAL_ACCESS_AUDIENCE: 'a'.repeat(64), COMMERCIAL_ALLOWED_EMAILS: 'owner@synthetic-company.dk', COMMERCIAL_RELEASE_MODE: 'initial' };
-const tables = ['sales_catalog', 'sales_customers', 'sales_events', 'sales_enquiries', 'sales_enquiry_limits', 'sales_opportunities', 'sales_quotes'];
+const firstMigration = ['sales_catalog', 'sales_customers', 'sales_events', 'sales_enquiries', 'sales_enquiry_limits', 'sales_opportunities', 'sales_quotes'];
+const tables = [...firstMigration, 'sales_website_checks', 'sales_firecrawl_usage'];
 async function implementation(name, file = 'deploy-commercial.mjs') {
   const module = await import('../tools/' + file).catch(() => ({}));
   assert.equal(typeof module[name], 'function', `${name} must guard the commercial release`);
@@ -55,6 +56,11 @@ test('commercial preflight requires deployment-owned real settings and verified 
     { [databaseId]: { uuid: databaseId, name: 'another-product' } },
   ]) await assert.rejects(preflight(releaseEnv, { request: cloudflareRead(releaseEnv, patch) }));
   await assert.rejects(preflight(releaseEnv, { request: async (url, options) => url.endsWith('/settings') ? Response.json({ success: true, result: { bindings: [] } }) : cloudflareRead(releaseEnv)(url, options) }), /already exists/);
+});
+
+test('commercial preflight refuses a database without the website-check migration', async () => {
+  const preflight = await implementation('commercialPreflight', 'commercial-release-config.mjs');
+  await assert.rejects(preflight(releaseEnv, { request: cloudflareRead(releaseEnv, { query: [{ success: true, results: firstMigration.map(name => ({ name })) }] }) }), /Apply the approved sales migrations/);
 });
 
 test('commercial preflight releases every confirmed sales user and accepts policy order differences', async () => {
