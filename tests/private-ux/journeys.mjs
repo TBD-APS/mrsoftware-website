@@ -1,4 +1,5 @@
 // William's top tasks. Written before private screens; form entry is not a click.
+// On a phone Quotes and Catalogue sit behind More, so reaching Catalogue costs one more click there.
 export const journeys = [
   { id: 'today-follow-up', task: 'Open a due opportunity from Today', start: '', budget: { clicks: 1, fields: 0 },
     steps: [{ clickCard: '.record-card', hasText: 'Service team rollout' }],
@@ -12,10 +13,13 @@ export const journeys = [
   { id: 'save-quote', task: 'Create and preview a saved quote', start: '?view=sales', budget: { clicks: 3, fields: 0 },
     steps: [{ click: 'link', name: 'Service team rollout' }, { click: 'link', name: 'New quote' }, { click: 'button', name: 'Save quote' }],
     done: { route: /\?view=quote&id=/, text: [['h1', /Workslip Core quote/], ['#workspace-result', /Quote saved/], ['#quote-preview', /DKK 899/]], inView: '#workspace-result' } },
-  { id: 'edit-package', task: 'Update a catalogue package', start: '', budget: { clicks: 3, fields: 1 },
-    steps: [{ click: 'link', name: 'Catalogue' }, { click: 'link', name: 'Workslip Core' }, { fill: 'Monthly price (DKK)', value: '949' }, { click: 'button', name: 'Save package' }],
+  { id: 'edit-package', task: 'Update a catalogue package', start: '', budget: { clicks: 3, fields: 1, phone: { clicks: 4 } },
+    steps: [{ click: 'link', name: 'Catalogue', on: 'desktop' }, { click: 'button', name: 'More', on: 'phone' }, { click: 'link', name: 'Catalogue', on: 'phone' }, { click: 'link', name: 'Workslip Core' }, { fill: 'Monthly price (DKK)', value: '949' }, { click: 'button', name: 'Save package' }],
     done: { route: /\?view=package&id=workslip-core/, text: [['#workspace-result', /Package saved/]], inView: '#workspace-result' } },
-  { id: 'toggle-demo', task: 'Turn a demo off', start: '', budget: { clicks: 3, fields: 1 },
-    steps: [{ click: 'link', name: 'Catalogue' }, { click: 'link', name: 'Shippy demo' }, { select: 'Demo visibility', value: 'off' }, { click: 'button', name: 'Save demo' }],
+  { id: 'find-and-save-lead', task: 'Find Workslip companies in Midtjylland and save one as a lead', start: '?view=leads', budget: { clicks: 4, fields: 1 },
+    steps: [{ select: 'Product', value: 'workslip' }, { check: 'Midtjylland' }, { click: 'button', name: 'Search' }, { click: 'button', name: 'Save Lund Tømrer ApS as lead' }, { click: 'button', name: 'Save lead' }],
+    done: { route: /\?view=opportunity&id=/, text: [['h1', /Workslip lead/], ['#workspace-result', /Lead saved/]], inView: '#workspace-result' } },
+  { id: 'toggle-demo', task: 'Turn a demo off', start: '', budget: { clicks: 3, fields: 1, phone: { clicks: 4 } },
+    steps: [{ click: 'link', name: 'Catalogue', on: 'desktop' }, { click: 'button', name: 'More', on: 'phone' }, { click: 'link', name: 'Catalogue', on: 'phone' }, { click: 'link', name: 'Shippy demo' }, { select: 'Demo visibility', value: 'off' }, { click: 'button', name: 'Save demo' }],
     done: { route: /\?view=demo&id=shippy/, text: [['#workspace-result', /Demo saved/]], inView: '#workspace-result' } },
 ];
