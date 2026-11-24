@@ -33,9 +33,9 @@ test('company and product entrypoints use the managed catalogue and reach exact 
       ['products/workslip/', 'Try Workslip', 'https://demos.mrsoftware.dk/workslip/jobs/ws-1042/'],
       ['products/tradey/', 'Try Tradey', 'https://demos.mrsoftware.dk/tradey/offers/offer-1048/'],
       ['products/shippy/', 'Try Shippy', 'https://demos.mrsoftware.dk/shippy/shipments/shp-2048/'],
-      ['products/workslip/', 'Workslip packages', 'https://demos.mrsoftware.dk/pricing/?product=workslip'],
-      ['products/tradey/', 'Tradey packages', 'https://demos.mrsoftware.dk/pricing/?product=tradey'],
-      ['products/shippy/', 'Shippy packages', 'https://demos.mrsoftware.dk/pricing/?product=shippy'],
+      ['products/workslip/', 'To be agreed', 'https://demos.mrsoftware.dk/pricing/?product=workslip'],
+      ['products/tradey/', 'To be agreed', 'https://demos.mrsoftware.dk/pricing/?product=tradey'],
+      ['products/shippy/', 'To be agreed', 'https://demos.mrsoftware.dk/pricing/?product=shippy'],
     ]) {
       await page.goto(base + pathname);
       const slot = page.locator('.commercial-entrypoints');
