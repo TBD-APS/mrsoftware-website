@@ -92,11 +92,12 @@ function leadActions(lead, product, onSave) {
     form.querySelector('input')?.focus();
   } }, 'Save as lead');
   const website = websiteUrl(lead.website);
-  holder.append(
+  // Native append would print a missing website as the text "null"; keep only real nodes.
+  holder.append(...[
     lead.customerId ? link('Already in backoffice', 'customer', { id: lead.customerId }, 'button secondary') : open,
     el('a', { className: 'button secondary', href: lead.linkedinUrl, target: '_blank', rel: 'noopener noreferrer', 'aria-label': `Find ${lead.name} on LinkedIn` }, 'Find on LinkedIn'),
     website && el('a', { className: 'button secondary', href: website, target: '_blank', rel: 'noopener noreferrer', 'aria-label': `Open the website of ${lead.name}` }, 'Website'),
-  );
+  ].filter(Boolean));
   return holder;
 }
 

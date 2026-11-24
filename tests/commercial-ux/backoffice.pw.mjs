@@ -480,3 +480,11 @@ test('a save refused by the register shows the reason, and clicks inside the sav
     expect((await site.call('GET', '/api/backoffice/state')).body.customers).toEqual([]);
   } finally { await site.close(); }
 });
+
+test('a company without a website shows no website button and no stray text', async ({ page, app }) => {
+  await page.goto(leadsRoute(app));
+  await ready(page);
+  const holm = page.locator('.lead-card', { hasText: 'Holm Byg A/S' });
+  await expect(holm.locator('.lead-actions')).toHaveText(/^Save as lead\s*Find on LinkedIn$/);
+  await expect(holm.getByRole('link', { name: /website/i })).toHaveCount(0);
+});
