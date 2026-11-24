@@ -142,7 +142,9 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           return json({ catalog: await createStore(env.DB).updateCatalog(input, actor) });
         }
 
-        // Downloads: the same data as the screens, as CSV for Excel. Each download is recorded.
+        // Downloads as CSV for Excel. leads.csv runs the search again, with the same rules as the
+        // screen; customers.csv and opportunities.csv hold up to 5,000 records each. Private notes
+        // stay out of the files. Each download is recorded with its kind and row count.
         if (path === '/api/backoffice/leads.csv') {
           if (request.method !== 'GET') methodNotAllowed();
           const search = validateLeadSearch(url.searchParams);
@@ -169,7 +171,7 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
               ['Company', customer => customer.name], ['CVR', customer => customer.cvr ?? ''], ['Contact names', names],
               ['Contact emails', customer => customer.contacts.map(contact => contact.email).filter(Boolean).join(', ')],
               ['Contact phones', customer => customer.contacts.map(contact => contact.phone).filter(Boolean).join(', ')],
-              ['Notes', customer => customer.notes], ['Record link', customer => link('customer', customer.id)],
+              ['Record link', customer => link('customer', customer.id)],
             ].map(([header, value]) => ({ header, value })), customers);
             count = customers.length;
           } else {
@@ -177,7 +179,7 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
             const company = new Map(customers.map(customer => [customer.id, customer.name]));
             body = toCsv([
               ['Title', item => item.title], ['Company', item => company.get(item.customerId) ?? ''], ['Product', item => productLabels[item.product] ?? item.product],
-              ['Stage', item => titleCase(item.stage)], ['Next follow-up', item => item.nextFollowUp ?? ''], ['Notes', item => item.notes], ['Record link', item => link('opportunity', item.id)],
+              ['Stage', item => titleCase(item.stage)], ['Next follow-up', item => item.nextFollowUp ?? ''], ['Record link', item => link('opportunity', item.id)],
             ].map(([header, value]) => ({ header, value })), opportunities);
             count = opportunities.length;
           }

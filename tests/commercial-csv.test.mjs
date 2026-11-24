@@ -5,17 +5,22 @@ import { createCommercialHarness } from './helpers/commercial.mjs';
 import { HttpError } from '../commercial/server/validation.mjs';
 
 const today = () => new Date().toISOString().slice(0, 10);
-const rowsOf = text => text.replace(/^﻿/, '').split('\r\n').filter(Boolean);
+const rowsOf = text => text.replace(/^\uFEFF/, '').split('\r\n').filter(Boolean);
 
 test('csv escapes separators, quotes, line breaks and formulas', () => {
   const csv = toCsv([{ header: 'Name', value: row => row }], ['Lund; Søn', 'Say "hi"', 'two\nlines', '=HYPERLINK("x")', '-5', 'Ærø']);
-  assert.equal(csv, '﻿Name\r\n"Lund; Søn"\r\n"Say ""hi"""\r\n"two\nlines"\r\n"\'=HYPERLINK(""x"")"\r\n\'-5\r\nÆrø\r\n');
+  assert.equal(csv, '\uFEFFName\r\n"Lund; Søn"\r\n"Say ""hi"""\r\n"two\nlines"\r\n"\'=HYPERLINK(""x"")"\r\n\'-5\r\nÆrø\r\n');
+});
+
+test('csv guards a formula at the start of any line or after a comma inside a cell', () => {
+  const csv = toCsv([{ header: 'N', value: row => row }], ['Hello\n=1+cmd', 'x,=1', ' =1', '\n=1', '- item\n- next', 'note, -5', 'a,"=b"', '+45 2, +45 1']);
+  assert.deepEqual(csv.replace(/^\uFEFF/, '').split('\r\n'), ['N', `"Hello\n'=1+cmd"`, "x,'=1", " '=1", `"\n'=1"`, '"- item\n- next"', "note, '-5", `"a,""'=b"""`, "'+45 2, '+45 1", '']);
 });
 
 test('csv writes empty cells for missing values and guards tab, carriage return, plus and at', () => {
   const columns = [{ header: 'A', value: row => row.a }, { header: 'B', value: row => row.b }];
   assert.equal(toCsv(columns, [{ a: null, b: undefined }, { a: 0, b: '\tx' }, { a: '+45 1', b: '@sum' }, { a: 'x\ry', b: '\rz' }]),
-    '﻿A;B\r\n;\r\n0;\'\tx\r\n\'+45 1;\'@sum\r\n"x\ry";"\'\rz"\r\n');
+    '\uFEFFA;B\r\n;\r\n0;\'\tx\r\n\'+45 1;\'@sum\r\n"x\ry";"\'\rz"\r\n');
 });
 
 async function download(harness, path, options) {
@@ -58,9 +63,10 @@ test('customers.csv needs Access and lists CVR, contacts and record links', asyn
   const { response, text } = await download(harness, '/api/backoffice/customers.csv');
   assert.equal(response.headers.get('Content-Disposition'), `attachment; filename="customers-${today()}.csv"`);
   const rows = rowsOf(text);
-  assert.equal(rows[0], 'Company;CVR;Contact names;Contact emails;Contact phones;Notes;Record link');
-  assert.ok(rows.includes(`Holm Byg A/S;23456789;;kontakt@holm-byg.example;'+45 22222222;${customer.notes.includes(';') ? '"' + customer.notes + '"' : customer.notes};https://backoffice.mrsoftware.dk/backoffice/?view=customer&id=${customer.id}`), rows.join('\n'));
-  assert.match(text, /\r\n'=Formula Ltd;;Ana, Bo;ana@example\.test;'\+45 1;"Line one\nline two";https:\/\/backoffice\.mrsoftware\.dk\/backoffice\/\?view=customer&id=/);
+  assert.equal(rows[0], 'Company;CVR;Contact names;Contact emails;Contact phones;Record link');
+  assert.ok(rows.includes(`Holm Byg A/S;23456789;;kontakt@holm-byg.example;'+45 22222222;https://backoffice.mrsoftware.dk/backoffice/?view=customer&id=${customer.id}`), rows.join('\n'));
+  assert.match(text, /\r\n'=Formula Ltd;;Ana, Bo;ana@example\.test;'\+45 1;https:\/\/backoffice\.mrsoftware\.dk\/backoffice\/\?view=customer&id=/);
+  assert.doesNotMatch(text, /Line one|Found with the lead finder/, 'private notes stay out of the file');
 });
 
 test('opportunities.csv lists each opportunity with its company, stage and follow-up', async t => {
@@ -68,7 +74,7 @@ test('opportunities.csv lists each opportunity with its company, stage and follo
   const { opportunity } = (await harness.call('POST', '/api/backoffice/leads', { cvr: '23456789', product: 'workslip', nextFollowUp: '2030-11-20' })).body;
   const { response, text } = await download(harness, '/api/backoffice/opportunities.csv');
   assert.equal(response.headers.get('Content-Disposition'), `attachment; filename="opportunities-${today()}.csv"`);
-  assert.deepEqual(rowsOf(text), ['Title;Company;Product;Stage;Next follow-up;Notes;Record link', `Workslip lead;Holm Byg A/S;Workslip;Lead;2030-11-20;;https://backoffice.mrsoftware.dk/backoffice/?view=opportunity&id=${opportunity.id}`]);
+  assert.deepEqual(rowsOf(text), ['Title;Company;Product;Stage;Next follow-up;Record link', `Workslip lead;Holm Byg A/S;Workslip;Lead;2030-11-20;https://backoffice.mrsoftware.dk/backoffice/?view=opportunity&id=${opportunity.id}`]);
 });
 
 test('downloads answer only GET', async t => {

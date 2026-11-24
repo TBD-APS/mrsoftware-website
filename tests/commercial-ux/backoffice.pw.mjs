@@ -489,17 +489,28 @@ test('a company without a website shows no website button and no stray text', as
   await expect(holm.getByRole('link', { name: /website/i })).toHaveCount(0);
 });
 
-test('Leads, Customers and Sales offer a CSV download of what they show', async ({ page, app }) => {
-  await page.goto(leadsRoute(app));
-  await ready(page);
-  const leadsLink = page.getByRole('link', { name: 'Download CSV' });
-  await expect(leadsLink).toHaveAttribute('href', '/api/backoffice/leads.csv?product=workslip&regions=1082');
-  await expect(leadsLink).toHaveAttribute('download', '');
-  const response = await page.request.get(new URL(await leadsLink.getAttribute('href'), page.url()).href);
-  expect(response.headers()['content-type']).toBe('text/csv; charset=utf-8');
-  for (const [view, href] of [['customers', '/api/backoffice/customers.csv'], ['sales', '/api/backoffice/opportunities.csv']]) {
-    await page.goto(route(app, view));
+test('Leads, Customers and Sales download a CSV file, and a failed download is shown on the page', async ({ page }) => {
+  const { fixtureCvrClient } = await import('../helpers/cvr-fixture.mjs');
+  const { HttpError } = await import('../../commercial/server/validation.mjs');
+  let searches = 0;
+  const flaky = env => { const client = fixtureCvrClient()(env); return { ...client, search: async params => { searches += 1; if (searches > 2) throw new HttpError(502, 'The company register did not answer. Try again in a moment.'); return client.search(params); } }; };
+  const site = await startCommercialSite({ cvrClient: flaky });
+  try {
+    await page.goto(leadsRoute(site));
     await ready(page);
-    await expect(page.getByRole('link', { name: 'Download CSV' })).toHaveAttribute('href', href);
-  }
+    const button = page.getByRole('button', { name: 'Download CSV' });
+    const [file] = await Promise.all([page.waitForEvent('download'), button.click()]);
+    expect(file.suggestedFilename()).toBe(`leads-${new Date().toISOString().slice(0, 10)}.csv`);
+    await expect(button).toBeEnabled();
+    await button.click();
+    await expect(page.getByRole('alert')).toContainText('The company register did not answer. Try again in a moment.');
+    await expect(button).toBeEnabled();
+    await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+    for (const [view, name] of [['customers', 'customers'], ['sales', 'opportunities']]) {
+      await page.goto(site.privateBase + 'backoffice/?view=' + view);
+      await ready(page);
+      const [saved] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Download CSV' }).click()]);
+      expect(saved.suggestedFilename()).toBe(`${name}-${new Date().toISOString().slice(0, 10)}.csv`);
+    }
+  } finally { await site.close(); }
 });
