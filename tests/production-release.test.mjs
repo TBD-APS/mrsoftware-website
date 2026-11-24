@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { deployProduction, productionSmoke } from '../tools/deploy-production.mjs';
+import { DEPLOY_VISIBILITY_ATTEMPTS, DEPLOY_VISIBILITY_WAIT_MS, deployProduction, productionSmoke } from '../tools/deploy-production.mjs';
 
 const previous = '11111111-1111-4111-8111-111111111111';
 const next = '22222222-2222-4222-8222-222222222222';
@@ -22,6 +22,9 @@ async function fixture(change = {}) {
       return [{ type: 'version-deploy', worker_name: 'mrsoftware', deployment_id: 'new-deployment' }];
     },
     smoke: async () => [{ url: 'https://mrsoftware.dk/', status: 200 }],
+    readiness: async () => [{ url: 'https://demos.mrsoftware.dk/api/catalog', status: 200 }],
+    waitForVersion: async () => {},
+    sleep: async () => {},
     receiptPath: join(dir, 'receipt.json'), ...change,
   };
   return { deps, calls, cleanup: () => rm(dir, { recursive: true, force: true }) };
@@ -31,6 +34,8 @@ test('records rollback evidence before deploying only the uploaded immutable ver
   const f = await fixture();
   try {
     const receipt = await deployProduction(env, f.deps);
+    assert.equal(receipt.repository, 'TBD-APS/mrsoftware.dk');
+    assert.equal(receipt.runUrl, 'https://github.com/TBD-APS/mrsoftware.dk/actions/runs/123');
     assert.equal(receipt.versionId, next);
     assert.equal(receipt.previousVersions[0].version_id, previous);
     assert.equal(receipt.state, 'verified');
@@ -44,6 +49,17 @@ test('missing credentials or private input prevents any upload', async () => {
     try { await assert.rejects(deployProduction({ ...env, [key]: '' }, f.deps)); assert.deepEqual(f.calls, []); }
     finally { await f.cleanup(); }
   }
+});
+test('a stale provider list is re-read after deployment without another routing write', async () => {
+  let reads = 0;
+  const f = await fixture({ readDeployments: async () => [{ id: ++reads < 4 ? 'deployment' : 'new-deployment', versions: [{ version_id: reads < 4 ? previous : next, percentage: 100 }] }] });
+  try {
+    const receipt = await deployProduction(env, f.deps);
+    assert.equal(receipt.state, 'verified');
+    assert.equal(reads, 4);
+    assert.equal(f.calls.filter(call => call === 'upload').length, 1);
+    assert.equal(f.calls.filter(call => call === 'deploy').length, 1);
+  } finally { await f.cleanup(); }
 });
 test('authorization failure prevents any Cloudflare write', async () => {
   const f = await fixture({ authorize: async () => { throw Error('Wrong merger'); } });
@@ -59,6 +75,91 @@ test('an uncertain upload is not retried or followed by deploy', async () => {
     assert.equal(r.state, 'uncertain'); assert.equal(r.previousVersions[0].version_id, previous);
   } finally { await f.cleanup(); }
 });
+function hiddenVersion() {
+  const error = Error('Wrangler did not confirm completion; inspect the provider before retrying');
+  error.detail = 'The requested Worker version could not be found, please check the ID being passed and try again. [code: 100146]';
+  return error;
+}
+
+test('a version Cloudflare cannot see yet is deployed again without a second upload', async () => {
+  let uploads = 0;
+  let deploys = 0;
+  const waits = [];
+  let reads = 0;
+  const f = await fixture({
+    run: async args => {
+      if (args[1] === 'upload') {
+        uploads++;
+        return [{ type: 'version-upload', worker_name: 'mrsoftware', version_id: next }];
+      }
+      assert.equal(args[2], `${next}@100%`);
+      if (++deploys === 1) throw hiddenVersion();
+      return [{ type: 'version-deploy', worker_name: 'mrsoftware', deployment_id: 'new-deployment' }];
+    },
+    readDeployments: async () => {
+      const ready = ++reads > 1;
+      return [{ id: ready ? 'new-deployment' : 'deployment', versions: [{ version_id: ready ? next : previous, percentage: 100 }] }];
+    },
+    sleep: async ms => { waits.push(ms); },
+  });
+  try {
+    const receipt = await deployProduction(env, f.deps);
+    assert.equal(receipt.state, 'verified');
+    assert.equal(receipt.deployAttempts, 2);
+    assert.equal(uploads, 1);
+    assert.equal(deploys, 2);
+    assert.deepEqual(waits, [DEPLOY_VISIBILITY_WAIT_MS]);
+  } finally { await f.cleanup(); }
+});
+
+test('a deploy that may have moved traffic is not retried', async () => {
+  let deploys = 0;
+  let waits = 0;
+  const f = await fixture({
+    run: async args => {
+      if (args[1] === 'upload') return [{ type: 'version-upload', worker_name: 'mrsoftware', version_id: next }];
+      deploys++;
+      const error = Error('Wrangler did not confirm completion; inspect the provider before retrying');
+      error.detail = 'fetch failed';
+      throw error;
+    },
+    sleep: async () => { waits++; },
+  });
+  try {
+    await assert.rejects(deployProduction(env, f.deps), /No automatic retry or rollback/);
+    assert.equal(deploys, 1);
+    assert.equal(waits, 0);
+    const receipt = JSON.parse(await readFile(f.deps.receiptPath, 'utf8'));
+    assert.equal(receipt.state, 'uncertain');
+    assert.equal(receipt.versionId, next);
+    assert.equal(receipt.deployAttempts, 1);
+    assert.equal(receipt.previousVersions[0].version_id, previous);
+  } finally { await f.cleanup(); }
+});
+
+test('a version that stays invisible is not rolled back', async () => {
+  let deploys = 0;
+  const waits = [];
+  const f = await fixture({
+    run: async args => {
+      if (args[1] === 'upload') return [{ type: 'version-upload', worker_name: 'mrsoftware', version_id: next }];
+      deploys++;
+      throw hiddenVersion();
+    },
+    sleep: async ms => { waits.push(ms); },
+  });
+  try {
+    await assert.rejects(deployProduction(env, f.deps), /No rollback was performed/);
+    assert.equal(deploys, DEPLOY_VISIBILITY_ATTEMPTS);
+    assert.equal(waits.length, DEPLOY_VISIBILITY_ATTEMPTS - 1);
+    const receipt = JSON.parse(await readFile(f.deps.receiptPath, 'utf8'));
+    assert.equal(receipt.state, 'uncertain');
+    assert.equal(receipt.versionId, next);
+    assert.equal(receipt.deploymentId, undefined);
+    assert.equal(receipt.previousVersions[0].version_id, previous);
+  } finally { await f.cleanup(); }
+});
+
 test('wrong-worker upload output and stale authorization after upload cannot deploy', async () => {
   for (const wrongOutput of [true, false]) {
     let authorizations = 0; let writes = 0;

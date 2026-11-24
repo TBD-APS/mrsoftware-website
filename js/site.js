@@ -9,9 +9,68 @@
   }
 
   ready(function () {
+    var danish = document.documentElement.lang === 'da';
+    var labels = window.MR_SOFTWARE_TRANSLATIONS || {};
+    var translate = function (value) { return danish ? labels[value] || value : value; };
+    var localizedAddress = function (value) { return danish && value.indexOf('/da/') !== 0 ? '/da' + value : value; };
+    var languageSwitch = document.querySelector('.language-switch');
+    if (languageSwitch) {
+      var languageAddress = languageSwitch.getAttribute('href');
+      var keepSection = function () { languageSwitch.setAttribute('href', languageAddress + window.location.hash); };
+      keepSection();
+      window.addEventListener('hashchange', keepSection);
+    }
     var header = document.querySelector('.site-header');
     var toggle = document.querySelector('.nav-toggle');
     var nav = document.querySelector('.nav');
+
+    // Desktop menu: an item with pages under it opens a small list on hover or keyboard focus.
+    // Matched on the address, so it works on every page's copy of the header.
+    var stories = [['The offer', '/stories/the-offer/'], ['The job', '/stories/the-job/'], ['The shipment', '/stories/the-shipment/'], ['The choices', '/stories/the-choices/']];
+    // The static footer is rendered from data/links.json, including without scripts.
+    var useCases = Array.prototype.map.call(document.querySelectorAll('.site-footer [data-link-list-from="use-cases"] a'), function (link) {
+      return [link.textContent, link.getAttribute('href')];
+    });
+    var menus = {
+      '/#solutions': useCases,
+      '/integrations/': [['Greeny emissions example', '/integrations/#greeny-example'], ['Excel and Outlook examples', '/integrations/#examples'], ['What we can connect', '/integrations/#categories']],
+      '/roadmap/': [['Greeny', '/roadmap/#greeny-showcase'], ['Reusable Boney modules', '/roadmap/#boney-modules']],
+      '/research/': [['Principles', '/research/#principles'], ['Decision gates', '/research/#decision-gates'], ['Evaluation', '/research/#evaluation'], ['Research papers', '/research/#papers']],
+      '/stories/': stories,
+      '/#stories': stories,
+      '/sikkerhed-og-dataprivatliv/': [['Security and data privacy', '/sikkerhed-og-dataprivatliv/'], ['How we validate', '/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/'], ['System status', '/status/']]
+    };
+    if (nav) {
+      Array.prototype.forEach.call(nav.querySelectorAll(':scope > a:not(.button)'), function (link) {
+        link.setAttribute('data-label', link.textContent);
+        var url = new URL(link.getAttribute('href'), window.location.href);
+        var items = menus[(danish ? url.pathname.replace(/^\/da(?=\/)/, '') : url.pathname) + url.hash];
+        if (!items || !items.length) return;
+        var group = document.createElement('div');
+        group.className = 'nav-group';
+        link.parentNode.insertBefore(group, link);
+        group.appendChild(link);
+        var list = document.createElement('ul');
+        list.className = 'nav-sub';
+        list.setAttribute('aria-label', link.textContent);
+        items.forEach(function (item) {
+          var entry = document.createElement('li');
+          var sub = document.createElement('a');
+          sub.href = localizedAddress(item[1]);
+          sub.textContent = translate(item[0]);
+          entry.appendChild(sub);
+          list.appendChild(entry);
+        });
+        group.appendChild(list);
+        group.addEventListener('keydown', function (event) {
+          if (event.key !== 'Escape' || nav.classList.contains('open')) return;
+          group.classList.add('is-closed');
+          link.focus();
+        });
+        group.addEventListener('focusout', function (event) { if (!group.contains(event.relatedTarget)) group.classList.remove('is-closed'); });
+        group.addEventListener('mouseleave', function () { group.classList.remove('is-closed'); });
+      });
+    }
 
     // Mobile menu: opens as a full panel, keeps focus inside the header, closes on Escape, link or resize.
     if (header && toggle && nav) {
@@ -38,7 +97,7 @@
           return;
         }
         if (event.key !== 'Tab') return;
-        var stops = [toggle].concat(Array.prototype.slice.call(nav.querySelectorAll('a')));
+        var stops = [toggle].concat(Array.prototype.filter.call(nav.querySelectorAll('a'), function (link) { return link.offsetParent !== null; }));
         var first = stops[0];
         var last = stops[stops.length - 1];
         if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
@@ -130,23 +189,49 @@
       });
     });
 
-    // Rotating word: one word at a time, paused while the tab is hidden and off under reduced motion.
-    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    document.querySelectorAll('.rotate').forEach(function (box) {
-      var words = box.querySelectorAll('.rotate-word');
-      if (still || words.length < 2) return;
-      var at = 0;
-      setInterval(function () {
-        if (document.hidden) return;
-        var out = words[at];
-        at = (at + 1) % words.length;
-        var next = words[at];
-        out.classList.remove('is-in');
-        out.classList.add('is-out');
-        next.classList.remove('is-out');
-        next.classList.add('is-in');
-        setTimeout(function () { out.classList.remove('is-out'); }, 700);
-      }, 2400);
+    // Ticker: hovering or focusing a system type pauses the strip and shows what it covers, with a link onward.
+    document.querySelectorAll('.ticker-wrap').forEach(function (wrap) {
+      var detail = wrap.querySelector('.ticker-detail');
+      if (!detail) return;
+      var active = null;
+      function show(link) {
+        if (active) active.classList.remove('is-active');
+        active = link;
+        link.classList.add('is-active');
+        detail.querySelector('b').textContent = link.textContent;
+        detail.querySelector('p').textContent = link.getAttribute('data-detail');
+        var box = wrap.getBoundingClientRect();
+        var item = link.getBoundingClientRect();
+        var half = Math.min(150, (window.innerWidth - 32) / 2);
+        var x = Math.max(16 + half, Math.min(window.innerWidth - 16 - half, item.left + item.width / 2));
+        detail.style.setProperty('--x', (x - box.left) + 'px');
+        detail.hidden = false;
+      }
+      function hide() {
+        if (active) active.classList.remove('is-active');
+        active = null;
+        detail.hidden = true;
+      }
+      wrap.querySelectorAll('.ticker a[data-detail]').forEach(function (link) {
+        link.addEventListener('mouseenter', function () { show(link); });
+        link.addEventListener('focus', function () { show(link); });
+      });
+      wrap.addEventListener('mouseleave', function () {
+        var focused = document.activeElement;
+        if (!wrap.contains(focused)) hide();
+        else if (!detail.hidden && focused.matches('.ticker a[data-detail]')) show(focused);
+      });
+      wrap.addEventListener('focusout', function (event) {
+        if (wrap.contains(event.relatedTarget) || detail.hidden) return;
+        var hovered = wrap.querySelector('.ticker a[data-detail]:hover');
+        if (hovered) show(hovered);
+        else if (!wrap.matches(':hover')) hide();
+      });
+      wrap.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        if (active && detail.contains(document.activeElement)) active.focus();
+        hide();
+      });
     });
 
     if (window.matchMedia('(hover: hover)').matches) {

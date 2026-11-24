@@ -1,0 +1,13 @@
+<section id="scanner" class="section-block" aria-labelledby="scanner-title">
+  <p class="eyebrow">Materials, in a moment</p><h2 id="scanner-title">Find the right part.</h2>
+  <p>Scan the example label, choose a QR image, or enter <strong>MAT-101</strong>. A camera is optional.</p>
+  <p id="scan-result" class="notice" role="status" tabindex="-1" hidden></p>
+  <form id="manual-lookup" class="inline-form">
+    <label for="material-code">Material code or demo link<input id="material-code" name="code" maxlength="500" required autocomplete="off" placeholder="MAT-101" /></label>
+    <button type="submit" class="button primary">Find material</button>
+  </form>
+  <div class="actions"><button type="button" id="start-camera" class="button secondary">Scan with camera</button><label class="button secondary file-label" for="qr-image">Choose QR image<input id="qr-image" type="file" accept="image/*" /></label><button type="button" id="stop-camera" class="button secondary" hidden>Stop camera</button></div>
+  <video id="qr-video" playsinline muted aria-label="Camera preview" hidden></video>
+  <figure class="qr-label"><img src="/workslip/qr/mat-101.svg" width="184" height="184" alt="QR code for the Copper pipe 15 mm example" /><figcaption><strong>MAT-101</strong><a href="/workslip/materials/mat-101/">Copper pipe 15 mm</a><a href="/workslip/qr/mat-101.png" download>Download example label</a></figcaption></figure>
+</section>
+<script>import '../scripts/scanner.mjs';</script>

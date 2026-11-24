@@ -1,0 +1,43 @@
+---
+import '../styles/backoffice.css';
+const sections = [
+  ['today', 'Today', 'M3 11h18M5 4h14v16H5zM8 2v4m8-4v4'],
+  ['leads', 'Leads', 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm10 17-5.2-5.2'],
+  ['customers', 'Customers', 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m18 0v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8m8-7.87a4 4 0 0 1 0 7.75'],
+  ['sales', 'Sales', 'M4 20V10m8 10V4m8 16v-7'],
+  ['quotes', 'Quotes', 'M14 2H4v20h16V8zM14 2v6h6M8 12h8m-8 4h8'],
+  ['catalogue', 'Catalogue', 'M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3zM12 6v16'],
+];
+// On a phone the bar holds four sections and More; these two open from More.
+const phoneMore = ['quotes', 'catalogue'];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="same-origin" />
+    <meta name="theme-color" content="#fffcf7" />
+    <title>Sales workspace | MR Software</title>
+    <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body class="sales-workspace">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="workspace-header">
+      <a class="workspace-brand" href="/backoffice/"><img src="/assets/brand/mr-mark.svg" alt="MR Software" width="53" height="26" /><span>Sales workspace</span></a>
+      <span class="private-label">Private <span id="session-email"></span></span>
+    </header>
+    <nav class="workspace-nav" aria-label="Sales navigation">
+      {sections.map(([view, name, path]) => <a href={`/backoffice/?view=${view}`} data-section={view} class={phoneMore.includes(view) ? 'nav-secondary' : undefined}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={path} /></svg><span>{name}</span></a>)}
+      <div class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-expanded="false" aria-controls="nav-more-menu" data-sections={phoneMore.join(' ')}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" /></svg><span>More</span></button>
+        <div class="nav-more-menu" id="nav-more-menu" hidden>{sections.filter(([view]) => phoneMore.includes(view)).map(([view, name]) => <a href={`/backoffice/?view=${view}`} data-section={view}>{name}</a>)}</div>
+      </div>
+    </nav>
+    <main id="main" aria-busy="true" tabindex="-1"><slot /></main>
+    <footer class="workspace-footer">MR Software · Your customers, conversations and next steps.</footer>
+  </body>
+</html>

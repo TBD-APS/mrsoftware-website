@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shippy read-only demo | MR Software</title>
+  <meta name="description" content="A read-only view of Shippy, the customer portal for shipping, filled with fictional purchase orders, shipments and documents.">
+  <link rel="canonical" href="https://mrsoftware.dk/demo/shippy/">
+  <meta name="theme-color" content="#fffcf7">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Shippy read-only demo | MR Software">
+  <meta property="og:description" content="A read-only view of Shippy with fictional data.">
+  <meta property="og:url" content="https://mrsoftware.dk/demo/shippy/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. One place for every order, shipment and document.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/demo-view.css">
+  <script src="/js/site.js" defer></script>
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/demo/shippy/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/demo/shippy/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/demo/shippy/">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/da/demo/shippy/" lang="da" hreflang="da">Dansk</a>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/#solutions">Use cases</a>
+        <a href="/research/">Research</a>
+        <a href="/integrations/">Integrations</a>
+        <a href="/#results">Results</a>
+        <a href="/sikkerhed-og-dataprivatliv/">Security</a>
+        <a href="/contact/">Contact</a>
+        <a class="button button-primary" href="/contact/">Talk to us</a>
+      </nav>
+    </div>
+  </header>
+
+    <main id="main">
+    <section class="section on-light" aria-labelledby="view-title">
+      <div class="page-width">
+        <p class="breadcrumbs"><a href="/">Home</a> · <a href="/demo/">Demo centre</a> · Shippy</p>
+        <h1 id="view-title">Shippy, read only</h1>
+        <p class="lead">Shippy is the customer portal for shipping: from purchase order to delivery, all in one place. This page shows its seven sections as a customer at Nordic Home would see them, with fictional orders. Nothing here can be clicked into action.</p>
+
+        <p class="view-banner"><strong>Read-only demo</strong><span>Fictional data</span><span>Opter booking is simulated</span><span>No sign-in</span></p>
+
+        <nav aria-label="Shippy sections">
+          <ul class="view-tabs">
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#orders">Purchase orders</a></li>
+            <li><a href="#shipments">Shipments</a></li>
+            <li><a href="#quotes">Quotes and booking</a></li>
+            <li><a href="#documents">Documents</a></li>
+            <li><a href="#messages">Messages</a></li>
+            <li><a href="#analytics">Analytics</a></li>
+          </ul>
+        </nav>
+
+        <section class="view-panel" id="overview" aria-labelledby="overview-title">
+          <h2 id="overview-title">Your purchase orders</h2>
+          <p>From purchase order to delivery. All in one place.</p>
+          <dl class="view-kpis">
+            <div><dt>Open POs</dt><dd>4</dd></div>
+            <div><dt>Awaiting approval</dt><dd>1</dd></div>
+            <div><dt>In transit</dt><dd>1</dd></div>
+            <div><dt>Delivered</dt><dd>1</dd></div>
+          </dl>
+          <div class="view-columns" style="margin-top:var(--s3)">
+            <div>
+              <h3>Next actions</h3>
+              <ul class="view-list">
+                <li>PO-1045 is waiting for an issue to be resolved before Vega can approve it.<small>Issue: pallet count differs from the packing list</small></li>
+                <li>PO-1044 is approved and waiting for booking.<small>Next step owner: Opter (simulated)</small></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Recently updated</h3>
+              <ul class="view-list">
+                <li>PO-1042 · In transit<small>Vejle to Hamburg</small></li>
+                <li>PO-1043 · Booked<small>Odense to Hamburg</small></li>
+                <li>PO-1041 · Delivered<small>Aarhus to Hamburg</small></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="view-panel" id="orders" aria-labelledby="orders-title">
+          <h2 id="orders-title">Purchase orders</h2>
+          <p>Every PO follows the same four customer milestones. Approval is an internal step inside the first one, so it is recorded but not shown as its own milestone.</p>
+          <div class="view-table-wrap">
+            <table class="view-table">
+              <caption class="visually-hidden">Purchase orders with fictional data</caption>
+              <thead><tr><th scope="col">PO</th><th scope="col">Customer</th><th scope="col">Route</th><th scope="col">Weight</th><th scope="col">Status</th></tr></thead>
+              <tbody>
+                <tr><td>PO-1045</td><td>Baltic Parts</td><td>Esbjerg to Hamburg</td><td>2,050 kg</td><td><span class="view-status is-warn">Booking received · issue flagged</span></td></tr>
+                <tr><td>PO-1044</td><td>Nordic Home</td><td>Aalborg to Hamburg</td><td>410 kg</td><td><span class="view-status">Booking received · approved</span></td></tr>
+                <tr><td>PO-1043</td><td>Baltic Parts</td><td>Odense to Hamburg</td><td>860 kg</td><td><span class="view-status">Booked</span></td></tr>
+                <tr><td>PO-1042</td><td>Nordic Home</td><td>Vejle to Hamburg</td><td>1,200 kg</td><td><span class="view-status">In transit</span></td></tr>
+                <tr><td>PO-1041</td><td>Nordic Home</td><td>Aarhus to Hamburg</td><td>640 kg</td><td><span class="view-status is-done">Delivered</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="margin-top:var(--s4)">PO-1044 · Step 1 of 4</h3>
+          <ol class="view-rail" aria-label="PO-1044 flow">
+            <li class="is-current"><b>Booking received</b><span>Customer · approved by Vega</span></li>
+            <li><b>Booked</b><span>Opter (simulated)</span></li>
+            <li><b>In transit</b><span>Vega operator</span></li>
+            <li><b>Delivered</b><span>Vega operator</span></li>
+          </ol>
+          <p><span class="view-action">Next: Book in Opter demo · waiting for Opter (simulated)</span></p>
+          <ul class="view-list" aria-label="PO-1044 history">
+            <li>Created by Nordic Home<small>Booking received</small></li>
+            <li>Approve PO · Vega operator<small>Booking received to Approved</small></li>
+          </ul>
+        </section>
+
+        <section class="view-panel" id="shipments" aria-labelledby="shipments-title">
+          <h2 id="shipments-title">Shipments</h2>
+          <p>Saved milestones and the planned delivery date for each PO. Shippy shows only what the orders contain: no estimated arrival is invented.</p>
+          <div class="view-table-wrap">
+            <table class="view-table">
+              <caption class="visually-hidden">Shipments with fictional data</caption>
+              <thead><tr><th scope="col">PO</th><th scope="col">Leg</th><th scope="col">Milestone</th><th scope="col">Planned delivery</th></tr></thead>
+              <tbody>
+                <tr><td>PO-1042</td><td>Vejle to Hamburg, sea</td><td>In transit</td><td>24 November</td></tr>
+                <tr><td>PO-1043</td><td>Odense to Hamburg, sea</td><td>Booked</td><td>27 November</td></tr>
+                <tr><td>PO-1041</td><td>Aarhus to Hamburg, sea</td><td>Delivered</td><td>12 November</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view-panel" id="quotes" aria-labelledby="quotes-title">
+          <h2 id="quotes-title">Quotes and booking</h2>
+          <p>A fixed-price example chosen for one PO, next to its saved booking status. No quote is sent or accepted from here.</p>
+          <dl class="view-kpis">
+            <div><dt>PO</dt><dd>1043</dd></div>
+            <div><dt>Example price, test data</dt><dd>4,850 DKK</dd></div>
+            <div><dt>Booking</dt><dd>Booked</dd></div>
+          </dl>
+        </section>
+
+        <section class="view-panel" id="documents" aria-labelledby="documents-title">
+          <h2 id="documents-title">Documents</h2>
+          <p>Attachments and saved links on the POs this customer can see. Each one opens on its own PO.</p>
+          <ul class="view-list">
+            <li>packing-list.pdf<small>PO-1042 · added by Nordic Home</small></li>
+            <li>commercial-invoice.pdf<small>PO-1042 · added by Nordic Home</small></li>
+            <li>booking-confirmation.txt<small>PO-1043 · added by Vega</small></li>
+            <li>bill-of-lading.pdf<small>PO-1041 · added by Vega</small></li>
+            <li>Carrier tracking page (saved link)<small>PO-1042</small></li>
+          </ul>
+        </section>
+
+        <section class="view-panel" id="messages" aria-labelledby="messages-title">
+          <h2 id="messages-title">Messages</h2>
+          <p>Conversations stay on the PO they are about, so the customer and the forwarder answer on the same record.</p>
+          <ul class="view-list" aria-label="PO-1042 conversation">
+            <li>Can the pallets be collected before 10:00 on Thursday?<small>PO-1042 · Nordic Home</small></li>
+            <li>Yes. Collection is planned for Thursday morning, and the packing list is on the order.<small>PO-1042 · Vega</small></li>
+            <li>Pallet count on the load differs from the packing list. We have flagged it on the PO.<small>PO-1045 · Vega</small></li>
+          </ul>
+        </section>
+
+        <section class="view-panel" id="analytics" aria-labelledby="analytics-title">
+          <h2 id="analytics-title">Analytics</h2>
+          <p>Counts, weight, status and route volume, calculated from the same five POs above. No transit-time or on-time figure is shown, because the orders do not contain one.</p>
+          <div class="view-columns">
+            <div>
+              <h3>Status distribution · 5 POs</h3>
+              <ul class="view-bars">
+                <li>Booking received<i style="width:100%"></i><span>2</span></li>
+                <li>Booked<i style="width:50%"></i><span>1</span></li>
+                <li>In transit<i style="width:50%"></i><span>1</span></li>
+                <li>Delivered<i style="width:50%"></i><span>1</span></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Weight by pickup city · 5,160 kg</h3>
+              <ul class="view-bars">
+                <li>Esbjerg<i style="width:100%"></i><span>2,050</span></li>
+                <li>Vejle<i style="width:59%"></i><span>1,200</span></li>
+                <li>Odense<i style="width:42%"></i><span>860</span></li>
+                <li>Aarhus<i style="width:31%"></i><span>640</span></li>
+                <li>Aalborg<i style="width:20%"></i><span>410</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <p class="lead">The real Shippy decides on the server what each person may see and do, and every status change is recorded in an append-only history. <a href="/products/shippy/">Read about Shippy</a> or <a href="/contact/">ask for a walkthrough</a>.</p>
+      </div>
+    </section>
+</main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software for trading, shipping and field service.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column" data-link-list-from="use-cases" data-link-list-heading="Use cases"><h2>Use cases</h2><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a><a href="/demo/roady/">Roady</a><a href="/products/producey/">Producey</a></div>
+      <div class="footer-column"><h2>Resources</h2><a href="https://guessy.mrsoftware.dk/">Guessy</a><a href="/demo/">Demo centre</a><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/research/">Research</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/contact/">Contact us</a><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a></div>
+      <nav class="footer-legal" aria-label="Legal"><h2>Legal</h2><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
+    </div>
+    <div class="footer-bottom">
+      <span>MR software I/S · VAT DK46743091 · Aarhus</span>
+      <span>© <span class="year">2026</span> MR Software</span>
+    </div>
+  </footer>
+</body>
+</html>

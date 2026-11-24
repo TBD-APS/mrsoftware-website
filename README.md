@@ -1,26 +1,59 @@
 # mrsoftware.dk
 
-Statisk virksomhedssite for MR Software — sikkerhed, dataprivatliv og en åben
-selvvalideringsartefakt.
+Search metadata, Lighthouse budgets and Google account setup are described in the
+[search visibility guide](docs/operations/search-visibility.md).
 
-## Indhold
+The independent public demo/pricing app and private sales workspace have a
+[local preview and guarded release guide](docs/operations/commercial-release.md).
+Run `npm run preview:commercial` for working loopback demo, pricing and Today URLs.
+Production release remains a separate approved action. The company sitemap
+and robots file are described in
+[docs/operations/sitemap.md](docs/operations/sitemap.md).
 
-- `/` — Forside
-- `/foodtrader/` — Det offentlige om foodtrader
-- `/privacy-policy/` — Privatlivspolitik for foodtrader
-- `/terms-of-service/` — Vilkår for foodtrader
-- `/data-deletion/` — Vejledning til sletning af foodtrader-data
-- `/sikkerhed-og-dataprivatliv/` — Sikkerhed og dataprivatliv
-- `/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/` — Selvvalideringsartefakten
-  (testlandskab, CI-gates, dækning, kendte huller, tidsstempel)
+Company site for MR Software. Public pages are static HTML. A Cloudflare Worker
+serves the sitemap, robots file and the Access-protected development views.
+The public demos and the sales workspace are a separate Worker.
 
-## Lokal udvikling
+## Pages
 
-Åbn filerne i en lokal HTTP-server, f.eks.
+- `/` — English homepage. `/da/` — Danish homepage
+- `/products/workslip/`, `/products/tradey/`, `/products/shippy/`, `/products/producey/`
+- `/stories/`, `/stories/the-offer/`, `/stories/the-job/`, `/stories/the-shipment/`, `/stories/the-choices/`
+- `/roadmap/` and `/roadmap/report/`
+- `/contact/`
+- `/integrations/`
+- `/status/`
+- `/demo/` and the read-only views `/demo/workslip/`, `/demo/tradey/`, `/demo/shippy/`, `/demo/roady/`, `/demo/greeny/`
+- `/research/`
+- `/foodtrader/`, `/privacy-policy/`, `/terms-of-service/`, `/data-deletion/`
+- `/sikkerhed-og-dataprivatliv/` and `/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/`
+- `/sitemap.xml` and `/robots.txt`, served by the Worker from `data/links.json`
+- `/demos/` and `/pricing/` redirect to the demo host
+
+## Folders
+
+- `backoffice/` — local link editor. It is not part of the public upload.
+- `dashboard/` — development views on dashboard.mrsoftware.dk, behind Cloudflare Access.
+- `commercial/` — public demos and the sales workspace. Releasing them is a separate action.
+- `tools/` — build, test and release scripts.
+- `tests/` — Node and Playwright checks.
+- `docs/` — internal notes. `.assetsignore` keeps them off the public site.
+
+## Local development
 
 ```sh
-npx serve .
+npm ci
+npm test
+npm run dev
 ```
+
+`npm test` builds the commercial app and the roadmap report, then runs the Node
+tests and the Playwright gates. `npm run dev` serves the company site locally.
+
+ElevenLabs webhooks use the shared Boney module at
+`/api/webhooks/elevenlabs`. The receiver accepts events only with its private D1
+inbox, signing secret and exact module version configured. See
+[activation and storage](docs/elevenlabs-webhooks.md).
 
 ## Deployment
 
@@ -29,6 +62,12 @@ follow **pull request → Rasmus merges → Deploy owner-merged website Action**
 Do not deploy from local Wrangler. The Action checks GitHub's merged-PR evidence
 against the exact current `main` SHA and Rasmus's immutable account ID; direct
 pushes, another merger, missing evidence and stale revisions are refused.
+
+Native stacked PRs retain each PR's intermediate base branch after an atomic
+merge. The release guard also accepts the top of a complete, closed stack that
+GitHub records as targeting `main`. It verifies every member's repository,
+Rasmus's merger ID, ordered branch membership and merge-commit ancestry. Missing
+or inconsistent stack evidence is refused. See [GitHub's stack API](https://docs.github.com/en/rest/pulls/stacks).
 
 Before merging the first release PR, configure the `mrsoftware-production`
 environment to allow only the `main` branch, and apply the reviewed main-branch
@@ -69,9 +108,12 @@ records the prior deployment/version before uploading with `--keep-vars`, then
 deploys only the exact uploaded version. Routes, custom domains and existing
 variables remain in place. The artifact contains only a safe release receipt
 (commit, PR, Action URL, deployment/version IDs and smoke statuses), never the
-private dashboard or bundle. Inspect provider state after an uncertain result;
-there is no automatic retry or rollback. A rollback to the recorded prior
-version requires Rasmus's separate approval.
+private dashboard or bundle. If Cloudflare says the uploaded version cannot
+be found yet (code 100146), the same version is deployed again a few times,
+because that response means traffic did not move. Any other uncertain result
+is not retried and is not rolled back. Inspect the provider before trying
+again. A rollback to the recorded prior version requires Rasmus's separate
+approval.
 
 ## Development overview on dashboard.mrsoftware.dk
 
@@ -100,3 +142,42 @@ credentials on loopback. CI uses synthetic task/graph data; setting
 `DASHBOARD_SNAPSHOT_DIR` runs browser tests against the reviewed private snapshot.
 Worker tests reject forged, expired and incorrectly scoped JWTs and public hosts.
 The report is `.ux-gate/report/index.html` and is also retained in CI.
+
+## Public product roadmap
+
+The list at `/roadmap/` groups features by package and counts developed and
+upcoming work for each one. The package ID in `tools/public-features.json` is the
+product repository slug. Add a stable feature anchor and reviewed customer-facing
+English copy under the corresponding package.
+
+- Use `source.issue` to track a feature's workflow state in Linear.
+- Use `source.path` and `source.stage` for a feature verified in its repository
+  when there is no useful Linear issue. Cite implementation evidence for
+  `developed` or a documented commitment for `planned`. Review the source on
+  the default branch when adding or changing the entry.
+
+The sync reads only each registered issue's identifier, archive flag and
+workflow type. It displays completed work as **Developed**, started work as
+**In development**, and backlog or unstarted work as **Planned**. Canceled,
+duplicate, triage and archived issues are omitted. Repo-backed entries retain
+their reviewed state. Counts reflect the reviewed public inventory. Developed
+describes an implementation and availability depends on product setup.
+
+Set the following in the website repository's GitHub Actions settings:
+
+- `LINEAR_ROADMAP_TOKEN` is a read-only Linear API key for the relevant teams.
+- `PUBLIC_ROADMAP_GH_TOKEN` is a dedicated GitHub automation credential with
+  Contents and Pull requests write access to this repository only.
+- `PUBLIC_ROADMAP_SYNC=true` enables hourly polling on `main`.
+
+Manually run **Sync public feature roadmap** from `main` for a preview. The
+default run only checks and tests the proposed change. Select `propose` to
+open a review PR. A scheduled run opens a PR only for a changed, tested
+page, with one proposal open at a time. The next poll picks up additional
+changes after that proposal is resolved. If Linear returns incomplete or
+invalid data, the sync leaves the last reviewed page in place. The normal
+owner-merged website release publishes approved updates.
+
+To preview the exact change locally, provide the Linear key through the
+environment and run `node tools/sync-public-roadmap.mjs`. Inspect the diff
+in `roadmap/index.html` and run `npm test`.

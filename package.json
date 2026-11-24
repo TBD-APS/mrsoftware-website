@@ -3,15 +3,40 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/*.test.mjs && npm run ux-gate",
+    "build:reports": "node tools/build-roadmap-reports.mjs",
+    "build:locales": "node tools/build-locales.mjs",
+    "check:locales": "node tools/build-locales.mjs --check",
+    "build:links": "node tools/prerender-links.mjs && npm run build:locales",
+    "predev": "npm run build:reports && npm run build:locales",
+    "dev": "node tools/dev-server.mjs",
+    "test": "env -u NO_COLOR -u FORCE_COLOR node tools/run-tests.mjs",
+    "links": "vite --config backoffice/vite.config.js",
     "prepare-dashboard": "node tools/prepare-dashboard.mjs",
-    "ux-gate": "playwright test"
+    "ux-gate": "npm run build:reports && npm run build:locales && env -u NO_COLOR -u FORCE_COLOR playwright test",
+    "seo:lighthouse": "node tools/lighthouse.mjs",
+    "build:commercial": "node tools/build-commercial.mjs",
+    "ux-gate:commercial": "npm run build:commercial && env -u NO_COLOR -u FORCE_COLOR playwright test --config playwright.commercial.config.mjs",
+    "ux-gate:private": "npm run build:commercial && env -u NO_COLOR -u FORCE_COLOR playwright test --config playwright.private.config.mjs",
+    "preview:commercial": "npm run build:commercial && env -u NO_COLOR -u FORCE_COLOR node tools/preview-commercial.mjs",
+    "check:commercial": "node tools/commercial-readiness.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@mr-software/content": "file:vendor/boney/mr-software-content-0.1.0.tgz",
     "@playwright/test": "1.63.0",
+    "lighthouse": "13.6.0",
+    "miniflare": "5.20261023.0-beta",
+    "parse5": "8.1.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "vite": "8.3.8",
     "wrangler": "4.153.0"
   },
   "dependencies": {
-    "jose": "6.2.13"
+    "@mr-software/elevenlabs": "file:vendor/boney/mr-software-elevenlabs-0.1.0.tgz",
+    "astro": "7.4.7",
+    "jose": "6.2.13",
+    "jsqr": "1.4.0",
+    "qrcode": "1.5.4"
   }
 }

@@ -24,6 +24,9 @@
   <link rel="stylesheet" href="/css/site.css">
   <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -31,9 +34,11 @@
   <header class="site-header">
     <div class="site-header-inner">
       <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/" lang="da" hreflang="da">Dansk</a>
       <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
-        <a href="/#solutions">Products</a>
+        <a href="/#solutions">Use cases</a>
+        <a href="/research/">Research</a>
         <a href="/integrations/">Integrations</a>
         <a href="/#results">Results</a>
         <a href="/sikkerhed-og-dataprivatliv/">Security</a>
@@ -71,6 +76,7 @@
         <li><a href="#dokumentation">Documentation integrity</a></li>
         <li><a href="#webstatus">Web surfaces: what is tested, and why</a></li>
         <li><a href="#huller">Known gaps, stated openly</a></li>
+        <li><a href="#research">Research and operating model</a></li>
       </ol>
     </nav>
 
@@ -103,8 +109,8 @@
       </div>
 
       <h3>.NET (xUnit)</h3>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
-        <thead><tr><th>Project</th><th>Tests</th><th>Skippable</th><th>Covers</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label=".NET (xUnit) test projects"><table>
+        <thead><tr><th scope="col">Project</th><th scope="col" class="num">Tests</th><th scope="col" class="num">Skippable</th><th scope="col">Covers</th></tr></thead>
         <tbody>
           <tr><td>Contracts</td><td class="num">37</td><td class="num">0</td><td>Contracts and capabilities</td></tr>
           <tr><td>ControlCenter</td><td class="num">356</td><td class="num">1</td><td>Web/API behaviour</td></tr>
@@ -128,8 +134,8 @@
     <section id="ci-gates">
       <h2>Gate checks on every single change</h2>
       <p>Every pull request has to pass the following checks before it can be merged (enforced by repository protection):</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
-        <thead><tr><th>Check</th><th>What it catches</th><th>Status</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Checks every pull request must pass"><table>
+        <thead><tr><th scope="col">Check</th><th scope="col">What it catches</th><th scope="col">Status</th></tr></thead>
         <tbody>
           <tr><td>Analyze (C#)</td><td>Static analysis of .NET code</td><td><span class="badge ok">GREEN</span></td></tr>
           <tr><td>Analyze (TypeScript/JS, Python)</td><td>Static analysis of web and script code</td><td><span class="badge ok">GREEN</span></td></tr>
@@ -150,8 +156,8 @@
       <h2>Repository protection &amp; environments</h2>
       <p>The main branch is protected by a ruleset ("MR SAAS'y main protection", id
       <code>21150004</code>), which is continuously reconciled by an idempotent reconciler:</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
-        <thead><tr><th>Rule</th><th>Value</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Main branch ruleset"><table>
+        <thead><tr><th scope="col">Rule</th><th scope="col">Value</th></tr></thead>
         <tbody>
           <tr><td>Merge method</td><td>Squash only</td></tr>
           <tr><td>Required checks</td><td>All of the above green on the latest head</td></tr>
@@ -159,14 +165,13 @@
           <tr><td>Bypass</td><td>Only the organisation admin + one named role level</td></tr>
         </tbody>
       </table></div>
-      <p>Deploy work goes through protected environments with stepped wait approval:</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
-        <thead><tr><th>Environment</th><th>Wait approval</th><th>Branch policy</th><th>Risk</th></tr></thead>
+      <p>Deploy work goes through protected environments. Only high-risk deploys wait for the owner's approval:</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Protected deploy environments"><table>
+        <thead><tr><th scope="col">Environment</th><th scope="col">Approval before deploy</th><th scope="col">Branch policy</th><th scope="col">Risk</th></tr></thead>
         <tbody>
-          <tr><td><code>live-low</code></td><td>0 min.</td><td>Protected</td><td>Low risk</td></tr>
-          <tr><td><code>live-medium</code></td><td>10 min.</td><td>Protected</td><td>Medium risk</td></tr>
-          <tr><td><code>live-high</code></td><td>30 min.</td><td>Protected</td><td>High risk</td></tr>
-          <tr><td><code>live</code></td><td>30 min. + owner approval</td><td>Protected (main only)</td><td>Production</td></tr>
+          <tr><td><code>live-low</code></td><td>None</td><td>Protected</td><td>Low risk</td></tr>
+          <tr><td><code>live-medium</code></td><td>None</td><td>Protected</td><td>Medium risk</td></tr>
+          <tr><td><code>live-high</code></td><td>Owner approval</td><td>Protected</td><td>High risk</td></tr>
         </tbody>
       </table></div>
       <p class="note ok">The reconciler's <code>--verify</code> mode is green: the ruleset and environments match
@@ -177,8 +182,8 @@
       <h2>Code coverage</h2>
       <p>Coverage is measured in CI (latest full report) and gives an honest picture: the core is well covered,
       while new or thin layers are lower. The minimum is enforced by the ruleset (35 %).</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
-        <thead><tr><th>Area</th><th>Lines</th><th>Branches</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Code coverage by area"><table>
+        <thead><tr><th scope="col">Area</th><th scope="col" class="num">Lines</th><th scope="col" class="num">Branches</th></tr></thead>
         <tbody>
           <tr><td>ControlCenter + Core + Contracts</td><td class="num">54.2 %</td><td class="num">37.0 %</td></tr>
           <tr><td>Core + Contracts (the core)</td><td class="num">76.6 %</td><td class="num">59.7 %</td></tr>
@@ -210,8 +215,8 @@
     <section id="webstatus">
       <h2>Web surfaces: what is tested, and why</h2>
       <p>We commit to measuring every web surface. Status as of 12-09-2026:</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
-        <thead><tr><th>Surface</th><th>Test coverage</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Test coverage per web surface"><table>
+        <thead><tr><th scope="col">Surface</th><th scope="col">Test coverage</th></tr></thead>
         <tbody>
           <tr><td>Missions, actions, error returns, pull requests, billing</td><td><span class="badge ok">Page tests</span></td></tr>
           <tr><td>Feature flags (new in 2026)</td><td><span class="badge ok">6 tests</span>: scope, toggle permissions, payload</td></tr>
@@ -239,14 +244,23 @@
       <p>Our approach is to close gaps in order of priority, not to claim there are none.
       This artefact is updated when the numbers change.</p>
     </section>
+
+    <section id="research">
+      <h2>Research and operating model</h2>
+      <p>The self-validation evidence sits beside a wider operating model: explicit ownership, separate
+      production and approval, staged decision gates and evaluation across safety, data quality, workload,
+      adoption and maintainability.</p>
+      <p><a href="/research/">Read the principles, decision gates and research papers</a>. The papers are
+      research and design proposals, not clinical validation or completed customer due diligence.</p>
+    </section>
     </div>
   </main>
 
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software for trading, shipping and field service.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
-      <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a></div>
-      <div class="footer-column"><h2>Resources</h2><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
+      <div class="footer-column" data-link-list-from="use-cases" data-link-list-heading="Use cases"><h2>Use cases</h2><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a><a href="/demo/roady/">Roady</a><a href="/products/producey/">Producey</a></div>
+      <div class="footer-column"><h2>Resources</h2><a href="https://guessy.mrsoftware.dk/">Guessy</a><a href="/demo/">Demo centre</a><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/research/">Research</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
       <div class="footer-column"><h2>Company</h2><a href="/contact/">Contact us</a><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a></div>
       <nav class="footer-legal" aria-label="Legal"><h2>Legal</h2><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
     </div>

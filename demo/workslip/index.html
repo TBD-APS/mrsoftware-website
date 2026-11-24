@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workslip read-only demo | MR Software</title>
+  <meta name="description" content="A read-only view of Workslip, the job and approval workflow for trades and field service, with fictional jobs.">
+  <link rel="canonical" href="https://mrsoftware.dk/demo/workslip/">
+  <meta name="theme-color" content="#fffcf7">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Workslip read-only demo | MR Software">
+  <meta property="og:description" content="A read-only view of Workslip with fictional data.">
+  <meta property="og:url" content="https://mrsoftware.dk/demo/workslip/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. One place for every order, shipment and document.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/demo-view.css">
+  <script src="/js/site.js" defer></script>
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/demo/workslip/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/demo/workslip/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/demo/workslip/">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/da/demo/workslip/" lang="da" hreflang="da">Dansk</a>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/#solutions">Use cases</a>
+        <a href="/research/">Research</a>
+        <a href="/integrations/">Integrations</a>
+        <a href="/#results">Results</a>
+        <a href="/sikkerhed-og-dataprivatliv/">Security</a>
+        <a href="/contact/">Contact</a>
+        <a class="button button-primary" href="/contact/">Talk to us</a>
+      </nav>
+    </div>
+  </header>
+
+    <main id="main">
+    <section class="section on-light" aria-labelledby="view-title">
+      <div class="page-width">
+        <p class="breadcrumbs"><a href="/">Home</a> · <a href="/demo/">Demo centre</a> · Workslip</p>
+        <h1 id="view-title">Workslip, read only</h1>
+        <p class="lead">Workslip follows a job from the field to the office: what is recorded on site is what the office sees and approves. This page shows Workslip's own screens with labels in the selected website language, with fictional jobs. Workslip itself is live at app.mrsoftware.dk; nothing here touches it.</p>
+
+        <p class="view-banner"><strong>Read-only demo</strong><span>Fictional data</span><span>No sign-in</span><span>Not connected to the live app</span></p>
+
+        <nav aria-label="Workslip sections">
+          <ul class="view-tabs">
+            <li><a href="#jobs">Jobs</a></li>
+            <li><a href="#create-job">Create a job</a></li>
+            <li><a href="#job">One job</a></li>
+            <li><a href="#analysis">Leader analysis</a></li>
+          </ul>
+        </nav>
+
+        <section class="view-panel" id="jobs" aria-labelledby="jobs-title">
+          <h2 id="jobs-title">Job overview</h2>
+          <p>Every job carries one status: Active while it is worked on, Under review when the office reviews it, then Approved or Rejected. An approved job can be Reopened.</p>
+          <dl class="view-kpis">
+            <div><dt>Active</dt><dd>3</dd></div>
+            <div><dt>Under review</dt><dd>1</dd></div>
+            <div><dt>Approved</dt><dd>1</dd></div>
+            <div><dt>Reopened</dt><dd>1</dd></div>
+          </dl>
+          <div class="view-table-wrap" style="margin-top:var(--s3)">
+            <table class="view-table">
+              <caption class="visually-hidden">Jobs with fictional data</caption>
+              <thead><tr><th scope="col">Job</th><th scope="col">Task</th><th scope="col">Type</th><th scope="col">Status</th></tr></thead>
+              <tbody>
+                <tr><td>J-1046</td><td>Roof inspection</td><td>Miscellaneous</td><td><span class="view-status ">Active</span></td></tr>
+                <tr><td>J-1045</td><td>Window replacement</td><td>Miscellaneous</td><td><span class="view-status ">Active</span></td></tr>
+                <tr><td>J-1044</td><td>Electrical inspection</td><td>Miscellaneous</td><td><span class="view-status ">Active</span></td></tr>
+                <tr><td>J-1043</td><td>Bathroom renovation, stage 2</td><td>Water</td><td><span class="view-status is-warn">Under review</span></td></tr>
+                <tr><td>J-1042</td><td>Heat pump service</td><td>Heating</td><td><span class="view-status is-done">Approved</span></td></tr>
+                <tr><td>J-1041</td><td>Ventilation service</td><td>Ventilation</td><td><span class="view-status ">Reopened</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view-panel" id="create-job" aria-labelledby="create-title">
+          <h2 id="create-title">Create a job</h2>
+          <p>The technician records a job on site in six steps. Only the control points that fit the chosen installation type are shown.</p>
+          <ol class="view-rail" aria-label="Create a job steps">
+            <li class="is-done"><b>Start with the key details</b></li>
+            <li class="is-done"><b>Select the work you performed</b></li>
+            <li class="is-done"><b>Go through the relevant checkpoints</b></li>
+            <li class="is-done"><b>Record time and any expenses</b></li>
+            <li class="is-done"><b>Describe how the work was completed</b></li>
+            <li class="is-done"><b>Check the job one last time</b></li>
+          </ol>
+        </section>
+
+        <section class="view-panel" id="job" aria-labelledby="job-title">
+          <h2 id="job-title">J-1043 · Bathroom renovation, stage 2</h2>
+          <p>Status: Under review. The office reviews what was recorded on site before it approves.</p>
+          <ul class="view-list" aria-label="History">
+            <li>Job created<small>Office, 08:12</small></li>
+            <li>Checkpoints reviewed<small>On site, 10:40</small></li>
+            <li>6 photos added<small>On site, 10:42</small></li>
+            <li>Time recorded<small>On site, 11:05</small></li>
+            <li>Sent for review<small>Awaiting the office</small></li>
+          </ul>
+          <p class="view-note" style="margin-top:var(--s2)"><span class="view-action">Approve · only the office, in the live app</span></p>
+        </section>
+
+        <section class="view-panel" id="analysis" aria-labelledby="analysis-title">
+          <h2 id="analysis-title">Leader analysis</h2>
+          <p>Jobs per month and how many were approved, rejected or are still open. The last column is the rejections per approval.</p>
+          <div class="view-table-wrap">
+            <table class="view-table">
+              <caption class="visually-hidden">Leader analysis with fictional data</caption>
+              <thead><tr><th scope="col">Month</th><th scope="col">Jobs</th><th scope="col">Approved</th><th scope="col">Rejected</th><th scope="col">Open</th><th scope="col">Rejected / approved</th></tr></thead>
+              <tbody>
+                <tr><td>September</td><td>18</td><td>15</td><td>2</td><td>1</td><td>13 %</td></tr>
+                <tr><td>October</td><td>21</td><td>17</td><td>1</td><td>3</td><td>6 %</td></tr>
+                <tr><td>November</td><td>14</td><td>8</td><td>1</td><td>5</td><td>12 %</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <p class="lead">In the real Workslip, each organisation sees only its own jobs, and an approved job is locked until it is reopened. <a href="/products/workslip/">Read about Workslip</a> or <a href="/contact/">ask for a walkthrough</a>.</p>
+      </div>
+    </section>
+</main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software for trading, shipping and field service.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column" data-link-list-from="use-cases" data-link-list-heading="Use cases"><h2>Use cases</h2><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a><a href="/demo/roady/">Roady</a><a href="/products/producey/">Producey</a></div>
+      <div class="footer-column"><h2>Resources</h2><a href="https://guessy.mrsoftware.dk/">Guessy</a><a href="/demo/">Demo centre</a><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/research/">Research</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/contact/">Contact us</a><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a></div>
+      <nav class="footer-legal" aria-label="Legal"><h2>Legal</h2><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
+    </div>
+    <div class="footer-bottom">
+      <span>MR software I/S · VAT DK46743091 · Aarhus</span>
+      <span>© <span class="year">2026</span> MR Software</span>
+    </div>
+  </footer>
+</body>
+</html>

@@ -4,21 +4,21 @@ export const homepageJourneys = [
     task: 'Understand MR Software on arrival',
     budget: 0,
     target: null,
-    expectedHeading: /One place for every order, shipment, document and approval/,
+    expectedHeading: /Software that keeps work moving/,
   },
   {
     id: 'find-solutions',
-    task: 'Find both solutions',
+    task: 'Find the use cases',
     budget: 1,
     target: '#solutions',
-    expectedHeading: /Three products that keep the order, the shipment/,
+    expectedHeading: /Four examples of software we've built/,
   },
   {
     id: 'see-results',
     task: 'See documented process results',
     budget: 1,
     target: '#results',
-    expectedHeading: /Two measurements from Workslip/,
+    expectedHeading: /Minutes to fill in/,
   },
   {
     id: 'start-contact',
@@ -26,5 +26,12 @@ export const homepageJourneys = [
     budget: 1,
     target: '#contact',
     expectedHeading: /Tell us where the work gets stuck/,
+  },
+  {
+    id: 'find-stories',
+    task: 'Find the product stories',
+    budget: 1,
+    target: '#stories',
+    expectedHeading: /Four working days, and the choices behind them/,
   },
 ];

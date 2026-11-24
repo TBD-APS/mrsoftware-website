@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tradey | MR Software</title>
+  <title>Tradey | CRM and ERP for food traders | MR Software</title>
   <meta name="description" content="Tradey is a CRM and ERP designed around each food trader's workflow, running on WhatsApp with a person approving every step. In development and available as a demo.">
   <link rel="canonical" href="https://mrsoftware.dk/products/tradey/">
   <meta name="theme-color" content="#fffcf7">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MR Software">
-  <meta property="og:title" content="Tradey | MR Software">
+  <meta property="og:title" content="Tradey | CRM and ERP for food traders | MR Software">
   <meta property="og:description" content="Tradey is a CRM and ERP designed around each food trader's workflow, running on WhatsApp with a person approving every step. In development and available as a demo.">
   <meta property="og:url" content="https://mrsoftware.dk/products/tradey/">
   <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
@@ -17,13 +17,54 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="MR Software. One place for every order, shipment and document.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tradey | MR Software">
+  <meta name="twitter:title" content="Tradey | CRM and ERP for food traders | MR Software">
   <meta name="twitter:description" content="Tradey is a CRM and ERP designed around each food trader's workflow, running on WhatsApp with a person approving every step. In development and available as a demo.">
   <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
   <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/linking.css">
+  <link rel="stylesheet" href="/css/product-content.css">
   <script src="/js/site.js" defer></script>
   <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://mrsoftware.dk/products/tradey/#software",
+        "name": "Tradey",
+        "url": "https://mrsoftware.dk/products/tradey/",
+        "description": "Tradey is a CRM and ERP designed around each food trader's workflow, running on WhatsApp with a person approving every step. In development and available as a demo.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web browser",
+        "publisher": {
+          "@id": "https://mrsoftware.dk/#organization"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://mrsoftware.dk/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Tradey",
+            "item": "https://mrsoftware.dk/products/tradey/"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/products/tradey/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/products/tradey/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/products/tradey/">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -31,10 +72,13 @@
   <header class="site-header">
     <div class="site-header-inner">
       <div class="brand"><a href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/da/products/tradey/" lang="da" hreflang="da">Dansk</a>
       <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
-        <a href="/#solutions">Products</a>
+        <a href="/#solutions">Use cases</a>
+        <a href="/research/">Research</a>
         <a href="/integrations/">Integrations</a>
+        <a href="/roadmap/">Roadmap</a>
         <a href="/#results">Results</a>
         <a href="/sikkerhed-og-dataprivatliv/">Security</a>
         <a href="/contact/">Contact</a>
@@ -49,15 +93,21 @@
          TODO: confirm with Rasmus which modules the demo shows today before this goes live. -->
     <section class="product-hero page-hero status-building" aria-labelledby="product-heading">
       <div class="page-width">
-        <p class="breadcrumbs"><a href="/">Home</a> · <a href="/#solutions">Products</a> · Tradey</p>
+        <p class="breadcrumbs"><a href="/">Home</a> · <a href="/#solutions">Use cases</a> · Tradey</p>
         <p class="status"><span class="status-state">In development · Demo</span><span>Food trade</span></p>
         <h1 class="blur-in" id="product-heading"><span style="--i:0">Your</span> <span style="--i:1">own</span> <span style="--i:2">trading</span> <span style="--i:3">system,</span> <span style="--i:4">built</span> <span style="--i:5">around</span> <span style="--i:6">how</span> <span style="--i:7">you</span> <span style="--i:8">already</span> <span style="--i:9">trade.</span></h1>
         <p class="lead">Tradey is a CRM and ERP designed around each food trader's own workflow. It runs where the trade already happens, on WhatsApp, and a person approves every step before anything is sent.</p>
+        <p class="product-signature" lang="en">Simply Powered by MR Software</p>
+        <nav class="product-section-links" aria-label="On this product page">
+          <a href="#use-cases">Use case examples</a>
+          <a href="#product-features">Feature overview</a>
+        </nav>
         <div class="hero-actions">
-          <a class="button button-primary" href="https://foodtrading.mrsoftware.dk/">Open the Tradey demo <span class="arrow" aria-hidden="true">↗</span></a>
-          <a class="button button-secondary" href="/contact/">Talk to us</a>
+          <a class="button button-primary" href="https://ztrutb4jielr6.kimi.page/">Open the Tradey demo <span class="arrow" aria-hidden="true">↗</span></a>
+          <a class="button button-secondary" href="/contact/#book-demo">Book a demo</a>
         </div>
-        <figure class="frame" role="img" aria-label="Illustration with demo data: a buyer asks on WhatsApp for frozen cod delivered to Valencia, and Tradey drafts an offer in euro with three lines that waits for a person to approve it.">
+        <div class="commercial-entrypoints" data-related-from="tradey" data-related-heading="Try it yourself"><section class="related-links" aria-labelledby="related-tradey"><h2 id="related-tradey">Try it yourself</h2><ul><li><a class="related-link" href="/demos/tradey/"><span class="related-link-title">Try Tradey</span><span class="related-link-summary">Open an interactive example with safe sample records.</span></a></li><li><a class="related-link" href="/pricing/tradey/"><span class="related-link-title">To be agreed</span><span class="related-link-summary">Compare options and request a quote.</span></a></li></ul></section></div>
+        <figure class="frame" role="img" aria-label="Illustration with demo data: a buyer asks on WhatsApp for frozen cod delivered to Valencia, and Tradey drafts an offer in euro with three lines that waits for a person to approve it. The same four steps as the homepage: request, offer drafted, approval, then sent.">
           <div aria-hidden="true">
             <div class="frame-bar"><strong>Tradey · Trade T-0418</strong><span class="demo-tag">Demo data</span></div>
             <div class="trade">
@@ -79,8 +129,29 @@
                 <p class="draft-foot">Shelf life checked for every line</p>
               </div>
             </div>
+            <div class="lane">
+              <div class="lane-head"><div><b>Offer to Buyer B</b><span>3 product lines · in the buyer's chat</span></div><span class="chip chip-wait">Awaiting approval</span></div>
+              <ol class="lane-steps"><li><b>Request</b>In the chat</li><li><b>Offer drafted</b>From your prices</li><li class="is-now"><b>Approval</b>A person decides</li><li class="is-next"><b>Sent</b>After approval</li></ol>
+            </div>
           </div>
         </figure>
+      </div>
+    </section>
+
+    <section class="section band-paper" id="use-cases" aria-labelledby="use-cases-heading">
+      <div class="page-width">
+        <div class="section-head">
+          <p class="label">Use case examples</p>
+          <div class="section-copy">
+            <h2 class="heading" id="use-cases-heading">A trade starts with a request.</h2>
+            <p class="lead">Examples for a product in development. These are not customer results. Invoice and bookkeeping steps are not in the demo yet.</p>
+          </div>
+        </div>
+        <ul class="product-card-grid">
+          <li><span class="product-card-status">Example</span><h3>Prepare an offer from a conversation</h3><p>Example: a buyer asks for goods in WhatsApp. The proposed workflow gathers the request and an offer draft for a person to review.</p></li>
+          <li><span class="product-card-status">Example</span><h3>Check a trade before sending</h3><p>Example: a trader reviews credit, margin and shelf life alongside the offer. A person decides whether to approve it.</p></li>
+          <li><span class="product-card-status">Example</span><h3>Follow an accepted offer</h3><p>Example: follow an approved offer into an order in the interactive demo. The example uses sample records and does not place a real order.</p></li>
+        </ul>
       </div>
     </section>
 
@@ -113,7 +184,7 @@
         </ul></div>
       </div>
     </section>
-    <section class="section " aria-labelledby="core-heading">
+    <section class="section " id="product-features" aria-labelledby="core-heading">
       <div class="page-width">
         <div class="section-head" data-reveal>
           <p class="label">What the core covers</p>
@@ -122,7 +193,7 @@
             <p class="lead">Every Tradey system shares the same core. That is what lets us build a custom system without starting from zero each time.</p>
           </div>
         </div>
-        <div class="section-body" data-reveal><ul class="features"><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1"/><circle cx="9" cy="7" r="4"/><path d="M22 19v-1a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg><h3>Buyers and suppliers</h3><p>Every buyer, supplier and contact in one CRM, with the history of what was offered and agreed.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><h3>Offers and contracts</h3><p>Offers drafted from your products and prices, and turned into a contract when the buyer says yes.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><h3>Orders and invoices</h3><p>The order follows the contract, and the invoice follows the order.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg><h3>Credit and margin</h3><p>Each buyer's credit and each trade's margin, visible before you approve.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg><h3>Stock and shelf life</h3><p>Lots, quantities and best-before dates, so what is offered can actually be delivered.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><h3>Roles, approvals and history</h3><p>Who may do what, a person approving every step, and a history of every change.</p><span class="feature-state">In development</span></li></ul></div>
+        <div class="section-body" data-reveal><ul class="features product-card-grid"><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1"/><circle cx="9" cy="7" r="4"/><path d="M22 19v-1a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg><h3>Buyers and suppliers</h3><p>Every buyer, supplier and contact in one CRM, with the history of what was offered and agreed.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><h3>Offers and contracts</h3><p>Offers drafted from your products and prices, and turned into a contract when the buyer says yes.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><h3>Orders and invoices</h3><p>The order follows the contract, and the invoice follows the order.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg><h3>Credit and margin</h3><p>Each buyer's credit and each trade's margin, visible before you approve.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg><h3>Stock and shelf life</h3><p>Lots, quantities and best-before dates, so what is offered can actually be delivered.</p><span class="feature-state">In development</span></li><li class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><h3>Roles, approvals and history</h3><p>Who may do what, a person approving every step, and a history of every change.</p><span class="feature-state">In development</span></li></ul></div>
       </div>
     </section>
     <section class="section band-paper" aria-labelledby="custom-heading">
@@ -140,8 +211,9 @@
             <ul class="ticks"><li>WhatsApp flows for the way you take requests and send offers</li><li>Your own rules, fields and approval steps</li><li>A connection to the bookkeeping system you already use</li><li>An assistant that answers questions from your own data, and only from it</li></ul>
           </div>
           <div class="panel">
-            <h3>Services it connects to</h3>
+            <h3>Services it is built to connect to</h3>
             <ul class="ticks"><li>WhatsApp Business, on your own account and approved message templates</li><li>An e-invoicing provider, following each country's rules</li><li>An exchange-rate feed for live EUR and USD rates</li><li>Your bookkeeping system</li></ul>
+            <p>WhatsApp is built into Tradey today. The others are connected during a customer project.</p>
           </div>
         </div></div>
       </div>
@@ -152,7 +224,7 @@
           <p class="label">One trade, step by step</p>
           <div class="section-copy">
             <h2 class="heading" id="trade-heading">From a WhatsApp message to a booked invoice.</h2>
-            <p class="lead">A demo scenario with synthetic data: frozen fish sold from Norway to a buyer in Spain.</p>
+            <p class="lead">An example with synthetic data: frozen fish sold from Norway to a buyer in Spain. The invoice and bookkeeping steps are not in the demo yet.</p>
           </div>
         </div>
         <figure class="flow-figure section-body" role="img" aria-label="Illustration with demo data: six steps of one trade, from a request on WhatsApp to an invoice in the bookkeeping system." data-reveal>
@@ -208,7 +280,7 @@
             
           </div>
         </div>
-        <div class="section-body" data-reveal><div class="faq"><details><summary>Can I use Tradey today?</summary><p>Tradey is in development. You can see it as a demo with synthetic data. <a href="https://foodtrading.mrsoftware.dk/">Open the demo</a>.</p></details><details><summary>Do we have to replace our ERP?</summary><p>No. Tradey is built to work next to the systems you have, and we connect to your bookkeeping first.</p></details><details><summary>Is it a chatbot?</summary><p>No. WhatsApp is where requests and offers are exchanged. The assistant is limited to answering from your own data, and a person approves what is sent.</p></details><details><summary>What does it cost?</summary><p>We do not publish prices yet. Tell us about your trade and we explain what a system for you involves.</p></details><details><summary>What do you not do?</summary><p>Off-the-rack software, every ERP function there is, and actions without a person's approval.</p></details></div></div>
+        <div class="section-body" data-reveal><div class="faq"><details><summary>Can I use Tradey today?</summary><p>Tradey is in development. You can see it as a demo with synthetic data. <a href="https://ztrutb4jielr6.kimi.page/">Open the demo</a>.</p></details><details><summary>Do we have to replace our ERP?</summary><p>No. Tradey is built to work next to the systems you have, and we connect to your bookkeeping first.</p></details><details><summary>Is it a chatbot?</summary><p>No. WhatsApp is where requests and offers are exchanged. The assistant is limited to answering from your own data, and a person approves what is sent.</p></details><details><summary>What does it cost?</summary><p>To be agreed. Tell us about your trade and we explain what a system for you involves.</p></details><details><summary>What do you not do?</summary><p>Off-the-rack software, every ERP function there is, and actions without a person's approval.</p></details></div></div>
       </div>
     </section>
     <section class="section band-night cta-night" aria-labelledby="cta-heading">
@@ -216,7 +288,7 @@
         <p class="eyebrow">Get started</p>
         <h2 class="heading" id="cta-heading">See Tradey with a trade like yours.</h2>
         <p class="lead">Tell us what you trade, where you buy and where you sell. We show you the demo and what we would build for you.</p>
-        <div class="contact-actions"><a class="button button-light" href="https://foodtrading.mrsoftware.dk/">Open the demo <span class="arrow" aria-hidden="true">↗</span></a><a class="button button-light" href="mailto:wp@mrsoftware.dk?subject=Conversation%20about%20software%20and%20workflows">Email us <span class="arrow" aria-hidden="true">→</span></a></div>
+        <div class="contact-actions"><a class="button button-light" href="https://ztrutb4jielr6.kimi.page/">Open the demo <span class="arrow" aria-hidden="true">↗</span></a><a class="button button-light" href="mailto:wp@mrsoftware.dk?subject=Conversation%20about%20software%20and%20workflows">Email us <span class="arrow" aria-hidden="true">→</span></a></div>
       </div>
     </section>
   </main>
@@ -224,8 +296,8 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand"><a class="footer-logo" href="/" aria-label="MR Software home"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software for trading, shipping and field service.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
-      <div class="footer-column"><h2>Products</h2><a href="/products/workslip/">Workslip</a><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a></div>
-      <div class="footer-column"><h2>Resources</h2><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
+      <div class="footer-column" data-link-list-from="use-cases" data-link-list-heading="Use cases"><h2>Use cases</h2><a href="/products/tradey/">Tradey</a><a href="/products/shippy/">Shippy</a><a href="/demo/roady/">Roady</a><a href="/products/producey/">Producey</a></div>
+      <div class="footer-column"><h2>Resources</h2><a href="https://guessy.mrsoftware.dk/">Guessy</a><a href="/demo/">Demo centre</a><a href="/stories/">Stories</a><a href="/integrations/">Integrations</a><a href="/roadmap/">Roadmap</a><a href="/research/">Research</a><a href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">How we validate</a></div>
       <div class="footer-column"><h2>Company</h2><a href="/contact/">Contact us</a><a href="/sikkerhed-og-dataprivatliv/">Security</a><a href="/status/">System status</a></div>
       <nav class="footer-legal" aria-label="Legal"><h2>Legal</h2><a href="/privacy-policy/">Privacy policy</a><a href="/terms-of-service/">Terms</a><a href="/data-deletion/">Data deletion</a></nav>
     </div>
@@ -234,5 +306,6 @@
       <span>© <span class="year">2026</span> MR Software</span>
     </div>
   </footer>
+  <script type="module" src="/js/related.js"></script>
 </body>
 </html>

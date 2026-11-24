@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "data": {
+    "markdown": "# Om os\n\nLund Tømrer blev grundlagt i 2014 og har 14 ansatte i Aarhus.",
+    "links": [
+      "https://www.lund-toemrer.dk/"
+    ],
+    "metadata": {
+      "language": "da",
+      "sourceURL": "https://www.lund-toemrer.dk/om-os",
+      "url": "https://www.lund-toemrer.dk/om-os",
+      "statusCode": 200,
+      "contentType": "text/html",
+      "title": "Om os · Lund Tømrer ApS"
+    }
+  }
+}

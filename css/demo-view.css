@@ -1,0 +1,81 @@
+/* Read-only app views on /demo/<app>/. Plain HTML on site.css tokens: no script, no framework, fictional data. */
+.view-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1) var(--s2);
+  align-items: center;
+  margin: 0 0 var(--s3);
+  padding: var(--s2);
+  border: 1px solid var(--hairline-light);
+  background: var(--rose);
+  font-family: var(--mono);
+  font-size: var(--fs-small);
+}
+.view-banner strong { font-family: var(--sans); }
+
+.view-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  margin: 0 0 var(--s4);
+  padding: 0;
+  list-style: none;
+}
+.view-tabs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s2);
+  border: 1px solid var(--hairline-light);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  text-decoration: none;
+}
+.view-tabs a:hover, .view-tabs a:focus-visible { border-color: var(--ink); }
+
+.view-panel {
+  margin: 0 0 var(--s5);
+  padding: var(--s3);
+  border: 1px solid var(--hairline-light);
+  background: var(--paper);
+  scroll-margin-top: 96px;
+}
+.view-panel > h2 { margin: 0 0 var(--s1); font-size: var(--fs-title); line-height: 1.2; }
+.view-panel > p { margin: 0 0 var(--s3); color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); line-height: 1.6; }
+
+.view-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: var(--s2); margin: 0; }
+.view-kpis div { padding: var(--s2); background: var(--paper-raised); }
+.view-kpis dt { color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); }
+.view-kpis dd { margin: var(--s1) 0 0; font-size: var(--fs-heading); line-height: 1; }
+
+.view-table-wrap { overflow-x: auto; }
+.view-table { width: 100%; min-width: 36rem; border-collapse: collapse; font-size: var(--fs-small); }
+.view-table th, .view-table td { padding: var(--s1) var(--s2) var(--s1) 0; border-bottom: 1px solid var(--hairline-light); text-align: left; vertical-align: top; }
+.view-table th { color: var(--muted-on-light); font-family: var(--mono); font-weight: 400; }
+
+.view-status { display: inline-block; padding: 2px 8px; border: 1px solid currentColor; font-family: var(--mono); font-size: var(--fs-small); white-space: nowrap; }
+.view-status.is-done { color: var(--ok); }
+.view-status.is-warn { color: var(--warn); }
+
+.view-rail { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: var(--s1); margin: var(--s2) 0; padding: 0; list-style: none; counter-reset: step; }
+.view-rail li { padding: var(--s2); border-top: 4px solid var(--hairline-light); background: var(--paper-raised); font-size: var(--fs-small); }
+.view-rail li::before { counter-increment: step; content: "Step " counter(step); display: block; color: var(--muted-on-light); font-family: var(--mono); }
+.view-rail li.is-done { border-top-color: var(--ok); }
+.view-rail li.is-current { border-top-color: var(--accent); }
+.view-rail b { display: block; margin-top: 4px; }
+.view-rail span { color: var(--muted-on-light); font-family: var(--mono); }
+
+.view-action { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s2); border: 1px dashed var(--muted-on-light); color: var(--muted-on-light); font-size: var(--fs-small); }
+
+.view-list { margin: 0; padding: 0; list-style: none; }
+.view-list li { padding: var(--s1) 0; border-bottom: 1px solid var(--hairline-light); font-size: var(--fs-small); }
+.view-list small { display: block; color: var(--muted-on-light); font-family: var(--mono); }
+
+.view-bars { margin: 0; padding: 0; list-style: none; }
+.view-bars li { display: grid; grid-template-columns: minmax(7rem, 10rem) 1fr 3rem; gap: var(--s2); align-items: center; padding: 4px 0; font-size: var(--fs-small); }
+.view-bars i { display: block; height: 12px; background: var(--ink); }
+.view-bars span { font-family: var(--mono); text-align: right; }
+
+.view-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: var(--s3); }
+.view-columns h3 { margin: 0 0 var(--s1); font-size: var(--fs-body); }
+.view-note { margin: var(--s1) 0 0; color: var(--muted-on-light); font-family: var(--mono); font-size: var(--fs-small); line-height: 1.6; }

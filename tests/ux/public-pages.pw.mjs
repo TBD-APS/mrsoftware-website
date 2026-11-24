@@ -8,9 +8,26 @@ const pages = [
   'products/workslip/',
   'products/tradey/',
   'products/shippy/',
+  'products/producey/',
+  'products/roady/',
+  'products/greeny/',
   'integrations/',
   'contact/',
+  'demo/',
+  'demo/greeny/',
+  'demo/roady/',
+  'cases/dansk-auto-logik/',
+  'demo/shippy/',
+  'demo/tradey/',
+  'demo/workslip/',
+  'research/',
   'roadmap/',
+  'roadmap/report/',
+  'stories/',
+  'stories/the-offer/',
+  'stories/the-job/',
+  'stories/the-shipment/',
+  'stories/the-choices/',
   'status/',
   'sikkerhed-og-dataprivatliv/',
   'sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/',
@@ -46,6 +63,11 @@ for (const path of pages) {
       await expect(legal.getByRole('link', { name: 'Data deletion' })).toHaveAttribute('href', '/data-deletion/');
       await expect(page.locator('.nav .button-primary')).toHaveText('Talk to us');
       await expect(page.locator('.nav .button-primary')).toHaveAttribute('href', path ? '/contact/' : '#contact');
+      await expect(page.locator('#main-nav a[href="/research/"]')).toHaveText('Research');
+      await expect(page.locator('#main-nav').getByRole('link', { name: 'Use cases', exact: true, includeHidden: true })).toHaveAttribute('href', path ? '/#solutions' : '#solutions');
+      const cases = page.locator('.site-footer [data-link-list-from="use-cases"]');
+      await expect(cases.getByRole('heading', { name: 'Use cases', exact: true })).toBeVisible();
+      await expect(cases.getByRole('link')).toHaveText(['Tradey', 'Shippy', 'Roady', 'Producey']);
 
       // One h1, and no heading level is skipped.
       const levels = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll(nodes => nodes
@@ -88,13 +110,13 @@ for (const path of pages) {
       await expect(nav).toBeVisible();
       await expect(page.locator('main')).toHaveJSProperty('inert', true);
 
-      // Focus stays inside the open menu.
-      const stops = await nav.locator('a').count() + 1;
+      // Focus stays inside the open menu. Desktop dropdown links are not shown on a phone, so only shown links count.
+      const stops = await nav.locator('a:visible').count() + 1;
       await toggle.focus();
       for (let index = 0; index < stops; index += 1) await page.keyboard.press('Tab');
       await expect(toggle).toBeFocused();
       await page.keyboard.press('Shift+Tab');
-      await expect(nav.locator('a').last()).toBeFocused();
+      await expect(nav.locator('a:visible').last()).toBeFocused();
 
       await page.keyboard.press('Escape');
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -112,7 +134,9 @@ test('The social image and the organization data are in place', async ({ page, c
   try {
     await prepareContext(context, app.base);
     await page.goto(publicBase(app.base));
-    const data = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+    const structured = (await page.locator('script[type="application/ld+json"]').allTextContents())
+      .flatMap(source => { const data = JSON.parse(source); return data['@graph'] ?? [data]; });
+    const data = structured.find(item => item['@type'] === 'Organization');
     expect(data['@type']).toBe('Organization');
     expect(data.name).toBe('MR Software');
     expect(data.email).toBe('wp@mrsoftware.dk');

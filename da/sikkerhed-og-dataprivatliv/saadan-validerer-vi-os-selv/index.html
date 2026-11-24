@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sådan validerer vi os selv | MR Software</title>
+  <meta name="description" content="MR Software viser åbent, hvordan vi validerer os selv: testlandskab, CI-porte, kodedækning, beskyttelse af kodearkivet, dokumentationsintegritet og kendte mangler. Alle tal er verificeret den 12-09-2026.">
+  <link rel="canonical" href="https://mrsoftware.dk/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <meta name="theme-color" content="#fffcf7">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Sådan validerer vi os selv | MR Software">
+  <meta property="og:description" content="MR Software viser åbent, hvordan vi validerer os selv: testlandskab, CI-porte, kodedækning, beskyttelse af kodearkivet, dokumentationsintegritet og kendte mangler. Alle tal er verificeret den 12-09-2026.">
+  <meta property="og:url" content="https://mrsoftware.dk/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. Ét sted til alle ordrer, forsendelser og dokumenter.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sådan validerer vi os selv | MR Software">
+  <meta name="twitter:description" content="MR Software viser åbent, hvordan vi validerer os selv: testlandskab, CI-porte, kodedækning, beskyttelse af kodearkivet, dokumentationsintegritet og kendte mangler. Alle tal er verificeret den 12-09-2026.">
+  <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/site-locale.da.js" defer></script>
+  <script src="/js/site.js" defer></script>
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">
+  <meta property="og:locale" content="da_DK">
+</head>
+<body>
+  <a class="skip-link" href="#main">Gå til indhold</a>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/da/" aria-label="MR Software – forside"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/" lang="en" hreflang="en">English</a>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Åbn menu" data-label-open="Åbn menu" data-label-close="Luk menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Hovednavigation">
+        <a href="/da/#solutions">Use cases</a>
+        <a href="/da/research/">Forskning</a>
+        <a href="/da/integrations/">Integrationer</a>
+        <a href="/da/#results">Resultater</a>
+        <a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed</a>
+        <a href="/da/contact/">Kontakt</a>
+        <a class="button button-primary" href="/da/contact/">Tal med os</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="page-hero on-dark">
+      <div class="page-width">
+      <p class="breadcrumbs"><a href="/da/">Forside</a> · <a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed og databeskyttelse</a> · Sådan validerer vi os selv</p>
+      <p class="label">Selvvalidering · dokumentation</p>
+      <h1>Sådan validerer vi os selv</h1>
+      <p class="lead">
+        Vi viser, hvordan vi holder vores egen kode ærlig. Denne dokumentation er et uddrag af vores selvevaluering: hvilke tests vi kører, hvilke porte hver ændring skal passere, hvor god dækningen er, og hvilke mangler vi kender.
+      </p>
+      </div>
+    </div>
+    <div class="page-body page-width">
+    <div class="note">Alle tal på denne side er verificeret direkte mod koden og de kørende pipelines den
+    <strong>12-09-2026</strong>. Kildekoden ligger i et privat kodearkiv; dokumentationen opdateres, når tallene ændrer sig væsentligt.</div>
+
+    <nav class="toc">
+      <ol>
+        <li><a href="#princippet">Princippet: evidens frem for tillid</a></li>
+        <li><a href="#testlandskab">Testlandskabet</a></li>
+        <li><a href="#ci-gates">Kontroller ved hver eneste ændring</a></li>
+        <li><a href="#repo-beskyttelse">Beskyttelse af kodearkiv og miljøer</a></li>
+        <li><a href="#daekning">Kodedækning</a></li>
+        <li><a href="#dokumentation">Dokumentationsintegritet</a></li>
+        <li><a href="#webstatus">Webflader: hvad der testes og hvorfor</a></li>
+        <li><a href="#huller">Kendte mangler, åbent beskrevet</a></li>
+        <li><a href="#research">Forskning og driftsmodel</a></li>
+      </ol>
+    </nav>
+
+    <section id="princippet">
+      <h2>Princippet: evidens frem for tillid</h2>
+      <p>MR SAAS'y er bygget på idéen om, at et system skal kunne bevise, at det virker, ikke blot køre. Det gælder også vores egen udvikling:</p>
+      <ul>
+        <li><strong>Ingen ændring indføres uden evidens.</strong> En pull request er ikke færdig, før dens tests, analyse og kontrol af udrulningsrisiko er grønne.</li>
+        <li><strong>Gendannelse er konservativ.</strong> Hvis historikken ikke kan bevise, at en handling sikkert kan gentages, afviser systemet at gentage den automatisk.</li>
+        <li><strong>Fejltilstande er synlige.</strong> Statussystemet adskiller “ikke konfigureret” (gul) fra aktive fejl (rød), så operatører ikke forveksler et fravalg med en defekt tjeneste.</li>
+        <li><strong>Tallene er faktiske.</strong> Alt på denne side er målt, ikke et mål for fremtiden.</li>
+      </ul>
+    </section>
+
+    <section id="testlandskab">
+      <h2>Testlandskabet</h2>
+      <p>Testene ligger i tre lag. <strong>804</strong> automatiserede tests, der ikke kan springes over, kører, hver gang porten kører; yderligere <strong>23</strong> integrationstests er betinget af miljøet (de kræver en faktisk database eller ekstern tjeneste og kører kun, hvor den konfiguration findes).</p>
+
+      <div class="stat-grid">
+        <div class="stat ok"><div class="value">1005</div><div class="label">automatiserede tests i alt</div></div>
+        <div class="stat ok"><div class="value">804</div><div class="label">kører ved hver portkontrol</div></div>
+        <div class="stat warn"><div class="value">23</div><div class="label">betinget af miljøet (aktivt tilvalg)</div></div>
+        <div class="stat ok"><div class="value">176</div><div class="label">webtests, alle grønne</div></div>
+      </div>
+
+      <h3>.NET (xUnit)</h3>
+      <div class="table-wrap" tabindex="0" role="region" aria-label=".NET-testprojekter (xUnit)"><table>
+        <thead><tr><th scope="col">Projekt</th><th scope="col" class="num">Tests</th><th scope="col" class="num">Kan springes over</th><th scope="col">Dækker</th></tr></thead>
+        <tbody>
+          <tr><td>Contracts</td><td class="num">37</td><td class="num">0</td><td>Kontrakter og funktionsevne</td></tr>
+          <tr><td>ControlCenter</td><td class="num">356</td><td class="num">1</td><td>Web/API-adfærd</td></tr>
+          <tr><td>Core</td><td class="num">344</td><td class="num">0</td><td>MOTOR-domænet</td></tr>
+          <tr><td>Integration</td><td class="num">87</td><td class="num">22</td><td>Hændelseslager og outbox mod rigtige motorer</td></tr>
+          <tr><td>PostHog</td><td class="num">3</td><td class="num">0</td><td>Telemetriadapter</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note ok">Integrationstests kører mod rigtige motorer: PostgreSQL (Marten) som standard og KurrentDB som et aktivt tilvalgt ældre lager (ADR-013). De kører i CI og kan køres lokalt efter behov.</p>
+
+      <h3>Web (Vitest)</h3>
+      <p><strong>42</strong> testfiler med <strong>176</strong> tests: sideadfærd (React Testing Library), projektioner og rene funktioner/valideringsmodeller. Typekontrol (TypeScript) gennemføres uden fejl.</p>
+
+      <h3>Værktøjer til frigivelse (Node)</h3>
+      <p><strong>25</strong> testcases dækker udrulningskonfiguration og klassificering af udrulningsrisiko, den kode, der vurderer, om en ændring sikkert kan sættes i drift.</p>
+    </section>
+
+    <section id="ci-gates">
+      <h2>Kontroller ved hver eneste ændring</h2>
+      <p>Hver pull request skal bestå følgende kontroller, før den kan sammenflettes (håndhæves af kodearkivets beskyttelse):</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Kontroller, som hver pull request skal bestå"><table>
+        <thead><tr><th scope="col">Kontrollér</th><th scope="col">Hvad den opdager</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr><td>Analyze (C#)</td><td>Statisk analyse af .NET-kode</td><td><span class="badge ok">GRØN</span></td></tr>
+          <tr><td>Analyze (TypeScript/JS, Python)</td><td>Statisk analyse af web- og scriptkode</td><td><span class="badge ok">GRØN</span></td></tr>
+          <tr><td>.NET-testsuiter</td><td>804+ tests, fra kontrakter til integration</td><td><span class="badge ok">GRØN</span></td></tr>
+          <tr><td>Control Center web</td><td>176 webtests og typekontrol</td><td><span class="badge ok">GRØN</span></td></tr>
+          <tr><td>Workers Builds</td><td>Byg af Cloudflare Workers</td><td><span class="badge ok">GRØN</span></td></tr>
+          <tr><td>Cloudflare Pages</td><td>Webbyg og udrulning</td><td><span class="badge warn">RØD PÅ MAIN</span> (se #gaps)</td></tr>
+          <tr><td>request-copilot-review</td><td>En ekstra reviewers perspektiv</td><td><span class="badge ok">GRØN</span></td></tr>
+        </tbody>
+      </table></div>
+      <p>Lokalt (og i CI) kan porten køre på tre niveauer: <strong>fast</strong> (kontrakter samt type- og scriptkontroller), <strong>ci</strong> (.NET- og websuiterne, der ikke kræver låste porte) og
+      <strong>full</strong> (alt, herunder de miljøbetingede integrationstests med midlertidige databaser). Suiten har også sandbox- og sikkerhedskontroller.</p>
+    </section>
+
+    <section id="repo-beskyttelse">
+      <h2>Beskyttelse af kodearkiv og miljøer</h2>
+      <p>Main-branchen er beskyttet af et regelsæt (“MR SAAS'y main protection”, id
+      <code>21150004</code>), der løbende afstemmes af en idempotent afstemningsproces:</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Regelsæt for main-branchen"><table>
+        <thead><tr><th scope="col">Regel</th><th scope="col">Værdi</th></tr></thead>
+        <tbody>
+          <tr><td>Metode til sammenfletning</td><td>Kun squash</td></tr>
+          <tr><td>Påkrævede kontroller</td><td>Alle ovenstående grønne på seneste head</td></tr>
+          <tr><td>Kodedækning</td><td>≥ 35 % (maks. fald 80 pp.)</td></tr>
+          <tr><td>Omgåelse</td><td>Kun organisationens administrator + ét navngivet rolleniveau</td></tr>
+        </tbody>
+      </table></div>
+      <p>Udrulning går gennem beskyttede miljøer. Kun højrisiko-udrulninger venter på ejerens godkendelse:</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Beskyttede udrulningsmiljøer"><table>
+        <thead><tr><th scope="col">Miljø</th><th scope="col">Godkendelse før udrulning</th><th scope="col">Branchpolitik</th><th scope="col">Risiko</th></tr></thead>
+        <tbody>
+          <tr><td><code>live-low</code></td><td>Ingen</td><td>Beskyttet</td><td>Lav risiko</td></tr>
+          <tr><td><code>live-medium</code></td><td>Ingen</td><td>Beskyttet</td><td>Middel risiko</td></tr>
+          <tr><td><code>live-high</code></td><td>Ejerens godkendelse</td><td>Beskyttet</td><td>Høj risiko</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note ok">Afstemningsprocessens <code>--verify</code> -tilstand er grøn: Regelsættet og miljøerne svarer præcist til den ønskede tilstand, så konfigurationen ikke ændrer sig ubemærket.</p>
+    </section>
+
+    <section id="daekning">
+      <h2>Kodedækning</h2>
+      <p>Dækningen måles i CI (seneste fulde rapport) og giver et ærligt billede: Kernen er godt dækket, mens nye eller tynde lag ligger lavere. Minimumskravet håndhæves af regelsættet (35 %).</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Kodedækning pr. område"><table>
+        <thead><tr><th scope="col">Område</th><th scope="col" class="num">Linjer</th><th scope="col" class="num">Forgreninger</th></tr></thead>
+        <tbody>
+          <tr><td>ControlCenter + Core + Contracts</td><td class="num">54.2 %</td><td class="num">37.0 %</td></tr>
+          <tr><td>Core + Contracts (kernen)</td><td class="num">76.6 %</td><td class="num">59.7 %</td></tr>
+          <tr><td>Contracts</td><td class="num">24.9 %</td><td class="num">34.5 %</td></tr>
+          <tr><td>PostHog-adapter</td><td class="num">6.4 %</td><td class="num">6.0 %</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note warn">De lave tal for Contracts og PostHog er måske de mest udsatte steder; lav dækning betyder ikke, at de er nede, men at de har brug for flere tests. Det indgår i vores åbne forbedringsplan.</p>
+    </section>
+
+    <section id="dokumentation">
+      <h2>Dokumentationsintegritet</h2>
+      <p>Vi behandler dokumentation som kode: En intern linkkontrol validerer hver relativ henvisning, og beslutninger registreres i to ADR-serier (platform og arkitektur).</p>
+      <ul>
+        <li><strong>0</strong> brudte interne dokumentationslinks (117 kontrolleret på tværs af kodearkivet).</li>
+        <li><strong>26</strong> beslutningsnotater (ADR’er); nye ændringer skal henvise til den rigtige serie.</li>
+        <li><strong>99</strong> dokumentationsfiler i <code>docs/</code>, herunder en grundig introduktionsvejledning (CONTRIBUTING.md).</li>
+        <li>En oprydning i dokumentationen i 2026 ændrede formuleringerne fra et ældre hændelseslager til den nuværende PostgreSQL/Marten-standard (ADR-013): 142 → 109 omtaler, og resten er bevidste (historik, mekanismer for aktivt tilvalg, konfiguration).</li>
+        <li>Ingen løse TODO/TBD-markører i dokumentationen (kun kodearkivets navn <code>TBD-APS</code> er et falsk positivt fund).</li>
+      </ul>
+    </section>
+
+    <section id="webstatus">
+      <h2>Webflader: hvad der testes og hvorfor</h2>
+      <p>Vi forpligter os til at måle hver webflade. Status pr. 12-09-2026:</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Testdækning pr. webflade"><table>
+        <thead><tr><th scope="col">Flade</th><th scope="col">Testdækning</th></tr></thead>
+        <tbody>
+          <tr><td>Missioner, handlinger, fejlsvar, pull requests, fakturering</td><td><span class="badge ok">Sidetests</span></td></tr>
+          <tr><td>Funktionsflag (nye i 2026)</td><td><span class="badge ok">6 tests</span>: afgrænsning, rettigheder til at slå til og fra, nyttelast</td></tr>
+          <tr><td>Overblik, agenter, godkendelser, agenters driftstilstand, indstillinger, Temporal-genafspilning, historik for testharness, AI nurse</td><td><span class="badge warn">Ingen sidespecifikke tests</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">De utestede flader er tynde visninger: Deres egentlige logik ligger i fælles, testede moduler (statustaksonomi, projektioner, API-kontrakter). Sidespecifikke renderingstests ville være skrøbelige og give begrænset værdi, så de er bevidst ikke skrevet. Vi vurderer det igen, når en flade får egentlig logik.</p>
+    </section>
+
+    <section id="huller">
+      <h2>Kendte mangler, åbent beskrevet</h2>
+      <p>Selvvalidering har kun værdi, hvis den viser, hvad der gik galt. Lige nu er følgende punkter åbne:</p>
+      <ul>
+        <li><strong>Cloudflare Pages-udrulningen er rød på main</strong> (pr. 12-09-2026). Udrulningen af den webflade fejler i CI, mens rettelsen udarbejdes i en særskilt branch (<code>fix/cloudflare-factory-isolation</code>). Vi har valgt at vise det, ikke skjule det.</li>
+        <li><strong>Huller i dækningen</strong> i Contracts (24.9 %) og PostHog-adapteren (6.4 %).</li>
+        <li><strong>8 tynde webflader</strong> uden sidespecifikke tests (se ovenfor).</li>
+        <li><strong>Ubrugte projekter</strong>: Et Cosmos-projekt har ingen referencer eller tests og overvejes fjernet.</li>
+      </ul>
+      <p>Vores tilgang er at lukke hullerne i prioriteret rækkefølge, ikke at påstå, at der ingen er. Denne dokumentation opdateres, når tallene ændrer sig.</p>
+    </section>
+
+    <section id="research">
+      <h2>Forskning og driftsmodel</h2>
+      <p>Evidensen fra selvvalideringen indgår sammen med en bredere driftsmodel: udtrykkeligt ejerskab, adskilt produktion og godkendelse, trinvise beslutningsporte og evaluering af sikkerhed, datakvalitet, arbejdsbelastning, ibrugtagning og vedligeholdelsesvenlighed.</p>
+      <p><a href="/da/research/">Læs principperne, beslutningsportene og forskningsartiklerne</a>. Artiklerne er forsknings- og designforslag, ikke klinisk validering eller gennemført due diligence for kunder.</p>
+    </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/da/" aria-label="MR Software – forside"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software til handel, fragt og service i marken.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column" data-link-list-from="use-cases" data-link-list-heading="Use cases"><h2>Use cases</h2><a href="/da/products/tradey/">Tradey</a><a href="/da/products/shippy/">Shippy</a><a href="/da/demo/roady/">Roady</a><a href="/da/products/producey/">Producey</a></div>
+      <div class="footer-column"><h2>Ressourcer</h2><a href="https://guessy.mrsoftware.dk/">Guessy</a><a href="/da/demo/">Democenter</a><a href="/da/stories/">Historier</a><a href="/da/integrations/">Integrationer</a><a href="/da/roadmap/">Planer</a><a href="/da/research/">Forskning</a><a href="/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi</a></div>
+      <div class="footer-column"><h2>Virksomhed</h2><a href="/da/contact/">Kontakt os</a><a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed</a><a href="/da/status/">Systemstatus</a></div>
+      <nav class="footer-legal" aria-label="Juridisk"><h2>Juridisk</h2><a href="/da/privacy-policy/">Privatlivspolitik</a><a href="/da/terms-of-service/">Vilkår</a><a href="/da/data-deletion/">Sletning af data</a></nav>
+    </div>
+    <div class="footer-bottom">
+      <span>MR software I/S · CVR DK46743091 · Aarhus</span>
+      <span>© <span class="year">2026</span> MR Software</span>
+    </div>
+  </footer>
+</body>
+</html>

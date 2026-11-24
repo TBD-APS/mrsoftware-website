@@ -1,0 +1,10 @@
+{
+  "repository": "TBD-APS/boney",
+  "branch": "main",
+  "event": "push",
+  "conclusion": "success",
+  "headSha": "8f6fd3fa8241f94dcb1ecc33ec73d0e2cc7c40f8",
+  "runId": 44830479559,
+  "artifactId": 14676366289,
+  "url": "https://github.com/TBD-APS/boney/actions/runs/44830479559"
+}

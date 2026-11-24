@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Integrationer | MR Software</title>
+  <meta name="description" content="Prøv Greenys eksempel på udledning fra vejfragt, kontaktimport fra Excel og gennemgang af Outlook-svar med eksempeldata.">
+  <link rel="canonical" href="https://mrsoftware.dk/da/integrations/">
+  <meta name="theme-color" content="#fffcf7">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MR Software">
+  <meta property="og:title" content="Integrationer | MR Software">
+  <meta property="og:description" content="Prøv Greenys eksempel på udledning fra vejfragt, kontaktimport fra Excel og gennemgang af Outlook-svar med eksempeldata.">
+  <meta property="og:url" content="https://mrsoftware.dk/da/integrations/">
+  <meta property="og:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MR Software. Ét sted til alle ordrer, forsendelser og dokumenter.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Integrationer | MR Software">
+  <meta name="twitter:description" content="MR Softwares produkter forbinder til de systemer, handels- og fragtvirksomheder allerede bruger: ERP, regnskab, transportører, speditører, told, lager, e-mail og filer.">
+  <meta name="twitter:image" content="https://mrsoftware.dk/assets/images/brand/og-image.png">
+  <link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/site-locale.da.js" defer></script>
+  <script src="/js/site.js" defer></script>
+  <script src="/js/integration-examples.js" defer></script>
+  <link rel="icon" href="/assets/images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="en" href="https://mrsoftware.dk/integrations/">
+  <link rel="alternate" hreflang="da" href="https://mrsoftware.dk/da/integrations/">
+  <link rel="alternate" hreflang="x-default" href="https://mrsoftware.dk/integrations/">
+  <meta property="og:locale" content="da_DK">
+</head>
+<body>
+  <a class="skip-link" href="#main">Gå til indhold</a>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand"><a href="/da/" aria-label="MR Software – forside"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26"></a></div>
+      <a class="language-switch" href="/integrations/" lang="en" hreflang="en">English</a>
+      <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Åbn menu" data-label-open="Åbn menu" data-label-close="Luk menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+      <nav class="nav" id="main-nav" aria-label="Hovednavigation">
+        <a href="/da/#solutions">Use cases</a>
+        <a href="/da/research/">Forskning</a>
+        <a href="/da/integrations/" aria-current="page">Integrationer</a>
+        <a href="/da/roadmap/">Planer</a>
+        <a href="/da/#results">Resultater</a>
+        <a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed</a>
+        <a href="/da/contact/">Kontakt</a>
+        <a class="button button-primary" href="/da/contact/">Tal med os</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="product-hero on-dark page-hero" aria-labelledby="integrations-title">
+      <div class="page-width">
+        <p class="breadcrumbs"><a href="/da/">Forside</a> · Integrationer</p>
+        <p class="pill">Handel og fragt</p>
+        <h1 class="blur-in" id="integrations-title"><span style="--i:0">Forbundet</span> <span style="--i:1">med</span> <span style="--i:2">de</span> <span style="--i:3">systemer,</span> <span style="--i:4">jeres</span> <span style="--i:5">handel</span> <span style="--i:6">allerede</span> <span style="--i:7">kører</span> <span style="--i:8">på.</span></h1>
+        <p class="lead">Vores produkter udveksler data med værktøjerne omkring dem, så en ordre, en forsendelse eller et dokument kun indtastes én gang. Fortæl os, hvad I bruger, så bekræfter vi, hvad der understøttes i dag.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#greeny-example">Udforsk Greeny</a>
+          <a class="button button-secondary" href="#examples">Prøv Excel og Outlook</a>
+          <a class="button button-secondary" href="#categories">Se, hvad vi forbinder til</a>
+        </div>
+        <div class="hub"><svg viewBox="0 0 1200 380" aria-hidden="true"><path class="hub-line" d="M330 64 C 450 64, 430 190, 500 190"/><rect class="hub-node" x="30" y="40" width="300" height="48" rx="12"/><text x="50" y="70">ERP og ordrestyring</text><path class="hub-line" d="M330 148 C 450 148, 430 190, 500 190"/><rect class="hub-node" x="30" y="124" width="300" height="48" rx="12"/><text x="50" y="154">Regnskab og fakturering</text><path class="hub-line" d="M330 232 C 450 232, 430 190, 500 190"/><rect class="hub-node" x="30" y="208" width="300" height="48" rx="12"/><text x="50" y="238">Transportører og rederier</text><path class="hub-line" d="M330 316 C 450 316, 430 190, 500 190"/><rect class="hub-node" x="30" y="292" width="300" height="48" rx="12"/><text x="50" y="322">Speditører</text><path class="hub-line" d="M700 190 C 770 190, 750 64, 870 64"/><rect class="hub-node" x="870" y="40" width="300" height="48" rx="12"/><text x="890" y="70">Told- og handelsdokumenter</text><path class="hub-line" d="M700 190 C 770 190, 750 148, 870 148"/><rect class="hub-node" x="870" y="124" width="300" height="48" rx="12"/><text x="890" y="154">Lager og lagerstyring</text><path class="hub-line" d="M700 190 C 770 190, 750 232, 870 232"/><rect class="hub-node" x="870" y="208" width="300" height="48" rx="12"/><text x="890" y="238">Mail og beskeder</text><path class="hub-line" d="M700 190 C 770 190, 750 316, 870 316"/><rect class="hub-node" x="870" y="292" width="300" height="48" rx="12"/><text x="890" y="322">Filer og regneark</text><rect class="hub-core" x="500" y="150" width="200" height="80" rx="12"/><text class="hub-core-text" x="600" y="196" text-anchor="middle">Jeres arbejdsgang</text></svg></div>
+      </div>
+    </section>
+
+    <section class="section greeny-spotlight" id="greeny-example" aria-labelledby="greeny-example-heading">
+      <div class="page-width greeny-spotlight-layout">
+        <div class="greeny-spotlight-copy">
+          <p class="greeny-product-label">Greeny · ESG-rapportering</p>
+          <h2 class="heading" id="greeny-example-heading">Se, hvor fragtudledningen kommer fra.</h2>
+          <p>Ændr vejafstanden for at se, hvordan det påvirker estimatet. Greeny viser andelen fra kørslen og andelen fra leveringen af brændstoffet eller strømmen.</p>
+          <p>I Greenys demoarbejdsområde kan du også gennemgå elforbrugstal, forhåndsvise en ESG-rapport og åbne PDF'en.</p>
+          <a class="button button-primary" href="https://greeny.mrsoftware.dk/">Åbn Greenys demoarbejdsområde</a>
+          <a class="greeny-text-link" href="/da/roadmap/#package-greeny">Se Greenys roadmap</a>
+        </div>
+
+        <div class="greeny-estimate" id="greeny-estimate">
+          <h3>Estimat for vejfragt</h3>
+          <p>Eksempeldata og faktorer for én vejstrækning.</p>
+          <div class="greeny-estimate-inputs">
+            <dl><dt>Lastens vægt</dt><dd>1.5 ton</dd></dl>
+            <div>
+              <label for="greeny-distance">Vejafstand</label>
+              <select id="greeny-distance" disabled>
+                <option value="50">50 km</option>
+                <option value="100" selected>100 km</option>
+                <option value="250">250 km</option>
+              </select>
+            </div>
+          </div>
+          <div class="greeny-estimate-total">
+            <span id="greeny-total-label">Estimeret udledning for denne strækning</span>
+            <output id="greeny-total" for="greeny-distance" aria-labelledby="greeny-total-label">18 kg CO₂e</output>
+          </div>
+          <dl class="greeny-estimate-breakdown">
+            <div><dt>Kørsel</dt><dd id="greeny-driving">15 kg CO₂e</dd></div>
+            <div><dt>Energiforsyning</dt><dd id="greeny-energy">3 kg CO₂e</dd></div>
+          </dl>
+          <details class="greeny-estimate-method">
+            <summary>Se beregningen</summary>
+            <p>Lastens vægt × afstand giver <strong id="greeny-activity">150 ton-km</strong>. Eksempelfaktorerne er 0.10 kg CO₂e pr. ton-km for kørsel og 0.02 kg CO₂e pr. ton-km for energiforsyning.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section on-light integration-examples" id="examples" aria-labelledby="examples-heading">
+      <div class="page-width">
+        <h2 class="heading" id="examples-heading">Prøv to integrationer fra hverdagen.</h2>
+        <p class="lead">Se, hvordan et Excel-ark bliver til kontakter, du kan gennemgå, eller hvordan et Outlook-svar kontrolleres mod en forsendelse. Begge eksempler bruger eksempeldata og kører lige her.</p>
+        <div class="integration-example-grid">
+          <article class="integration-example integration-example-excel" id="excel-example" aria-labelledby="excel-example-title">
+            <p class="integration-tool">Excel · CSV</p>
+            <h3 id="excel-example-title">Omdan et regneark til CRM-kontakter</h3>
+            <p>Eksporter din kontaktliste fra Excel som CSV. Kontrollér de rækker, du vil importere, og find mangler, før de når dit CRM.</p>
+            <details class="integration-preview">
+              <summary>Gennemgå eksempelkontakter</summary>
+              <div class="integration-preview-body">
+                <table>
+                  <caption>Gennemgang af sample-contacts.csv</caption>
+                  <thead><tr><th scope="col">Kontakt</th><th scope="col">Virksomhed</th><th scope="col">Gennemgå</th></tr></thead>
+                  <tbody>
+                    <tr><td>Eva Holm</td><td>North Quay</td><td><label><input type="checkbox" checked disabled aria-label="Medtag Eva Holm"> Medtag</label></td></tr>
+                    <tr><td>Mikkel Lund</td><td>Harbor Goods</td><td><label><input type="checkbox" checked disabled aria-label="Medtag Mikkel Lund"> Medtag</label></td></tr>
+                    <tr><td>—</td><td>Coastline Foods</td><td>Navn mangler</td></tr>
+                  </tbody>
+                </table>
+                <p class="integration-result" id="sample-contact-selection" role="status">2 kontakter valgt til import.</p>
+              </div>
+            </details>
+            <ul class="integration-example-links">
+              <li><a href="/assets/examples/sample-contacts.csv" download>Download eksempel-CSV</a></li>
+              <li><a href="/da/roadmap/#boney-crm-import">Se Boneys CRM-modul</a></li>
+            </ul>
+          </article>
+
+          <article class="integration-example integration-example-outlook" id="outlook-example" aria-labelledby="outlook-example-title">
+            <p class="integration-tool">Microsoft Outlook</p>
+            <h3 id="outlook-example-title">Gennemgå et svar med forsendelsen åben</h3>
+            <p>En kunde spørger om forventet ankomsttid. Se kladden ved siden af forsendelsesreferencen, og kontrollér præcis, hvad der ville blive sendt.</p>
+            <details class="integration-preview">
+              <summary>Gennemgå eksempelsvar</summary>
+              <div class="integration-preview-body">
+                <dl class="integration-mail">
+                  <dt>Forsendelse</dt><dd>SH-1042 · Forventet fredag</dd>
+                  <dt>Til</dt><dd>eva@northquay.example</dd>
+                  <dt>Emne</dt><dd>Vedr.: Forventet ankomst for forsendelse SH-1042</dd>
+                </dl>
+                <p class="integration-mail-body">Hej Eva, forsendelse SH-1042 forventes på fredag. Jeg giver besked, hvis det ændrer sig.</p>
+                <button class="button button-primary integration-approve" id="approve-sample-reply" type="button" hidden>Godkend eksempelsvar</button>
+                <p class="integration-result" id="sample-reply-status" role="status">Eksempelkladde. Ingen e-mail bliver sendt.</p>
+              </div>
+            </details>
+            <ul class="integration-example-links">
+              <li><a href="/da/roadmap/#boney-outlook">Se Boneys Outlook-modul</a></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section on-dark" id="categories" aria-labelledby="categories-heading">
+      <div class="page-width">
+        <div class="section-head" data-reveal>
+          <p class="label"><span class="num">01</span> Det kan vi forbinde</p>
+          <div class="section-copy">
+            <h2 class="heading" id="categories-heading">Otte slags systemer, vi bygger forbindelser til.</h2>
+          </div>
+        </div>
+        <ul class="cats section-body" data-reveal>
+          <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v5H4zM4 14h7v5H4zM15 14h5v5h-5z"/></svg><h3>ERP og ordrestyring</h3><p>Ordrer, kunder og varer.</p></li>
+          <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></svg><h3>Regnskab og fakturering</h3><p>Fakturaer, betalinger og regnskaber.</p></li>
+          <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16l2 4h14l2-4zM6 16V9h12v7M9 9V5h6v4"/></svg><h3>Transportører og rederier</h3><p>Bookinger, tidsplaner og sporing.</p></li>
+          <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7zM7 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg><h3>Speditører</h3><p>Transportordrer og statusopdateringer.</p></li>
+          <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h8l4 4v14H7zM15 3v4h4M10 12h6M10 16h6"/></svg><h3>Told- og handelsdokumenter</h3><p>Angivelser, certifikater og dokumentsæt.</p></li>
+          <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-5 9 5v11H3zM8 20v-7h8v7"/></svg><h3>Lager og lagerstyring</h3><p>Lagerbeholdninger, placeringer og bevægelser.</p></li>
+          <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 7 9-7"/></svg><h3>Mail og beskeder</h3><p>Indgående forespørgsler, svar og vedhæftninger.</p></li>
+          <li class="cat spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM4 10h16M10 4v16"/></svg><h3>Filer og regneark</h3><p>Prislister, produktark og eksporter.</p></li>
+        </ul>
+        <p class="footnote" data-reveal>Tilgængeligheden afhænger af produktet, og hvordan jeres system giver adgang. Spørg os om jeres.</p>
+      </div>
+    </section>
+
+    <section class="section on-light" aria-labelledby="build-heading">
+      <div class="page-width">
+        <div class="section-head" data-reveal>
+          <p class="label"><span class="num">02</span> Sådan laves en integration</p>
+          <div class="section-copy">
+            <h2 class="heading" id="build-heading">Én forbindelse ad gangen.</h2>
+          </div>
+        </div>
+        <ol class="rows section-body" data-reveal>
+          <li><h3>Kortlæg</h3><p>Vi aftaler, hvilke data der flyttes, i hvilken retning, og hvilket system der ejer dem.</p></li>
+          <li><h3>Forbind</h3><p>Vi bygger forbindelsen til den grænseflade, jeres system stiller til rådighed.</p></li>
+          <li><h3>Kontrollér</h3><p>Vi kører den med rigtige eksempler og en person, der holder øje, før den kører selvstændigt.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section on-light cta-band" aria-labelledby="cta-heading">
+      <div class="page-width" data-reveal>
+        <h2 class="heading" id="cta-heading">Fortæl os, hvilke systemer I bruger.</h2>
+        <p class="lead">Angiv systemerne, og hvad I vil flytte imellem dem. Vi svarer via e-mail med, hvad der er muligt.</p>
+        <div class="contact-actions">
+          <a class="button button-primary" href="mailto:wp@mrsoftware.dk?subject=Samtale%20om%20software%20og%20arbejdsgange">Skriv til os <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="/da/contact/">Kontaktoplysninger</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a class="footer-logo" href="/da/" aria-label="MR Software – forside"><img class="brand-logo" src="/assets/images/brand/mr-mark.svg" alt="" width="53" height="26" loading="lazy"></a><p>Software til handel, fragt og service i marken.</p><a href="mailto:wp@mrsoftware.dk">wp@mrsoftware.dk</a></div>
+      <div class="footer-column" data-link-list-from="use-cases" data-link-list-heading="Use cases"><h2>Use cases</h2><a href="/da/products/tradey/">Tradey</a><a href="/da/products/shippy/">Shippy</a><a href="/da/demo/roady/">Roady</a><a href="/da/products/producey/">Producey</a></div>
+      <div class="footer-column"><h2>Ressourcer</h2><a href="https://guessy.mrsoftware.dk/">Guessy</a><a href="/da/demo/">Democenter</a><a href="/da/stories/">Historier</a><a href="/da/integrations/">Integrationer</a><a href="/da/roadmap/">Planer</a><a href="/da/research/">Forskning</a><a href="/da/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/">Sådan validerer vi</a></div>
+      <div class="footer-column"><h2>Virksomhed</h2><a href="/da/contact/">Kontakt os</a><a href="/da/sikkerhed-og-dataprivatliv/">Sikkerhed</a><a href="/da/status/">Systemstatus</a></div>
+      <nav class="footer-legal" aria-label="Juridisk"><h2>Juridisk</h2><a href="/da/privacy-policy/">Privatlivspolitik</a><a href="/da/terms-of-service/">Vilkår</a><a href="/da/data-deletion/">Sletning af data</a></nav>
+    </div>
+    <div class="footer-bottom">
+      <span>MR software I/S · CVR DK46743091 · Aarhus</span>
+      <span>© <span class="year">2026</span> MR Software</span>
+    </div>
+  </footer>
+</body>
+</html>
