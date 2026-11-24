@@ -14,6 +14,17 @@ let currentRequest;
 let notice = '';
 let currentRoute = location.pathname + location.search;
 
+// Phone-only menu for the sections that do not fit the bottom bar.
+const moreToggle = nav.querySelector('.nav-more-toggle');
+const moreMenu = nav.querySelector('.nav-more-menu');
+function closeMore() { if (!moreToggle || moreMenu.hidden) return; moreMenu.hidden = true; moreToggle.setAttribute('aria-expanded', 'false'); }
+moreToggle?.addEventListener('click', () => {
+  const open = moreMenu.hidden;
+  moreMenu.hidden = !open; moreToggle.setAttribute('aria-expanded', String(open));
+  if (open) moreMenu.querySelector('a')?.focus();
+});
+document.addEventListener('keydown', event => { if (event.key === 'Escape' && moreToggle && !moreMenu.hidden) { closeMore(); moreToggle.focus(); } });
+
 function navigate(url) {
   if (url === location.pathname + location.search) return;
   history.pushState(null, '', url);
@@ -28,8 +39,9 @@ function showError(error) {
 function markReady() { main.setAttribute('data-ready', 'true'); main.removeAttribute('aria-busy'); }
 function setNavigation(view) {
   const section = view.startsWith('lead') ? 'leads' : view.startsWith('customer') ? 'customers' : view.startsWith('opportunity') || view === 'sales' ? 'sales' : view.startsWith('quote') ? 'quotes' : ['catalogue', 'package', 'demo'].includes(view) ? 'catalogue' : 'today';
-  const more = nav.querySelector('details.nav-more');
-  if (more) more.open = false;
+  closeMore();
+  moreToggle?.toggleAttribute('aria-current', false);
+  if (moreToggle?.dataset.sections.split(' ').includes(section)) moreToggle.setAttribute('aria-current', 'page');
   for (const anchor of nav.querySelectorAll('a')) {
     if (anchor.dataset.section === section) anchor.setAttribute('aria-current', 'page'); else anchor.removeAttribute('aria-current');
   }
@@ -191,7 +203,9 @@ async function load() {
 }
 
 document.addEventListener('click', event => {
+  if (moreToggle && !event.target.closest('.nav-more')) closeMore();
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (event.target.closest('.nav-more-menu a')) closeMore();
   const anchor = event.target.closest('a[href]');
   if (anchor) {
     const target = new URL(anchor.href, location.href);
@@ -199,7 +213,8 @@ document.addEventListener('click', event => {
     event.preventDefault(); navigate(target.pathname + target.search); return;
   }
   const card = event.target.closest('[data-href]');
-  if (card && !event.target.closest('button,input,select,textarea,label')) navigate(card.dataset.href);
+  // A form inside a card (Save as lead) keeps its clicks, including on its help and error text.
+  if (card && !event.target.closest('button,input,select,textarea,label,form')) navigate(card.dataset.href);
 });
 addEventListener('popstate', () => {
   // Same-document fragments keep the browser's native focus/scroll behavior.

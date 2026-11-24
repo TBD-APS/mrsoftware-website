@@ -440,15 +440,43 @@ test('on a phone the lead search fits and the menu shows Today, Leads, Customers
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(leadsRoute(app));
   await ready(page);
-  const visibleNav = await page.locator('.workspace-nav > a, .workspace-nav > details > summary').evaluateAll(items => items.filter(item => item.getBoundingClientRect().width > 0).map(item => item.innerText.trim()));
+  const visibleNav = await page.locator('.workspace-nav > a, .workspace-nav .nav-more-toggle').evaluateAll(items => items.filter(item => item.getBoundingClientRect().width > 0).map(item => item.innerText.trim()));
   expect(visibleNav).toEqual(['Today', 'Leads', 'Customers', 'Sales', 'More']);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await page.getByText('More', { exact: true }).click();
   await page.getByRole('link', { name: 'Quotes', exact: true }).click();
   await ready(page);
   await expect(page.locator('h1')).toHaveText('Quotes');
-  await expect(page.locator('.nav-more')).not.toHaveAttribute('open', '');
+  await expect(page.locator('.nav-more-menu')).toBeHidden();
+  await expect(page.getByRole('button', { name: 'More' })).toHaveAttribute('aria-current', 'page');
+  await page.getByRole('button', { name: 'More' }).click();
+  await expect(page.getByRole('button', { name: 'More' })).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.nav-more-menu')).toBeHidden();
+  await expect(page.getByRole('button', { name: 'More' })).toBeFocused();
   await openSection(page, 'Catalogue');
   await ready(page);
   await expect(page.locator('h1')).toHaveText('Catalogue');
+});
+
+test('a save refused by the register shows the reason, and clicks inside the save form stay on the page', async ({ page }) => {
+  const { fixtureCvrClient } = await import('../helpers/cvr-fixture.mjs');
+  const hits = JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../fixtures/cvr/search-workslip.json', import.meta.url), 'utf8')).hits.hits;
+  const protectedLund = structuredClone(hits[0]);
+  protectedLund._source.Vrvirksomhed.reklamebeskyttet = true;
+  const site = await startCommercialSite({ cvrClient: fixtureCvrClient(new Map([['12345678', protectedLund]])) });
+  try {
+    await page.goto(leadsRoute(site));
+    await ready(page);
+    await expect(page.getByLabel('Industry codes')).not.toHaveAttribute('inputmode', 'numeric');
+    const before = page.url();
+    await page.getByRole('button', { name: 'Save Lund Tømrer ApS as lead' }).click();
+    await page.getByText('The lead appears in Today on this date.').click();
+    expect(page.url()).toBe(before);
+    await expect(page.getByRole('button', { name: 'Save lead', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Save lead', exact: true }).click();
+    await expect(page.locator('form.lead-save [role=alert]')).toContainText('This company has asked not to receive marketing in CVR. Nothing was saved.');
+    await expect(page.locator('main')).not.toContainText('changed elsewhere');
+    expect((await site.call('GET', '/api/backoffice/state')).body.customers).toEqual([]);
+  } finally { await site.close(); }
 });

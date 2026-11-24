@@ -132,11 +132,12 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           requireJsonWrite(request, url);
           const input = validateLeadSave(await readJson(request));
           // CVR is asked again right before saving; protection wins over every other check.
+          // Refusals are 422 so the screen shows the reason; 409 means a revision conflict there.
           const company = await cvrClient(env).company(input.cvr);
           if (!company) throw new HttpError(404, 'Company was not found in the register.');
-          if (company.protected !== false) throw new HttpError(409, 'This company has asked not to receive marketing in CVR. Nothing was saved.');
-          if (company.active !== true) throw new HttpError(409, 'This company is no longer active in CVR. Nothing was saved.');
-          if (company.allowedForm !== true) throw new HttpError(409, 'This company form is not included in the lead finder. Nothing was saved.');
+          if (company.protected !== false) throw new HttpError(422, 'This company has asked not to receive marketing in CVR. Nothing was saved.');
+          if (company.active !== true) throw new HttpError(422, 'This company is no longer active in CVR. Nothing was saved.');
+          if (company.allowedForm !== true) throw new HttpError(422, 'This company form is not included in the lead finder. Nothing was saved.');
           const today = isoToday();
           const result = await createStore(env.DB).saveLead({ lead: toLead(company, input.product, null, today), product: input.product, nextFollowUp: input.nextFollowUp, today }, actor);
           return json(result, result.created ? 201 : 200);

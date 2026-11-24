@@ -33,7 +33,7 @@ export function leadSearchForm(params, onSearch) {
   const chosenProduct = products.includes(params.get('product')) ? params.get('product') : 'workslip';
   const product = formField('product', 'Product', chosenProduct, { type: 'select', choices: products.map(value => [value, leadPresets[value].label]) });
   const givenCodes = list(params, 'codes');
-  const codes = formField('codes', 'Industry codes', (givenCodes.length ? givenCodes : presetCodes(chosenProduct)).join(', '), { help: 'Filled in from the product page. Separate codes with commas.', inputmode: 'numeric', autocomplete: 'off' });
+  const codes = formField('codes', 'Industry codes', (givenCodes.length ? givenCodes : presetCodes(chosenProduct)).join(', '), { help: 'Filled in from the product page. Separate codes with commas.', autocomplete: 'off' });
   product.input.addEventListener('change', () => { codes.input.value = presetCodes(product.input.value).join(', '); });
   const chosenRegions = list(params, 'regions');
   const regionSet = el('fieldset', { className: 'check-group' }, el('legend', {}, 'Regions'), regions.map(region => checkbox('regions', region.code, region.name, chosenRegions.includes(region.code))));

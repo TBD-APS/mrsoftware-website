@@ -32,10 +32,10 @@ const phoneMore = ['quotes', 'catalogue'];
     </header>
     <nav class="workspace-nav" aria-label="Sales navigation">
       {sections.map(([view, name, path]) => <a href={`/backoffice/?view=${view}`} data-section={view} class={phoneMore.includes(view) ? 'nav-secondary' : undefined}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={path} /></svg><span>{name}</span></a>)}
-      <details class="nav-more">
-        <summary><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" /></svg><span>More</span></summary>
-        <div class="nav-more-menu">{sections.filter(([view]) => phoneMore.includes(view)).map(([view, name]) => <a href={`/backoffice/?view=${view}`} data-section={view}>{name}</a>)}</div>
-      </details>
+      <div class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-expanded="false" aria-controls="nav-more-menu" data-sections={phoneMore.join(' ')}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" /></svg><span>More</span></button>
+        <div class="nav-more-menu" id="nav-more-menu" hidden>{sections.filter(([view]) => phoneMore.includes(view)).map(([view, name]) => <a href={`/backoffice/?view=${view}`} data-section={view}>{name}</a>)}</div>
+      </div>
     </nav>
     <main id="main" aria-busy="true" tabindex="-1"><slot /></main>
     <footer class="workspace-footer">MR Software · Your customers, conversations and next steps.</footer>

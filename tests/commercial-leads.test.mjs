@@ -160,9 +160,9 @@ test('a company that is protected, inactive or another form at save time is refu
   const holm = hits[1];
   const variant = change => { const copy = structuredClone(holm); change(copy._source.Vrvirksomhed); return copy; };
   const cases = [
-    [variant(company => { company.reklamebeskyttet = true; }), 409, 'This company has asked not to receive marketing in CVR. Nothing was saved.'],
-    [variant(company => { company.virksomhedMetadata.sammensatStatus = 'Ophørt'; }), 409, 'This company is no longer active in CVR. Nothing was saved.'],
-    [variant(company => { company.virksomhedMetadata.nyesteVirksomhedsform.virksomhedsformkode = 10; }), 409, 'This company form is not included in the lead finder. Nothing was saved.'],
+    [variant(company => { company.reklamebeskyttet = true; }), 422, 'This company has asked not to receive marketing in CVR. Nothing was saved.'],
+    [variant(company => { company.virksomhedMetadata.sammensatStatus = 'Ophørt'; }), 422, 'This company is no longer active in CVR. Nothing was saved.'],
+    [variant(company => { company.virksomhedMetadata.nyesteVirksomhedsform.virksomhedsformkode = 10; }), 422, 'This company form is not included in the lead finder. Nothing was saved.'],
   ];
   const { fixtureCvrClient } = await import('./helpers/cvr-fixture.mjs');
   for (const [hit, status, message] of cases) {
