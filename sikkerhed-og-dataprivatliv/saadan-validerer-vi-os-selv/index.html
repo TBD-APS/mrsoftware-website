@@ -165,14 +165,13 @@
           <tr><td>Bypass</td><td>Only the organisation admin + one named role level</td></tr>
         </tbody>
       </table></div>
-      <p>Deploy work goes through protected environments with stepped wait approval:</p>
+      <p>Deploy work goes through protected environments. Only high-risk deploys wait for the owner's approval:</p>
       <div class="table-wrap" tabindex="0" role="region" aria-label="Protected deploy environments"><table>
-        <thead><tr><th scope="col">Environment</th><th scope="col">Wait approval</th><th scope="col">Branch policy</th><th scope="col">Risk</th></tr></thead>
+        <thead><tr><th scope="col">Environment</th><th scope="col">Approval before deploy</th><th scope="col">Branch policy</th><th scope="col">Risk</th></tr></thead>
         <tbody>
-          <tr><td><code>live-low</code></td><td>0 min.</td><td>Protected</td><td>Low risk</td></tr>
-          <tr><td><code>live-medium</code></td><td>10 min.</td><td>Protected</td><td>Medium risk</td></tr>
-          <tr><td><code>live-high</code></td><td>30 min.</td><td>Protected</td><td>High risk</td></tr>
-          <tr><td><code>live</code></td><td>30 min. + owner approval</td><td>Protected (main only)</td><td>Production</td></tr>
+          <tr><td><code>live-low</code></td><td>None</td><td>Protected</td><td>Low risk</td></tr>
+          <tr><td><code>live-medium</code></td><td>None</td><td>Protected</td><td>Medium risk</td></tr>
+          <tr><td><code>live-high</code></td><td>Owner approval</td><td>Protected</td><td>High risk</td></tr>
         </tbody>
       </table></div>
       <p class="note ok">The reconciler's <code>--verify</code> mode is green: the ruleset and environments match

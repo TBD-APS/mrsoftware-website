@@ -1,5 +1,5 @@
 import { initialCatalog } from '../shared/catalog.mjs';
-import { HttpError } from './validation.mjs';
+import { HttpError, isEmail } from './validation.mjs';
 
 const tables = { customers: 'sales_customers', opportunities: 'sales_opportunities', quotes: 'sales_quotes', events: 'sales_events' };
 const stateLimit = 100;
@@ -7,7 +7,7 @@ const queueLimit = 25;
 const initialJson = JSON.stringify(initialCatalog);
 const parseRow = row => row ? JSON.parse(row.document) : null;
 const record = (input, now = new Date().toISOString()) => ({ ...input, id: crypto.randomUUID(), revision: 1, createdAt: now, updatedAt: now });
-const event = (actor, recordType, recordId, operation, now) => record({ actor, recordType, recordId, operation }, now);
+const event = (actor, recordType, recordId, operation, now, details) => record({ actor, recordType, recordId, operation, ...(details ? { details } : {}) }, now);
 const notFound = () => { throw new HttpError(404, 'Record was not found.'); };
 const conflict = () => { throw new HttpError(409, 'This record has changed. Reload it before saving.'); };
 
@@ -68,7 +68,9 @@ export function createStore(db) {
   async function state() {
     // One batch gives a consistent workspace snapshot as well as bounded reads.
     const collections = Object.keys(tables);
-    const results = await db.batch([...collections.map(kind => db.prepare(`SELECT document FROM ${tables[kind]} ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(stateLimit + 1)), catalogStatement()]);
+    // Audit-only events (lead searches, downloads) never count toward the workspace activity window.
+    const auditOnly = kind => kind === 'events' ? "WHERE json_extract(document, '$.recordType') NOT IN ('leadSearch', 'export') " : '';
+    const results = await db.batch([...collections.map(kind => db.prepare(`SELECT document FROM ${tables[kind]} ${auditOnly(kind)}ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(stateLimit + 1)), catalogStatement()]);
     const output = { truncated: false };
     for (const [index, kind] of collections.entries()) {
       const rows = results[index].results;
@@ -123,6 +125,12 @@ export function createStore(db) {
   async function update(kind, id, input, actor) {
     if (kind === 'opportunities') await get('customers', input.customerId);
     const { revision, ...fields } = input;
+    if (kind === 'customers') {
+      // The CVR number is fixed once a lead is saved; an edit keeps it.
+      const stored = (await get('customers', id)).cvr;
+      if (fields.cvr !== undefined && fields.cvr !== stored) throw new HttpError(400, 'CVR number cannot be changed.');
+      if (stored) fields.cvr = stored;
+    }
     const now = new Date().toISOString();
     const bindings = kind === 'opportunities' ? [input.customerId] : [];
     const statement = kind === 'quotes'
@@ -219,5 +227,48 @@ export function createStore(db) {
     return { created: results[1].results.length === 1, receipt: receipt(saved) };
   }
 
-  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry };
+  // One batch: the customer is inserted only when no customer has this CVR number, and the
+  // opportunity and events only when that insert happened. The last statement reads the
+  // customer that owns the number, new or existing.
+  async function saveLead({ lead, product, nextFollowUp, today }, actor) {
+    const now = new Date().toISOString();
+    const contact = { name: '', email: isEmail(lead.email) ? lead.email : '', phone: (lead.phone ?? '').slice(0, 50) };
+    const customer = record({ name: lead.name.slice(0, 200), cvr: lead.cvr, contacts: contact.email || contact.phone ? [contact] : [], notes: `Found with the lead finder on ${today}. Reason: ${lead.reason}`.slice(0, 4000) }, now);
+    const opportunity = record({ customerId: customer.id, title: `${product[0].toUpperCase()}${product.slice(1)} lead`, product, stage: 'lead', nextFollowUp, notes: '' }, now);
+    const created = 'WHERE EXISTS (SELECT 1 FROM sales_customers WHERE id = ?)';
+    const results = await db.batch([
+      insertCustomer(db, customer, "WHERE NOT EXISTS (SELECT 1 FROM sales_customers WHERE json_extract(document, '$.cvr') = ?)", [lead.cvr]),
+      insertOpportunity(db, opportunity, created, [customer.id]),
+      insertEvent(db, event(actor, 'customer', customer.id, 'created', now), created, [customer.id]),
+      insertEvent(db, event(actor, 'opportunity', opportunity.id, 'created', now), created, [customer.id]),
+      db.prepare("SELECT document FROM sales_customers WHERE json_extract(document, '$.cvr') = ? ORDER BY created_at ASC, id ASC LIMIT 1").bind(lead.cvr),
+    ]);
+    const isNew = results[0].results.length === 1;
+    return { created: isNew, customer: parseRow(results[4].results[0]), opportunity: isNew ? parseRow(results[1].results[0]) : null };
+  }
+
+  async function customersByCvr(cvrs) {
+    if (!cvrs.length) return new Map();
+    const { results } = await db.prepare("SELECT id, json_extract(document, '$.cvr') AS cvr FROM sales_customers WHERE json_extract(document, '$.cvr') IN (SELECT value FROM json_each(?)) ORDER BY created_at DESC, id DESC").bind(JSON.stringify(cvrs)).all();
+    return new Map(results.map(row => [row.cvr, row.id]));
+  }
+
+  // Bounded full lists for downloads, newest first.
+  const exportLimit = 5000;
+  async function exportRows(kind) {
+    const { results } = await db.prepare(`SELECT document FROM ${tables[kind]} ORDER BY updated_at DESC, id DESC LIMIT ?`).bind(exportLimit).all();
+    return results.map(parseRow);
+  }
+
+  async function recordExport(details, actor) {
+    const now = new Date().toISOString();
+    await insertEvent(db, event(actor, 'export', crypto.randomUUID(), 'downloaded', now, details)).run();
+  }
+
+  async function recordLeadSearch(details, actor) {
+    const now = new Date().toISOString();
+    await insertEvent(db, event(actor, 'leadSearch', crypto.randomUUID(), 'searched', now, details)).run();
+  }
+
+  return { catalog, state, today, get, createCustomer, createOpportunity, update, updateCatalog, createQuote, createEnquiry, customersByCvr, recordLeadSearch, saveLead, exportRows, recordExport };
 }

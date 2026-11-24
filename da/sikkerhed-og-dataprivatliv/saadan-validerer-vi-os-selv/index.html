@@ -153,14 +153,13 @@
           <tr><td>Omgåelse</td><td>Kun organisationens administrator + ét navngivet rolleniveau</td></tr>
         </tbody>
       </table></div>
-      <p>Udrulning går gennem beskyttede miljøer med trinvise ventetider før godkendelse:</p>
+      <p>Udrulning går gennem beskyttede miljøer. Kun højrisiko-udrulninger venter på ejerens godkendelse:</p>
       <div class="table-wrap" tabindex="0" role="region" aria-label="Beskyttede udrulningsmiljøer"><table>
-        <thead><tr><th scope="col">Miljø</th><th scope="col">Ventetid før godkendelse</th><th scope="col">Branchpolitik</th><th scope="col">Risiko</th></tr></thead>
+        <thead><tr><th scope="col">Miljø</th><th scope="col">Godkendelse før udrulning</th><th scope="col">Branchpolitik</th><th scope="col">Risiko</th></tr></thead>
         <tbody>
-          <tr><td><code>live-low</code></td><td>0 min.</td><td>Beskyttet</td><td>Lav risiko</td></tr>
-          <tr><td><code>live-medium</code></td><td>10 min.</td><td>Beskyttet</td><td>Middel risiko</td></tr>
-          <tr><td><code>live-high</code></td><td>30 min.</td><td>Beskyttet</td><td>Høj risiko</td></tr>
-          <tr><td><code>live</code></td><td>30 min. + ejerens godkendelse</td><td>Beskyttet (kun main)</td><td>Produktion</td></tr>
+          <tr><td><code>live-low</code></td><td>Ingen</td><td>Beskyttet</td><td>Lav risiko</td></tr>
+          <tr><td><code>live-medium</code></td><td>Ingen</td><td>Beskyttet</td><td>Middel risiko</td></tr>
+          <tr><td><code>live-high</code></td><td>Ejerens godkendelse</td><td>Beskyttet</td><td>Høj risiko</td></tr>
         </tbody>
       </table></div>
       <p class="note ok">Afstemningsprocessens <code>--verify</code> -tilstand er grøn: Regelsættet og miljøerne svarer præcist til den ønskede tilstand, så konfigurationen ikke ændrer sig ubemærket.</p>

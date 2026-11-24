@@ -92,7 +92,7 @@ test('Homepage heading fonts keep content-addressed cache keys and a combined 10
     assert.equal(bytes.toString('ascii', 0, 4), 'wOF2');
     total += bytes.length;
   }
-  assert.ok(total < 100_000, 'The photographic hero must not compete with the original 280 KB heading fonts');
+  assert.ok(total < 40_000, 'The photographic hero must not compete with the display heading fonts');
 });
 
 for (const [pathname, contentType] of [

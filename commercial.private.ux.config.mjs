@@ -14,7 +14,7 @@ export default {
   ready: page => page.waitForSelector('main[data-ready="true"] h1'),
   routes: async ({ base }) => {
     const state = await (await fetch(new URL('/api/backoffice/state', base))).json();
-    return ['', '?view=customers', '?view=customer-new', '?view=customer-edit&id=' + state.customers[0].id, '?view=sales', '?view=opportunity-new', '?view=opportunity-edit&id=' + state.opportunities[0].id, '?view=quotes', '?view=quote-new', '?view=catalogue', ...state.catalog.packages.map(pkg => '?view=package&id=' + pkg.id), ...state.catalog.demos.map(demo => '?view=demo&id=' + demo.id)];
+    return ['', '?view=customers', '?view=customer-new', '?view=customer-edit&id=' + state.customers[0].id, '?view=sales', '?view=opportunity-new', '?view=opportunity-edit&id=' + state.opportunities[0].id, '?view=quotes', '?view=quote-new', '?view=catalogue', '?view=leads', '?view=leads&product=workslip&regions=1082', '?view=lead&cvr=12345678&product=workslip', ...state.catalog.packages.map(pkg => '?view=package&id=' + pkg.id), ...state.catalog.demos.map(demo => '?view=demo&id=' + demo.id)];
   },
   records: async ({ base }) => {
     const state = await (await fetch(new URL('/api/backoffice/state', base))).json();
