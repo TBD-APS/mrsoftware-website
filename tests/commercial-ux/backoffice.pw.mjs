@@ -6,6 +6,13 @@ import { seedSalesQueue } from '../helpers/sales-queues.mjs';
 const route = (app, view = '', id = '') => app.privateBase + 'backoffice/' + (view ? `?view=${view}${id ? '&id=' + id : ''}` : '');
 const seedCustomer = async (app, values = {}) => (await app.call('POST', '/api/backoffice/customers', { ...customerInput, name: 'Holm & Co', ...values })).body.item;
 const state = async app => (await app.call('GET', '/api/backoffice/state')).body;
+// On a phone Quotes and Catalogue open from More.
+const openSection = async (page, name) => {
+  const direct = page.locator('.workspace-nav > a', { hasText: name });
+  if (await direct.isVisible()) return direct.click();
+  await page.getByText('More', { exact: true }).click();
+  await page.locator('.nav-more-menu').getByRole('link', { name, exact: true }).click();
+};
 const ready = async page => { await expect(page.locator('main')).toHaveAttribute('data-ready', 'true'); await expect(page.locator('[aria-busy="true"]')).toHaveCount(0); };
 
 test('private customer journey saves contacts and notes in real D1 with stable links', async ({ page, app }) => {
@@ -68,7 +75,7 @@ test('saved quote uses atomic current price then stays unchanged through catalog
   await expect(page.locator('#workspace-result')).toContainText('Quote saved');
   const quote = (await state(app)).quotes[0];
   expect(quote).toMatchObject({ monthlyMinor: 99900, setupMinor: 125050, snapshot: { customer: { name: 'Holm & Co' } } });
-  await page.getByRole('link', { name: 'Catalogue', exact: true }).click();
+  await openSection(page, 'Catalogue');
   await page.getByRole('link', { name: 'Workslip Core', exact: true }).click();
   await page.getByLabel('Monthly price (DKK)', { exact: true }).fill('1199');
   await page.getByRole('button', { name: 'Save package', exact: true }).click();
@@ -373,4 +380,75 @@ test('keyboard skip link preserves native fragment focus and scroll on a query-a
   await expect(target).toHaveURL(route(app, 'customers'));
   await expect(page).toHaveURL(address);
   await target.close();
+});
+
+// Lead finder screen.
+const leadsRoute = (app, query = 'product=workslip&regions=1082') => app.privateBase + 'backoffice/?view=leads' + (query ? '&' + query : '');
+
+test('lead search keeps its parameters through reload and Back, and marks saved companies', async ({ page, app }) => {
+  await page.goto(leadsRoute(app, ''));
+  await ready(page);
+  await expect(page.getByLabel('Industry codes')).toHaveValue('41, 43');
+  await page.getByLabel('Product', { exact: true }).selectOption('tradey');
+  await expect(page.getByLabel('Industry codes')).toHaveValue('463, 4617');
+  await page.getByLabel('Product', { exact: true }).selectOption('workslip');
+  await page.getByLabel('Midtjylland').check();
+  await page.getByLabel('10–19').check();
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
+  await ready(page);
+  expect(new URL(page.url()).searchParams.get('regions')).toBe('1082');
+  expect(new URL(page.url()).searchParams.get('sizes')).toBe('ANTAL_10_19');
+  await expect(page.locator('.lead-card')).toHaveCount(1);
+  await expect(page.locator('.lead-card').first()).toContainText('Lund Tømrer ApS');
+  await expect(page.locator('.lead-card').first()).toContainText('Score 100');
+  await expect(page.locator('.lead-card').first()).toContainText('Tømrerforretninger (433200), 10–19 employees, Aarhus C, founded 2014, website listed');
+  await expect(page.getByRole('link', { name: 'Find Lund Tømrer ApS on LinkedIn' })).toHaveAttribute('href', 'https://www.linkedin.com/search/results/companies/?keywords=Lund%20T%C3%B8mrer%20ApS');
+  await expect(page.getByRole('link', { name: 'Find Lund Tømrer ApS on LinkedIn' })).toHaveAttribute('target', '_blank');
+  await expect(page.getByRole('link', { name: 'Open the website of Lund Tømrer ApS' })).toHaveAttribute('href', 'https://www.lund-toemrer.dk');
+  await page.reload(); await ready(page);
+  await expect(page.getByLabel('Midtjylland')).toBeChecked();
+  await expect(page.locator('.lead-card')).toHaveCount(1);
+  await page.locator('.lead-card').first().locator('.card-meta').click();
+  await ready(page);
+  await expect(page.locator('h1')).toHaveText('Lund Tømrer ApS');
+  await expect(page.locator('main')).toContainText('Søndergade 1, 8000 Aarhus C');
+  await page.goBack(); await ready(page);
+  await expect(page.locator('.lead-card')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Save Lund Tømrer ApS as lead' }).click();
+  await page.getByRole('button', { name: 'Save lead', exact: true }).click();
+  await ready(page);
+  await expect(page.locator('#workspace-result')).toContainText('Lead saved');
+  await page.goto(leadsRoute(app, 'product=workslip&regions=1082&sizes=ANTAL_10_19')); await ready(page);
+  await expect(page.getByRole('link', { name: 'Already in backoffice' })).toBeVisible();
+});
+
+test('an empty search and a failing register are told apart and the busy state ends', async ({ page, app }) => {
+  await page.goto(leadsRoute(app, 'product=workslip&municipalities=101'));
+  await ready(page);
+  await expect(page.locator('main')).toContainText('No companies match. Try more regions or sizes.');
+  const failing = await startCommercialSite({ cvrClient: () => ({ search: async () => { const { HttpError } = await import('../../commercial/server/validation.mjs'); throw new HttpError(502, 'The company register did not answer. Try again in a moment.'); }, company: async () => null }) });
+  try {
+    await page.goto(leadsRoute(failing));
+    await ready(page);
+    await expect(page.getByRole('alert')).toContainText('The company register did not answer. Try again in a moment.');
+    await expect(page.locator('main')).not.toContainText('No companies match');
+    await expect(page.getByRole('button', { name: 'Search', exact: true })).toBeEnabled();
+  } finally { await failing.close(); }
+});
+
+test('on a phone the lead search fits and the menu shows Today, Leads, Customers, Sales and More', async ({ page, app }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(leadsRoute(app));
+  await ready(page);
+  const visibleNav = await page.locator('.workspace-nav > a, .workspace-nav > details > summary').evaluateAll(items => items.filter(item => item.getBoundingClientRect().width > 0).map(item => item.innerText.trim()));
+  expect(visibleNav).toEqual(['Today', 'Leads', 'Customers', 'Sales', 'More']);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.getByText('More', { exact: true }).click();
+  await page.getByRole('link', { name: 'Quotes', exact: true }).click();
+  await ready(page);
+  await expect(page.locator('h1')).toHaveText('Quotes');
+  await expect(page.locator('.nav-more')).not.toHaveAttribute('open', '');
+  await openSection(page, 'Catalogue');
+  await ready(page);
+  await expect(page.locator('h1')).toHaveText('Catalogue');
 });
