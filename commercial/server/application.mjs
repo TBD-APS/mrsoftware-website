@@ -7,6 +7,7 @@ import { byScore, toLead, usableCompany } from './leads.mjs';
 import { leadPresets } from '../shared/lead-presets.mjs';
 
 const productionIdentity = accessVerifier();
+const companyOrigin = 'https://mrsoftware.dk';
 const notFound = () => { throw new HttpError(404, 'Page or record was not found.'); };
 const methodNotAllowed = () => { throw new HttpError(405, 'This request method is not supported.'); };
 const configuredHost = value => typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -25,9 +26,26 @@ function json(body, status = 200) {
   return protectedResponse(Response.json(body, { status }));
 }
 
-function requireJsonWrite(request, url) {
+function requireJsonWrite(request, url, origin = url.origin) {
   const contentType = request.headers.get('Content-Type')?.split(';')[0].trim().toLowerCase();
-  if (request.headers.get('Origin') !== url.origin || contentType !== 'application/json' || request.headers.get('X-Requested-With') !== 'MRSoftware') throw new HttpError(403, 'Use a same-origin JSON request to save changes.');
+  if (request.headers.get('Origin') !== origin || contentType !== 'application/json' || request.headers.get('X-Requested-With') !== 'MRSoftware') throw new HttpError(403, 'Use a same-origin JSON request to save changes.');
+}
+
+// The company site may post one public enquiry. Every other route stays same-origin,
+// and this response must not keep Cross-Origin-Resource-Policy: same-origin.
+function companyEnquiryCors(response) {
+  const headers = new Headers(response.headers);
+  headers.set('Access-Control-Allow-Origin', companyOrigin);
+  headers.set('Vary', 'Origin');
+  headers.delete('Cross-Origin-Resource-Policy');
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
+function allowCompanyEnquiry(request, response) {
+  let path = '';
+  try { path = decodeURIComponent(new URL(request.url).pathname); } catch { return response; }
+  return path === '/api/enquiries' && request.method === 'POST' && request.headers.get('Origin') === companyOrigin
+    ? companyEnquiryCors(response) : response;
 }
 
 const isoToday = () => new Date().toISOString().slice(0, 10);
@@ -64,12 +82,27 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
         }
 
         if (path === '/api/enquiries') {
-          if (request.method !== 'POST') methodNotAllowed();
           if (!onDemoHost) notFound();
-          requireJsonWrite(request, url);
+          if (request.method === 'OPTIONS') {
+            if (request.headers.get('Origin') === companyOrigin && request.headers.get('Access-Control-Request-Method') === 'POST') {
+              return new Response(null, { status: 204, headers: {
+                'Access-Control-Allow-Origin': companyOrigin,
+                'Access-Control-Allow-Methods': 'POST',
+                'Access-Control-Allow-Headers': 'Content-Type, X-Requested-With',
+                'Vary': 'Origin',
+                'Cache-Control': 'private, no-store',
+                'X-Content-Type-Options': 'nosniff',
+              } });
+            }
+            methodNotAllowed();
+          }
+          if (request.method !== 'POST') methodNotAllowed();
+          const fromCompany = request.headers.get('Origin') === companyOrigin;
+          requireJsonWrite(request, url, fromCompany ? companyOrigin : url.origin);
           const input = validateEnquiry(await readJson(request));
           const result = await createStore(env.DB).createEnquiry(input, request.headers.get('CF-Connecting-IP'));
-          return json(result.receipt, result.created ? 201 : 200);
+          const response = json(result.receipt, result.created ? 201 : 200);
+          return fromCompany ? companyEnquiryCors(response) : response;
         }
 
         if (path === '/api/backoffice/session') {
@@ -149,9 +182,10 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
         return request.method === 'HEAD' ? new Response(null, { status: response.status, statusText: response.statusText, headers: response.headers }) : response;
       } catch (error) {
         const status = error instanceof HttpError ? error.status : 503;
-        const response = json({ error: error instanceof HttpError ? error.message : 'Sales storage is unavailable. Please try again later.' }, status);
+        let response = json({ error: error instanceof HttpError ? error.message : 'Sales storage is unavailable. Please try again later.' }, status);
         if (status === 429) response.headers.set('Retry-After', '3600');
-        return request.method === 'HEAD' ? protectedResponse(response, true) : response;
+        if (request.method === 'HEAD') response = protectedResponse(response, true);
+        return allowCompanyEnquiry(request, response);
       }
     },
   };
