@@ -210,6 +210,12 @@ export const graph = {
       "title": "Leveringsdokumentation",
       "href": "/da/demo/#try-shippy",
       "summary": "Prøv at registrere levering på en eksempelforsendelse."
+    },
+    {
+      "id": "product-pricing",
+      "title": "Aftales (engelsk)",
+      "href": "/pricing/",
+      "summary": "Omfang og vilkår aftales for dit projekt."
     }
   ],
   "links": {
@@ -308,6 +314,10 @@ export const graph = {
         "id": "to:contact",
         "toId": "contact",
         "label": "Bed om en gennemgang"
+      },
+      {
+        "id": "to:product-pricing",
+        "toId": "product-pricing"
       }
     ],
     "greeny": [
@@ -324,7 +334,8 @@ export const graph = {
       },
       {
         "id": "to:workslip-prices",
-        "toId": "workslip-prices"
+        "toId": "workslip-prices",
+        "label": "Aftales (engelsk)"
       }
     ],
     "tradey": [
@@ -334,7 +345,8 @@ export const graph = {
       },
       {
         "id": "to:tradey-prices",
-        "toId": "tradey-prices"
+        "toId": "tradey-prices",
+        "label": "Aftales (engelsk)"
       }
     ],
     "shippy": [
@@ -344,7 +356,8 @@ export const graph = {
       },
       {
         "id": "to:shippy-prices",
-        "toId": "shippy-prices"
+        "toId": "shippy-prices",
+        "label": "Aftales (engelsk)"
       }
     ],
     "roadmap": [
