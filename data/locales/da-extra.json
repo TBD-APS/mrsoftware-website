@@ -81,5 +81,12 @@
   "A working day, illustrated": "En arbejdsdag i streger",
   "Watch the animation": "Se animationen",
   "A line connects a person at work to a completed step. 6-second animation, without sound.": "En streg forbinder et menneske ved arbejdet med en afsluttet opgave. 6 sekunder, uden lyd.",
-  "Open the animation": "Åbn animationen"
+  "Open the animation": "Åbn animationen",
+  "Planning timeline": "Tidslinje for produktplanerne",
+  "These periods show how we organise the roadmap. See each product below for feature status.": "Perioderne giver et overblik over planlægningen. Se status for de enkelte funktioner under hvert produkt nedenfor.",
+  "Fourth quarter of 2026": "4. kvartal 2026",
+  "Next": "Næste",
+  "First half of 2027": "1. halvår 2027",
+  "Later": "Senere",
+  "Second half of 2027": "2. halvår 2027"
 }
