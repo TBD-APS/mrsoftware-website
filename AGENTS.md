@@ -4,3 +4,9 @@ The development iframe is shown only on dashboard.mrsoftware.dk. Serve its priva
 snapshot through the Worker after verifying Cloudflare Access. Never commit task
 or graph snapshots or include them in public static assets. Preserve the company
 homepage on other hostnames. No ChatGPT sign-in is required for dashboard views.
+
+## Production completion
+
+When a feature passes the relevant production checks, deploy it through the approved product release path and verify the exact serving revision and risk-appropriate runtime smoke. Report merge, deployment and runtime verification separately. Stop for a concrete blocker and state exactly what is missing. Keep project-specific permissions and release approvals; this guidance grants no access.
+
+Use the [website delivery runbook](README.md#deployment). Keep the existing owner-merge/production environment controls and the separation between the public site, private dashboard and commercial app.
