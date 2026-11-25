@@ -89,6 +89,8 @@ test('find Greeny and see how road distance changes emissions', async ({ page, i
 
     await page.getByRole('link', { name: 'See Greeny’s roadmap' }).click();
     await expect(page).toHaveURL(/\/roadmap\/#package-greeny$/);
-    await expect(page.getByRole('heading', { name: 'Road freight carbon calculation' })).toBeAttached();
+    const greenyPlan = page.getByRole('region', { name: 'Greeny', exact: true }).filter({ has: page.locator('#greeny-road-carbon') });
+    await expect(greenyPlan.getByRole('heading', { name: 'Greeny', level: 2, exact: true })).toBeInViewport();
+    await expect(greenyPlan.locator('#greeny-road-carbon').getByRole('heading', { name: 'Estimated emissions from road freight', level: 3, exact: true })).toBeAttached();
   } finally { await app.close(); }
 });
