@@ -12,7 +12,8 @@
   "research": {
     "label": "Our papers and projects",
     "h1": "Research behind the software.",
-    "lead": "Our papers and projects examine how to build controlled AI and consolidate complex software. Read the proposals, methods and evidence limits, then see how they inform the way we work."
+    "lead": "Our papers and projects examine how to build controlled AI and consolidate complex software. Read the proposals, methods and evidence limits, then see how they inform the way we work.",
+    "note": "These papers are research and design proposals. They do not constitute clinical validation, legal classification, regulatory approval or completed customer due diligence."
   },
   "roadmap": {
     "h1": "Product roadmap",

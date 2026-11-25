@@ -27,5 +27,9 @@
     {"title": "The job", "href": "/stories/the-job/", "text": "The checklist, the photos and the approval stay with the job. The office sees what was recorded on site."},
     {"title": "The shipment", "href": "/stories/the-shipment/", "text": "Booking, documents, customs and status stay with the shipment. Nobody rebuilds it from an inbox."},
     {"title": "The choices", "href": "/stories/the-choices/", "text": "Why the software sits where the work already is, and why a person still approves what leaves the building."}
-  ]
+  ],
+  "homepageUseCases": {
+    "eyebrow": "Use cases",
+    "heading": "Four examples of software we've built."
+  }
 }

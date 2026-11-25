@@ -17,6 +17,7 @@ const DEFAULTS = {
     label: 'Our papers and projects',
     h1: 'Research behind the software.',
     lead: 'Our papers and projects examine how to build controlled AI and consolidate complex software. Read the proposals, methods and evidence limits, then see how they inform the way we work.',
+    note: 'These papers are research and design proposals. They do not constitute clinical validation, legal classification, regulatory approval or completed customer due diligence.',
   },
   roadmap: {
     h1: 'Product roadmap',
@@ -135,6 +136,10 @@ export function renderResearchHero(d) {
     </div>`;
 }
 
+export function renderResearchNote(d) {
+  return `<div class="note">${escapeHtml(d.note ?? '')}</div>`;
+}
+
 export function renderRoadmapHero(d) {
   return `<div class="page-hero on-light roadmap-hero">
       <div class="page-width">
@@ -208,6 +213,11 @@ export async function applyNavHeroesContent(root, data) {
   const roadmapHtml = await readFile(roadmapPath, 'utf8');
   const roadmapNext = replaceMarked(roadmapHtml, '<!-- CONTENT:roadmapGreenyShowcase:start -->', '<!-- CONTENT:roadmapGreenyShowcase:end -->', renderRoadmapGreenyShowcase(d.roadmapGreenyShowcase));
   if (roadmapNext !== roadmapHtml) await writeFile(roadmapPath, roadmapNext);
+  // Research note
+  const researchPath = resolve(base, 'research/index.html');
+  const researchHtml = await readFile(researchPath, 'utf8');
+  const researchNext = replaceMarked(researchHtml, '<!-- CONTENT:researchNote:start -->', '<!-- CONTENT:researchNote:end -->', renderResearchNote(d.research));
+  if (researchNext !== researchHtml) await writeFile(researchPath, researchNext);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

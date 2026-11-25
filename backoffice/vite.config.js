@@ -65,6 +65,7 @@ async function readAllContentJson() {
     homepageContact: mergeHomepageContact(data),
     homepageStories: mergeHomepageStories(data),
     homepageStoriesCards: mergeHomepageStoriesCards(data),
+    homepageUseCases: mergeHomepageUseCases(data),
     stories: mergeStories(stories),
     navHeroes: mergeNavHeroes(navHeroes),
   };
@@ -90,6 +91,9 @@ async function writeAllContentJson(patch) {
     }
     if (patch.homepageStoriesCards && Array.isArray(patch.homepageStoriesCards)) {
       next.homepageStoriesCards = patch.homepageStoriesCards;
+    }
+    if (patch.homepageUseCases && typeof patch.homepageUseCases === 'object') {
+      next.homepageUseCases = { ...(existing.homepageUseCases ?? {}), ...patch.homepageUseCases };
     }
     if (patch.stories && typeof patch.stories === 'object') {
       for (const k of ['storiesIndex', 'theOffer', 'theJob', 'theShipment', 'theChoices']) {
@@ -125,12 +129,13 @@ async function writeAllContentJson(patch) {
   html = applyHomepageCtaHtml(html, cta);
   html = applyHomepageContactHtml(html, contact);
   html = applyHomepageStoriesHtml(html, storiesHome, storiesCards);
+  html = applyHomepageUseCasesIntroHtml(html, mergeHomepageUseCases(next));
   await writeFile(indexPath(), html);
 
   await applyStoriesContent(contentRoot, nextStories);
   await applyNavHeroesContent(contentRoot, nextNav);
 
-  return { homepageCta: cta, homepageContact: contact, homepageStories: storiesHome, homepageStoriesCards: storiesCards, stories: mergeStories(nextStories), navHeroes: mergeNavHeroes(nextNav) };
+  return { homepageCta: cta, homepageContact: contact, homepageStories: storiesHome, homepageStoriesCards: storiesCards, homepageUseCases: mergeHomepageUseCases(next), stories: mergeStories(nextStories), navHeroes: mergeNavHeroes(nextNav) };
 }
 
 function readBody(request) {

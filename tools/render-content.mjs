@@ -32,6 +32,10 @@ const DEFAULTS = {
     { title: 'The shipment', href: '/stories/the-shipment/', text: 'Booking, documents, customs and status stay with the shipment. Nobody rebuilds it from an inbox.' },
     { title: 'The choices', href: '/stories/the-choices/', text: 'Why the software sits where the work already is, and why a person still approves what leaves the building.' },
   ],
+  homepageUseCases: {
+    eyebrow: 'Use cases',
+    heading: "Four examples of software we've built.",
+  },
 };
 
 export function mergeHomepageCta(data) {
@@ -47,6 +51,11 @@ export function mergeHomepageContact(data) {
 export function mergeHomepageStories(data) {
   const src = data?.homepageStories ?? {};
   return { ...DEFAULTS.homepageStories, ...src };
+}
+
+export function mergeHomepageUseCases(data) {
+  const src = data?.homepageUseCases ?? {};
+  return { ...DEFAULTS.homepageUseCases, ...src };
 }
 
 export function mergeHomepageStoriesCards(data) {
@@ -120,6 +129,11 @@ ${cardsHtml}
     </section>`;
 }
 
+export function renderHomepageUseCasesIntro(u) {
+  return `          <p class="eyebrow">${escapeHtml(u.eyebrow)}</p>
+          <h2 class="heading" id="solutions-heading">${escapeHtml(u.heading)}</h2>`;
+}
+
 function escapeHtml(str) {
   return String(str)
     .replaceAll('&', '&amp;')
@@ -138,6 +152,8 @@ const CONTACT_START = '<!-- CONTENT:homepageContact:start -->';
 const CONTACT_END = '<!-- CONTENT:homepageContact:end -->';
 const STORIES_START = '<!-- CONTENT:homepageStories:start -->';
 const STORIES_END = '<!-- CONTENT:homepageStories:end -->';
+const USECASES_INTRO_START = '<!-- CONTENT:homepageUseCasesIntro:start -->';
+const USECASES_INTRO_END = '<!-- CONTENT:homepageUseCasesIntro:end -->';
 
 export function applyHomepageCtaHtml(html, cta) {
   const block = `${CTA_START}\n${renderHomepageCtaBlock(cta)}\n    ${CTA_END}`;
@@ -166,6 +182,15 @@ export function applyHomepageStoriesHtml(html, s, cards) {
   return html.replace(re, block);
 }
 
+export function applyHomepageUseCasesIntroHtml(html, u) {
+  const block = `${USECASES_INTRO_START}\n${renderHomepageUseCasesIntro(u)}\n          ${USECASES_INTRO_END}`;
+  const re = new RegExp(`${escapeRegExp(USECASES_INTRO_START)}[\\s\\S]*?${escapeRegExp(USECASES_INTRO_END)}`, 'm');
+  if (!re.test(html)) {
+    throw new Error('Homepage use cases intro markers not found in index.html.');
+  }
+  return html.replace(re, block);
+}
+
 function escapeRegExp(s) {
   return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -187,6 +212,7 @@ export function mergeAllContent(data) {
     homepageContact: mergeHomepageContact(data),
     homepageStories: mergeHomepageStories(data),
     homepageStoriesCards: mergeHomepageStoriesCards(data),
+    homepageUseCases: mergeHomepageUseCases(data),
   };
 }
 
@@ -199,6 +225,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   html = applyHomepageCtaHtml(html, homepageCta);
   html = applyHomepageContactHtml(html, homepageContact);
   html = applyHomepageStoriesHtml(html, homepageStories, homepageStoriesCards);
+  html = applyHomepageUseCasesIntroHtml(html, mergeHomepageUseCases(data));
   await writeFile(indexPath, html);
   console.log('Homepage content render complete.');
 }
