@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkGraph } from '../js/linking.js';
 import { publicLinkUpdates } from '../tools/prerender-links.mjs';
-import { readSiteContent, mergeHomepageCta, mergeHomepageContact, mergeHomepageStories, applyHomepageCtaHtml, applyHomepageContactHtml, applyHomepageStoriesHtml } from '../tools/render-content.mjs';
+import { readSiteContent, mergeHomepageCta, mergeHomepageContact, mergeHomepageStories, mergeHomepageStoriesCards, applyHomepageCtaHtml, applyHomepageContactHtml, applyHomepageStoriesHtml } from '../tools/render-content.mjs';
 import { readStoriesContent, mergeStories, applyStoriesContent } from '../tools/render-stories.mjs';
 import { readNavHeroesContent, mergeNavHeroes, applyNavHeroesContent } from '../tools/render-nav-heroes.mjs';
 
@@ -64,6 +64,7 @@ async function readAllContentJson() {
     homepageCta: mergeHomepageCta(data),
     homepageContact: mergeHomepageContact(data),
     homepageStories: mergeHomepageStories(data),
+    homepageStoriesCards: mergeHomepageStoriesCards(data),
     stories: mergeStories(stories),
     navHeroes: mergeNavHeroes(navHeroes),
   };
@@ -86,6 +87,9 @@ async function writeAllContentJson(patch) {
     }
     if (patch.homepageStories && typeof patch.homepageStories === 'object') {
       next.homepageStories = { ...(existing.homepageStories ?? {}), ...patch.homepageStories };
+    }
+    if (patch.homepageStoriesCards && Array.isArray(patch.homepageStoriesCards)) {
+      next.homepageStoriesCards = patch.homepageStoriesCards;
     }
     if (patch.stories && typeof patch.stories === 'object') {
       for (const k of ['storiesIndex', 'theOffer', 'theJob', 'theShipment', 'theChoices']) {
@@ -113,16 +117,17 @@ async function writeAllContentJson(patch) {
   const cta = mergeHomepageCta(next);
   const contact = mergeHomepageContact(next);
   const storiesHome = mergeHomepageStories(next);
+  const storiesCards = mergeHomepageStoriesCards(next);
   let html = await readFile(indexPath(), 'utf8');
   html = applyHomepageCtaHtml(html, cta);
   html = applyHomepageContactHtml(html, contact);
-  html = applyHomepageStoriesHtml(html, storiesHome);
+  html = applyHomepageStoriesHtml(html, storiesHome, storiesCards);
   await writeFile(indexPath(), html);
 
   await applyStoriesContent(contentRoot, nextStories);
   await applyNavHeroesContent(contentRoot, nextNav);
 
-  return { homepageCta: cta, homepageContact: contact, homepageStories: storiesHome, stories: mergeStories(nextStories), navHeroes: mergeNavHeroes(nextNav) };
+  return { homepageCta: cta, homepageContact: contact, homepageStories: storiesHome, homepageStoriesCards: storiesCards, stories: mergeStories(nextStories), navHeroes: mergeNavHeroes(nextNav) };
 }
 
 function readBody(request) {

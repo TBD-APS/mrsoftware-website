@@ -26,6 +26,12 @@ const DEFAULTS = {
     heading: 'Four working days, and the choices behind them.',
     lead: 'A buyer in a chat. A job on site. A shipment already on the road. The software is built for that day.',
   },
+  homepageStoriesCards: [
+    { title: 'The offer', href: '/stories/the-offer/', text: 'The buyer asks in the chat they already use. The offer is drafted there, and a person approves it before it is sent.' },
+    { title: 'The job', href: '/stories/the-job/', text: 'The checklist, the photos and the approval stay with the job. The office sees what was recorded on site.' },
+    { title: 'The shipment', href: '/stories/the-shipment/', text: 'Booking, documents, customs and status stay with the shipment. Nobody rebuilds it from an inbox.' },
+    { title: 'The choices', href: '/stories/the-choices/', text: 'Why the software sits where the work already is, and why a person still approves what leaves the building.' },
+  ],
 };
 
 export function mergeHomepageCta(data) {
@@ -41,6 +47,21 @@ export function mergeHomepageContact(data) {
 export function mergeHomepageStories(data) {
   const src = data?.homepageStories ?? {};
   return { ...DEFAULTS.homepageStories, ...src };
+}
+
+export function mergeHomepageStoriesCards(data) {
+  const src = Array.isArray(data?.homepageStoriesCards) ? data.homepageStoriesCards : [];
+  const out = [];
+  for (let i = 0; i < 4; i++) {
+    const d = src[i] && typeof src[i] === 'object' ? src[i] : {};
+    const def = DEFAULTS.homepageStoriesCards[i];
+    out.push({
+      title: String(d.title ?? def.title),
+      href: String(d.href ?? def.href),
+      text: String(d.text ?? def.text),
+    });
+  }
+  return out;
 }
 
 export function renderHomepageCtaBlock(cta) {
@@ -77,7 +98,12 @@ export function renderHomepageContactBlock(c) {
     </section>`;
 }
 
-export function renderHomepageStoriesBlock(s) {
+export function renderHomepageStoriesBlock(s, cards) {
+  const c = cards ?? mergeHomepageStoriesCards({ homepageStoriesCards: DEFAULTS.homepageStoriesCards });
+  const cardsHtml = c.map(card => `          <article class="use">
+            <h3><a href="${escapeAttr(card.href)}">${escapeHtml(card.title)}</a></h3>
+            <p>${escapeHtml(card.text)}</p>
+          </article>`).join('\n');
   return `<section class="section" id="stories" aria-labelledby="stories-heading">
       <div class="page-width">
         <div data-reveal>
@@ -85,24 +111,11 @@ export function renderHomepageStoriesBlock(s) {
           <h2 class="heading" id="stories-heading">${escapeHtml(s.heading)}</h2>
           <p class="lead">${escapeHtml(s.lead)}</p>
         </div>
+        <!-- CONTENT:homepageStoriesCards:start -->
         <div class="uses" data-reveal>
-          <article class="use">
-            <h3><a href="/stories/the-offer/">The offer</a></h3>
-            <p>The buyer asks in the chat they already use. The offer is drafted there, and a person approves it before it is sent.</p>
-          </article>
-          <article class="use">
-            <h3><a href="/stories/the-job/">The job</a></h3>
-            <p>The checklist, the photos and the approval stay with the job. The office sees what was recorded on site.</p>
-          </article>
-          <article class="use">
-            <h3><a href="/stories/the-shipment/">The shipment</a></h3>
-            <p>Booking, documents, customs and status stay with the shipment. Nobody rebuilds it from an inbox.</p>
-          </article>
-          <article class="use">
-            <h3><a href="/stories/the-choices/">The choices</a></h3>
-            <p>Why the software sits where the work already is, and why a person still approves what leaves the building.</p>
-          </article>
+${cardsHtml}
         </div>
+        <!-- CONTENT:homepageStoriesCards:end -->
       </div>
     </section>`;
 }
@@ -144,8 +157,8 @@ export function applyHomepageContactHtml(html, c) {
   return html.replace(re, block);
 }
 
-export function applyHomepageStoriesHtml(html, s) {
-  const block = `${STORIES_START}\n${renderHomepageStoriesBlock(s)}\n    ${STORIES_END}`;
+export function applyHomepageStoriesHtml(html, s, cards) {
+  const block = `${STORIES_START}\n${renderHomepageStoriesBlock(s, cards)}\n    ${STORIES_END}`;
   const re = new RegExp(`${escapeRegExp(STORIES_START)}[\\s\\S]*?${escapeRegExp(STORIES_END)}`, 'm');
   if (!re.test(html)) {
     throw new Error('Homepage stories markers not found in index.html.');
@@ -173,24 +186,19 @@ export function mergeAllContent(data) {
     homepageCta: mergeHomepageCta(data),
     homepageContact: mergeHomepageContact(data),
     homepageStories: mergeHomepageStories(data),
+    homepageStoriesCards: mergeHomepageStoriesCards(data),
   };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const root = new URL('..', import.meta.url);
   const data = await readSiteContent(root);
-  const { homepageCta, homepageContact, homepageStories } = mergeAllContent(data);
+  const { homepageCta, homepageContact, homepageStories, homepageStoriesCards } = mergeAllContent(data);
   const indexPath = resolve(fileURLToPath(root), 'index.html');
   let html = await readFile(indexPath, 'utf8');
   html = applyHomepageCtaHtml(html, homepageCta);
   html = applyHomepageContactHtml(html, homepageContact);
-  html = applyHomepageStoriesHtml(html, homepageStories);
-  const after = await readFile(indexPath, 'utf8');
-  if (html !== after) {
-    await writeFile(indexPath, html);
-    console.log('Updated homepage content from data/site-content.json');
-  } else {
-    await writeFile(indexPath, html);
-    console.log('Homepage content render complete.');
-  }
+  html = applyHomepageStoriesHtml(html, homepageStories, homepageStoriesCards);
+  await writeFile(indexPath, html);
+  console.log('Homepage content render complete.');
 }

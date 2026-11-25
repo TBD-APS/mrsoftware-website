@@ -21,5 +21,11 @@
     "eyebrow": "Stories",
     "heading": "Four working days, and the choices behind them.",
     "lead": "A buyer in a chat. A job on site. A shipment already on the road. The software is built for that day."
-  }
+  },
+  "homepageStoriesCards": [
+    {"title": "The offer", "href": "/stories/the-offer/", "text": "The buyer asks in the chat they already use. The offer is drafted there, and a person approves it before it is sent."},
+    {"title": "The job", "href": "/stories/the-job/", "text": "The checklist, the photos and the approval stay with the job. The office sees what was recorded on site."},
+    {"title": "The shipment", "href": "/stories/the-shipment/", "text": "Booking, documents, customs and status stay with the shipment. Nobody rebuilds it from an inbox."},
+    {"title": "The choices", "href": "/stories/the-choices/", "text": "Why the software sits where the work already is, and why a person still approves what leaves the building."}
+  ]
 }

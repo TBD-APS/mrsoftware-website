@@ -169,6 +169,27 @@ function App() {
           h('label', null, 'Lead text', h('textarea', { value: content.homepageStories?.lead ?? '', onChange: e => setContent({ ...content, homepageStories: { ...content.homepageStories, lead: e.target.value } }), rows: 3, style: { width: '100%' } }))
         ),
         h('fieldset', { style: { border: '1px solid #ccc', padding: '1rem' } },
+          h('legend', null, 'Stories cards (homepage, 4 items)'),
+          [0,1,2,3].map(i => h('div', { key: i, style: { marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1px solid #eee' } },
+            h('strong', null, `Card ${i + 1}`),
+            h('label', null, 'Title', h('input', { value: content.homepageStoriesCards?.[i]?.title ?? '', onChange: e => {
+              const cards = [...(content.homepageStoriesCards ?? [{},{},{},{}])];
+              cards[i] = { ...(cards[i] ?? {}), title: e.target.value };
+              setContent({ ...content, homepageStoriesCards: cards });
+            }, style: { width: '100%' } })),
+            h('label', null, 'Link href', h('input', { value: content.homepageStoriesCards?.[i]?.href ?? '', onChange: e => {
+              const cards = [...(content.homepageStoriesCards ?? [{},{},{},{}])];
+              cards[i] = { ...(cards[i] ?? {}), href: e.target.value };
+              setContent({ ...content, homepageStoriesCards: cards });
+            }, style: { width: '100%' } })),
+            h('label', null, 'Text', h('textarea', { value: content.homepageStoriesCards?.[i]?.text ?? '', onChange: e => {
+              const cards = [...(content.homepageStoriesCards ?? [{},{},{},{}])];
+              cards[i] = { ...(cards[i] ?? {}), text: e.target.value };
+              setContent({ ...content, homepageStoriesCards: cards });
+            }, rows: 2, style: { width: '100%' } }))
+          ))
+        ),
+        h('fieldset', { style: { border: '1px solid #ccc', padding: '1rem' } },
           h('legend', null, 'Stories pages (heroes) — saved to data/stories-content.json'),
           h('p', { style: { maxWidth: '60ch' } }, 'Edits hero sections on /stories/ and the four story pages.'),
           h('strong', null, '/stories/ (index)'),
