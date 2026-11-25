@@ -55,13 +55,13 @@
   <main id="main">
     <div class="page-hero on-light roadmap-hero">
       <div class="page-width">
-        <h1>Produktroadmap</h1>
-        <p class="lead">Se, hvad der er udviklet, under udvikling eller planlagt for hver pakke.</p>
-        <p class="roadmap-note">Udviklede funktioner er implementeret. Tilgængeligheden varierer efter produkt og opsætning.</p>
+        <h1>Vores produktplaner</h1>
+        <p class="lead">Se, hvad vi har bygget, hvad vi arbejder på, og hvad vi planlægger for hvert produkt.</p>
+        <p class="roadmap-note">Udviklet betyder, at funktionen er bygget. Om du kan bruge den, afhænger af dit produkt og din opsætning.</p>
         <nav class="roadmap-jumps" aria-label="Sektioner i roadmap">
           <a href="#greeny-showcase">Udforsk Greeny</a>
-          <a href="#boney-modules">Udforsk genanvendelige Boney-moduler</a>
-          <a href="#roadmap-packages">Gennemse produktroadmappet</a>
+          <a href="#boney-modules">Se, hvad vores produkter har til fælles</a>
+          <a href="#roadmap-packages">Se planer for hvert produkt</a>
         </nav>
       </div>
     </div>
@@ -109,7 +109,7 @@
     <div data-related-from="roadmap" data-related-heading="Roadmapoverblik og downloads"><section class="related-links" aria-labelledby="related-roadmap"><h2 id="related-roadmap">Roadmapoverblik og downloads</h2><ul><li><a class="related-link" href="/da/roadmap/report/"><span class="related-link-title">Se roadmapoverblik og rapporter</span><span class="related-link-summary">Sammenlign offentliggjorte antal funktioner, og download det samme overblik i flere formater.</span></a></li></ul></section></div>
     <section class="greeny-roadmap" aria-labelledby="greeny-showcase">
       <h2 id="greeny-showcase">Greeny</h2>
-      <p>Gennemgå elforbrugsdata, forhåndsvis og del ESG-rapporter, og estimer udledningen for en vejstrækning med faktorerne bag resultatet.</p>
+      <p>Tjek elforbrug, se og del bæredygtighedsrapporter, og se, hvordan Greeny beregner den anslåede udledning for en vejstrækning.</p>
       <div class="greeny-roadmap-links">
         <a class="button button-primary" href="/da/integrations/#greeny-example">Prøv eksemplet på fragtudledning</a>
         <a class="greeny-text-link" href="#package-greeny">Se Greenys roadmap</a>
@@ -117,18 +117,18 @@
     </section>
 
     <section class="boney-showcase" aria-labelledby="boney-modules">
-      <h2 id="boney-modules">Genanvendelige Boney-moduler</h2>
-      <p class="boney-showcase-intro">Brug de samme byggesten på tværs af produkter, fra login og kundeportaler til forsendelsessporing. Teams vælger versionsstyrede .NET- eller JavaScript-pakker og konfigurerer adgang, lagring og udbydere til deres produkt.</p>
+      <h2 id="boney-modules">Boney-funktioner, vi bruger på tværs af produkter</h2>
+      <p class="boney-showcase-intro">Med Boney kan vores teams genbruge funktioner som login, kundeportaler og forsendelsessporing. Hvert team vælger de funktioner, der passer til produktet, og bestemmer, hvordan de sættes op.</p>
       <p class="boney-showcase-examples"><a href="/da/integrations/#examples">Prøv Excel- og Outlook-eksemplerne</a></p>
       <ul class="boney-modules">
         <li id="boney-module-starter">
-          <h3><a href="#boney-product-starter">Produktstartpakke og adgang</a></h3>
-          <p>Start et React- og ASP.NET-produkt med en fælles appramme, Authy-login og adgangskontrol på organisationsniveau.</p>
+          <h3><a href="#boney-product-starter">Fælles layout og login</a></h3>
+          <p>Start et nyt produkt med et velkendt layout, Authy-login og adgangsregler for den enkelte virksomhed.</p>
           <p class="boney-package-names"><code>Boney.ProductStarter</code> <code>Boney.App</code> <code>@mr-software/product-ui</code></p>
         </li>
         <li id="boney-module-portal">
           <h3><a href="#boney-customer-portal">Kundeportaler</a></h3>
-          <p>Giv kunderne et sted at følge deres poster, dokumenter og beskeder med adgang styret af værtsproduktet.</p>
+          <p>Giv kunder ét sted at se deres egne oplysninger, dokumenter og beskeder.</p>
           <p class="boney-package-names"><code>Boney.CustomerPortal</code> <code>@mr-software/product-ui</code></p>
         </li>
         <li id="boney-module-contacts">
@@ -138,12 +138,12 @@
         </li>
         <li id="boney-module-documents">
           <h3><a href="#boney-document-intake">Dokumentmodtagelse og gennemgang</a></h3>
-          <p>Bevar originaldokumentet, valider udtrukne felter, og giv dem, der gennemgår materialet, dokumentation til deres beslutninger.</p>
+          <p>Tjek de hentede oplysninger mod det originale dokument, så du kan se, hvad din beslutning bygger på.</p>
           <p class="boney-package-names"><code>Boney.Documents</code></p>
         </li>
         <li id="boney-module-planning">
           <h3><a href="#boney-transport-planning">Transport- og leveringsplanlægning</a></h3>
-          <p>Brug fælles transportmodeller til at planlægge køretøjsbesøg, kontrollere kapacitet og følge delvis opfyldelse.</p>
+          <p>Planlæg, hvornår køretøjerne skal ankomme, tjek kapaciteten, og se, hvad der stadig mangler at blive leveret.</p>
           <p class="boney-package-names"><code>Boney.Transport</code> <code>Boney.Planning</code> <code>Boney.Fulfilment</code></p>
         </li>
         <li id="boney-module-tracking">
@@ -157,8 +157,8 @@
           <p class="boney-package-names"><code>Boney.Workflows</code> <code>Boney.Mcp</code></p>
         </li>
         <li id="boney-module-delivery">
-          <h3><a href="#boney-release-toolkit">Release- og browserkontroller</a></h3>
-          <p>Test brugerrejser på computer og telefon, og knyt releasedokumentation til den præcise kildekoderevision.</p>
+          <h3><a href="#boney-release-toolkit">Test før opdateringer udgives</a></h3>
+          <p>Test, hvordan produktet bruges på computer og telefon, og gem oplysninger om, præcis hvilken version der blev testet.</p>
           <p class="boney-package-names"><code>Boney.Deploy</code> <code>@mr-software/ux-gate</code></p>
         </li>
       </ul>
@@ -180,36 +180,36 @@
       <ul class="roadmap-list">
         <li class="roadmap-feature" id="authy-single-sign-in">
           <div>
-            <h3>Fælles login</h3>
-            <p>Lad registrerede produkter overlade login til Authy og bruge den bekræftede identitet, når brugeren vender tilbage.</p>
+            <h3>Fælles login til forbundne produkter</h3>
+            <p>Brug Authy til at bekræfte, hvem der logger ind på et forbundet produkt.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="authy-organization-roles">
           <div>
-            <h3>Organisations- og afdelingsroller</h3>
-            <p>Tildel fælles roller på organisations- eller afdelingsniveau for de deltagende produkter.</p>
+            <h3>Adgang for virksomhed eller afdeling</h3>
+            <p>Bestem, hvad medarbejdere kan se og gøre på tværs af forbundne produkter for hele virksomheden eller en enkelt afdeling.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="authy-current-access">
           <div>
-            <h3>Aktuel adgang og tilbagekaldelse</h3>
-            <p>Lad et produkt kontrollere, om en bruger, der er logget ind, stadig har adgang, når vedkommende sender en beskyttet anmodning.</p>
+            <h3>Kontrol af aktiv adgang</h3>
+            <p>Tjek, om brugeren stadig har adgang, når vedkommende prøver at åbne eller ændre oplysninger med begrænset adgang.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="authy-email-codes">
           <div>
             <h3>Login med e-mailkode</h3>
-            <p>Tilbyd login med e-mailkode til produkter, hvor det udtrykkeligt er aktiveret, og bind sessionen til det produkt.</p>
+            <p>Log ind med en kode sendt på e-mail i de produkter, der tilbyder det.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="authy-machine-clients">
           <div>
-            <h3>Identitet mellem produkter</h3>
-            <p>Registrer en maskinklient til en godkendt forbindelse, så to produkter kan udveksle anmodninger med afgrænset adgang.</p>
+            <h3>Styret deling mellem produkter</h3>
+            <p>Giv forbundne produkter lov til at udveksle oplysninger og anmodninger inden for den adgang, de har fået.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -221,8 +221,8 @@
       <ul class="roadmap-list">
         <li class="roadmap-feature" id="boney-app-foundation">
           <div>
-            <h3>Applikationsfundament</h3>
-            <p>Giv produktteams et fælles udgangspunkt for login, adgangskontrol, tenantkontekst og sundhedsendpoints.</p>
+            <h3>Fælles grundlag for nye produkter</h3>
+            <p>Giv nye produkter en fælles opsætning til login, virksomhedsadgang og kontrol af, om systemet kører.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -235,15 +235,15 @@
         </li>
         <li class="roadmap-feature" id="boney-product-starter">
           <div>
-            <h3>Produktstartpakke</h3>
-            <p>Generer en React-frontend med en ensartet applikationsramme og udtrykkeligt valgte afhængigheder.</p>
+            <h3>Færdigt layout til nye produkter</h3>
+            <p>Start med et fælles skærmlayout, og vælg de værktøjer, produktet har brug for.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="boney-customer-portal">
           <div>
             <h3>Kundeportal</h3>
-            <p>Genbrug kundeposter, opdateringer, beskeder og dokumentoverførsel med adgang styret af værtsproduktet.</p>
+            <p>Giv kunder ét sted at se deres opdateringer, beskeder og dokumenter. Adgangen styres i det produkt, de bruger.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -263,8 +263,8 @@
         </li>
         <li class="roadmap-feature" id="boney-record-threads">
           <div>
-            <h3>Samtaler på poster</h3>
-            <p>Gem svar på den post, de vedrører, og kontrollér adgangen på postniveau.</p>
+            <h3>Samtaler samlet det rigtige sted</h3>
+            <p>Gem svar sammen med de oplysninger, de handler om, og vis dem til dem, der har adgang.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -284,8 +284,8 @@
         </li>
         <li class="roadmap-feature" id="boney-whatsapp">
           <div>
-            <h3>WhatsApp-adapter</h3>
-            <p>Genbrug WhatsApp-beskedklienten og håndteringen af leveringsstatus med godkendelse styret af produktet.</p>
+            <h3>WhatsApp-beskeder og leveringsstatus</h3>
+            <p>Send godkendte WhatsApp-beskeder, og se, om de blev leveret.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -305,15 +305,15 @@
         </li>
         <li class="roadmap-feature" id="boney-accounting-reader">
           <div>
-            <h3>Læser til regnskabsdata</h3>
-            <p>Læs fakturadata med afgrænset adgang gennem en e-conomic-adapter, der aktivt tilvælges.</p>
+            <h3>Fakturaoplysninger fra e-conomic</h3>
+            <p>Se udvalgte fakturaoplysninger, når forbindelsen til e-conomic er slået til.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="boney-fulfilment">
           <div>
-            <h3>Delvis opfyldelse</h3>
-            <p>Følg delmængder, og udpeg personer til at følge op på det, der fortsat udestår.</p>
+            <h3>Opfølgning på delleverancer</h3>
+            <p>Se, hvor meget der er leveret, og udpeg en ansvarlig for det, der stadig mangler.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -326,8 +326,8 @@
         </li>
         <li class="roadmap-feature" id="boney-product-events">
           <div>
-            <h3>Hændelser mellem produkter</h3>
-            <p>Udveksl signerede hændelser, og bevar rækkefølge og leveringshistorik med den fælles indbakke og udbakke.</p>
+            <h3>Opdateringer mellem forbundne produkter</h3>
+            <p>Del bekræftede opdateringer mellem produkter, bevar rækkefølgen, og se, hvilke der kom frem.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -340,8 +340,8 @@
         </li>
         <li class="roadmap-feature" id="boney-automation">
           <div>
-            <h3>Automatiseringskørsler</h3>
-            <p>Koordiner versionsstyrede kontroller, varige resultater og godkendelsestrin gennem fælles automatiseringskontrakter.</p>
+            <h3>Automatiske tjek og godkendelser</h3>
+            <p>Kør faste tjek, gem resultaterne, og bed om godkendelse, hvor det er nødvendigt.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -354,8 +354,8 @@
         </li>
         <li class="roadmap-feature" id="boney-shipment-tracking">
           <div>
-            <h3>Adaptere til forsendelsessporing</h3>
-            <p>Læs containeropdateringer gennem en valgfri sporingsadapter med et kontrolleret budget for kald.</p>
+            <h3>Opdateringer om containere</h3>
+            <p>Følg containeren, når sporing er slået til. Der er en grænse for, hvor ofte der hentes nye oplysninger.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -382,29 +382,29 @@
         </li>
         <li class="roadmap-feature" id="boney-feature-flags">
           <div>
-            <h3>Funktionsflag</h3>
-            <p>Evaluer produktets funktionsflag, og hold valgfrie funktioner slået fra, indtil de aktiveres.</p>
+            <h3>Styring af valgfrie funktioner</h3>
+            <p>Hold valgfrie funktioner slået fra, indtil teamet er klar til at aktivere dem.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="boney-audit-history">
           <div>
-            <h3>Revisionsspor og posthistorik</h3>
-            <p>Verificer poster i revisionssporet, og brug en fælles visning af ændringer i poster.</p>
+            <h3>Historik over ændringer</h3>
+            <p>Se, hvad der er ændret, og bekræft oplysningerne i ændringsloggen.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="boney-release-toolkit">
           <div>
-            <h3>Release- og integrationskontroller</h3>
-            <p>Kør produktspecifikke leveringsadaptere og gentagelige integrationskontroller fra en fælles værktøjskasse.</p>
+            <h3>Tjek før softwareopdateringer</h3>
+            <p>Brug fælles værktøjer til at udgive opdateringer og tjekke, at forbundne systemer stadig fungerer sammen.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="boney-versioned-artifacts">
           <div>
-            <h3>Versionsstyrede pakkeartefakter</h3>
-            <p>Byg uafhængigt testede .NET- og webpakker med præcise versioner og dokumenteret kildeoprindelse.</p>
+            <h3>Testede softwaredele</h3>
+            <p>Byg og test softwaredele hver for sig, og se, hvilket udgangspunkt hver version er bygget fra.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -417,15 +417,15 @@
         </li>
         <li class="roadmap-feature" id="boney-resilient-requests">
           <div>
-            <h3>Robuste anmodninger</h3>
-            <p>Genbrug et afgrænset antal genforsøg til understøttede anmodninger, og hold adfærden for genforsøg ensartet på tværs af produkter.</p>
+            <h3>Automatiske genforsøg ved midlertidige fejl</h3>
+            <p>Prøv automatisk igen et begrænset antal gange, hvis en handling, der kan gentages, fejler.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="boney-test-data">
           <div>
-            <h3>Gentagelige testdata</h3>
-            <p>Generer de samme testpersoner, steder og poster fra en fast startværdi.</p>
+            <h3>Ens testdata hver gang</h3>
+            <p>Genskab de samme fiktive personer, steder og oplysninger, når en test har brug for dem.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -438,15 +438,15 @@
         </li>
         <li class="roadmap-feature" id="boney-site-conversation">
           <div>
-            <h3>Adapter til samtaler på hjemmesiden</h3>
-            <p>Forbind hjemmesideassistenter til en fælles modeladapter på serveren.</p>
+            <h3>Fælles opsætning til hjemmesideassistenter</h3>
+            <p>Forbind hjemmesideassistenter til den samme tjeneste, der genererer svar.</p>
           </div>
           <span class="roadmap-stage">Under udvikling</span>
         </li>
         <li class="roadmap-feature" id="boney-remote-mission">
           <div>
-            <h3>Fjernstart af missioner</h3>
-            <p>Sæt arbejde i kø til en navngiven desktopmission, og vis, om maskinen blev nået.</p>
+            <h3>Send opgaver til en anden computer</h3>
+            <p>Sæt en opgave i kø til en bestemt computer, og se, om anmodningen nåede frem.</p>
           </div>
           <span class="roadmap-stage">Planlagt</span>
         </li>
@@ -479,8 +479,8 @@
         </li>
         <li class="roadmap-feature" id="greeny-road-carbon">
           <div>
-            <h3>CO₂-beregning for vejfragt</h3>
-            <p>Estimer udledningen for en vejstrækning, når afstand, last og en gennemgået faktor er angivet.</p>
+            <h3>Anslået udledning fra vejfragt</h3>
+            <p>Beregn et skøn over udledningen på en strækning ud fra afstand, last og en kontrolleret faktor for udledning.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -493,8 +493,8 @@
         </li>
         <li class="roadmap-feature" id="greeny-shipment-reports">
           <div>
-            <h3>ESG-rapporter baseret på forsendelser</h3>
-            <p>Opret rapporter fra forsendelsesetaper, og spor hvert udledningstal tilbage til dets input og faktorer.</p>
+            <h3>Bæredygtighedsrapporter fra forsendelser</h3>
+            <p>Lav en rapport ud fra forsendelsens etaper, og se tallene og forudsætningerne bag den anslåede udledning.</p>
           </div>
           <span class="roadmap-stage">Under udvikling</span>
         </li>
@@ -506,8 +506,8 @@
       <ul class="roadmap-list">
         <li class="roadmap-feature" id="saasy-operator-workspace">
           <div>
-            <h3>Operatørens arbejdsområde</h3>
-            <p>Se missioner, repositoryarbejde og beslutninger i ét Control Center.</p>
+            <h3>Opgaver og beslutninger samlet</h3>
+            <p>Følg opgaver, softwareændringer og beslutninger i ét kontrolcenter.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -527,22 +527,22 @@
         </li>
         <li class="roadmap-feature" id="saasy-audit-fleet">
           <div>
-            <h3>Overblik over revisionsspor</h3>
-            <p>Gennemgå aktivitet i revisionssporet og privilegerede handlinger på tværs af de miljøer, en operatør må se.</p>
+            <h3>Overblik over følsomme handlinger</h3>
+            <p>Gennemgå loggen, og se, hvilke handlinger der krævede særlige rettigheder i de systemer, du har adgang til.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="saasy-pipeline-radar">
           <div>
-            <h3>Overvågning af build og release</h3>
-            <p>Følg udvalgte GitHub-workflows, knyt mislykkede kørsler til den relevante ændring, og følg genforsøg.</p>
+            <h3>Overblik over softwareopdateringer og fejl</h3>
+            <p>Se, hvilke af de fulgte GitHub-tjek der fejlede, hvilken ændring de hører til, og om de blev kørt igen.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="saasy-release-evidence">
           <div>
-            <h3>Releasedokumentation for missioner</h3>
-            <p>Knyt dokumentationen for en release til dens mission og kildeversion.</p>
+            <h3>Dokumentation for softwareopdateringer</h3>
+            <p>Gem oplysninger om, hvilken opgave og softwareversion hver opdatering hører til.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -562,22 +562,22 @@
         </li>
         <li class="roadmap-feature" id="saasy-product-releases">
           <div>
-            <h3>Fælles koordinering af produktreleases</h3>
-            <p>Anvend godkendelser og releaseregler på tværs af produkter, mens hvert produkt beholder sin egen deployadapter.</p>
+            <h3>Fælles regler for produktudgivelser</h3>
+            <p>Brug fælles regler og godkendelser, når software opdateres på tværs af produkter. Hvert produkt kan udgive opdateringer på sin egen måde.</p>
           </div>
           <span class="roadmap-stage">Under udvikling</span>
         </li>
         <li class="roadmap-feature" id="saasy-module-entitlements">
           <div>
-            <h3>Vedvarende modulrettigheder</h3>
-            <p>Hold beslutninger om moduladgang ensartede på tværs af applikation, navigation og API.</p>
+            <h3>Samme adgang til funktioner overalt</h3>
+            <p>Brug de samme adgangsregler alle steder, hvor en funktion kan åbnes eller bruges.</p>
           </div>
           <span class="roadmap-stage">Planlagt</span>
         </li>
         <li class="roadmap-feature" id="saasy-customer-exports">
           <div>
-            <h3>Eksport af kundedata</h3>
-            <p>Anmod om og download en dataeksport, som produktet selv står for, gennem en fælles kontrakt afgrænset til den enkelte tenant.</p>
+            <h3>Download af kundedata</h3>
+            <p>Anmod om og download de data, produktet har for din organisation.</p>
           </div>
           <span class="roadmap-stage">Planlagt</span>
         </li>
@@ -591,7 +591,7 @@
         <li class="roadmap-feature" id="saasy-site-assistant">
           <div>
             <h3>Hjemmesideassistent</h3>
-            <p>Tilbyd en tilgængelig samtale på hjemmesiden med den fælles modeladapter.</p>
+            <p>Tilbyd besøgende en tilgængelig chat, der bruger en fælles tjeneste til at svare.</p>
           </div>
           <span class="roadmap-stage">Planlagt</span>
         </li>
@@ -631,8 +631,8 @@
         </li>
         <li class="roadmap-feature" id="roady-source-check">
           <div>
-            <h3>Kontrol af kildernes aktualitet</h3>
-            <p>Find gamle eller manglende opdateringer, og gem resultaterne af gentagelige kontroller.</p>
+            <h3>Tjek for gamle eller manglende transportoplysninger</h3>
+            <p>Find transportoplysninger, der mangler eller er forældede, og gem resultatet af tjekket.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -653,7 +653,7 @@
         <li class="roadmap-feature" id="roady-scheduled-checks">
           <div>
             <h3>Planlagte transportkontroller</h3>
-            <p>Kør kontroller fra SAAS’y, og bevar resultaterne gennem genforsøg og genstarter.</p>
+            <p>Planlæg tjek fra SAAS’y, og behold resultaterne, selv hvis et tjek køres igen, eller systemet genstartes.</p>
           </div>
           <span class="roadmap-stage">Under udvikling</span>
         </li>
@@ -763,8 +763,8 @@
         </li>
         <li class="roadmap-feature" id="shippy-product-connections">
           <div>
-            <h3>Forbundne produkter</h3>
-            <p>Undersøg parringsstatus, fejl i hændelseslevering og afgrænset dokumentation for genopretning for forbundne ordrer.</p>
+            <h3>Status på forbindelser mellem produkter</h3>
+            <p>Se, om produkterne er forbundet, hvilke ordreopdateringer der ikke kom frem, og hvilke oplysninger der kan hjælpe med at løse problemet.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -833,14 +833,14 @@
         <li class="roadmap-feature" id="tradey-container-tracking">
           <div>
             <h3>Containersporing</h3>
-            <p>Læs containerobservationer og forventede ankomster, når udbyderforbindelsen er aktiveret.</p>
+            <p>Se de seneste containeropdateringer og den forventede ankomst, når sporingstjenesten er tilsluttet.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
         <li class="roadmap-feature" id="tradey-whatsapp-connection">
           <div>
             <h3>WhatsApp-forbindelse</h3>
-            <p>Opsæt og undersøg en afgrænset WhatsApp-forbindelse til et handelsarbejdsområde.</p>
+            <p>Opsæt og tjek en WhatsApp-forbindelse med adgang begrænset til handelsområdet.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>
@@ -873,8 +873,8 @@
         </li>
         <li class="roadmap-feature" id="zavn-skills">
           <div>
-            <h3>Receptionistens færdigheder</h3>
-            <p>Gennemse, konfigurer og aktiver færdigheder til en kliniks receptionist.</p>
+            <h3>Vælg, hvad klinikkens assistent kan hjælpe med</h3>
+            <p>Vælg, opsæt og slå de opgaver til, som klinikkens receptionsassistent kan hjælpe med.</p>
           </div>
           <span class="roadmap-stage">Udviklet</span>
         </li>

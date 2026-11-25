@@ -5,8 +5,8 @@
     "features": [
       {
         "id": "authy-single-sign-in",
-        "title": "Shared sign-in",
-        "summary": "Let registered products hand sign-in to Authy and use the verified identity when the user returns.",
+        "title": "One sign-in for connected products",
+        "summary": "Use Authy to confirm who is signing in to a connected product.",
         "source": {
           "path": "README.md",
           "stage": "developed"
@@ -14,8 +14,8 @@
       },
       {
         "id": "authy-organization-roles",
-        "title": "Organization and branch roles",
-        "summary": "Assign shared roles at organization or branch level for participating products.",
+        "title": "Access by company or branch",
+        "summary": "Set what people can see and do across connected products for a whole company or a single branch.",
         "source": {
           "path": "README.md",
           "stage": "developed"
@@ -23,8 +23,8 @@
       },
       {
         "id": "authy-current-access",
-        "title": "Current access and revocation",
-        "summary": "Let a product check whether a signed-in user still has access when they make a protected request.",
+        "title": "Check whether access is still active",
+        "summary": "Check that people still have permission when they try to open or change restricted information.",
         "source": {
           "path": "docs/access-revocation.md",
           "stage": "developed"
@@ -33,7 +33,7 @@
       {
         "id": "authy-email-codes",
         "title": "Sign-in by email code",
-        "summary": "Offer email-code sign-in for explicitly enabled products and bind the session to that product.",
+        "summary": "Sign in with a code sent by email in products that offer this option.",
         "source": {
           "path": "docs/email-login.md",
           "stage": "developed"
@@ -41,8 +41,8 @@
       },
       {
         "id": "authy-machine-clients",
-        "title": "Product-to-product identity",
-        "summary": "Register a machine client for an approved connection so two products can exchange scoped requests.",
+        "title": "Controlled sharing between products",
+        "summary": "Allow connected products to exchange only the information or requests they have permission to share.",
         "source": {
           "path": "docs/machine-clients.md",
           "stage": "developed"
@@ -56,8 +56,8 @@
     "features": [
       {
         "id": "boney-app-foundation",
-        "title": "Application foundation",
-        "summary": "Give product teams a shared starting point for sign-in, access checks, tenant context and health endpoints.",
+        "title": "Common setup for new products",
+        "summary": "Give new products a ready-made setup for sign-in, company access and basic checks that the system is running.",
         "source": {
           "path": "docs/app-foundation.md",
           "stage": "developed"
@@ -74,8 +74,8 @@
       },
       {
         "id": "boney-product-starter",
-        "title": "Product starter",
-        "summary": "Generate a React frontend with a consistent application shell and explicitly selected dependencies.",
+        "title": "A ready-made layout for new products",
+        "summary": "Start with a common screen layout and choose the tools the product needs.",
         "source": {
           "path": "docs/product-starter.md",
           "stage": "developed"
@@ -84,7 +84,7 @@
       {
         "id": "boney-customer-portal",
         "title": "Customer portal",
-        "summary": "Reuse customer records, updates, messaging and document transport with host-controlled access.",
+        "summary": "Give customers one place to see their updates, messages and documents, with access managed by the product they use.",
         "source": {
           "path": "docs/customer-portal.md",
           "stage": "developed"
@@ -110,8 +110,8 @@
       },
       {
         "id": "boney-record-threads",
-        "title": "Record conversations",
-        "summary": "Keep replies attached to the record they concern and check access at the record boundary.",
+        "title": "Conversations in the right place",
+        "summary": "Keep replies with the information they concern and show them to people who have access to it.",
         "source": {
           "path": "docs/thread.md",
           "stage": "developed"
@@ -137,8 +137,8 @@
       },
       {
         "id": "boney-whatsapp",
-        "title": "WhatsApp adapter",
-        "summary": "Reuse the WhatsApp message client and delivery-status handling with product-controlled approval.",
+        "title": "WhatsApp messages and delivery status",
+        "summary": "Send approved WhatsApp messages and see whether they were delivered.",
         "source": {
           "path": "docs/whatsapp.md",
           "stage": "developed"
@@ -164,8 +164,8 @@
       },
       {
         "id": "boney-accounting-reader",
-        "title": "Accounting data reader",
-        "summary": "Read scoped invoice data through an opt-in e-conomic adapter.",
+        "title": "Invoice information from e-conomic",
+        "summary": "View selected invoice information after enabling the connection to e-conomic.",
         "source": {
           "path": "docs/economic.md",
           "stage": "developed"
@@ -173,8 +173,8 @@
       },
       {
         "id": "boney-fulfilment",
-        "title": "Partial fulfilment",
-        "summary": "Track partial quantities and assign people to follow up on what remains outstanding.",
+        "title": "Follow up on partial deliveries",
+        "summary": "See how much has been delivered and assign someone to follow up on what is still missing.",
         "source": {
           "path": "docs/fulfilment.md",
           "stage": "developed"
@@ -191,8 +191,8 @@
       },
       {
         "id": "boney-product-events",
-        "title": "Product-to-product events",
-        "summary": "Exchange signed events and preserve ordering and delivery history with the shared inbox and outbox.",
+        "title": "Updates between connected products",
+        "summary": "Share verified updates between products, keep them in order and see which ones were delivered.",
         "source": {
           "path": "docs/integration.md",
           "stage": "developed"
@@ -209,8 +209,8 @@
       },
       {
         "id": "boney-automation",
-        "title": "Automation runs",
-        "summary": "Coordinate versioned checks, durable results and approval steps through shared automation contracts.",
+        "title": "Automatic checks and approvals",
+        "summary": "Run routine checks, save the results and ask for approval where needed.",
         "source": {
           "path": "docs/automation.md",
           "stage": "developed"
@@ -227,8 +227,8 @@
       },
       {
         "id": "boney-shipment-tracking",
-        "title": "Shipment tracking adapters",
-        "summary": "Read container updates through an optional tracking adapter with a controlled call budget.",
+        "title": "Container updates",
+        "summary": "See container updates when tracking is enabled, with a limit on how often updates are requested.",
         "source": {
           "path": "docs/jsoncargo-tracking.md",
           "stage": "developed"
@@ -263,8 +263,8 @@
       },
       {
         "id": "boney-feature-flags",
-        "title": "Feature flags",
-        "summary": "Evaluate product feature flags and keep optional capabilities off until enabled.",
+        "title": "Control when optional features are turned on",
+        "summary": "Keep optional features off until the team is ready to enable them.",
         "source": {
           "path": "docs/feature-flags.md",
           "stage": "developed"
@@ -272,8 +272,8 @@
       },
       {
         "id": "boney-audit-history",
-        "title": "Audit and record history",
-        "summary": "Verify audit entries and use a shared presentation for record changes.",
+        "title": "History of changes",
+        "summary": "See what changed in a record and verify the log entries that document it.",
         "source": {
           "path": "docs/audit.md",
           "stage": "developed"
@@ -281,8 +281,8 @@
       },
       {
         "id": "boney-release-toolkit",
-        "title": "Release and integration checks",
-        "summary": "Run product-specific delivery adapters and repeatable integration checks from a shared toolkit.",
+        "title": "Checks before software updates",
+        "summary": "Use a shared set of tools to deliver updates and check that connected systems still work together.",
         "source": {
           "path": "docs/deploy.md",
           "stage": "developed"
@@ -290,8 +290,8 @@
       },
       {
         "id": "boney-versioned-artifacts",
-        "title": "Versioned package artifacts",
-        "summary": "Build independently tested .NET and web packages with exact versions and source provenance.",
+        "title": "Tested software components",
+        "summary": "Build and test components separately and trace each version back to its source.",
         "source": {
           "path": "docs/packages.md",
           "stage": "developed"
@@ -308,8 +308,8 @@
       },
       {
         "id": "boney-resilient-requests",
-        "title": "Resilient requests",
-        "summary": "Reuse bounded retries for supported requests and keep retry behavior consistent across products.",
+        "title": "Automatic retries for temporary errors",
+        "summary": "Retry supported operations a limited number of times if they fail.",
         "source": {
           "path": "docs/resilience.md",
           "stage": "developed"
@@ -317,8 +317,8 @@
       },
       {
         "id": "boney-test-data",
-        "title": "Repeatable test data",
-        "summary": "Generate the same test people, places and records from a fixed seed.",
+        "title": "Consistent data for testing",
+        "summary": "Recreate the same sample people, places and records each time a test needs them.",
         "source": {
           "path": "docs/demo-data.md",
           "stage": "developed"
@@ -335,16 +335,16 @@
       },
       {
         "id": "boney-site-conversation",
-        "title": "Website conversation adapter",
-        "summary": "Connect website assistants to a shared server-side model adapter.",
+        "title": "A shared setup for website assistants",
+        "summary": "Connect website assistants to the same service for generating replies.",
         "source": {
           "issue": "SAS-533"
         }
       },
       {
         "id": "boney-remote-mission",
-        "title": "Remote mission startup",
-        "summary": "Queue work for a named desktop mission and show whether the machine was reached.",
+        "title": "Send work to a remote computer",
+        "summary": "Queue a task for a specific computer and check whether the request reached it.",
         "source": {
           "path": "docs/wake.md",
           "stage": "planned"
@@ -385,8 +385,8 @@
       },
       {
         "id": "greeny-road-carbon",
-        "title": "Road freight carbon calculation",
-        "summary": "Estimate emissions for a road leg when distance, load and a reviewed factor are supplied.",
+        "title": "Estimated emissions from road freight",
+        "summary": "Estimate emissions for one part of a journey using distance, load and a checked emissions factor.",
         "source": {
           "path": "docs/shipment-carbon.md",
           "stage": "developed"
@@ -402,8 +402,8 @@
       },
       {
         "id": "greeny-shipment-reports",
-        "title": "Shipment-based ESG reports",
-        "summary": "Create reports from shipment stages and trace each emissions figure back to its inputs and factors.",
+        "title": "Sustainability reports from shipment data",
+        "summary": "Use each part of a shipment to build a report and see which figures and assumptions went into the emissions estimates.",
         "source": {
           "issue": "SAS-515"
         }
@@ -416,8 +416,8 @@
     "features": [
       {
         "id": "saasy-operator-workspace",
-        "title": "Operator workspace",
-        "summary": "See missions, repository work and decisions in one Control Center.",
+        "title": "One place for tasks and decisions",
+        "summary": "See assigned work, software changes and decisions in one Control Center.",
         "source": {
           "path": "docs/control-center.md",
           "stage": "developed"
@@ -443,8 +443,8 @@
       },
       {
         "id": "saasy-audit-fleet",
-        "title": "Audit overview",
-        "summary": "Review audit activity and privileged actions across the environments an operator is allowed to see.",
+        "title": "Overview of sensitive activity",
+        "summary": "Review logged activity and see actions that required special permissions in the systems you have access to.",
         "source": {
           "path": "docs/product/audit-fleet-operator-contract.md",
           "stage": "developed"
@@ -452,8 +452,8 @@
       },
       {
         "id": "saasy-pipeline-radar",
-        "title": "Build and release monitoring",
-        "summary": "Track selected GitHub workflows, link failed runs to the relevant change and follow retries.",
+        "title": "Monitor software updates and errors",
+        "summary": "See which selected GitHub checks failed, what change they relate to and whether a retry ran.",
         "source": {
           "path": "docs/github-pipeline-radar.md",
           "stage": "developed"
@@ -461,8 +461,8 @@
       },
       {
         "id": "saasy-release-evidence",
-        "title": "Mission release evidence",
-        "summary": "Bind the evidence for a release to its mission and source version.",
+        "title": "Documentation for software updates",
+        "summary": "Keep a record of which task and software version each update came from.",
         "source": {
           "path": "docs/operations/mission-release-evidence.md",
           "stage": "developed"
@@ -486,24 +486,24 @@
       },
       {
         "id": "saasy-product-releases",
-        "title": "Shared product release orchestration",
-        "summary": "Apply approvals and release rules across products while each product keeps its own deployment adapter.",
+        "title": "Coordinate updates across products",
+        "summary": "Use shared rules and approvals when releasing updates, with the option for each product to publish them its own way.",
         "source": {
           "issue": "SAS-113"
         }
       },
       {
         "id": "saasy-module-entitlements",
-        "title": "Persistent module entitlements",
-        "summary": "Keep module access decisions consistent across the application, navigation and API.",
+        "title": "Consistent access to features",
+        "summary": "Apply the same access rules wherever a feature can be opened or used.",
         "source": {
           "issue": "SAS-93"
         }
       },
       {
         "id": "saasy-customer-exports",
-        "title": "Customer data exports",
-        "summary": "Request and download a product-owned data export through a common, tenant-scoped contract.",
+        "title": "Download customer data",
+        "summary": "Request and download the data a product holds for your organization.",
         "source": {
           "issue": "SAS-95"
         }
@@ -519,7 +519,7 @@
       {
         "id": "saasy-site-assistant",
         "title": "Website assistant",
-        "summary": "Provide an accessible site conversation using the shared model adapter.",
+        "summary": "Offer visitors an accessible chat on the website using a shared service for replies.",
         "source": {
           "issue": "SAS-534"
         }
@@ -568,8 +568,8 @@
       },
       {
         "id": "roady-source-check",
-        "title": "Source freshness checks",
-        "summary": "Find old or missing updates and store the results of repeatable checks.",
+        "title": "Spot old or missing transport updates",
+        "summary": "Check whether transport information is missing or out of date, and save the results.",
         "source": {
           "path": "docs/automation.md",
           "stage": "developed"
@@ -594,7 +594,7 @@
       {
         "id": "roady-scheduled-checks",
         "title": "Scheduled transport checks",
-        "summary": "Run checks from SAAS’y and retain their results through retries and restarts.",
+        "summary": "Schedule checks from SAAS’y and keep their results if a check is retried or the system restarts.",
         "source": {
           "issue": "SAS-543"
         }
@@ -728,8 +728,8 @@
       },
       {
         "id": "shippy-product-connections",
-        "title": "Connected products",
-        "summary": "Inspect pairing status, event delivery failures and scoped recovery evidence for connected orders.",
+        "title": "Check connections between products",
+        "summary": "See whether products are connected, which order updates failed to get through and what information is available to help fix the issue.",
         "source": {
           "path": "docs/event-delivery.md",
           "stage": "developed"
@@ -812,7 +812,7 @@
       {
         "id": "tradey-container-tracking",
         "title": "Container tracking",
-        "summary": "Read container observations and estimated arrivals when the provider connection is enabled.",
+        "summary": "See the latest container updates and expected arrival when the tracking service is connected.",
         "source": {
           "issue": "SAS-531"
         }
@@ -820,7 +820,7 @@
       {
         "id": "tradey-whatsapp-connection",
         "title": "WhatsApp connection",
-        "summary": "Set up and inspect a scoped WhatsApp connection for a trading workspace.",
+        "summary": "Set up and check a WhatsApp connection with access limited to the trading workspace.",
         "source": {
           "path": "platform/web/src/whatsapp-connection.test.tsx",
           "stage": "developed"
@@ -861,8 +861,8 @@
       },
       {
         "id": "zavn-skills",
-        "title": "Receptionist skills",
-        "summary": "Browse, configure and enable skills for a clinic’s receptionist.",
+        "title": "Choose what the clinic assistant can do",
+        "summary": "Choose, set up and switch on the tasks the receptionist assistant can help with.",
         "source": {
           "path": "src/components/Skills/SkillsPage.tsx",
           "stage": "developed"
