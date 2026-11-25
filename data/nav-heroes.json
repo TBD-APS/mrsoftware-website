@@ -19,6 +19,14 @@
     "lead": "See what’s developed, in development or planned for each package.",
     "note": "Developed features are implemented. Availability varies by product and setup."
   },
+  "roadmapGreenyShowcase": {
+    "title": "Greeny",
+    "body": "Review electricity data, preview and share ESG reports, and estimate emissions for a road leg with the factors behind the result.",
+    "primaryLabel": "Try the freight emissions example",
+    "primaryHref": "/integrations/#greeny-example",
+    "secondaryLabel": "See Greeny’s roadmap",
+    "secondaryHref": "#package-greeny"
+  },
   "status": {
     "label": "MR Software",
     "h1": "System status",

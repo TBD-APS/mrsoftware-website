@@ -104,6 +104,9 @@ async function writeAllContentJson(patch) {
           nextNav[k] = { ...(existingNav[k] ?? {}), ...patch.navHeroes[k] };
         }
       }
+      if (patch.navHeroes.roadmapGreenyShowcase && typeof patch.navHeroes.roadmapGreenyShowcase === 'object') {
+        nextNav.roadmapGreenyShowcase = { ...(existingNav.roadmapGreenyShowcase ?? {}), ...patch.navHeroes.roadmapGreenyShowcase };
+      }
     }
   }
 

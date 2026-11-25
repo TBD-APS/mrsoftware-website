@@ -23,6 +23,14 @@ const DEFAULTS = {
     lead: 'See what’s developed, in development or planned for each package.',
     note: 'Developed features are implemented. Availability varies by product and setup.',
   },
+  roadmapGreenyShowcase: {
+    title: 'Greeny',
+    body: 'Review electricity data, preview and share ESG reports, and estimate emissions for a road leg with the factors behind the result.',
+    primaryLabel: 'Try the freight emissions example',
+    primaryHref: '/integrations/#greeny-example',
+    secondaryLabel: 'See Greeny’s roadmap',
+    secondaryHref: '#package-greeny',
+  },
   status: {
     label: 'MR Software',
     h1: 'System status',
@@ -36,6 +44,10 @@ function escapeHtml(str) {
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
+}
+
+function escapeAttr(str) {
+  return String(str).replaceAll('&', '&amp;').replaceAll('"', '&quot;');
 }
 
 function escapeRegExp(s) {
@@ -55,6 +67,7 @@ export function mergeNavHeroes(data) {
     integrations: { ...DEFAULTS.integrations, ...(src.integrations ?? {}) },
     research: { ...DEFAULTS.research, ...(src.research ?? {}) },
     roadmap: { ...DEFAULTS.roadmap, ...(src.roadmap ?? {}) },
+    roadmapGreenyShowcase: { ...DEFAULTS.roadmapGreenyShowcase, ...(src.roadmapGreenyShowcase ?? {}) },
     status: { ...DEFAULTS.status, ...(src.status ?? {}) },
   };
 }
@@ -137,6 +150,17 @@ export function renderRoadmapHero(d) {
     </div>`;
 }
 
+export function renderRoadmapGreenyShowcase(d) {
+  return `<section class="greeny-roadmap" aria-labelledby="greeny-showcase">
+      <h2 id="greeny-showcase">${escapeHtml(d.title)}</h2>
+      <p>${escapeHtml(d.body)}</p>
+      <div class="greeny-roadmap-links">
+        <a class="button button-primary" href="${escapeAttr(d.primaryHref)}">${escapeHtml(d.primaryLabel)}</a>
+        <a class="greeny-text-link" href="${escapeAttr(d.secondaryHref)}">${escapeHtml(d.secondaryLabel)}</a>
+      </div>
+    </section>`;
+}
+
 export function renderStatusHero(d) {
   return `<div class="page-hero on-dark">
       <div class="page-width">
@@ -172,13 +196,18 @@ export async function applyNavHeroesContent(root, data) {
     const next = replaceMarked(src, f.start, f.end, f.html);
     if (next !== src) await writeFile(f.path, next);
   }
-  // Integrations sub-sections (kept in same file for now)
+  // Integrations sub-sections
   const intPath = resolve(base, 'integrations/index.html');
   let intHtml = await readFile(intPath, 'utf8');
   intHtml = replaceMarked(intHtml, '<!-- CONTENT:integrationsCategories:start -->', '<!-- CONTENT:integrationsCategories:end -->', renderIntegrationsCategories(d.integrations));
   intHtml = replaceMarked(intHtml, '<!-- CONTENT:integrationsBuild:start -->', '<!-- CONTENT:integrationsBuild:end -->', renderIntegrationsBuild(d.integrations));
   intHtml = replaceMarked(intHtml, '<!-- CONTENT:integrationsCta:start -->', '<!-- CONTENT:integrationsCta:end -->', renderIntegrationsCta(d.integrations));
   await writeFile(intPath, intHtml);
+  // Roadmap Greeny showcase
+  const roadmapPath = resolve(base, 'roadmap/index.html');
+  const roadmapHtml = await readFile(roadmapPath, 'utf8');
+  const roadmapNext = replaceMarked(roadmapHtml, '<!-- CONTENT:roadmapGreenyShowcase:start -->', '<!-- CONTENT:roadmapGreenyShowcase:end -->', renderRoadmapGreenyShowcase(d.roadmapGreenyShowcase));
+  if (roadmapNext !== roadmapHtml) await writeFile(roadmapPath, roadmapNext);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
