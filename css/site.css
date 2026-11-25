@@ -887,6 +887,34 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 
 /* Product roadmap */
+.roadmap-timeline { max-width: 960px; margin-bottom: var(--s4); }
+.roadmap-timeline h2 { font-size: var(--fs-heading); line-height: 1.12; }
+.roadmap-timeline > p { margin: var(--s1) 0 var(--s2); color: var(--muted-on-light); }
+.roadmap-timeline-periods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.roadmap-timeline-periods li {
+  padding: var(--s2);
+  border-top: 3px solid var(--hairline-light);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+}
+.roadmap-timeline-periods .roadmap-timeline-now { border-color: var(--accent); background: var(--rose); }
+.roadmap-timeline-periods span {
+  display: block;
+  margin-bottom: 4px;
+  font: var(--fs-small) / 1.5 var(--mono);
+}
+@media (max-width: 640px) {
+  .roadmap-timeline-periods { grid-template-columns: minmax(0, 1fr); }
+  .roadmap-timeline-periods li { border-top: 0; border-inline-start: 3px solid var(--hairline-light); }
+}
+
 .roadmap-hero { padding-bottom: var(--s4); }
 .roadmap-hero h1 { margin-top: 0; }
 .roadmap-note { margin: var(--s1) 0 0; color: var(--muted-on-light); font-size: var(--fs-small); }
