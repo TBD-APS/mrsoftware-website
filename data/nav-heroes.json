@@ -1,7 +1,13 @@
 {
   "integrations": {
     "pill": "Trading and shipping",
-    "lead": "Our products exchange data with the tools around them, so an order, a shipment or a document is entered once. Tell us what you use and we confirm what is supported today."
+    "lead": "Our products exchange data with the tools around them, so an order, a shipment or a document is entered once. Tell us what you use and we confirm what is supported today.",
+    "sectionLabel": "01 · What we can connect",
+    "sectionHeading": "Eight kinds of systems we build connections to.",
+    "buildLabel": "02 · How an integration is made",
+    "buildHeading": "One connection at a time.",
+    "ctaHeading": "Tell us which systems you use.",
+    "ctaLead": "Name the systems and what you want to move between them. We reply by email with what is possible."
   },
   "research": {
     "label": "Our papers and projects",

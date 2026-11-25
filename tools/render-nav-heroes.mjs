@@ -6,6 +6,12 @@ const DEFAULTS = {
   integrations: {
     pill: 'Trading and shipping',
     lead: 'Our products exchange data with the tools around them, so an order, a shipment or a document is entered once. Tell us what you use and we confirm what is supported today.',
+    sectionLabel: '01 · What we can connect',
+    sectionHeading: 'Eight kinds of systems we build connections to.',
+    buildLabel: '02 · How an integration is made',
+    buildHeading: 'One connection at a time.',
+    ctaHeading: 'Tell us which systems you use.',
+    ctaLead: 'Name the systems and what you want to move between them. We reply by email with what is possible.',
   },
   research: {
     label: 'Our papers and projects',
@@ -66,6 +72,41 @@ export function renderIntegrationsHero(d) {
           <a class="button button-secondary" href="#categories">See what we connect to</a>
         </div>
         <div class="hub"><svg viewBox="0 0 1200 380" aria-hidden="true"><path class="hub-line" d="M330 64 C 450 64, 430 190, 500 190"/><rect class="hub-node" x="30" y="40" width="300" height="48" rx="12"/><text x="50" y="70">ERP and order management</text><path class="hub-line" d="M330 148 C 450 148, 430 190, 500 190"/><rect class="hub-node" x="30" y="124" width="300" height="48" rx="12"/><text x="50" y="154">Accounting and invoicing</text><path class="hub-line" d="M330 232 C 450 232, 430 190, 500 190"/><rect class="hub-node" x="30" y="208" width="300" height="48" rx="12"/><text x="50" y="238">Carriers and shipping lines</text><path class="hub-line" d="M330 316 C 450 316, 430 190, 500 190"/><rect class="hub-node" x="30" y="292" width="300" height="48" rx="12"/><text x="50" y="322">Freight forwarders</text><path class="hub-line" d="M700 190 C 770 190, 750 64, 870 64"/><rect class="hub-node" x="870" y="40" width="300" height="48" rx="12"/><text x="890" y="70">Customs and trade documents</text><path class="hub-line" d="M700 190 C 770 190, 750 148, 870 148"/><rect class="hub-node" x="870" y="124" width="300" height="48" rx="12"/><text x="890" y="154">Warehouse and inventory</text><path class="hub-line" d="M700 190 C 770 190, 750 232, 870 232"/><rect class="hub-node" x="870" y="208" width="300" height="48" rx="12"/><text x="890" y="238">Email and messaging</text><path class="hub-line" d="M700 190 C 770 190, 750 316, 870 316"/><rect class="hub-node" x="870" y="292" width="300" height="48" rx="12"/><text x="890" y="322">Files and spreadsheets</text><rect class="hub-core" x="500" y="150" width="200" height="80" rx="12"/><text class="hub-core-text" x="600" y="196" text-anchor="middle">Your workflow</text></svg></div>
+      </div>
+    </section>`;
+}
+
+export function renderIntegrationsCategories(d) {
+  return `<section class="section on-dark" id="categories" aria-labelledby="categories-heading">
+      <div class="page-width">
+        <div class="section-head" data-reveal>
+          <p class="label"><span class="num">01</span> ${escapeHtml(d.sectionLabel)}</p>
+          <div class="section-copy">
+            <h2 class="heading" id="categories-heading">${escapeHtml(d.sectionHeading)}</h2>
+          </div>
+        </div>`;
+}
+
+export function renderIntegrationsBuild(d) {
+  return `<section class="section on-light" aria-labelledby="build-heading">
+      <div class="page-width">
+        <div class="section-head" data-reveal>
+          <p class="label"><span class="num">02</span> ${escapeHtml(d.buildLabel)}</p>
+          <div class="section-copy">
+            <h2 class="heading" id="build-heading">${escapeHtml(d.buildHeading)}</h2>
+          </div>
+        </div>`;
+}
+
+export function renderIntegrationsCta(d) {
+  return `<section class="section on-light cta-band" aria-labelledby="cta-heading">
+      <div class="page-width" data-reveal>
+        <h2 class="heading" id="cta-heading">${escapeHtml(d.ctaHeading)}</h2>
+        <p class="lead">${escapeHtml(d.ctaLead)}</p>
+        <div class="contact-actions">
+          <a class="button button-primary" href="mailto:wp@mrsoftware.dk?subject=Conversation%20about%20software%20and%20workflows">Email us <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="/contact/">Contact details</a>
+        </div>
       </div>
     </section>`;
 }
@@ -131,6 +172,13 @@ export async function applyNavHeroesContent(root, data) {
     const next = replaceMarked(src, f.start, f.end, f.html);
     if (next !== src) await writeFile(f.path, next);
   }
+  // Integrations sub-sections (kept in same file for now)
+  const intPath = resolve(base, 'integrations/index.html');
+  let intHtml = await readFile(intPath, 'utf8');
+  intHtml = replaceMarked(intHtml, '<!-- CONTENT:integrationsCategories:start -->', '<!-- CONTENT:integrationsCategories:end -->', renderIntegrationsCategories(d.integrations));
+  intHtml = replaceMarked(intHtml, '<!-- CONTENT:integrationsBuild:start -->', '<!-- CONTENT:integrationsBuild:end -->', renderIntegrationsBuild(d.integrations));
+  intHtml = replaceMarked(intHtml, '<!-- CONTENT:integrationsCta:start -->', '<!-- CONTENT:integrationsCta:end -->', renderIntegrationsCta(d.integrations));
+  await writeFile(intPath, intHtml);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
