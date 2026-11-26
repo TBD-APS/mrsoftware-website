@@ -28,4 +28,9 @@ If `data/links.json` cannot be read, the sitemap returns 503. A catalogue
 change reaches the live sitemap on the next company deploy. A commercial
 release does not publish it.
 
-The check is `tests/sitemap.test.mjs`.
+The check is `tests/sitemap.test.mjs`. `tests/seo.test.mjs` scans every
+`index.html` on disk outside tooling and private folders. It fails when a
+public page that search engines may index is missing from the sitemap, or when
+a page or its Danish mirror lacks its own title, description, canonical address
+and sharing tags. Add a new public page to `places` or `sitemapPages` in
+`data/links.json`.

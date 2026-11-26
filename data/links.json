@@ -224,7 +224,11 @@
     "/sikkerhed-og-dataprivatliv/",
     "/sikkerhed-og-dataprivatliv/saadan-validerer-vi-os-selv/",
     "/data-deletion/",
-    "/foodtrader/"
+    "/foodtrader/",
+    "/demo/workslip/",
+    "/demo/tradey/",
+    "/demo/shippy/",
+    "/demo/greeny/"
   ],
   "links": {
     "the-offer": [
