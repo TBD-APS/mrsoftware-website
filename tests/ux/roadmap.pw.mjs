@@ -28,7 +28,8 @@ test('find the package overview, compare counts and jump to the feature list', a
     if (isMobile) await page.getByRole('button', { name: 'Open menu' }).click();
     await page.locator('#main-nav').getByRole('link', { name: 'Roadmap' }).click();
     await expect(page).toHaveURL(/\/roadmap\/$/);
-    await expect(page.getByRole('heading', { name: 'Product roadmap', level: 1 })).toBeVisible();
+    const title = page.getByRole('heading', { name: 'Our product plans', level: 1, exact: true });
+    await expect(title).toBeVisible();
     const packages = page.getByRole('navigation', { name: 'Packages' });
     await expect(packages.getByRole('link', { name: /Boney/ })).toContainText('1 developed · 0 in the pipeline');
     const roadyLink = packages.getByRole('link', { name: /Roady/ });
@@ -46,7 +47,7 @@ test('find the package overview, compare counts and jump to the feature list', a
     await expect(roady.getByText('In development')).toBeAttached();
     await expect(roady.getByText('Planned')).toBeAttached();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
-    await page.getByRole('heading', { name: 'Product roadmap' }).scrollIntoViewIfNeeded();
+    await title.scrollIntoViewIfNeeded();
     await page.screenshot({ path: info.outputPath('roadmap.png'), fullPage: true });
   } finally { await app.close(); }
 });
@@ -71,9 +72,9 @@ test('find reusable Boney modules and the products that use them', async ({ page
     const packages = page.getByRole('navigation', { name: 'Packages' });
     await expect(packages.getByRole('link')).toHaveCount(8);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
-    await page.getByRole('link', { name: 'Explore reusable Boney modules' }).click();
+    await page.getByRole('link', { name: 'See what our products share', exact: true }).click();
     await expect(page).toHaveURL(/#boney-modules$/);
-    const showcase = page.getByRole('region', { name: 'Reusable Boney modules' });
+    const showcase = page.getByRole('region', { name: 'Boney features we reuse across products', exact: true });
     await expect(showcase.getByRole('heading', { level: 2 })).toBeInViewport();
     await expect(showcase.getByText('Boney.Comms.Outlook', { exact: true })).toBeAttached();
     const productLinks = showcase.getByRole('link', { name: /^(Tradey|MR SAAS’y|Roady)$/ });
