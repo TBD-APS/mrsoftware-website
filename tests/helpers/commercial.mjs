@@ -20,7 +20,7 @@ export const opportunityInput = (customerId, overrides = {}) => ({ customerId, t
 export const quoteInput = (customerId, overrides = {}) => ({ customerId, packageId: 'workslip-core', setupMinor: 0, validUntil: '2030-12-31', notes: '', ...overrides });
 
 // Identity substitution exists only in the harness. Production has no env switch.
-export async function createCommercialHarness(t, { verifyIdentity = async request => request.headers.get('Cf-Access-Jwt-Assertion') === 'synthetic-owner' ? { sub: 'synthetic-owner', email: 'william@example.test' } : null, cvrClient = fixtureCvrClient(), firecrawlClient = fixtureFirecrawlClient(), clock = () => new Date() } = {}) {
+export async function createCommercialHarness(t, { verifyIdentity = async request => request.headers.get('Cf-Access-Jwt-Assertion') === 'synthetic-owner' ? { sub: 'synthetic-owner', email: 'william@example.test' } : null, cvrClient = fixtureCvrClient(), firecrawlClient = fixtureFirecrawlClient(), inspectYouTube, clock = () => new Date() } = {}) {
   const mf = new Miniflare(convertV4MiniflareOptions({
     modules: true,
     script: 'export default { fetch() { return new Response("Local D1 test harness"); } };',
@@ -35,7 +35,7 @@ export async function createCommercialHarness(t, { verifyIdentity = async reques
     const statements = sql.split(';').map(part => part.trim()).filter(Boolean);
     if (statements.length) await db.batch(statements.map(statement => db.prepare(statement)));
   }
-  const app = createApplication({ verifyIdentity, cvrClient, firecrawlClient, clock });
+  const app = createApplication({ verifyIdentity, cvrClient, firecrawlClient, inspectYouTube, clock });
   const env = { ...commercialSettings, DB: db, ASSETS: { fetch: async request => new Response(`Static ${new URL(request.url).pathname}`, { headers: { 'Cache-Control': 'public, max-age=3600' } }) } };
   const request = (method, path, body, options = {}) => {
     const host = options.host ?? (path.startsWith('/api/backoffice') || path.startsWith('/backoffice') ? env.BACKOFFICE_HOST : env.DEMO_HOST);
