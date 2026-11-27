@@ -1,3 +1,4 @@
+import { inspectYouTubeVideo, youtubeRoute } from './youtube.mjs';
 import { accessVerifier, identitySettings, validIdentity } from './identity.mjs';
 import { createStore } from './store.mjs';
 import { HttpError, cvrNumber, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateLeadProduct, validateLeadSave, validateLeadSearch, validateOpportunity, validateQuote, validateQuoteUpdate, validateTodayQuery } from './validation.mjs';
@@ -76,7 +77,7 @@ function monthlyCredits(env) {
   return cap;
 }
 
-export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, clock = () => new Date() } = {}) {
+export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, inspectYouTube = inspectYouTubeVideo, clock = () => new Date() } = {}) {
   return {
     async fetch(request, env = {}) {
       try {
@@ -135,6 +136,9 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           if (request.method !== 'GET') methodNotAllowed();
           return json({ email: actor.email });
         }
+
+        const youtube = await youtubeRoute({ request, url, path, env, actor, clock, inspectYouTube, json, requireJsonWrite, methodNotAllowed });
+        if (youtube) return youtube;
 
         if (path === '/api/backoffice/state') {
           if (request.method !== 'GET') methodNotAllowed();
