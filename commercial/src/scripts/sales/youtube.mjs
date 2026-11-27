@@ -1,4 +1,5 @@
 import { apiJson } from '../api.mjs';
+import { contentCreator } from './content-creator.mjs';
 import { addField, el, muted, pageHeading, section } from './dom.mjs';
 
 const route = '/backoffice/youtube/';
@@ -58,7 +59,7 @@ function renderList({ items, truncated }) {
     muted('Updated ' + timeLabel(item.updatedAt))))) : muted('No drafts yet. Create one to prepare your first video.');
   main.replaceChildren(
     pageHeading('YouTube', 'Prepare video metadata, use Studio to upload, then check the video link.', [buttonLink('New YouTube draft', route + '?new=1', 'primary')]),
-    muted(followUp), section('Video drafts', truncated && muted('Showing the 100 most recently updated drafts. Older drafts can still be opened by their saved links.'), drafts),
+    contentCreator(), muted(followUp), section('Video drafts', truncated && muted('Showing the 100 most recently updated drafts. Older drafts can still be opened by their saved links.'), drafts),
   );
 }
 

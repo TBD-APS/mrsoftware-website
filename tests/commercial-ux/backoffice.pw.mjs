@@ -583,3 +583,32 @@ test('Leads, Customers and Sales download a CSV file, and a failed download is s
     }
   } finally { await site.close(); }
 });
+
+test('Content Creator opens its pinned widget on request without starting a conversation', async ({ page, app }) => {
+  const requests = [];
+  await page.route('https://unpkg.com/**', request => {
+    requests.push(request.request().url());
+    return request.abort();
+  });
+  await page.addInitScript(() => {
+    const append = HTMLHeadElement.prototype.append;
+    HTMLHeadElement.prototype.append = function(...nodes) {
+      const script = nodes.find(node => node instanceof HTMLScriptElement && node.src.startsWith('https://unpkg.com/'));
+      if (!script) return append.apply(this, nodes);
+      document.body.dataset.widgetIntegrity = script.integrity;
+      document.body.dataset.widgetAsset = script.src;
+      customElements.define('elevenlabs-convai', class extends HTMLElement { });
+      queueMicrotask(() => script.onload());
+    };
+  });
+  await page.goto(app.privateBase + 'backoffice/youtube/');
+  await ready(page);
+  await expect(page.locator('elevenlabs-convai')).toHaveCount(0);
+  await expect(page.locator('body')).not.toHaveAttribute('data-widget-asset');
+  await page.getByRole('button', { name: 'Open Content Creator' }).click();
+  await expect(page.locator('body')).toHaveAttribute('data-widget-asset', /@0\.28\.0\/dist\/index\.js$/);
+  await expect(page.locator('body')).toHaveAttribute('data-widget-integrity', /^sha384-/);
+  await expect(page.locator('elevenlabs-convai')).toHaveAttribute('agent-id', /^agent_/);
+  await expect(page.getByRole('link', { name: 'New YouTube draft' })).toBeVisible();
+  expect(requests).toEqual([]);
+});
