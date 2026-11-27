@@ -9,6 +9,7 @@ import { municipalityCodes } from './lead-scoring.mjs';
 import { byScore, toLead, usableCompany } from './leads.mjs';
 import { employeeBands, leadPresets } from '../shared/lead-presets.mjs';
 import { toCsv } from './csv.mjs';
+import { handleNewsletter } from './newsletter.mjs';
 
 const productionIdentity = accessVerifier();
 const companyOrigin = 'https://mrsoftware.dk';
@@ -77,7 +78,7 @@ function monthlyCredits(env) {
   return cap;
 }
 
-export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, inspectYouTube = inspectYouTubeVideo, clock = () => new Date() } = {}) {
+export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, inspectYouTube = inspectYouTubeVideo, clock = () => new Date(), newsletterSender } = {}) {
   return {
     async fetch(request, env = {}) {
       try {
@@ -144,6 +145,9 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           if (request.method !== 'GET') methodNotAllowed();
           return json(await createStore(env.DB).state());
         }
+
+        const newsletter = await handleNewsletter({ request, path, env, actor, onDemoHost, requireWrite: () => requireJsonWrite(request, url), clock, send: newsletterSender });
+        if (newsletter) return actor ? protectedResponse(newsletter) : newsletter;
 
         if (path === '/api/backoffice/today') {
           if (request.method !== 'GET') methodNotAllowed();
