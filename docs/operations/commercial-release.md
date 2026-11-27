@@ -102,8 +102,11 @@ does not authorize them.
 
 1. After approval, provision a dedicated **mrsoftware-sales** D1 and apply the
    reviewed `commercial/migrations/0001_sales.sql`, then `0002_website_checks.sql`.
-   Do not copy sample sales data. The release preflight stops until every table from
-   both migrations exists.
+   For the content workspace, then apply the reviewed `0003_youtube.sql` and
+   `0004_newsletter.sql`, after confirming which schema objects already exist.
+   All three follow-on migrations are additive; never rerun an already applied
+   migration or apply it to any other D1. Do not copy sample sales data. The
+   release preflight stops until every required table exists.
    Create a dedicated self-hosted Access app on the entire private hostname with
    exactly one reusable email allow policy listing every privately confirmed sales
    login. The public `wp@mrsoftware.dk` contact is not William's login. Add no other identities or
@@ -130,7 +133,10 @@ does not authorize them.
 4. Verify the commercial receipt: exact uploaded version at 100% traffic and
    successful GET-only smoke of public catalogue, compiled pages/dependencies,
    PWA metadata and unauthenticated private denial. Smoke never submits an enquiry
-   or creates customers, opportunities or quotes.
+   or creates customers, opportunities or quotes. It also checks that the
+   channel pages and backoffice APIs remain private. An authorized operator can
+   then open the YouTube and Newsletter sections; do not create test subscribers
+   or publish/send live content as part of release smoke.
 5. Run/re-run **Deploy owner-merged website** only after commercial readiness.
    Its automatic owner-main path checks readiness **before snapshot unpack**;
    the website helper checks again **before upload**. Unavailable/malformed/
@@ -164,6 +170,20 @@ Worker vars. Until they exist, the routes that need them answer 503 with a plain
 - `FIRECRAWL_MONTHLY_CREDITS`: a whole number above 0 that caps the website
   check's Firecrawl credits per calendar month (UTC). Keep it below the Firecrawl
   plan's credits, and keep auto-recharge off in the Firecrawl account.
+
+## Content channel activation
+
+The YouTube backoffice prepares drafts, hands upload to YouTube Studio, and
+can verify metadata for an existing watch link. It does not receive OAuth
+secrets, upload media, or publish automatically. A later direct-upload
+release needs a separately approved Google channel connection and an
+authorized hosted Boney integration; do not put Google credentials in D1.
+
+Newsletter drafting and private preview do not require a mail account. Leave
+provider sending disabled until a sender and its verified domain, the opt-in
+process and the publication owner are approved. No CRM contact becomes a
+newsletter subscriber automatically. Testing a release does not authorize
+a real send.
 
 ## Initial release and uncertainty
 

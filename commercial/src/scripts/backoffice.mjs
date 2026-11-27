@@ -1,3 +1,4 @@
+import { closeMore } from './sales/navigation.mjs';
 import { apiJson, ApiError } from './api.mjs';
 import { el, action, link, pageHeading, result, productName, quoteName, titleCase, dayString, dateLabel, href } from './sales/dom.mjs';
 import { customerForm, opportunityForm, quoteForm, catalogForm } from './sales/forms.mjs';
@@ -14,16 +15,7 @@ let currentRequest;
 let notice = '';
 let currentRoute = location.pathname + location.search;
 
-// Phone-only menu for the sections that do not fit the bottom bar.
 const moreToggle = nav.querySelector('.nav-more-toggle');
-const moreMenu = nav.querySelector('.nav-more-menu');
-function closeMore() { if (!moreToggle || moreMenu.hidden) return; moreMenu.hidden = true; moreToggle.setAttribute('aria-expanded', 'false'); }
-moreToggle?.addEventListener('click', () => {
-  const open = moreMenu.hidden;
-  moreMenu.hidden = !open; moreToggle.setAttribute('aria-expanded', String(open));
-  if (open) moreMenu.querySelector('a')?.focus();
-});
-document.addEventListener('keydown', event => { if (event.key === 'Escape' && moreToggle && !moreMenu.hidden) { closeMore(); moreToggle.focus(); } });
 
 // Downloads go through fetch so a failed download, or an expired sign-in, is shown on the page
 // instead of disappearing into the browser's download list. The button is busy until it ends.
@@ -238,9 +230,7 @@ async function load() {
 }
 
 document.addEventListener('click', event => {
-  if (moreToggle && !event.target.closest('.nav-more')) closeMore();
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  if (event.target.closest('.nav-more-menu a')) closeMore();
   const anchor = event.target.closest('a[href]');
   if (anchor) {
     const target = new URL(anchor.href, location.href);

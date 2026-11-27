@@ -103,6 +103,6 @@ test('readiness accepts Cloudflare Access relative return paths while rejecting 
     return new Response(null, { status: 302, headers: { Location: login.href, 'Cache-Control': 'private, no-store' } });
   };
   const receipt = await readiness(request());
-  assert.equal(receipt.filter(item => item.url.startsWith('https://backoffice.mrsoftware.dk/') && item.status === 302).length, 3);
+  assert.equal(receipt.filter(item => item.url.startsWith('https://backoffice.mrsoftware.dk/') && item.status === 302).length, 7);
   for (const returnTo of ['https://wrong.example.test/', '//wrong.example.test/', 'javascript:alert(1)']) await assert.rejects(readiness(request(returnTo)), /wrong-host return address/);
 });

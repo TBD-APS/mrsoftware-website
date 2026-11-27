@@ -7,9 +7,15 @@ const sections = [
   ['sales', 'Sales', 'M4 20V10m8 10V4m8 16v-7'],
   ['quotes', 'Quotes', 'M14 2H4v20h16V8zM14 2v6h6M8 12h8m-8 4h8'],
   ['catalogue', 'Catalogue', 'M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3zM12 6v16'],
+  ['youtube', 'YouTube', 'M3 5h18v14H3zM10 9l5 3-5 3z'],
+  ['newsletter', 'Newsletter', 'M3 5h18v14H3zM3 6l9 7 9-7'],
 ];
-// On a phone the bar holds four sections and More; these two open from More.
-const phoneMore = ['quotes', 'catalogue'];
+// On a phone the bar holds four sections and More.
+const phoneMore = ['quotes', 'catalogue', 'youtube', 'newsletter'];
+const channelRoutes = { youtube: '/backoffice/youtube/', newsletter: '/backoffice/newsletter/' };
+const destination = view => channelRoutes[view] ?? `/backoffice/?view=${view}`;
+const activeChannel = Object.keys(channelRoutes).find(view => channelRoutes[view] === Astro.url.pathname);
+const activePage = view => activeChannel === view ? 'page' : undefined;
 ---
 <!doctype html>
 <html lang="en">
@@ -31,13 +37,14 @@ const phoneMore = ['quotes', 'catalogue'];
       <span class="private-label">Private <span id="session-email"></span></span>
     </header>
     <nav class="workspace-nav" aria-label="Sales navigation">
-      {sections.map(([view, name, path]) => <a href={`/backoffice/?view=${view}`} data-section={view} class={phoneMore.includes(view) ? 'nav-secondary' : undefined}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={path} /></svg><span>{name}</span></a>)}
+      {sections.map(([view, name, path]) => <a href={destination(view)} data-section={view} aria-current={activePage(view)} class={phoneMore.includes(view) ? 'nav-secondary' : undefined}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={path} /></svg><span>{name}</span></a>)}
       <div class="nav-more">
-        <button type="button" class="nav-more-toggle" aria-expanded="false" aria-controls="nav-more-menu" data-sections={phoneMore.join(' ')}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" /></svg><span>More</span></button>
-        <div class="nav-more-menu" id="nav-more-menu" hidden>{sections.filter(([view]) => phoneMore.includes(view)).map(([view, name]) => <a href={`/backoffice/?view=${view}`} data-section={view}>{name}</a>)}</div>
+        <button type="button" class="nav-more-toggle" aria-expanded="false" aria-controls="nav-more-menu" data-sections={phoneMore.join(' ')} aria-current={activeChannel ? 'page' : undefined}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" /></svg><span>More</span></button>
+        <div class="nav-more-menu" id="nav-more-menu" hidden>{sections.filter(([view]) => phoneMore.includes(view)).map(([view, name]) => <a href={destination(view)} data-section={view} aria-current={activePage(view)}>{name}</a>)}</div>
       </div>
     </nav>
     <main id="main" aria-busy="true" tabindex="-1"><slot /></main>
     <footer class="workspace-footer">MR Software · Your customers, conversations and next steps.</footer>
+    <script>import '../scripts/sales/navigation.mjs';</script>
   </body>
 </html>

@@ -64,8 +64,9 @@ async function probe(request) {
     const manifest = await (await read(`${demoOrigin}/${product}/manifest.webmanifest`)).json();
     if (manifest.id !== `/${product}/` || manifest.scope !== `/${product}/` || !manifest.start_url?.startsWith(`/${product}/`)) throw Error('Public demo manifest is invalid');
   }
-  await read(demoOrigin + '/backoffice/', [404]);
-  for (const pathname of ['/', '/backoffice/', '/api/backoffice/state']) {
+  const privateChannels = ['/backoffice/youtube/', '/backoffice/newsletter/', '/api/backoffice/youtube', '/api/backoffice/newsletter'];
+  for (const pathname of ['/backoffice/', ...privateChannels]) await read(demoOrigin + pathname, [404]);
+  for (const pathname of ['/', '/backoffice/', '/api/backoffice/state', ...privateChannels]) {
     const response = await read(backofficeOrigin + pathname, [302, 303, 401, 403]);
     if (!/no-store/i.test(response.headers.get('Cache-Control') ?? '')) throw Error('Private denial must not be cached');
     if ([302, 303].includes(response.status)) {
