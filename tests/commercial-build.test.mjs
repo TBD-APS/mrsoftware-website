@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { publicDependencies } from '../tools/build-commercial.mjs';
@@ -28,4 +28,31 @@ test('public graph follows HTML tag, attribute and rel names regardless of case'
 test('mixed-case HTML cannot hide a private dependency from the public graph guard', async t => {
   const root = await graph(t, `<SCRIPT SRC='/backoffice/private.js'></SCRIPT>`);
   await assert.rejects(publicDependencies('workslip', root), /Public page depends on private asset/);
+});
+
+test('nested private pages protect their transitive bundles on the public demo host', async t => {
+  const root = await mkdtemp(path.join(tmpdir(), 'commercial-private-graph-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const dist = path.join(root, 'dist');
+  const save = async (file, body) => { const target = path.join(dist, file); await mkdir(path.dirname(target), { recursive: true }); await writeFile(target, body); };
+
+  await save('index.html', '<script src="/_astro/shared.js"></script>');
+  await save('backoffice/index.html', '<script src="/_astro/sales.js"></script>');
+  await save('backoffice/youtube/index.html', '<script src="/_astro/youtube.js"></script>');
+  await save('backoffice/newsletter/index.html', '<link rel="stylesheet" href="/_astro/newsletter.css">');
+  await save('_astro/shared.js', 'export const shared = true;');
+  await save('_astro/sales.js', 'import "./shared.js";');
+  await save('_astro/youtube.js', 'import "./shared.js"; import("./private-video.js");');
+  await save('_astro/private-video.js', 'export const video = true;');
+  await save('_astro/newsletter.css', 'body { background: url(./letter.svg); }');
+  await save('_astro/letter.svg', '<svg xmlns="http://www.w3.org/2000/svg" />');
+
+  const output = path.join(root, 'policy.json');
+  const { writeCommercialAssetPolicy } = await import('../tools/commercial-asset-policy.mjs');
+  await writeCommercialAssetPolicy(dist, output);
+  const { protectedAssets } = JSON.parse(await readFile(output, 'utf8'));
+  assert.deepEqual(protectedAssets, [
+    '/_astro/letter.svg', '/_astro/newsletter.css', '/_astro/private-video.js', '/_astro/sales.js', '/_astro/youtube.js',
+    '/backoffice/index.html', '/backoffice/newsletter/index.html', '/backoffice/youtube/index.html',
+  ]);
 });

@@ -1,3 +1,4 @@
+import { inspectYouTubeVideo, youtubeRoute } from './youtube.mjs';
 import { accessVerifier, identitySettings, validIdentity } from './identity.mjs';
 import { createStore } from './store.mjs';
 import { HttpError, cvrNumber, readJson, recordId, validateCatalog, validateCustomer, validateEnquiry, validateLeadProduct, validateLeadSave, validateLeadSearch, validateOpportunity, validateQuote, validateQuoteUpdate, validateTodayQuery } from './validation.mjs';
@@ -8,6 +9,7 @@ import { municipalityCodes } from './lead-scoring.mjs';
 import { byScore, toLead, usableCompany } from './leads.mjs';
 import { employeeBands, leadPresets } from '../shared/lead-presets.mjs';
 import { toCsv } from './csv.mjs';
+import { handleNewsletter } from './newsletter.mjs';
 
 const productionIdentity = accessVerifier();
 const companyOrigin = 'https://mrsoftware.dk';
@@ -76,7 +78,7 @@ function monthlyCredits(env) {
   return cap;
 }
 
-export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, clock = () => new Date() } = {}) {
+export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, inspectYouTube = inspectYouTubeVideo, clock = () => new Date(), newsletterSender } = {}) {
   return {
     async fetch(request, env = {}) {
       try {
@@ -136,10 +138,16 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           return json({ email: actor.email });
         }
 
+        const youtube = await youtubeRoute({ request, url, path, env, actor, clock, inspectYouTube, json, requireJsonWrite, methodNotAllowed });
+        if (youtube) return youtube;
+
         if (path === '/api/backoffice/state') {
           if (request.method !== 'GET') methodNotAllowed();
           return json(await createStore(env.DB).state());
         }
+
+        const newsletter = await handleNewsletter({ request, path, env, actor, onDemoHost, requireWrite: () => requireJsonWrite(request, url), clock, send: newsletterSender });
+        if (newsletter) return actor ? protectedResponse(newsletter) : newsletter;
 
         if (path === '/api/backoffice/today') {
           if (request.method !== 'GET') methodNotAllowed();

@@ -34,8 +34,9 @@ async function dependencyGraph(directory, entries) {
 export async function writeCommercialAssetPolicy(directory, output) {
   const files = (await readdir(directory, { recursive: true })).map(file => '/' + file.split(path.sep).join('/'));
   const publicPages = files.filter(file => file.endsWith('.html') && !file.startsWith('/backoffice/'));
+  const privatePages = files.filter(file => file.endsWith('.html') && file.startsWith('/backoffice/'));
   const publicAssets = await dependencyGraph(directory, publicPages);
-  const privateAssets = await dependencyGraph(directory, ['/backoffice/index.html']);
+  const privateAssets = await dependencyGraph(directory, privatePages);
   const protectedAssets = [...privateAssets].filter(file => !publicAssets.has(file)).sort();
   await mkdir(path.dirname(output), { recursive: true });
   await writeFile(output, JSON.stringify({ protectedAssets }, null, 2) + '\n');

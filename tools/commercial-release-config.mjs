@@ -7,8 +7,8 @@ export const commercialWorker = 'mrsoftware-commercial';
 export const commercialAccount = '9dd0c66615faab3122f01b14ebe3bbdd';
 export const UUID = /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/;
 const root = fileURLToPath(new URL('../', import.meta.url));
-// Every table from commercial/migrations (0001 sales, 0002 website checks); a release stops until all exist.
-const tables = ['sales_catalog', 'sales_customers', 'sales_events', 'sales_enquiries', 'sales_enquiry_limits', 'sales_opportunities', 'sales_quotes', 'sales_website_checks', 'sales_firecrawl_usage'];
+// Every table from the approved commercial migrations; a release stops until all exist.
+const tables = ['sales_catalog', 'sales_customers', 'sales_events', 'sales_enquiries', 'sales_enquiry_limits', 'sales_opportunities', 'sales_quotes', 'sales_website_checks', 'sales_firecrawl_usage', 'sales_youtube_drafts', 'newsletter_campaigns', 'newsletter_subscribers'];
 
 export function commercialSettings(env) {
   const value = name => (env[name] ?? '').trim();
