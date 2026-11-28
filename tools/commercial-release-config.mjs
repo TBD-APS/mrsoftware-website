@@ -22,7 +22,9 @@ export function commercialSettings(env) {
   if (!/^[a-f0-9]{64}$/.test(audience) || audience === dashboardAudience || !/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(issuer)) throw Error('A dedicated commercial Access audience and issuer are required');
   if (!emails.length || emails.length > 50 || new Set(emails).size !== emails.length || emails.some(email => email.length > 254 || !/^[^\s@,]+@[^\s@,]+\.[a-z]{2,}$/.test(email) || /\.(?:test|invalid|example)$|@example\.(?:com|net|org)$/.test(email))) throw Error('Configure 1–50 unique confirmed sales logins in deployment settings');
   if (!['initial', 'update'].includes(env.COMMERCIAL_RELEASE_MODE)) throw Error('Choose an explicit initial or update commercial release');
-  return { databaseId, applicationId, audience, issuer, emails };
+  const mediaBucket = value('COMMERCIAL_YOUTUBE_MEDIA_BUCKET');
+  if (mediaBucket && mediaBucket !== 'mrsoftware-youtube-media') throw Error('Use the dedicated private YouTube media bucket');
+  return { databaseId, applicationId, audience, issuer, emails, mediaBucket };
 }
 
 export async function cloudflareRead(env, endpoint, { request = fetch, query, missingWorker = false } = {}) {
@@ -51,8 +53,23 @@ export async function commercialPreflight(env = process.env, { request = fetch }
   const read = (endpoint, options) => cloudflareRead(env, endpoint, { request, ...options });
   const database = await read(`${base}/d1/database/${settings.databaseId}`);
   if (database.uuid !== settings.databaseId || database.name !== 'mrsoftware-sales') throw Error('The approved dedicated sales database is required');
-  const schema = await read(`${base}/d1/database/${settings.databaseId}/query`, { query: `SELECT name FROM sqlite_schema WHERE type = 'table' AND name IN (${tables.map(name => `'${name}'`).join(', ')})` });
-  if (!Array.isArray(schema) || schema.length !== 1 || schema[0].success !== true || !Array.isArray(schema[0].results) || tables.some(name => !schema[0].results.some(row => row.name === name))) throw Error('Apply the approved sales migrations (commercial/migrations) before releasing');
+  const requiredTables = settings.mediaBucket ? [...tables, 'sales_youtube_media'] : tables;
+  if (settings.mediaBucket) {
+    if (!env.ELEVEN_CREATIVE_API_KEY?.trim()) throw Error('The protected ElevenLabs Image & Video key is required');
+    for (const kind of ['image', 'video']) {
+      const response = await request(`https://api.elevenlabs.io/v1/flows/${kind}?page_size=1`, {
+        method: 'GET', redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(10_000),
+        headers: { 'xi-api-key': env.ELEVEN_CREATIVE_API_KEY.trim() },
+      });
+      await response.body?.cancel();
+      if (!response.ok) throw Error(`ElevenLabs did not authorize the ${kind} API read (HTTP ${response.status})`);
+    }
+    const bucket = await read(`${base}/r2/buckets/${settings.mediaBucket}`);
+    if (bucket.name !== settings.mediaBucket) throw Error('The dedicated private media bucket is unavailable');
+    config.r2_buckets = [{ binding: 'YOUTUBE_MEDIA', bucket_name: settings.mediaBucket }];
+  }
+  const schema = await read(`${base}/d1/database/${settings.databaseId}/query`, { query: `SELECT name FROM sqlite_schema WHERE type = 'table' AND name IN (${requiredTables.map(name => `'${name}'`).join(', ')})` });
+  if (!Array.isArray(schema) || schema.length !== 1 || schema[0].success !== true || !Array.isArray(schema[0].results) || requiredTables.some(name => !schema[0].results.some(row => row.name === name))) throw Error('Apply the approved sales migrations (commercial/migrations) before releasing');
   const application = await read(`${base}/access/apps/${settings.applicationId}`);
   if (application.id !== settings.applicationId || application.type !== 'self_hosted' || application.domain !== 'backoffice.mrsoftware.dk' || application.aud !== settings.audience) throw Error('The dedicated backoffice Access application does not match release settings');
   const policies = await read(`${base}/access/apps/${settings.applicationId}/policies`);

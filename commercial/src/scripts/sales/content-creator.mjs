@@ -3,7 +3,7 @@ import { mountPublicElevenLabsWidget } from './vendor/elevenlabs-public-widget.m
 
 const contentCreatorAgent = 'agent_0001m8fhykpmfg498c55m3wxwjta';
 
-export function contentCreator() {
+export function contentCreator({ proposeMedia } = {}) {
   const frame = el('div', { className: 'content-creator-widget' });
   const status = el('p', { role: 'status' });
   const open = action('Open Content Creator', async () => {
@@ -11,6 +11,9 @@ export function contentCreator() {
     status.textContent = 'Loading Content Creator…';
     try {
       await mountPublicElevenLabsWidget(frame, contentCreatorAgent);
+      if (proposeMedia) frame.querySelector('elevenlabs-convai')?.addEventListener('elevenlabs-convai:call', event => {
+        event.detail.config.clientTools = { prepare_youtube_media: proposeMedia };
+      });
       status.textContent = '';
       open.remove();
     } catch {

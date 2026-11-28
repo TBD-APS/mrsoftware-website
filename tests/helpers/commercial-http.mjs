@@ -9,9 +9,9 @@ const contentTypes = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascr
 
 // Real application + real ephemeral D1. Identity substitution is confined to this
 // test helper; the production application has no test flag or header bypass.
-export async function startCommercialSite({ root = defaultRoot, verifyIdentity = async () => ({ sub: 'synthetic-owner', email: 'william@example.test' }), cvrClient, firecrawlClient, inspectYouTube, clock, assetOverrides = new Map() } = {}) {
+export async function startCommercialSite({ root = defaultRoot, verifyIdentity = async () => ({ sub: 'synthetic-owner', email: 'william@example.test' }), cvrClient, firecrawlClient, inspectYouTube, mediaProvider, mediaStorage, clock, assetOverrides = new Map() } = {}) {
   const cleanup = [];
-  const harness = await createCommercialHarness({ after: callback => cleanup.push(callback) }, { verifyIdentity, ...(cvrClient ? { cvrClient } : {}), ...(firecrawlClient ? { firecrawlClient } : {}), ...(inspectYouTube ? { inspectYouTube } : {}), ...(clock ? { clock } : {}) });
+  const harness = await createCommercialHarness({ after: callback => cleanup.push(callback) }, { verifyIdentity, ...(cvrClient ? { cvrClient } : {}), ...(firecrawlClient ? { firecrawlClient } : {}), ...(inspectYouTube ? { inspectYouTube } : {}), ...(mediaProvider ? { mediaProvider } : {}), ...(clock ? { clock } : {}) });
   const { app, env } = harness;
   const assets = async request => {
     const url = new URL(request.url);
@@ -27,6 +27,7 @@ export async function startCommercialSite({ root = defaultRoot, verifyIdentity =
       return new Response(body, { headers: { 'Content-Type': contentTypes[path.extname(filename)] ?? 'application/octet-stream', 'Cache-Control': 'no-cache' } });
     } catch { return new Response('Not found', { status: 404 }); }
   };
+  if (mediaStorage) env.YOUTUBE_MEDIA = mediaStorage;
   env.ASSETS = { fetch: assets };
   const server = createServer(async (incoming, outgoing) => {
     try {

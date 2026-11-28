@@ -49,6 +49,7 @@ export async function deployCommercial(env = process.env, {
   const eligibility = await authorize();
   const prepared = await preflight(env);
   const config = structuredClone(prepared.config);
+  const mediaSecretsPath = config.r2_buckets?.some(bucket => bucket.binding === 'YOUTUBE_MEDIA') ? configPath + '.media-secrets.json' : null;
   config.main = path.resolve(root, config.main);
   config.assets.directory = path.resolve(root, config.assets.directory);
   for (const database of config.d1_databases) database.migrations_dir = path.resolve(root, database.migrations_dir);
@@ -64,6 +65,12 @@ export async function deployCommercial(env = process.env, {
   try {
     await writeFile(configPath, JSON.stringify(config, null, 2), { mode: 0o600 });
     const common = ['--config', configPath, '--experimental-provision=false'];
+    if (mediaSecretsPath) {
+      const key = env.ELEVEN_CREATIVE_API_KEY?.trim();
+      if (!key) throw Error('The protected ElevenLabs Image & Video key is required');
+      await writeFile(mediaSecretsPath, JSON.stringify({ ELEVEN_CREATIVE_API_KEY: key }), { mode: 0o600, flag: 'wx' });
+      common.push('--secrets-file', mediaSecretsPath);
+    }
     if (prepared.initial) {
       await authorize();
       receipt.state = 'deploying'; await save();
@@ -91,7 +98,7 @@ export async function deployCommercial(env = process.env, {
   } catch (error) {
     receipt.state = 'uncertain'; await save();
     throw Error(`${error.message}. No automatic retry or rollback was performed; inspect the commercial receipt and provider before any further action`);
-  } finally { await rm(configPath, { force: true }); }
+  } finally { await rm(configPath, { force: true }); if (mediaSecretsPath) await rm(mediaSecretsPath, { force: true }); }
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

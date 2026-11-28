@@ -1,3 +1,4 @@
+import { elevenCreative, youtubeMediaRoute } from './youtube-media.mjs';
 import { inspectYouTubeVideo, youtubeRoute } from './youtube.mjs';
 import { accessVerifier, identitySettings, validIdentity } from './identity.mjs';
 import { createStore } from './store.mjs';
@@ -78,7 +79,7 @@ function monthlyCredits(env) {
   return cap;
 }
 
-export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, inspectYouTube = inspectYouTubeVideo, clock = () => new Date(), newsletterSender } = {}) {
+export function createApplication({ verifyIdentity = productionIdentity, cvrClient = cvrClientFromEnv, firecrawlClient = firecrawlClientFromEnv, inspectYouTube = inspectYouTubeVideo, mediaProvider = elevenCreative, clock = () => new Date(), newsletterSender } = {}) {
   return {
     async fetch(request, env = {}) {
       try {
@@ -137,6 +138,9 @@ export function createApplication({ verifyIdentity = productionIdentity, cvrClie
           if (request.method !== 'GET') methodNotAllowed();
           return json({ email: actor.email });
         }
+
+        const media = await youtubeMediaRoute({ request, url, path, env, actor, clock, providerFactory: mediaProvider, json, requireJsonWrite, methodNotAllowed, protect: protectedResponse });
+        if (media) return media;
 
         const youtube = await youtubeRoute({ request, url, path, env, actor, clock, inspectYouTube, json, requireJsonWrite, methodNotAllowed });
         if (youtube) return youtube;

@@ -23,7 +23,7 @@ test('William can draft, hand off to Studio and verify the returned link on the 
   await expect(page.getByRole('heading', { name: 'How field teams use Workslip' })).toBeVisible();
   await page.getByRole('button', { name: 'Save YouTube draft' }).click();
   await expect(page).toHaveURL(/\/backoffice\/youtube\/\?id=[a-f0-9-]+$/);
-  await expect(page.getByRole('status')).toHaveText('Draft saved. Nothing was sent to YouTube.');
+  await expect(page.locator('#workspace-result')).toHaveText('Draft saved. Nothing was sent to YouTube.');
   await expect(page.getByRole('link', { name: 'Open YouTube Studio' })).toHaveAttribute('href', 'https://studio.youtube.com/');
   const downloading = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download saved metadata' }).click();

@@ -28,7 +28,7 @@ test('YouTube draft, preview, metadata export, edit and link receipt work in the
     await expect(page.getByRole('heading', { name: 'How field teams use Workslip' })).toBeVisible();
     await expect(page.getByText('Tags: workslip, field work', { exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Save YouTube draft' }).click();
-    await expect(page.getByRole('status')).toContainText('Draft saved');
+    await expect(page.locator('#workspace-result')).toContainText('Draft saved');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Edit YouTube draft');
     const [created] = (await site.call('GET', api)).body.items;
     const draftUrl = listUrl + '?id=' + created.id;
@@ -39,7 +39,7 @@ test('YouTube draft, preview, metadata export, edit and link receipt work in the
     await page.getByLabel('YouTube video link').fill(shortLink);
     await page.getByLabel('Video description').fill(' Updated description. ');
     await page.getByRole('button', { name: 'Save YouTube draft' }).click();
-    await expect(page.getByRole('status')).toContainText('Draft saved');
+    await expect(page.locator('#workspace-result')).toContainText('Draft saved');
     await expect(page.getByLabel('YouTube video link')).toHaveValue(shortLink);
     await expect(page.getByLabel('Video description')).toHaveValue('Updated description.');
     expect(providerCalls).toBe(0);
@@ -53,7 +53,7 @@ test('YouTube draft, preview, metadata export, edit and link receipt work in the
     await expect(check).toBeEnabled();
     expect((await site.call('GET', api + '/' + created.id)).body.item.verification).toBeNull();
     await check.click();
-    await expect(page.getByRole('status')).toContainText('Nothing was uploaded or published');
+    await expect(page.locator('#workspace-result')).toContainText('Nothing was uploaded or published');
     await expect(page.getByRole('link', { name: 'Open checked video' })).toHaveAttribute('href', watchLink);
     expect(providerCalls).toBe(2);
     await page.getByRole('link', { name: 'All YouTube drafts' }).click();
@@ -80,4 +80,62 @@ test('Content Creator gives an explicit recovery path when its asset fails', asy
   await page.getByRole('link', { name: 'Reload and try again' }).click();
   await expect(page.getByRole('button', { name: 'Open Content Creator' })).toBeEnabled();
   await expect(page.getByRole('link', { name: 'New YouTube draft' })).toBeVisible();
+});
+
+test('Content Creator prepares media without starting it; approved media stays on the draft', async ({ page }) => {
+  let submissions = 0;
+  const files = new Map();
+  const site = await startCommercialSite({
+    mediaProvider: () => ({
+      async start(kind, prompt) {
+        expect(kind).toBe('video');
+        expect(prompt).toBe('A quiet Workslip product clip');
+        submissions++;
+        return 'media-browser-test';
+      },
+      async check() { return { status: 'completed' }; },
+      async download() { return new Blob(['test MP4']); },
+    }),
+    mediaStorage: {
+      async put(key, file) { files.set(key, file); },
+      async get(key) { return { body: files.get(key).stream() }; },
+    },
+  });
+  try {
+    await page.route('https://unpkg.com/**', route => route.abort());
+    await page.addInitScript(() => {
+      const append = HTMLHeadElement.prototype.append;
+      HTMLHeadElement.prototype.append = function(...nodes) {
+        const script = nodes.find(node => node instanceof HTMLScriptElement && node.src.startsWith('https://unpkg.com/'));
+        if (!script) return append.apply(this, nodes);
+        customElements.define('elevenlabs-convai', class extends HTMLElement {});
+        queueMicrotask(() => script.onload());
+      };
+    });
+    const created = (await site.call('POST', api, { title: 'Media fixture', description: '', tags: '', product: 'Workslip' })).body.item;
+    await page.goto(site.privateBase + 'backoffice/youtube/?id=' + created.id);
+    await page.getByRole('button', { name: 'Open Content Creator' }).click();
+    const widget = page.locator('elevenlabs-convai');
+    await expect(widget).toHaveCount(1);
+    const answer = await widget.evaluate(node => {
+      const detail = { config: {} };
+      node.dispatchEvent(new CustomEvent('elevenlabs-convai:call', { detail }));
+      return detail.config.clientTools.prepare_youtube_media({ kind: 'video', prompt: 'A quiet Workslip product clip' });
+    });
+    expect(answer).toContain('must approve');
+    await expect(page.getByLabel('Media type')).toHaveValue('video');
+    await expect(page.getByLabel('Media prompt')).toHaveValue('A quiet Workslip product clip');
+    expect(submissions).toBe(0);
+    await page.getByRole('button', { name: 'Approve and generate' }).click();
+    await expect(page.getByRole('heading', { name: 'Video clip · Generating' })).toBeVisible();
+    await page.reload();
+    await page.getByRole('button', { name: 'Check status' }).click();
+    await expect(page.getByRole('heading', { name: 'Video clip · Ready' })).toBeVisible();
+    const path = await page.getByRole('link', { name: 'Download generated file' }).getAttribute('href');
+    expect(path).toContain(created.id);
+    const res = await page.request.get(new URL(path, site.privateBase).href);
+    expect(await res.text()).toBe('test MP4');
+    expect(res.headers()['content-type']).toBe('video/mp4');
+    expect(submissions).toBe(1);
+  } finally { await site.close(); }
 });
