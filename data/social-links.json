@@ -1,0 +1,4 @@
+{
+  "_comment": "The company's social media profiles, shown as icons in the footer of every public page. Add only real MR Software profile URLs. Each entry is { \"network\": \"linkedin\" | \"youtube\" | \"facebook\" | \"instagram\" | \"github\", \"href\": \"https://...\" } and the address must be on that network's own domain. The list is empty on purpose until the profile URLs are confirmed; an empty list shows nothing. After editing, run npm run build:links.",
+  "accounts": []
+}
