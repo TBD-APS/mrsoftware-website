@@ -590,6 +590,9 @@ a:hover > .arrow { transform: translateX(4px); }
 .footer-brand a, .footer-column a, .footer-legal a, .footer-bottom a { display: inline-flex; align-items: center; min-height: 32px; color: #4d4843; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 4px; transition: color .2s var(--ease), text-decoration-color .2s var(--ease); }
 .footer-brand a:hover, .footer-column a:hover, .footer-legal a:hover, .footer-bottom a:hover { color: var(--ink); text-decoration-color: currentColor; }
 .footer-brand .footer-logo { min-height: 44px; }
+/* The negative margin lines the first icon up with the text above its tap area. */
+.footer-social ul { margin: var(--s1) 0 0 -6px; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px; }
+.footer-brand .footer-social a { justify-content: center; min-width: 32px; }
 .footer-column, .footer-legal { display: grid; align-content: start; justify-items: start; }
 .footer-column h2, .footer-legal h2 { margin: 0 0 var(--s1); font-size: 1.0625rem; letter-spacing: 0; }
 .footer-bottom { width: min(100%, 1376px); margin: var(--s6) auto 0; padding-top: var(--s2); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px var(--s3); color: var(--muted-on-light); border-top: 1px solid var(--hairline-light); }
@@ -775,6 +778,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   .site-footer { padding-top: var(--s5); }
   .footer-inner { grid-template-columns: 1fr 1fr; }
   .footer-brand a, .footer-column a, .footer-legal a, .footer-bottom a { min-height: 44px; }
+  .footer-social ul { margin-left: -12px; }
+  .footer-brand .footer-social a { min-width: 44px; }
   .page-body .grid { grid-template-columns: 1fr; }
   .product-hero .frame { margin-top: var(--s5); }
 }

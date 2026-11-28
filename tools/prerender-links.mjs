@@ -3,13 +3,21 @@ import { resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'parse5';
 import { checkGraph, renderRelatedLinks, linksOn, escapeHtml } from '../js/linking.js';
+import { readSocialAccounts, renderSocialLinks } from './social-links.mjs';
 
 // Render from the same catalogue and renderer as the editor and browser. Link
 // cards must already be in the first HTML response, including without scripts.
-export function renderLinkSlots(source, graph) {
+// Social profile icons come from data/social-links.json and fill data-social-links slots.
+export function renderLinkSlots(source, graph, socialAccounts = []) {
   const updates = [];
   function visit(node) {
     const attributes = Object.fromEntries((node.attrs ?? []).map(({ name, value }) => [name, value]));
+    if (attributes['data-social-links'] !== undefined) {
+      const { startTag, endTag } = node.sourceCodeLocation ?? {};
+      if (!startTag || !endTag) throw new Error('Social link slot needs a closing tag');
+      updates.push({ start: startTag.endOffset, end: endTag.startOffset, html: renderSocialLinks(socialAccounts) });
+      return;
+    }
     const compact = attributes['data-link-list-from'] !== undefined;
     const from = compact ? attributes['data-link-list-from'] : attributes['data-related-from'];
     if (from !== undefined) {
@@ -54,12 +62,13 @@ export async function publicLinkUpdates(root, graph) {
     if (path.startsWith('/da/')) continue;
     if (path.endsWith('/')) files.add(resolve(directory, `.${path}`, 'index.html'));
   }
+  const socialAccounts = await readSocialAccounts(directory);
   const updates = [];
   for (const file of files) {
     let source;
     try { source = await readFile(file, 'utf8'); }
     catch (error) { if (error.code === 'ENOENT') continue; throw error; }
-    const html = renderLinkSlots(source, checked.graph);
+    const html = renderLinkSlots(source, checked.graph, socialAccounts);
     if (html !== source) updates.push({ file, html });
   }
   return updates;
