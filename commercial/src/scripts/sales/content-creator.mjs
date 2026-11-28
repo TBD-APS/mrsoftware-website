@@ -14,7 +14,10 @@ export function contentCreator() {
       status.textContent = '';
       open.remove();
     } catch {
-      status.textContent = 'Content Creator could not load. Reload this page to try again; your drafts are unchanged.';
+      const reload = el('a', { href: location.pathname + location.search }, 'Reload and try again');
+      status.replaceChildren('Content Creator could not load. Your drafts are unchanged. ', reload);
+      open.remove();
+      reload.focus();
     }
   });
   return section('Content Creator',
