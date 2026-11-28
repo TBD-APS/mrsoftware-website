@@ -1,4 +1,5 @@
 import { apiJson } from '../api.mjs';
+import { mediaPanel } from './youtube-media.mjs';
 import { contentCreator } from './content-creator.mjs';
 import { addField, el, muted, pageHeading, section } from './dom.mjs';
 
@@ -85,6 +86,7 @@ function renderDraft(initial) {
       history.replaceState(null, '', toDraft(item.id));
       heading.querySelector('h1').textContent = 'Edit YouTube draft';
       updateHandoff();
+      showMedia();
     }
     success.textContent = 'Draft saved. Nothing was sent to YouTube.';
   });
@@ -134,11 +136,18 @@ function renderDraft(initial) {
     paintReceipt();
   }
 
+  const mediaHost = el('div');
+  const showMedia = () => {
+    if (!item || mediaHost.hasChildNodes()) return;
+    const media = mediaPanel(endpoint + '/' + item.id + '/media', () => item.revision);
+    mediaHost.append(contentCreator({ proposeMedia: media.propose }), media.element);
+  };
   updateHandoff();
+  showMedia();
   main.replaceChildren(
     heading,
     success, section('Video details', form), section('Metadata preview', previewTitle, previewDescription, previewTags),
-    section('Studio handoff', muted(followUp), handoff),
+    section('Studio handoff', muted(followUp), handoff), mediaHost,
   );
 }
 

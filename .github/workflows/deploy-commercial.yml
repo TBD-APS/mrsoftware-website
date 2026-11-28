@@ -76,6 +76,8 @@ jobs:
           COMMERCIAL_ACCESS_ISSUER: ${{ vars.COMMERCIAL_ACCESS_ISSUER }}
           COMMERCIAL_ACCESS_AUDIENCE: ${{ vars.COMMERCIAL_ACCESS_AUDIENCE }}
           COMMERCIAL_ALLOWED_EMAILS: ${{ secrets.COMMERCIAL_ALLOWED_EMAILS }}
+          ELEVEN_CREATIVE_API_KEY: ${{ secrets.ELEVEN_CREATIVE_API_KEY }}
+          COMMERCIAL_YOUTUBE_MEDIA_BUCKET: ${{ vars.COMMERCIAL_YOUTUBE_MEDIA_BUCKET }}
           COMMERCIAL_RELEASE_MODE: ${{ inputs.release_mode }}
           WRANGLER_SEND_METRICS: 'false'
       - name: Retain only the safe commercial release receipt
@@ -89,4 +91,4 @@ jobs:
           retention-days: 30
       - name: Remove deployment-owned settings and build output
         if: always()
-        run: node --input-type=module -e 'import {rm} from "node:fs/promises"; for (const path of [".local/wrangler-commercial-release.json",".commercial-dist",".wrangler"]) await rm(path,{recursive:true,force:true});'
+        run: node --input-type=module -e 'import {rm} from "node:fs/promises"; for (const path of [".local/wrangler-commercial-release.json",".local/wrangler-commercial-release.json.media-secrets.json",".commercial-dist",".wrangler"]) await rm(path,{recursive:true,force:true});'

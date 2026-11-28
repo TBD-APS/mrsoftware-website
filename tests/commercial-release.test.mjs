@@ -27,7 +27,8 @@ function cloudflareRead(env, patch = {}) {
       assert.equal(options.method, 'POST');
       assert.match(JSON.parse(options.body).sql, /^SELECT /);
       result = [{ success: true, results: tables.map(name => ({ name })) }];
-    } else if (endpoint.endsWith(`/access/apps/${applicationId}`)) result = { id: applicationId, type: 'self_hosted', domain: 'backoffice.mrsoftware.dk', aud: env.COMMERCIAL_ACCESS_AUDIENCE };
+    } else if (endpoint.endsWith('/r2/buckets/mrsoftware-youtube-media')) result = { name: 'mrsoftware-youtube-media' };
+    else if (endpoint.endsWith(`/access/apps/${applicationId}`)) result = { id: applicationId, type: 'self_hosted', domain: 'backoffice.mrsoftware.dk', aud: env.COMMERCIAL_ACCESS_AUDIENCE };
     else if (endpoint.endsWith('/policies')) result = [{ decision: 'allow', include: env.COMMERCIAL_ALLOWED_EMAILS.split(',').map(email => ({ email: { email: email.trim().toLowerCase() } })), exclude: [], require: [] }];
     else if (endpoint.endsWith('/settings')) return Response.json({ success: false, errors: [{ code: 10007 }] }, { status: 404 });
     else assert.fail(`Unexpected preflight endpoint ${endpoint}`);
@@ -285,4 +286,30 @@ test('website release checks commercial readiness before any website upload', as
     receiptPath: join(dir, 'receipt.json'),
   }), /Commercial app is not ready/);
   assert.equal(writes, 0);
+});
+
+test('media activation verifies scoped read-only API access before configuring its private binding', async () => {
+  const preflight = await implementation('commercialPreflight', 'commercial-release-config.mjs');
+  const media = { ...releaseEnv, COMMERCIAL_YOUTUBE_MEDIA_BUCKET: 'mrsoftware-youtube-media', ELEVEN_CREATIVE_API_KEY: 'synthetic-media' };
+  const reads = [];
+  const response = code => async (url, options) => {
+    const target = new URL(url);
+    if (target.hostname === 'api.elevenlabs.io') {
+      assert.equal(options.method, 'GET');
+      assert.equal(options.headers['xi-api-key'], 'synthetic-media');
+      reads.push(target.pathname);
+      return Response.json({}, { status: code });
+    }
+    assert.equal(options.headers['xi-api-key'], undefined);
+    return cloudflareRead(media, {
+      'mrsoftware-youtube-media': { name: 'mrsoftware-youtube-media' },
+      query: [{ success: true, results: [...tables, 'sales_youtube_media'].map(name => ({ name })) }],
+    })(url, options);
+  };
+  await assert.rejects(preflight(media, { request: response(401) }), /image API read \(HTTP 401\)/);
+  assert.deepEqual(reads.splice(0), ['/v1/flows/image']);
+  const prepared = await preflight(media, { request: response(200) });
+  assert.deepEqual(reads, ['/v1/flows/image', '/v1/flows/video']);
+  assert.deepEqual(prepared.config.r2_buckets, [{ binding: 'YOUTUBE_MEDIA', bucket_name: 'mrsoftware-youtube-media' }]);
+  assert.doesNotMatch(JSON.stringify(prepared), /synthetic-media/);
 });
