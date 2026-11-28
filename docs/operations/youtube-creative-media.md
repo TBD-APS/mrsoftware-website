@@ -26,8 +26,13 @@ starting another paid request. The browser polls only on explicit status checks.
    public URL or public custom domain. Apply `0005_youtube_media.sql` to the
    approved sales D1 only. Set protected environment variable
    `COMMERCIAL_YOUTUBE_MEDIA_BUCKET` and use the guarded commercial release.
-   Set the restricted key as `ELEVEN_CREATIVE_API_KEY` in the protected GitHub
-   environment `mrsoftware-commercial-production`. The release preflight checks
+   Store the restricted provider key as `eleven-creative-api-key` in Azure Key
+   Vault `kv-mrsoftwarev2-live`, not in GitHub. Only the protected main-branch
+   `mrsoftware-commercial-production` release job has GitHub OIDC permission.
+   Its dedicated managed identity uses `COMMERCIAL_AZURE_CLIENT_ID` and
+   `COMMERCIAL_AZURE_TENANT_ID` (non-secret environment variables), with
+   Key Vault Secrets User scoped to that single secret. No Azure client secret
+   or vault-wide role is required. The release preflight checks
    both provider read-only endpoints, the required D1 table, and the bucket.
    The approved workflow binds the key to the uploaded Worker version only
    when media storage is enabled. Without both the binding and key, generation
