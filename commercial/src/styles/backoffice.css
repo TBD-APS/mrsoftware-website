@@ -190,3 +190,6 @@ legend { padding: 0 8px; font-size: .875rem; }
   .quote-package, .quote-amounts, .quote-terms { break-inside: avoid; }
   .quote-footnote { font-size: 9pt; }
 }
+
+.content-creator-widget:not(:empty) { min-block-size: 30rem; }
+.content-creator-widget elevenlabs-convai { display: block; min-block-size: 30rem; }
