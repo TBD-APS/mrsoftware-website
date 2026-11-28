@@ -65,6 +65,8 @@ function renderList({ items, truncated }) {
 
 function renderDraft(initial) {
   let item = initial;
+  const heading = pageHeading(initial ? 'Edit YouTube draft' : 'New YouTube draft',
+    'Private draft. Use your approved copy and video file in YouTube Studio.', [buttonLink('All YouTube drafts', route)]);
   const success = el('p', { id: 'workspace-result', className: 'workspace-result', role: 'status' });
   const previewTitle = el('h3', {}, initial?.title || 'Untitled video');
   const previewDescription = el('p', { style: 'white-space:pre-wrap;overflow-wrap:anywhere' }, initial?.description || 'No description yet.');
@@ -74,8 +76,16 @@ function renderDraft(initial) {
     const body = { title: title.value, description: description.value, tags: tags.value, product: product.value, ...(!creating && { revision: item.revision }) };
     const response = await apiJson(creating ? endpoint : endpoint + '/' + item.id, { method: creating ? 'POST' : 'PUT', body });
     item = response.item;
-    if (creating) history.replaceState(null, '', toDraft(item.id));
-    updateHandoff();
+    title.value = item.title;
+    description.value = item.description;
+    tags.value = item.tags;
+    product.value = item.product;
+    updatePreview();
+    if (creating) {
+      history.replaceState(null, '', toDraft(item.id));
+      heading.querySelector('h1').textContent = 'Edit YouTube draft';
+      updateHandoff();
+    }
     success.textContent = 'Draft saved. Nothing was sent to YouTube.';
   });
   const title = addField(form, 'title', 'Video title', initial?.title, { required: true, maxlength: 100 });
@@ -126,7 +136,7 @@ function renderDraft(initial) {
 
   updateHandoff();
   main.replaceChildren(
-    pageHeading(initial ? 'Edit YouTube draft' : 'New YouTube draft', 'Private draft. Use your approved copy and video file in YouTube Studio.', [buttonLink('All YouTube drafts', route)]),
+    heading,
     success, section('Video details', form), section('Metadata preview', previewTitle, previewDescription, previewTags),
     section('Studio handoff', muted(followUp), handoff),
   );
