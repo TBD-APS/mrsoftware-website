@@ -26,7 +26,7 @@ starting another paid request. The browser polls only on explicit status checks.
    public URL or public custom domain. Apply `0005_youtube_media.sql` to the
    approved sales D1 only. Set protected environment variable
    `COMMERCIAL_YOUTUBE_MEDIA_BUCKET` and use the guarded commercial release.
-   Store the restricted provider key as `eleven-creative-api-key` in Azure Key
+   Store the restricted provider key as `eleven-labs-api-key` in Azure Key
    Vault `kv-mrsoftwarev2-live`, not in GitHub. Only the protected main-branch
    `mrsoftware-commercial-production` release job has GitHub OIDC permission.
    Its dedicated managed identity uses `COMMERCIAL_AZURE_CLIENT_ID` and

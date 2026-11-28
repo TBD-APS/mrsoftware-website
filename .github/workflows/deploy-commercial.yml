@@ -82,7 +82,7 @@ jobs:
         shell: bash
         run: |
           if [[ "$COMMERCIAL_YOUTUBE_MEDIA_BUCKET" == "mrsoftware-youtube-media" ]]; then
-            if ! key="$(az keyvault secret show --vault-name kv-mrsoftwarev2-live --name eleven-creative-api-key --query value -o tsv --only-show-errors 2>/dev/null)" || [[ ! "$key" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
+            if ! key="$(az keyvault secret show --vault-name kv-mrsoftwarev2-live --name eleven-labs-api-key --query value -o tsv --only-show-errors 2>/dev/null)" || [[ ! "$key" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
               echo "::error::The protected release could not load the ElevenLabs key from Azure Key Vault."
               exit 1
             fi
